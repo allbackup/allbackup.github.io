@@ -1,0 +1,120 @@
+<html>
+<head>
+<title>about ::: www.effbot.org</title>
+<link rel='stylesheet' href='/effbot.css' type='text/css' media='screen' />
+</head>
+<body bgcolor='#ccffcc'>
+<div>[<a href='about.htm'>back</a>]</div>
+<h3>Welcome to the effbot.org user editor!</h3>
+
+
+<p><b>Note: This is not a contact form!  Support questions, spam, and
+other off-topic stuff will be ignored.</b></p>
+
+<p>To suggest changes, edit the HTML fragment in the text box below.
+You can use the 'update preview' button to check your changes (the
+preview is displayed beneath the text box).  When done, fill in the
+name and address fields (optional) and click 'submit patch' to mail
+the patch to me.  (I reserve the right to decide which patches to
+include, of course.)  Thanks! /F</p>
+
+<form method='post' id='useredit'>
+<input type='hidden' name='name' value='about'/>
+<p>
+<input type='submit' name='preview' value='update preview' style='background:#084; color:white; width:200px; font-weight:bold;' >
+&nbsp;&nbsp;&nbsp;
+<input type='submit' name='submit' value='submit patch'  style='background:#084; color:white; width:200px; font-weight:bold;' >
+</p>
+<textarea name='text' rows='30' cols='80'>About the Zone
+
+&lt;p class='info'&gt;Updated August 2003 | Fredrik Lundh&lt;/p&gt;
+				
+&lt;h3 id='author'&gt;About Me&lt;/h3&gt;
+
+&lt;p&gt;Fredrik Lundh.  I do Python stuff.
+&lt;a href="frank-willison-award.htm"&gt;Award-winning stuff&lt;/a&gt;, at times.&lt;/p&gt;
+
+&lt;h3 id='content'&gt;About the Content&lt;/h3&gt;
+
+&lt;p&gt;Stuff.&lt;/p&gt;
+
+&lt;h3 id='technology'&gt;About the Technology&lt;/h3&gt;
+
+&lt;p&gt;The &lt;b&gt;zone.effbot.org&lt;/b&gt; subsite is powered by a couple of very
+simple Python scripts.  The main script allows me to create and edit
+plain text files in a standard browser text area.  Every time I save
+the text file, a simple renderer merges the text file with a predefined
+template, pushes the result through &lt;a href="http://www.w3.org/People/Raggett/tidy/"&gt;HTML Tidy&lt;/a&gt;,
+and writes the result to disk as a static HTML file.&lt;/p&gt;
+
+&lt;p&gt;Other scripts are used to look for broken links, download new and
+updated pages and store them in a &lt;s&gt;&lt;a href="http://www.perforce.com"&gt;Perforce&lt;/a&gt;&lt;/s&gt; &lt;a href="subversion.htm"&gt;Subversion&lt;/a&gt; repository, combine them into
+&lt;a href="http://online.effbot.org"&gt;a blog page&lt;/a&gt;, etc.&lt;/p&gt;
+
+&lt;p&gt;I don't plan to release the scripts at this time.  If you need something
+similar, I suggest using a real &lt;a href="http://www.onlamp.com/pub/a/python/2000/11/29/pythonnews.html"&gt;Wiki&lt;/a&gt;, such as &lt;a href="http://moin.sourceforge.net/" title="don't let the fact that I couldn't figure out how to install it keep you from trying ;-)"&gt;MoinMoin&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h3 id='cookies'&gt;About our Cookies&lt;/h3&gt;
+
+&lt;p&gt;There are no cookies.&lt;/p&gt;
+
+&lt;a href="http://effbot.org/rpc/fatherpoikilotherma.cgi"&gt;&lt;div style="height: 0px; width: 0px;"&gt;&amp;nbsp;&lt;/div&gt;&lt;/a&gt;</textarea>
+<table>
+<tr><td><label for='author'>Name:</label></td><td>
+<div><input name='author' value="" size=40></div>
+</td><td>(Optional)</td></tr>
+<tr><td><label for='email'>Mail:</label></td><td>
+<div><input name='email' value="" size=40></div>
+</td><td>(Optional)</td></tr>
+<tr><td><label for='note'>Comment:</label></td><td>
+<div><input name='note' value="" size=40></div>
+</td><td>(Optional)</td></tr>
+<tr><td><label for='password'>Password:</label></td><td>
+<div><input name='password' value="(replace with the sum of 7+4)" size=40></div>
+</td><td>(Required)</td></tr>
+</table>
+<p>
+<input type='submit' name='preview' value='update preview' style='background:#084; color:white; width:200px; font-weight:bold;' >
+&nbsp;&nbsp;&nbsp;
+<input type='submit' name='submit' value='submit patch'  style='background:#084; color:white; width:200px; font-weight:bold;' >
+</p>
+<p>&nbsp;</p>
+</form>
+<div style='background: white; border: 2px solid #084; padding: 0px 20px;'>
+<h2>About the Zone</h2>
+
+<p class='info'>Updated August 2003 | Fredrik Lundh</p>
+				
+<h3 id='author'>About Me</h3>
+
+<p>Fredrik Lundh.  I do Python stuff.
+<a href="frank-willison-award.htm">Award-winning stuff</a>, at times.</p>
+
+<h3 id='content'>About the Content</h3>
+
+<p>Stuff.</p>
+
+<h3 id='technology'>About the Technology</h3>
+
+<p>The <b>zone.effbot.org</b> subsite is powered by a couple of very
+simple Python scripts.  The main script allows me to create and edit
+plain text files in a standard browser text area.  Every time I save
+the text file, a simple renderer merges the text file with a predefined
+template, pushes the result through <a href="http://www.w3.org/People/Raggett/tidy/">HTML Tidy</a>,
+and writes the result to disk as a static HTML file.</p>
+
+<p>Other scripts are used to look for broken links, download new and
+updated pages and store them in a <s><a href="http://www.perforce.com">Perforce</a></s> <a href="subversion.htm">Subversion</a> repository, combine them into
+<a href="http://online.effbot.org">a blog page</a>, etc.</p>
+
+<p>I don't plan to release the scripts at this time.  If you need something
+similar, I suggest using a real <a href="http://www.onlamp.com/pub/a/python/2000/11/29/pythonnews.html">Wiki</a>, such as <a href="http://moin.sourceforge.net/" title="don't let the fact that I couldn't figure out how to install it keep you from trying ;-)">MoinMoin</a>.</p>
+
+<h3 id='cookies'>About our Cookies</h3>
+
+<p>There are no cookies.</p>
+
+<a href="http://effbot.org/rpc/fatherpoikilotherma.cgi"><div style="height: 0px; width: 0px;">&nbsp;</div></a>
+</div>
+</body>
+</html>

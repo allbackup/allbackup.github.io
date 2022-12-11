@@ -1,0 +1,436 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>cd</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-cd.html'>original</a> :::
+<a href='cd.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>cd&#8212;CD-ROM access on SGI systems</h1>
+
+<div class="toc"><dl><dt>On this page:</dt><dd><a href="#player-objects">Player Objects</a></dd><dd><a href="#parser-objects">Parser Objects</a></dd></dl></div><p>Availability: IRIX.</p>
+
+<p>This module provides an interface to the Silicon Graphics CD
+library. It is available only on Silicon Graphics systems.</p>
+
+<p>The way the library works is as follows. A program opens the
+CD-ROM device with <a class="link" href="#open"><code>open</code></a> and
+creates a parser to parse the data from the CD with <a class="link" href="#createparser"><code>createparser</code></a>. The object returned by
+<a class="link" href="#open"><code>open</code></a> can be used to read data
+from the CD, but also to get status information for the CD-ROM
+device, and to get information about the CD, such as the table of
+contents. Data from the CD is passed to the parser, which parses
+the frames, and calls any callback functions that have previously
+been added.</p>
+
+<p>An audio CD is divided into tracks or programs (the terms are
+used interchangeably). Tracks can be subdivided into indices. An
+audio CD contains a table of contents which gives the starts of the
+tracks on the CD. Index 0 is usually the pause before the start of
+a track. The start of the track as given by the table of contents
+is normally the start of index 1.</p>
+
+<p>Positions on a CD can be represented in two ways. Either a frame
+number or a tuple of three values, minutes, seconds and frames.
+Most functions use the latter representation. Positions can be both
+relative to the beginning of the CD, and to the beginning of the
+track.</p>
+
+<p>Module <code>cd</code> defines the
+following functions and constants:</p>
+</div>
+<dl><dt class="function" id="createparser"><b>createparser()</b> <tt class="nav"><a class="nav" href="cd.createparser" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Create and return an opaque parser object. The methods of the
+parser object are described below.</p>
+</dd>
+<dt class="function" id="msftoframe"><b>msftoframe(minutes, seconds, frames)</b> <tt class="nav"><a class="nav" href="cd.msftoframe" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Converts a <code>(</code><var>minutes</var>, <var>seconds</var>,
+<var>frames</var>) triple representing time in absolute time code
+into the corresponding CD frame number.</p>
+</dd>
+<dt class="function" id="open"><b>open([device[, mode]])</b> <tt class="nav"><a class="nav" href="cd.open" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Open the CD-ROM device. The return value is an opaque player
+object; methods of the player object are described below. The
+device is the name of the SCSI device file, e.g. <code>
+'/dev/scsi/sc0d4l0'</code>, or <code>
+None</code>. If omitted or <code>None</code>,
+the hardware inventory is consulted to locate a CD-ROM drive. The
+<var>mode</var>, if not omitted, should be the string <code>
+'r'</code>.</p>
+</dd>
+</dl><div class="text">
+<p>The module defines the following variables:</p>
+</div>
+<dl><dt class="exception" id="error"><b>exception error</b> <tt class="nav"><a class="nav" href="cd.error" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="exception">
+<p>Exception raised on various errors.</p>
+</dd>
+<dt class="variable" id="DATASIZE"><b>DATASIZE</b> <tt class="nav"><a class="nav" href="cd.DATASIZE" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>The size of one frame's worth of audio data. This is the size of
+the audio data as passed to the callback of type <code>
+audio</code>.</p>
+</dd>
+<dt class="variable" id="BLOCKSIZE"><b>BLOCKSIZE</b> <tt class="nav"><a class="nav" href="cd.BLOCKSIZE" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>The size of one uninterpreted frame of audio data.</p>
+</dd>
+</dl><div class="text">
+<p>The following variables are states as returned by <code>getstatus</code>:</p>
+</div>
+<dl><dt class="variable" id="READY"><b>READY</b> <tt class="nav"><a class="nav" href="cd.READY" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>The drive is ready for operation loaded with an audio CD.</p>
+</dd>
+<dt class="variable" id="NODISC"><b>NODISC</b> <tt class="nav"><a class="nav" href="cd.NODISC" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>The drive does not have a CD loaded.</p>
+</dd>
+<dt class="variable" id="CDROM"><b>CDROM</b> <tt class="nav"><a class="nav" href="cd.CDROM" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>The drive is loaded with a CD-ROM. Subsequent play or read
+operations will return I/O errors.</p>
+</dd>
+<dt class="variable" id="ERROR"><b>ERROR</b> <tt class="nav"><a class="nav" href="cd.ERROR" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>An error occurred while trying to read the disc or its table of
+contents.</p>
+</dd>
+<dt class="variable" id="PLAYING"><b>PLAYING</b> <tt class="nav"><a class="nav" href="cd.PLAYING" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>The drive is in CD player mode playing an audio CD through its
+audio jacks.</p>
+</dd>
+<dt class="variable" id="PAUSED"><b>PAUSED</b> <tt class="nav"><a class="nav" href="cd.PAUSED" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>The drive is in CD layer mode with play paused.</p>
+</dd>
+<dt class="variable" id="STILL"><b>STILL</b> <tt class="nav"><a class="nav" href="cd.STILL" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>The equivalent of <code>PAUSED</code> on older (non 3301) model
+Toshiba CD-ROM drives. Such drives have never been shipped by
+SGI.</p>
+</dd>
+<dt class="variable" id="control"><b>control</b> <tt class="nav"><a class="nav" href="cd.control" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Integer constants describing the various types of parser
+callbacks that can be set by the <code>addcallback</code> method of CD parser objects
+(see below).</p>
+</dd>
+</dl><div class="text">
+<h2 id="player-objects">Player Objects <a class="nav" href="#player-objects">#</a></h2>
+
+<p>Player objects (returned by <a class="link" href="#open"><code>
+open</code></a>) have the following methods:</p>
+</div>
+<dl><dt class="method" id="Player.allowremoval"><b>allowremoval()</b> <tt class="nav"><a class="nav" href="cd.Player.allowremoval" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Unlocks the eject button on the CD-ROM drive permitting the user
+to eject the caddy if desired.</p>
+</dd>
+<dt class="method" id="Player.bestreadsize"><b>bestreadsize()</b> <tt class="nav"><a class="nav" href="cd.Player.bestreadsize" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Returns the best value to use for the <var>num_frames</var>
+parameter of the <code>readda</code>
+method. Best is defined as the value that permits a continuous flow
+of data from the CD-ROM drive.</p>
+</dd>
+<dt class="method" id="Player.close"><b>close()</b> <tt class="nav"><a class="nav" href="cd.Player.close" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Frees the resources associated with the player object. After
+calling <code>close</code>, the methods of
+the object should no longer be used.</p>
+</dd>
+<dt class="method" id="Player.eject"><b>eject()</b> <tt class="nav"><a class="nav" href="cd.Player.eject" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Ejects the caddy from the CD-ROM drive.</p>
+</dd>
+<dt class="method" id="Player.getstatus"><b>getstatus()</b> <tt class="nav"><a class="nav" href="cd.Player.getstatus" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Returns information pertaining to the current state of the
+CD-ROM drive. The returned information is a tuple with the
+following values: <var>state</var>, <var>track</var>, <var>
+rtime</var>, <var>atime</var>, <var>ttime</var>, <var>first</var>,
+<var>last</var>, <var>scsi_audio</var>, <var>cur_block</var>. <var>
+rtime</var> is the time relative to the start of the current track;
+<var>atime</var> is the time relative to the beginning of the disc;
+<var>ttime</var> is the total time on the disc. For more
+information on the meaning of the values, see the man page
+CDgetstatus(3dm). The value of <var>state</var> is one of the
+following: <code>ERROR</code>, <code>NODISC</code>, <code>
+READY</code>, <code>PLAYING</code>, <code>PAUSED</code>, <code>
+STILL</code>, or <code>CDROM</code>.</p>
+</dd>
+<dt class="method" id="Player.gettrackinfo"><b>gettrackinfo(track)</b> <tt class="nav"><a class="nav" href="cd.Player.gettrackinfo" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Returns information about the specified track. The returned
+information is a tuple consisting of two elements, the start time
+of the track and the duration of the track.</p>
+</dd>
+<dt class="method" id="Player.msftoblock"><b>msftoblock(min, sec, frame)</b> <tt class="nav"><a class="nav" href="cd.Player.msftoblock" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Converts a minutes, seconds, frames triple representing a time
+in absolute time code into the corresponding logical block number
+for the given CD-ROM drive. You should use <a class="link" href="#msftoframe"><code>msftoframe</code></a> rather than <code>msftoblock</code> for comparing times. The
+logical block number differs from the frame number by an offset
+required by certain CD-ROM drives.</p>
+</dd>
+<dt class="method" id="Player.play"><b>play(start, play)</b> <tt class="nav"><a class="nav" href="cd.Player.play" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Starts playback of an audio CD in the CD-ROM drive at the
+specified track. The audio output appears on the CD-ROM drive's
+headphone and audio jacks (if fitted). Play stops at the end of the
+disc. <var>start</var> is the number of the track at which to start
+playing the CD; if <var>play</var> is 0, the CD will be set to an
+initial paused state. The method <code>togglepause</code> can then be used to
+commence play.</p>
+</dd>
+<dt class="method" id="Player.playabs"><b>playabs(minutes, seconds, frames,
+play)</b> <tt class="nav"><a class="nav" href="cd.Player.playabs" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Like <code>play</code>, except that the
+start is given in minutes, seconds, and frames instead of a track
+number.</p>
+</dd>
+<dt class="method" id="Player.playtrack"><b>playtrack(start, play)</b> <tt class="nav"><a class="nav" href="cd.Player.playtrack" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Like <code>play</code>, except that
+playing stops at the end of the track.</p>
+</dd>
+<dt class="method" id="Player.playtrackabs"><b>playtrackabs(track, minutes, seconds,
+frames, play)</b> <tt class="nav"><a class="nav" href="cd.Player.playtrackabs" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Like <code>play</code>, except that
+playing begins at the specified absolute time and ends at the end
+of the specified track.</p>
+</dd>
+<dt class="method" id="Player.preventremoval"><b>preventremoval()</b> <tt class="nav"><a class="nav" href="cd.Player.preventremoval" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Locks the eject button on the CD-ROM drive thus preventing the
+user from arbitrarily ejecting the caddy.</p>
+</dd>
+<dt class="method" id="Player.readda"><b>readda(num_frames)</b> <tt class="nav"><a class="nav" href="cd.Player.readda" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Reads the specified number of frames from an audio CD mounted in
+the CD-ROM drive. The return value is a string representing the
+audio frames. This string can be passed unaltered to the <code>parseframe</code> method of the
+parser object.</p>
+</dd>
+<dt class="method" id="Player.seek"><b>seek(minutes, seconds, frames)</b> <tt class="nav"><a class="nav" href="cd.Player.seek" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Sets the pointer that indicates the starting point of the next
+read of digital audio data from a CD-ROM. The pointer is set to an
+absolute time code location specified in <var>minutes</var>, <var>
+seconds</var>, and <var>frames</var>. The return value is the
+logical block number to which the pointer has been set.</p>
+</dd>
+<dt class="method" id="Player.seekblock"><b>seekblock(block)</b> <tt class="nav"><a class="nav" href="cd.Player.seekblock" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Sets the pointer that indicates the starting point of the next
+read of digital audio data from a CD-ROM. The pointer is set to the
+specified logical block number. The return value is the logical
+block number to which the pointer has been set.</p>
+</dd>
+<dt class="method" id="Player.seektrack"><b>seektrack(track)</b> <tt class="nav"><a class="nav" href="cd.Player.seektrack" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Sets the pointer that indicates the starting point of the next
+read of digital audio data from a CD-ROM. The pointer is set to the
+specified track. The return value is the logical block number to
+which the pointer has been set.</p>
+</dd>
+<dt class="method" id="Player.stop"><b>stop()</b> <tt class="nav"><a class="nav" href="cd.Player.stop" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Stops the current playing operation.</p>
+</dd>
+<dt class="method" id="Player.togglepause"><b>togglepause()</b> <tt class="nav"><a class="nav" href="cd.Player.togglepause" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Pauses the CD if it is playing, and makes it play if it is
+paused.</p>
+</dd>
+</dl><div class="text">
+<h2 id="parser-objects">Parser Objects <a class="nav" href="#parser-objects">#</a></h2>
+
+<p>Parser objects (returned by <a class="link" href="#createparser"><code>createparser</code></a>) have the following
+methods:</p>
+</div>
+<dl><dt class="method" id="Parser.addcallback"><b>addcallback(type, func, arg)</b> <tt class="nav"><a class="nav" href="cd.Parser.addcallback" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Adds a callback for the parser. The parser has callbacks for
+eight different types of data in the digital audio data stream.
+Constants for these types are defined at the <code>cd</code> module level (see above). The callback is
+called as follows: <var>func</var>(<var>arg</var>, type, data),
+where <var>arg</var> is the user supplied argument, <var>type</var>
+is the particular type of callback, and <var>data</var> is the data
+returned for this <var>type</var> of callback. The type of the data
+depends on the <var>type</var> of callback as follows:</p>
+
+<table border="1">
+<tr>
+<th>
+<p>Type</p>
+</th>
+<th>
+<p>Value</p>
+</th>
+</tr>
+
+<tr>
+<td>
+<p><code>audio</code></p>
+</td>
+<td>
+<p>String which can be passed unmodified to <code>al.writesamps</code>.</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>pnum</code></p>
+</td>
+<td>
+<p>Integer giving the program (track) number.</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>index</code></p>
+</td>
+<td>
+<p>Integer giving the index number.</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>ptime</code></p>
+</td>
+<td>
+<p>Tuple consisting of the program time in minutes, seconds, and
+frames.</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>atime</code></p>
+</td>
+<td>
+<p>Tuple consisting of the absolute time in minutes, seconds, and
+frames.</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>catalog</code></p>
+</td>
+<td>
+<p>String of 13 characters, giving the catalog number of the
+CD.</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>ident</code></p>
+</td>
+<td>
+<p>String of 12 characters, giving the ISRC identification number
+of the recording. The string consists of two characters country
+code, three characters owner code, two characters giving the year,
+and five characters giving a serial number.</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>control</code></p>
+</td>
+<td>
+<p>Integer giving the control bits from the CD subcode data</p>
+</td>
+</tr>
+</table>
+
+<br />
+<br />
+</dd>
+<dt class="method" id="Parser.deleteparser"><b>deleteparser()</b> <tt class="nav"><a class="nav" href="cd.Parser.deleteparser" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Deletes the parser and frees the memory it was using. The object
+should not be used after this call. This call is done automatically
+when the last reference to the object is removed.</p>
+</dd>
+<dt class="method" id="Parser.parseframe"><b>parseframe(frame)</b> <tt class="nav"><a class="nav" href="cd.Parser.parseframe" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Parses one or more frames of digital audio data from a CD such
+as returned by <code>readda</code>. It
+determines which subcodes are present in the data. If these
+subcodes have changed since the last frame, then <code>parseframe</code> executes a callback of the
+appropriate type passing to it the subcode data found in the frame.
+Unlike the C function, more than one frame of digital audio data
+can be passed to this method.</p>
+</dd>
+<dt class="method" id="Parser.removecallback"><b>removecallback(type)</b> <tt class="nav"><a class="nav" href="cd.Parser.removecallback" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Removes the callback for the given <var>type</var>.</p>
+</dd>
+<dt class="method" id="Parser.resetparser"><b>resetparser()</b> <tt class="nav"><a class="nav" href="cd.Parser.resetparser" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Resets the fields of the parser used for tracking subcodes to an
+initial state. <code>
+resetparser</code> should be called after the disc has been
+changed.</p>
+</dd>
+</dl></div></body></html>

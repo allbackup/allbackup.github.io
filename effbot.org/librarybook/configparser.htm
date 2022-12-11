@@ -1,0 +1,94 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>The ConfigParser&nbsp;module</title></head><body data-page-id="496"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">The ConfigParser&nbsp;module</h1></div><div class="yui-ge"><div class="yui-u first"><p>This module reads configuration files.</p><p>The files should be written in a format similar to Windows INI
+files. The file contains one or more sections, separated by section
+names written in brackets. Each section can contain one or more
+configuration items.</p><p>Here&#8217;s an example:</p><pre>
+[book]
+title: The Python Standard Library
+author: Fredrik Lundh
+email: fredrik@pythonware.com
+version: 2.0-001115
+
+[ematter]
+pages: 250
+
+[hardcopy]
+pages: 350
+</pre><div class="example">
+<b style="example">Example: Using the
+ConfigParser module</b>
+<pre>
+# File: <a href="configparser/configparser-example-1.py">configparser-example-1.py</a>
+
+import ConfigParser
+import string
+
+config = ConfigParser.ConfigParser()
+
+config.read("samples/sample.ini")
+
+# print summary
+print
+print string.upper(config.get("book", "title"))
+print "by", config.get("book", "author"),
+print  "(" + config.get("book", "email") + ")"
+print
+print config.get("ematter", "pages"), "pages"
+print
+
+# dump entire config file
+for section in config.sections():
+    print section
+    for option in config.options(section):
+        print " ", option, "=", config.get(section, option)
+
+</pre><pre class="computeroutput" moreinfo="NONE">
+THE PYTHON STANDARD LIBRARY
+by Fredrik Lundh (fredrik@pythonware.com)
+
+250 pages
+
+book
+  title = Python Standard Library
+  email = fredrik@pythonware.com
+  author = Fredrik Lundh
+  version = 2.0-010504
+  __name__ = book
+ematter
+  __name__ = ematter
+  pages = 250
+hardcopy
+  __name__ = hardcopy
+  pages = 300
+</pre></div><p>In Python 2.0, this module also allows you to write
+configuration data to a file.</p><div class="example">
+<b style="example">Example: Using the
+ConfigParser module to write configuration data</b>
+<pre>
+# File: <a href="configparser/configparser-example-2.py">configparser-example-2.py</a>
+
+import ConfigParser
+import sys
+
+config = ConfigParser.ConfigParser()
+
+# set a number of parameters
+config.add_section("book")
+config.set("book", "title", "the python standard library")
+config.set("book", "author", "fredrik lundh")
+
+config.add_section("ematter")
+config.set("ematter", "pages", 250)
+
+# write to screen
+config.write(sys.stdout)
+
+</pre><pre class="computeroutput" moreinfo="NONE">
+[book]
+title = the python standard library
+author = fredrik lundh
+
+[ematter]
+pages = 250
+</pre></div></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to librarybook index page.">::: librarybook :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

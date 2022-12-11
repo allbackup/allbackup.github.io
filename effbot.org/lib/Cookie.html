@@ -1,0 +1,313 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>Cookie</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-Cookie.html'>original</a> :::
+<a href='Cookie.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>Cookie&#8212;HTTP state management</h1>
+
+<div class="toc"><dl><dt>On this page:</dt><dd><a href="#cookie-objects">Cookie Objects</a></dd><dd><a href="#morsel-objects">Morsel Objects</a></dd><dd><a href="#example">Example</a></dd></dl></div><p>The <code>Cookie</code> module defines
+classes for abstracting the concept of cookies, an HTTP state
+management mechanism. It supports both simple string-only cookies,
+and provides an abstraction for having any serializable data-type
+as cookie value.</p>
+
+<p>The module formerly strictly applied the parsing rules described
+in the <a class="link" href="http://www.faqs.org/rfcs/rfc2109.html">RFC 2109</a> and <a class="link" href="http://www.faqs.org/rfcs/rfc2068.html">RFC
+2068</a> specifications. It has since been discovered that MSIE
+3.0x doesn't follow the character rules outlined in those specs. As
+a result, the parsing rules used are a bit less strict.</p>
+</div>
+<dl><dt class="exception" id="CookieError"><b>exception CookieError</b> <tt class="nav"><a class="nav" href="Cookie.CookieError" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="exception">
+<p>Exception failing because of <a class="link" href="http://www.faqs.org/rfcs/rfc2109.html">RFC 2109</a>
+invalidity: incorrect attributes, incorrect Set-Cookie: header,
+etc.</p>
+</dd>
+<dt class="class" id="BaseCookie"><b>class BaseCookie([input])</b> <tt class="nav"><a class="nav" href="Cookie.BaseCookie" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>This class is a dictionary-like object whose keys are strings
+and whose values are <a class="link" href="#Morsel"><code>Morsel</code></a>
+instances. Note that upon setting a key to a value, the value is
+first converted to a <a class="link" href="#Morsel"><code>Morsel</code></a>
+containing the key and the value.</p>
+
+<p>If <var>input</var> is given, it is passed to the <code>load</code> method.</p>
+</dd>
+<dt class="class" id="SimpleCookie"><b>class SimpleCookie([input])</b> <tt class="nav"><a class="nav" href="Cookie.SimpleCookie" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>This class derives from <a class="link" href="#BaseCookie"><code>
+BaseCookie</code></a> and overrides <code>value_decode</code> and <code>value_encode</code> to be the identity and <code>str</code> respectively.</p>
+</dd>
+<dt class="class" id="SerialCookie"><b>class SerialCookie([input])</b> <tt class="nav"><a class="nav" href="Cookie.SerialCookie" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>This class derives from <a class="link" href="#BaseCookie"><code>
+BaseCookie</code></a> and overrides <code>value_decode</code> and <code>value_encode</code> to be the <code>pickle.loads</code> and <code>pickle.dumps</code>.</p>
+
+<p>Deprecated since release 2.3. Reading pickled values from
+untrusted cookie data is a huge security hole, as pickle strings
+can be crafted to cause arbitrary code to execute on your server.
+It is supported for backwards compatibility only, and may
+eventually go away.</p>
+</dd>
+<dt class="class" id="SmartCookie"><b>class SmartCookie([input])</b> <tt class="nav"><a class="nav" href="Cookie.SmartCookie" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>This class derives from <a class="link" href="#BaseCookie"><code>
+BaseCookie</code></a>. It overrides <code>value_decode</code> to be <code>pickle.loads</code> if it is a valid pickle,
+and otherwise the value itself. It overrides <code>value_encode</code> to be <code>pickle.dumps</code> unless it is a string, in
+which case it returns the value itself.</p>
+
+<p>Deprecated since release 2.3. The same security warning from <a class="link" href="#SerialCookie"><code>SerialCookie</code></a> applies
+here.</p>
+</dd>
+</dl><div class="text">
+<p>A further security note is warranted. For backwards
+compatibility, the <code>Cookie</code>
+module exports a class named <code>
+Cookie</code> which is just an alias for <a class="link" href="#SmartCookie"><code>SmartCookie</code></a>. This is probably a mistake
+and will likely be removed in a future version. You should not use
+the <code>Cookie</code> class in your
+applications, for the same reason why you should not use the <a class="link" href="#SerialCookie"><code>SerialCookie</code></a> class. <span class="mark">@see</span> <code>
+Module cookielib</code> HTTP cookie handling for for web clients. The
+cookielib and Cookie modules do not depend on each other. <span class="mark">@see</span> <a class="link" href="http://www.faqs.org/rfcs/rfc2109.html">RFC 2109, HTTP State
+Management Mechanism</a> This is the state management specification
+implemented by this module.</p>
+
+<h2 id="cookie-objects">Cookie Objects <a class="nav" href="#cookie-objects">#</a></h2>
+</div>
+<dl><dt class="method" id="Cookie.value_decode"><b>value_decode(val)</b> <tt class="nav"><a class="nav" href="Cookie.Cookie.value_decode" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return a decoded value from a string representation. Return
+value can be any type. This method does nothing in <a class="link" href="#BaseCookie"><code>BaseCookie</code></a> -- it exists so it can be
+overridden.</p>
+</dd>
+<dt class="method" id="Cookie.value_encode"><b>value_encode(val)</b> <tt class="nav"><a class="nav" href="Cookie.Cookie.value_encode" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return an encoded value. <var>val</var> can be any type, but
+return value must be a string. This method does nothing in <a class="link" href="#BaseCookie"><code>BaseCookie</code></a> -- it exists so
+it can be overridden</p>
+
+<p>In general, it should be the case that <code>value_encode</code> and <code>value_decode</code> are inverses on the range
+of <var>value_decode</var>.</p>
+</dd>
+<dt class="method" id="Cookie.output"><b>output([attrs[, header[, sep]]])</b> <tt class="nav"><a class="nav" href="Cookie.Cookie.output" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return a string representation suitable to be sent as HTTP
+headers. <var>attrs</var> and <var>header</var> are sent to each <a class="link" href="#Morsel"><code>Morsel</code></a>'s <code>output</code> method. <var>sep</var> is used to
+join the headers together, and is by default a newline.</p>
+</dd>
+<dt class="method" id="Cookie.js_output"><b>js_output([attrs])</b> <tt class="nav"><a class="nav" href="Cookie.Cookie.js_output" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return an embeddable JavaScript snippet, which, if run on a
+browser which supports JavaScript, will act the same as if the HTTP
+headers was sent.</p>
+
+<p>The meaning for <var>attrs</var> is the same as in <code>output</code>.</p>
+</dd>
+<dt class="method" id="Cookie.load"><b>load(rawdata)</b> <tt class="nav"><a class="nav" href="Cookie.Cookie.load" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>If <var>rawdata</var> is a string, parse it as an <code>
+HTTP_COOKIE</code> and add the values found there as <a class="link" href="#Morsel"><code>Morsel</code></a>s. If it is a dictionary,
+it is equivalent to:</p>
+
+<pre>
+for k, v in rawdata.items():
+    cookie[k] = v
+</pre>
+</dd>
+</dl><div class="text">
+<h2 id="morsel-objects">Morsel Objects <a class="nav" href="#morsel-objects">#</a></h2>
+</div>
+<dl><dt class="class" id="Morsel"><b>class Morsel()</b> <tt class="nav"><a class="nav" href="Cookie.Morsel" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>Abstract a key/value pair, which has some <a class="link" href="http://www.faqs.org/rfcs/rfc2109.html">RFC 2109</a>
+attributes.</p>
+
+<p>Morsels are dictionary-like objects, whose set of keys is
+constant -- the valid <a class="link" href="http://www.faqs.org/rfcs/rfc2109.html">RFC 2109</a>
+attributes, which are</p>
+
+<ul>
+<li>
+<p><code>expires</code></p>
+</li>
+
+<li>
+<p><code>path</code></p>
+</li>
+
+<li>
+<p><code>comment</code></p>
+</li>
+
+<li>
+<p><code>domain</code></p>
+</li>
+
+<li>
+<p><code>max-age</code></p>
+</li>
+
+<li>
+<p><code>secure</code></p>
+</li>
+
+<li>
+<p><code>version</code></p>
+</li>
+</ul>
+
+<p>The keys are case-insensitive.</p>
+</dd>
+<dt class="attribute" id="Morsel.value"><b>value</b> <tt class="nav"><a class="nav" href="Cookie.Morsel.value" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>The value of the cookie.</p>
+</dd>
+<dt class="attribute" id="Morsel.coded_value"><b>coded_value</b> <tt class="nav"><a class="nav" href="Cookie.Morsel.coded_value" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>The encoded value of the cookie -- this is what should be
+sent.</p>
+</dd>
+<dt class="attribute" id="Morsel.key"><b>key</b> <tt class="nav"><a class="nav" href="Cookie.Morsel.key" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>The name of the cookie.</p>
+</dd>
+<dt class="method" id="Morsel.set"><b>set(key, value, coded_value)</b> <tt class="nav"><a class="nav" href="Cookie.Morsel.set" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Set the <var>key</var>, <var>value</var> and <var>
+coded_value</var> members.</p>
+</dd>
+<dt class="method" id="Morsel.isReservedKey"><b>isReservedKey(K)</b> <tt class="nav"><a class="nav" href="Cookie.Morsel.isReservedKey" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Whether <var>K</var> is a member of the set of keys of a <a class="link" href="#Morsel"><code>Morsel</code></a>.</p>
+</dd>
+<dt class="method" id="Morsel.output"><b>output([attrs[, header]])</b> <tt class="nav"><a class="nav" href="Cookie.Morsel.output" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return a string representation of the Morsel, suitable to be
+sent as an HTTP header. By default, all the attributes are
+included, unless <var>attrs</var> is given, in which case it should
+be a list of attributes to use. <var>header</var> is by default
+<code>"Set-Cookie:"</code>.</p>
+</dd>
+<dt class="method" id="Morsel.js_output"><b>js_output([attrs])</b> <tt class="nav"><a class="nav" href="Cookie.Morsel.js_output" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return an embeddable JavaScript snippet, which, if run on a
+browser which supports JavaScript, will act the same as if the HTTP
+header was sent.</p>
+
+<p>The meaning for <var>attrs</var> is the same as in <code>output</code>.</p>
+</dd>
+<dt class="method" id="Morsel.OutputString"><b>OutputString([attrs])</b> <tt class="nav"><a class="nav" href="Cookie.Morsel.OutputString" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return a string representing the Morsel, without any surrounding
+HTTP or JavaScript.</p>
+
+<p>The meaning for <var>attrs</var> is the same as in <code>output</code>.</p>
+</dd>
+</dl><div class="text">
+<h2 id="example">Example <a class="nav" href="#example">#</a></h2>
+
+<p>The following example demonstrates how to use the <code>Cookie</code> module.</p>
+
+<pre>
+&gt;&gt;&gt; import Cookie
+&gt;&gt;&gt; C = Cookie.SimpleCookie()
+&gt;&gt;&gt; C = Cookie.SerialCookie()
+&gt;&gt;&gt; C = Cookie.SmartCookie()
+&gt;&gt;&gt; C["fig"] = "newton"
+&gt;&gt;&gt; C["sugar"] = "wafer"
+&gt;&gt;&gt; print C # generate HTTP headers
+Set-Cookie: sugar=wafer;
+Set-Cookie: fig=newton;
+&gt;&gt;&gt; print C.output() # same thing
+Set-Cookie: sugar=wafer;
+Set-Cookie: fig=newton;
+&gt;&gt;&gt; C = Cookie.SmartCookie()
+&gt;&gt;&gt; C["rocky"] = "road"
+&gt;&gt;&gt; C["rocky"]["path"] = "/cookie"
+&gt;&gt;&gt; print C.output(header="Cookie:")
+Cookie: rocky=road; Path=/cookie;
+&gt;&gt;&gt; print C.output(attrs=[], header="Cookie:")
+Cookie: rocky=road;
+&gt;&gt;&gt; C = Cookie.SmartCookie()
+&gt;&gt;&gt; C.load("chips=ahoy; vienna=finger") # load from a string (HTTP header)
+&gt;&gt;&gt; print C
+Set-Cookie: vienna=finger;
+Set-Cookie: chips=ahoy;
+&gt;&gt;&gt; C = Cookie.SmartCookie()
+&gt;&gt;&gt; C.load('keebler="E=everybody; L=\\"Loves\\"; fudge=\\012;";')
+&gt;&gt;&gt; print C
+Set-Cookie: keebler="E=everybody; L=\"Loves\"; fudge=\012;";
+&gt;&gt;&gt; C = Cookie.SmartCookie()
+&gt;&gt;&gt; C["oreo"] = "doublestuff"
+&gt;&gt;&gt; C["oreo"]["path"] = "/"
+&gt;&gt;&gt; print C
+Set-Cookie: oreo=doublestuff; Path=/;
+&gt;&gt;&gt; C = Cookie.SmartCookie()
+&gt;&gt;&gt; C["twix"] = "none for you"
+&gt;&gt;&gt; C["twix"].value
+'none for you'
+&gt;&gt;&gt; C = Cookie.SimpleCookie()
+&gt;&gt;&gt; C["number"] = 7 # equivalent to C["number"] = str(7)
+&gt;&gt;&gt; C["string"] = "seven"
+&gt;&gt;&gt; C["number"].value
+'7'
+&gt;&gt;&gt; C["string"].value
+'seven'
+&gt;&gt;&gt; print C
+Set-Cookie: number=7;
+Set-Cookie: string=seven;
+&gt;&gt;&gt; C = Cookie.SerialCookie()
+&gt;&gt;&gt; C["number"] = 7
+&gt;&gt;&gt; C["string"] = "seven"
+&gt;&gt;&gt; C["number"].value
+7
+&gt;&gt;&gt; C["string"].value
+'seven'
+&gt;&gt;&gt; print C
+Set-Cookie: number="I7\012.";
+Set-Cookie: string="S'seven'\012p1\012.";
+&gt;&gt;&gt; C = Cookie.SmartCookie()
+&gt;&gt;&gt; C["number"] = 7
+&gt;&gt;&gt; C["string"] = "seven"
+&gt;&gt;&gt; C["number"].value
+7
+&gt;&gt;&gt; C["string"].value
+'seven'
+&gt;&gt;&gt; print C
+Set-Cookie: number="I7\012.";
+Set-Cookie: string=seven;
+</pre>
+</div>
+</div></body></html>

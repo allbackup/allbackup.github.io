@@ -1,0 +1,34 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>Objects, values and&nbsp;types</title> <script type="text/javascript">effbot_page_id=1487;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> <!--
+<p style='color: #8f8f8f; background: #fff5bf; padding: 5px 10px;'> <b>2008-07-15:</b> Selected articles
+
+now have experimental "comment" links in the left column and at the bottom.
+You're welcome to use them for commenting and voting on articles.
+For a bit more on this, see <a
+href="http://effbot.slinkset.com/links/Welcome_to_discuss_effbot_org">this
+page</a>. /F
+</p>
+--> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <h1 class="maintitle">Objects, values and&nbsp;types</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p><em>Objects</em> are Python&#8217;s abstraction for data. All data in a Python
+program is represented by objects or by relations between objects. (In
+a sense, and in conformance to Von Neumann&#8217;s model of a <q>stored
+program computer,</q> code is also represented by objects.)</p><p>Every object has an identity, a type and a value. An object&#8217;s
+<em>identity</em> never changes once it has been created; you may think of it
+as the object&#8217;s address in memory. The <a href="is.htm"><strong>is</strong></a> operator compares the
+identity of two objects; the <a href="id.htm"><strong>id</strong></a> function returns an integer
+representing its identity (currently implemented as its address). An
+object&#8217;s <em>type</em> is also unchangeable.</p><p>(However, since Python 2.2, a gradual merging of types and classes has
+been started that makes this and a few other assertions made in this
+manual not 100% accurate and complete: for example, it <em>is</em> now
+possible in some cases to change an object&#8217;s type, under certain
+controlled conditions. Until this manual undergoes extensive revision,
+it must now be taken as authoritative only regarding <q>classic
+classes</q>, that are still the default, for compatibility purposes, in
+Python 2.2 and 2.3. For more information, see
+<a href="http://www.python.org/doc/newstyle.html">http://www.python.org/doc/newstyle.html</a>).</p><p>An object&#8217;s type determines the operations that the object supports
+(e.g., <q>does it have a length?</q>) and also defines the possible
+values for objects of that type. The <a href="type.htm"><strong>type</strong></a> function returns an
+object&#8217;s type (which is an object itself). The <em>value</em> of some objects
+can change. Objects whose value can change are said to be <em>mutable</em>;
+objects whose value is unchangeable once they are created are called
+<em>immutable</em>. (The value of an 

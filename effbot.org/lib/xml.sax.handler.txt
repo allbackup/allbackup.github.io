@@ -1,0 +1,362 @@
+
+@@module xml.sax.handler
+
+<h1>xml.sax.handler&#8212;Base classes for SAX handlers</h1>
+
+<p>New in version 2.0.
+
+<p>The SAX API defines four kinds of handlers: content handlers, DTD
+handlers, error handlers, and entity resolvers. Applications normally
+only need to implement those interfaces whose events they are interested
+in; they can implement the interfaces in a single object or in multiple
+objects. Handler implementations should inherit from the base classes
+provided in the module {@link xml.sax}, so that all methods get default
+implementations.
+
+@@class ContentHandler
+
+<p>This is the main callback interface in SAX, and the one most
+important to applications. The order of events in this interface mirrors
+the order of the information in the document.
+
+@@class DTDHandler
+
+<p>Handle DTD events.
+
+<p>This interface specifies only those DTD events required for basic
+parsing (unparsed entities and attributes).
+
+@@class EntityResolver
+
+<p>Basic interface for resolving entities. If you create an object
+implementing this interface, then register the object with your Parser,
+the parser will call the method in your object to resolve all external
+entities.
+
+@@class ErrorHandler
+
+<p>Interface used by the parser to present error and warning messages to
+the application. The methods of this object control whether errors are
+immediately converted to exceptions or are handled in some other way.
+
+@@text 
+
+<p>In addition to these classes, {@link xml.sax.handler} provides
+symbolic constants for the feature and property names.
+
+@@variable feature_namespaces
+
+<p>Value: {@code "http://xml.org/sax/features/namespaces"} true: Perform
+Namespace processing. false: Optionally do not perform Namespace
+processing (implies namespace-prefixes; default). access: (parsing)
+read-only; (not parsing) read/write
+
+@@variable feature_namespace_prefixes
+
+<p>Value: {@code "http://xml.org/sax/features/namespace-prefixes"} true:
+Report the original prefixed names and attributes used for Namespace
+declarations. false: Do not report attributes used for Namespace
+declarations, and optionally do not report original prefixed names
+(default). access: (parsing) read-only; (not parsing) read/write
+
+@@variable feature_string_interning
+
+<p>Value: {@code "http://xml.org/sax/features/string-interning"} true:
+All element names, prefixes, attribute names, Namespace URIs, and local
+names are interned using the built-in intern function. false: Names are
+not necessarily interned, although they may be (default). access:
+(parsing) read-only; (not parsing) read/write
+
+@@variable feature_validation
+
+<p>Value: {@code "http://xml.org/sax/features/validation"} true: Report
+all validation errors (implies external-general-entities and
+external-parameter-entities). false: Do not report validation errors.
+access: (parsing) read-only; (not parsing) read/write
+
+@@variable feature_external_ges
+
+<p>Value: {@code
+"http://xml.org/sax/features/external-general-entities"} true: Include
+all external general (text) entities. false: Do not include external
+general entities. access: (parsing) read-only; (not parsing) read/write
+
+@@variable feature_external_pes
+
+<p>Value: {@code
+"http://xml.org/sax/features/external-parameter-entities"} true: Include
+all external parameter entities, including the external DTD subset.
+false: Do not include any external parameter entities, even the external
+DTD subset. access: (parsing) read-only; (not parsing) read/write
+
+@@variable all_features
+
+<p>List of all features.
+
+@@variable property_lexical_handler
+
+<p>Value: {@code "http://xml.org/sax/properties/lexical-handler"} data
+type: xml.sax.sax2lib.LexicalHandler (not supported in Python 2)
+description: An optional extension handler for lexical events like
+comments. access: read/write
+
+@@variable property_declaration_handler
+
+<p>Value: {@code "http://xml.org/sax/properties/declaration-handler"}
+data type: xml.sax.sax2lib.DeclHandler (not supported in Python 2)
+description: An optional extension handler for DTD-related events other
+than notations and unparsed entities. access: read/write
+
+@@variable property_dom_node
+
+<p>Value: {@code "http://xml.org/sax/properties/dom-node"} data type:
+org.w3c.dom.Node (not supported in Python 2) description: When parsing,
+the current DOM node being visited if this is a DOM iterator; when not
+parsing, the root DOM node for iteration. access: (parsing) read-only;
+(not parsing) read/write
+
+@@variable property_xml_string
+
+<p>Value: {@code "http://xml.org/sax/properties/xml-string"} data type:
+String description: The literal string of characters that was the source
+for the current event. access: read-only
+
+@@variable all_properties
+
+<p>List of all known property names.
+
+@@text 
+
+<h2>ContentHandler Objects</h2>
+
+<p>Users are expected to subclass {@link ContentHandler} to support
+their application. The following methods are called by the parser on the
+appropriate events in the input document:
+
+@@method ContentHandler.setDocumentLocator(locator)
+
+<p>Called by the parser to give the application a locator for locating
+the origin of document events.
+
+<p>SAX parsers are strongly encouraged (though not absolutely required)
+to supply a locator: if it does so, it must supply the locator to the
+application by invoking this method before invoking any of the other
+methods in the DocumentHandler interface.
+
+<p>The locator allows the application to determine the end position of
+any document-related event, even if the parser is not reporting an
+error. Typically, the application will use this information for
+reporting its own errors (such as character content that does not match
+an application's business rules). The information returned by the
+locator is probably not sufficient for use with a search engine.
+
+<p>Note that the locator will return correct information only during the
+invocation of the events in this interface. The application should not
+attempt to use it at any other time.
+
+@@method ContentHandler.startDocument()
+
+<p>Receive notification of the beginning of a document.
+
+<p>The SAX parser will invoke this method only once, before any other
+methods in this interface or in DTDHandler (except for {@link
+setDocumentLocator}).
+
+@@method ContentHandler.endDocument()
+
+<p>Receive notification of the end of a document.
+
+<p>The SAX parser will invoke this method only once, and it will be the
+last method invoked during the parse. The parser shall not invoke this
+method until it has either abandoned parsing (because of an
+unrecoverable error) or reached the end of input.
+
+@@method ContentHandler.startPrefixMapping(prefix, uri)
+
+<p>Begin the scope of a prefix-URI Namespace mapping.
+
+<p>The information from this event is not necessary for normal Namespace
+processing: the SAX XML reader will automatically replace prefixes for
+element and attribute names when the {@code feature_namespaces} feature
+is enabled (the default).
+
+<p>There are cases, however, when applications need to use prefixes in
+character data or in attribute values, where they cannot safely be
+expanded automatically; the {@link startPrefixMapping} and {@link
+endPrefixMapping} events supply the information to the application to
+expand prefixes in those contexts itself, if necessary.
+
+<p>Note that {@link startPrefixMapping} and {@link endPrefixMapping}
+events are not guaranteed to be properly nested relative to each-other:
+all {@link startPrefixMapping} events will occur before the
+corresponding {@link startElement} event, and all {@link
+endPrefixMapping} events will occur after the corresponding {@link
+endElement} event, but their order is not guaranteed.
+
+@@method ContentHandler.endPrefixMapping(prefix)
+
+<p>End the scope of a prefix-URI mapping.
+
+<p>See {@link startPrefixMapping} for details. This event will always
+occur after the corresponding {@link endElement} event, but the order of
+{@link endPrefixMapping} events is not otherwise guaranteed.
+
+@@method ContentHandler.startElement(name, attrs)
+
+<p>Signals the start of an element in non-namespace mode.
+
+<p>The {@var name} parameter contains the raw XML 1.0 name of the
+element type as a string and the {@var attrs} parameter holds an object
+of the {@link attributes-objects.html Attributes interface} containing
+the attributes of the element. The object passed as {@var attrs} may be
+re-used by the parser; holding on to a reference to it is not a reliable
+way to keep a copy of the attributes. To keep a copy of the attributes,
+use the {@link copy} method of the {@var attrs} object.
+
+@@method ContentHandler.endElement(name)
+
+<p>Signals the end of an element in non-namespace mode.
+
+<p>The {@var name} parameter contains the name of the element type, just
+as with the {@link startElement} event.
+
+@@method ContentHandler.startElementNS(name, qname, attrs)
+
+<p>Signals the start of an element in namespace mode.
+
+<p>The {@var name} parameter contains the name of the element type as a
+{@code (}{@var uri}, {@var localname}) tuple, the {@var qname} parameter
+contains the raw XML 1.0 name used in the source document, and the {@var
+attrs} parameter holds an instance of the {@link
+attributes-ns-objects.html AttributesNS interface} containing the
+attributes of the element. If no namespace is associated with the
+element, the {@var uri} component of {@var name} will be {@link None}.
+The object passed as {@var attrs} may be re-used by the parser; holding
+on to a reference to it is not a reliable way to keep a copy of the
+attributes. To keep a copy of the attributes, use the {@link copy}
+method of the {@var attrs} object.
+
+<p>Parsers may set the {@var qname} parameter to {@code None}, unless
+the {@code feature_namespace_prefixes} feature is activated.
+
+@@method ContentHandler.endElementNS(name, qname)
+
+<p>Signals the end of an element in namespace mode.
+
+<p>The {@var name} parameter contains the name of the element type, just
+as with the {@link startElementNS} method, likewise the {@var qname}
+parameter.
+
+@@method ContentHandler.characters(content)
+
+<p>Receive notification of character data.
+
+<p>The Parser will call this method to report each chunk of character
+data. SAX parsers may return all contiguous character data in a single
+chunk, or they may split it into several chunks; however, all of the
+characters in any single event must come from the same external entity
+so that the Locator provides useful information.
+
+<p>{@var content} may be a Unicode string or a byte string; the {@code
+expat} reader module produces always Unicode strings.
+
+<p class='note'><b>Note:</b> The earlier SAX 1 interface provided by the
+Python XML Special Interest Group used a more Java-like interface for
+this method. Since most parsers used from Python did not take advantage
+of the older interface, the simpler signature was chosen to replace it.
+To convert old code to the new interface, use {@var content} instead of
+slicing content with the old {@var offset} and {@var length} parameters.
+
+@@method ContentHandler.ignorableWhitespace(whitespace)
+
+<p>Receive notification of ignorable whitespace in element content.
+
+<p>Validating Parsers must use this method to report each chunk of
+ignorable whitespace (see the W3C XML 1.0 recommendation, section 2.10):
+non-validating parsers may also use this method if they are capable of
+parsing and using content models.
+
+<p>SAX parsers may return all contiguous whitespace in a single chunk,
+or they may split it into several chunks; however, all of the characters
+in any single event must come from the same external entity, so that the
+Locator provides useful information.
+
+@@method ContentHandler.processingInstruction(target, data)
+
+<p>Receive notification of a processing instruction.
+
+<p>The Parser will invoke this method once for each processing
+instruction found: note that processing instructions may occur before or
+after the main document element.
+
+<p>A SAX parser should never report an XML declaration (XML 1.0, section
+2.8) or a text declaration (XML 1.0, section 4.3.1) using this method.
+
+@@method ContentHandler.skippedEntity(name)
+
+<p>Receive notification of a skipped entity.
+
+<p>The Parser will invoke this method once for each entity skipped.
+Non-validating processors may skip entities if they have not seen the
+declarations (because, for example, the entity was declared in an
+external DTD subset). All processors may skip external entities,
+depending on the values of the {@code feature_external_ges} and the
+{@code feature_external_pes} properties.
+
+@@text 
+
+<h2>DTDHandler Objects</h2>
+
+<p>{@link DTDHandler} instances provide the following methods:
+
+@@method DTDHandler.notationDecl(name, publicId, systemId)
+
+<p>Handle a notation declaration event.
+
+@@method DTDHandler.unparsedEntityDecl(name, publicId, systemId, ndata)
+
+<p>Handle an unparsed entity declaration event.
+
+@@text 
+
+<h2>EntityResolver Objects</h2>
+
+@@method EntityResolver.resolveEntity(publicId, systemId)
+
+<p>Resolve the system identifier of an entity and return either the
+system identifier to read from as a string, or an InputSource to read
+from. The default implementation returns {@var systemId}.
+
+@@text 
+
+<h2>ErrorHandler Objects</h2>
+
+<p>Objects with this interface are used to receive error and warning
+information from the {@link XMLReader}. If you create an object that
+implements this interface, then register the object with your {@link
+XMLReader}, the parser will call the methods in your object to report
+all warnings and errors. There are three levels of errors available:
+warnings, (possibly) recoverable errors, and unrecoverable errors. All
+methods take a {@link SAXParseException} as the only parameter. Errors
+and warnings may be converted to an exception by raising the passed-in
+exception object.
+
+@@method ErrorHandler.error(exception)
+
+<p>Called when the parser encounters a recoverable error. If this method
+does not raise an exception, parsing may continue, but further document
+information should not be expected by the application. Allowing the
+parser to continue may allow additional errors to be discovered in the
+input document.
+
+@@method ErrorHandler.fatalError(exception)
+
+<p>Called when the parser encounters an error it cannot recover from;
+parsing is expected to terminate when this method returns.
+
+@@method ErrorHandler.warning(exception)
+
+<p>Called when the parser presents minor warning information to the
+application. Parsing is expected to continue when this method returns,
+and document information will continue to be passed to the application.
+Raising an exception in this method will cause parsing to end.

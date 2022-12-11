@@ -1,0 +1,210 @@
+
+@@module telnetlib
+
+<h1>telnetlib&#8212;Telnet client</h1>
+
+<p>The {@link telnetlib} module provides a {@link Telnet} class that
+implements the Telnet protocol. See {@link
+http://www.faqs.org/rfcs/rfc854.html RFC 854} for details about the
+protocol. In addition, it provides symbolic constants for the protocol
+characters (see below), and for the telnet options. The symbolic names
+of the telnet options follow the definitions in {@code arpa/telnet.h},
+with the leading {@code TELOPT_} removed. For symbolic names of options
+which are traditionally not included in {@code arpa/telnet.h}, see the
+module source itself.
+
+<p>The symbolic constants for the telnet commands are: IAC, DONT, DO,
+WONT, WILL, SE (Subnegotiation End), NOP (No Operation), DM (Data Mark),
+BRK (Break), IP (Interrupt process), AO (Abort output), AYT (Are You
+There), EC (Erase Character), EL (Erase Line), GA (Go Ahead), SB
+(Subnegotiation Begin).
+
+@@class Telnet([host[, port]])
+
+<p>{@link Telnet} represents a connection to a Telnet server. The
+instance is initially not connected by default; the {@link open} method
+must be used to establish a connection. Alternatively, the host name and
+optional port number can be passed to the constructor, to, in which case
+the connection to the server will be established before the constructor
+returns.
+
+<p>Do not reopen an already connected instance.
+
+<p>This class has many {@link read_*} methods. Note that some of them
+raise {@link exceptions.EOFError} when the end of the connection is
+read, because they can return an empty string for other reasons. See the
+individual descriptions below.
+
+@@text 
+
+@see 
+{@link http://www.faqs.org/rfcs/rfc854.html RFC 854, Telnet Protocol Specification}
+
+Definition of the Telnet protocol.
+
+<h2>Telnet Objects</h2>
+
+<p>{@link Telnet} instances have the following methods:
+
+@@method Telnet.read_until(expected[, timeout])
+
+<p>Read until a given string, {@var expected}, is encountered or until
+{@var timeout} seconds have passed.
+
+<p>When no match is found, return whatever is available instead,
+possibly the empty string. Raise {@link exceptions.EOFError} if the
+connection is closed and no cooked data is available.
+
+@@method Telnet.read_all()
+
+<p>Read all data until EOF; block until connection closed.
+
+@@method Telnet.read_some()
+
+<p>Read at least one byte of cooked data unless EOF is hit. Return
+{@code &#8221;} if EOF is hit. Block if no data is immediately
+available.
+
+@@method Telnet.read_very_eager()
+
+<p>Read everything that can be without blocking in I/O (eager).
+
+<p>Raise {@link exceptions.EOFError} if connection closed and no cooked
+data available. Return {@code &#8221;} if no cooked data available
+otherwise. Do not block unless in the midst of an IAC sequence.
+
+@@method Telnet.read_eager()
+
+<p>Read readily available data.
+
+<p>Raise {@link exceptions.EOFError} if connection closed and no cooked
+data available. Return {@code &#8221;} if no cooked data available
+otherwise. Do not block unless in the midst of an IAC sequence.
+
+@@method Telnet.read_lazy()
+
+<p>Process and return data already in the queues (lazy).
+
+<p>Raise {@link exceptions.EOFError} if connection closed and no data
+available. Return {@code &#8221;} if no cooked data available otherwise.
+Do not block unless in the midst of an IAC sequence.
+
+@@method Telnet.read_very_lazy()
+
+<p>Return any data available in the cooked queue (very lazy).
+
+<p>Raise {@link exceptions.EOFError} if connection closed and no data
+available. Return {@code &#8221;} if no cooked data available otherwise.
+This method never blocks.
+
+@@method Telnet.read_sb_data()
+
+<p>Return the data collected between a SB/SE pair (suboption begin/end).
+The callback should access these data when it was invoked with a {@code
+SE} command. This method never blocks.
+<blockquote>
+@since New in version 2.3. <br />
+</blockquote>
+
+@@method Telnet.open(host[, port])
+
+<p>Connect to a host. The optional second argument is the port number,
+which defaults to the standard Telnet port (23).
+
+<p>Do not try to reopen an already connected instance.
+
+@@method Telnet.msg(msg[, *args])
+
+<p>Print a debug message when the debug level is {@code >} 0. If extra
+arguments are present, they are substituted in the message using the
+standard string formatting operator.
+
+@@method Telnet.set_debuglevel(debuglevel)
+
+<p>Set the debug level. The higher the value of {@var debuglevel}, the
+more debug output you get (on {@code sys.stdout}).
+
+@@method Telnet.close()
+
+<p>Close the connection.
+
+@@method Telnet.get_socket()
+
+<p>Return the socket object used internally.
+
+@@method Telnet.fileno()
+
+<p>Return the file descriptor of the socket object used internally.
+
+@@method Telnet.write(buffer)
+
+<p>Write a string to the socket, doubling any IAC characters. This can
+block if the connection is blocked. May raise {@link socket.error} if
+the connection is closed.
+
+@@method Telnet.interact()
+
+<p>Interaction function, emulates a very dumb Telnet client.
+
+@@method Telnet.mt_interact()
+
+<p>Multithreaded version of {@link interact}.
+
+@@method Telnet.expect(list[, timeout])
+
+<p>Read until one from a list of a regular expressions matches.
+
+<p>The first argument is a list of regular expressions, either compiled
+({@link re.RegexObject} instances) or uncompiled (strings). The optional
+second argument is a timeout, in seconds; the default is to block
+indefinitely.
+
+<p>Return a tuple of three items: the index in the list of the first
+regular expression that matches; the match object returned; and the text
+read up till and including the match.
+
+<p>If end of file is found and no text was read, raise {@link
+exceptions.EOFError}. Otherwise, when nothing matches, return {@code
+(-1, None, }{@var text}) where {@var text} is the text received so far
+(may be the empty string if a timeout happened).
+
+<p>If a regular expression ends with a greedy match (such as {@code .*})
+or if more than one expression can match the same input, the results are
+indeterministic, and may depend on the I/O timing.
+
+@@method Telnet.set_option_negotiation_callback(callback)
+
+<p>Each time a telnet option is read on the input flow, this {@var
+callback} (if set) is called with the following parameters :
+callback(telnet socket, command (DO/DONT/WILL/WONT), option). No other
+action is done afterwards by telnetlib.
+
+@@text 
+
+<h2>Telnet Example</h2>
+
+<p>A simple example illustrating typical use:
+
+<pre>
+import getpass
+import sys
+import telnetlib
+
+HOST = "localhost"
+user = raw_input("Enter your remote account: ")
+password = getpass.getpass()
+
+tn = telnetlib.Telnet(HOST)
+
+tn.read_until("login: ")
+tn.write(user + "\n")
+if password:
+    tn.read_until("Password: ")
+    tn.write(password + "\n")
+
+tn.write("ls\n")
+tn.write("exit\n")
+
+print tn.read_all()
+</pre>
+

@@ -1,0 +1,84 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>The mimify&nbsp;module</title></head><body data-page-id="584"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">The mimify&nbsp;module</h1></div><div class="yui-ge"><div class="yui-u first"><p>This module converts MIME encoded text messages from encoded
+formats to plain text (typically ISO Latin), and back. It can be
+used as a command line tool, and as a conversion filter for certain
+mail agents.</p><pre format="LINESPECIFIC">
+$ mimify.py -e raw-message mime-message
+$ mimify.py -d mime-message raw-message
+</pre><p>It can also be used as a module, as shown in the following
+example:</p><div class="example">
+<b style="example">Example: Using the mimify
+module to decode a message</b>
+<pre>
+# File: <a href="mimify/mimify-example-1.py">mimify-example-1.py</a>
+
+import mimify
+import sys
+
+mimify.unmimify("samples/sample.msg", sys.stdout, 1)
+</pre></div><p>Here&#8217;s a MIME message containing two parts, one encoded as
+quoted-printable, and the other as base64. The third argument to
+<b>unmimify</b> controls whether base64-encoded parts should be
+decoded or not.</p><pre>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary='boundary'
+
+this is a multipart sample file.  the two
+parts both contain ISO Latin 1 text, with
+different encoding techniques.
+
+--boundary
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
+
+sillmj=F6lke! blindstyre! medisterkorv!
+
+--boundary
+Content-Type: text/plain
+Content-Transfer-Encoding: base64
+
+a29tIG5lciBiYXJhLCBvbSBkdSB09nJzIQ==
+
+--boundary--
+</pre><p>And here&#8217;s the decoded result. Much more readable, at least if
+you know the language.</p><pre>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary='boundary'
+
+this is a multipart sample file.  the two
+parts both contain ISO Latin 1 text, with
+different encoding techniques.
+
+--boundary
+Content-Type: text/plain
+
+sillmj&#246;lke! blindstyre! medisterkorv!
+
+--boundary
+Content-Type: text/plain
+
+kom ner bara, om du t&#246;rs!
+</pre><p>Encoding messages is as easy:</p><div class="example">
+<b style="example">Example: Using the mimify
+module to encode a message</b>
+<pre>
+# File: <a href="mimify/mimify-example-2.py">mimify-example-2.py</a>
+
+import mimify
+import StringIO, sys
+
+#
+# decode message into a string buffer
+
+file = StringIO.StringIO()
+
+mimify.unmimify("samples/sample.msg", file, 1)
+
+#
+# encode message from string buffer
+
+file.seek(0) # rewind
+
+mimify.mimify(file, sys.stdout)
+</pre></div></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to librarybook index page.">::: librarybook :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

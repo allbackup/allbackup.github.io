@@ -1,0 +1,37 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>The mailbox&nbsp;module</title></head><body data-page-id="575"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">The mailbox&nbsp;module</h1></div><div class="yui-ge"><div class="yui-u first"><p>This module contains code to deal with a number of different
+mailbox formats (mostly Unix formats). Most mailbox formats simply
+store plain <a href="rfc822.htm">RFC 822-style messages</a> in a
+long text file, using some kind of separator line to tell one
+message from another.</p><p>The <b>next</b> method returns <a href="rfc822.htm"><b>rfc822.Message</b></a>
+instances, or None if there are no more messages.</p><div class="example">
+<b style="example">Example: Using the mailbox module</b>
+<pre>
+# File: <a href="mailbox/mailbox-example-1.py">mailbox-example-1.py</a>
+
+import mailbox
+
+mb = mailbox.UnixMailbox(open("/var/spool/mail/effbot"))
+
+while 1:
+    msg = mb.next()
+    if not msg:
+        break
+    for k, v in msg.items():
+        print k, "=", v
+    body = msg.fp.read()
+    print len(body), "bytes in body"
+
+</pre><pre class="computeroutput" moreinfo="NONE">
+$ python mailbox-example-1.py
+subject = for he's a ...
+message-id = &lt;199910150027.CAA03202@spam.egg&gt;
+received = (from fredrik@pythonware.com)
+ by spam.egg (8.8.7/8.8.5) id CAA03202
+ for effbot; Fri, 15 Oct 1999 02:27:36 +0200
+from = Fredrik Lundh &lt;fredrik@pythonware.com&gt;
+date = Fri, 15 Oct 1999 12:35:36 +0200
+to = effbot@spam.egg
+1295 bytes in body
+</pre></div><p /></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to librarybook index page.">::: librarybook :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

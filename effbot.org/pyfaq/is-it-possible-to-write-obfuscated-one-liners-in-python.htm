@@ -1,0 +1,28 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>Is it possible to write obfuscated one-liners in&nbsp;Python?</title></head><body data-page-id="857"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><p class="note" style="text-align: center"><strong>
+This is an old copy of the Python FAQ.  The information here may be
+outdated.
+</strong></p><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">Is it possible to write obfuscated one-liners in&nbsp;Python?</h1></div><div class="yui-ge"><div class="yui-u first"><p>Yes. Usually this is done with nested <a href="/pyref/lambda.htm"><strong>lambda</strong></a> forms. See the following three examples, due to Ulf Bartelt:</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><pre class="python wide wide"><span class="pycomment"># Primes &lt; 1000</span>
+<span class="pykeyword">print</span> filter(None,map(<span class="pykeyword">lambda</span> y:y*reduce(<span class="pykeyword">lambda</span> x,y:x*y!=0,
+map(<span class="pykeyword">lambda</span> x,y=y:y%x,range(2,int(pow(y,0.5)+1))),1),range(2,1000)))
+
+<span class="pycomment"># First 10 Fibonacci numbers</span>
+<span class="pykeyword">print</span> map(<span class="pykeyword">lambda</span> x,f=<span class="pykeyword">lambda</span> x,f:(x&lt;=1) <span class="pykeyword">or</span> (f(x-1,f)+f(x-2,f)): f(x,f),
+range(10))
+
+<span class="pycomment"># Mandelbrot set</span>
+<span class="pykeyword">print</span> (<span class="pykeyword">lambda</span> Ru,Ro,Iu,Io,IM,Sx,Sy:reduce(<span class="pykeyword">lambda</span> x,y:x+y,map(<span class="pykeyword">lambda</span> y,
+Iu=Iu,Io=Io,Ru=Ru,Ro=Ro,Sy=Sy,L=<span class="pykeyword">lambda</span> yc,Iu=Iu,Io=Io,Ru=Ru,Ro=Ro,i=IM,
+Sx=Sx,Sy=Sy:reduce(<span class="pykeyword">lambda</span> x,y:x+y,map(<span class="pykeyword">lambda</span> x,xc=Ru,yc=yc,Ru=Ru,Ro=Ro,
+i=i,Sx=Sx,F=<span class="pykeyword">lambda</span> xc,yc,x,y,k,f=<span class="pykeyword">lambda</span> xc,yc,x,y,k,f:(k&lt;=0)<span class="pykeyword">or</span> (x*x+y*y
+&gt;=4.0) <span class="pykeyword">or</span> 1+f(xc,yc,x*x-y*y+xc,2.0*x*y+yc,k-1,f):f(xc,yc,x,y,k,f):chr(
+64+F(Ru+x*(Ro-Ru)/Sx,yc,0,0,i)),range(Sx))):L(Iu+y*(Io-Iu)/Sy),range(Sy
+))))(-2.1, 0.7, -1.2, 1.2, 30, 80, 24)
+<span class="pycomment">#    \___ ___/  \___ ___/  |   |   |__ lines on screen</span>
+<span class="pycomment">#        V          V      |   |______ columns on screen</span>
+<span class="pycomment">#        |          |      |__________ maximum of "iterations"</span>
+<span class="pycomment">#        |          |_________________ range on y axis</span>
+<span class="pycomment">#        |____________________________ range on x axis</span></pre></div><div class="yui-ge"><div class="yui-u first"><p>If you want to try this at home, Gerson Kurz has posted a series of articles on lambda-based obfuscation techniques:</p><blockquote><p><s><a href="http://p-nand-q.com/python/obfuscated_python.html">http://p-nand-q.com/python/obfuscated_python.html</a></s> (dead link) <br />
+  <s><a href="http://p-nand-q.com/python/stupid_lambda_tricks.html">http://p-nand-q.com/python/stupid_lambda_tricks.html</a></s> (dead link) <br />
+  <s><a href="http://p-nand-q.com/python/lambdaizing_quicksort.html">http://p-nand-q.com/python/lambdaizing_quicksort.html</a></s> (dead link)</p></blockquote></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to pyfaq index page.">::: pyfaq :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

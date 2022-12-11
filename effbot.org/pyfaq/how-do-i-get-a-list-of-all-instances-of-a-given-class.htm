@@ -1,0 +1,44 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>How do I get a list of all instances of a given&nbsp;class?</title></head><body data-page-id="802"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><p class="note" style="text-align: center"><strong>
+This is an old copy of the Python FAQ.  The information here may be
+outdated.
+</strong></p><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">How do I get a list of all instances of a given&nbsp;class?</h1></div><div class="yui-ge"><div class="yui-u first"><p>Python does not keep track of all instances of a class (or of a built-in
+type), so if you need this functionality, you have to implement it yourself.
+One way to do it is to store a weak reference to each instance in class
+attribute.  Here&#8217;s an example:</p><pre class="python"><span class="pykeyword">import</span> weakref
+
+<span class="pykeyword">class</span> <span class="pyclass">MyClass</span>:
+
+    _instances = set()
+
+    <span class="pykeyword">def</span> <span class="pyfunction">__init__</span>(self, name):
+        self.name = name
+        self._instances.add(weakref.ref(self))
+
+    @<span class="pydecorator">classmethod</span>
+    <span class="pykeyword">def</span> <span class="pyfunction">getinstances</span>(cls):
+        dead = set()
+        <span class="pykeyword">for</span> ref <span class="pykeyword">in</span> cls._instances:
+            obj = ref()
+            <span class="pykeyword">if</span> obj <span class="pykeyword">is</span> <span class="pykeyword">not</span> None:
+                <span class="pykeyword">yield</span> obj
+            <span class="pykeyword">else</span>:
+                dead.add(ref)
+        cls._instances -= dead
+
+a = MyClass(<span class="pystring">"a"</span>)
+b = MyClass(<span class="pystring">"b"</span>)
+c = MyClass(<span class="pystring">"c"</span>)
+
+<span class="pykeyword">del</span> b
+
+<span class="pykeyword">for</span> obj <span class="pykeyword">in</span> MyClass.getinstances():
+    <span class="pykeyword">print</span> obj.name <span class="pycomment"># prints 'a' and 'c'</span></pre><p>An simpler, brute-force approach is to ask the <a href="/pyref/gc.htm"><strong>gc</strong></a> module for
+a list of all known objects, and filter out the objects that belong to
+the relevant class:</p><pre class="python"><span class="pykeyword">import</span> gc
+
+<span class="pykeyword">for</span> obj <span class="pykeyword">in</span> gc.get_objects():
+    <span class="pykeyword">if</span> isinstance(obj, MyClass):
+        <span class="pykeyword">print</span> obj.name</pre><p>However, since an application is likely to have thousands of active objects,
+this variant isn&#8217;t very efficient.</p><p>CATEGORY: programming</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to pyfaq index page.">::: pyfaq :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

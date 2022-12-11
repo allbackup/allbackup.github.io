@@ -1,0 +1,18 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>Why does -22 / 10 return&nbsp;-3?</title> <script type="text/javascript">effbot_page_id=935;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> <!--
+<p style='color: #8f8f8f; background: #fff5bf; padding: 5px 10px;'> <b>2008-07-15:</b> Selected articles
+
+now have experimental "comment" links in the left column and at the bottom.
+You're welcome to use them for commenting and voting on articles.
+For a bit more on this, see <a
+href="http://effbot.slinkset.com/links/Welcome_to_discuss_effbot_org">this
+page</a>. /F
+</p>
+--> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <h1 class="maintitle">Why does -22 / 10 return&nbsp;-3?</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p>It&#8217;s primarily driven by the desire that i%j have the same sign as  j. If you want that, and also want:</p><pre class="python">i == (i/j)*j + (i%j)</pre><p>then integer division has to return the floor. C also requires that identity to hold, and then compilers that truncate i/j need to make i%j have the same sign as i.</p><p>There are few real use cases for i%j when j is negative. When  j is positive, there are many, and in virtually all of them it&#8217;s more useful for i%j to be  &gt;= 0. If the clock says 10 now, what did it say 200 hours ago? -190 % 12 == 2 is useful; -190 % 12 == -10 is a bug waiting to bite.</p><p>CATEGORY: programming</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><div class='comment' timestamp='1162683658.26'>
+ <p><b>Comment:</b></p>
+ <p>This answer is correct and succinct, two excellent qualities.  But, at the expense of succinctness, I think it might be good to give a bit more background material for the less mathematically inclined.  For example:
+<p>
+
+
+Whe

@@ -1,0 +1,24 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>dict.items</title><script type="text/javascript">effbot_page_id=1255;</script></head><body><div id="doc2" class="yui-t2"><div id="hd"><!-- header --></div><!-- hd --><div id="bd"><!-- body --><p class="note" style="text-align: center"><strong>
+
+We're back after a server migration that caused effbot.org to fall
+over a bit harder than expected.  Expect some glitches.
+
+</strong></p><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">dict.items</h1></div><!-- yui-g --><body><p><code>a.items()</code> a copy of <em>a</em>&#8216;s list of (key, value) pairs.</p>
+
+<p>Keys and values are listed in an arbitrary order which is non-random,
+varies across Python implementations, and depends on the dictionary&#8217;s
+history of insertions and deletions.</p>
+
+<p>If <strong>dict.items</strong>, <a href="dict.keys.htm"><strong>dict.keys</strong></a>, <a href="dict.values.htm"><strong>dict.values</strong></a>, <a href="dict.iteritems.htm"><strong>dict.iteritems</strong></a>,
+<a href="dict.iterkeys.htm"><strong>dict.iterkeys</strong></a>, and <a href="dict.itervalues.htm"><strong>dict.itervalues</strong></a> are called with no
+intervening modifications to the dictionary, the lists will directly
+correspond.  This allows the creation of (value, key) pairs using
+zip(): &#8220;pairs = zip(a.values(), a.keys())&#8221;.</p>
+
+<p>The same relationship holds for the <a href="dict.iterkeys.htm"><strong>dict.iterkeys</strong></a> and
+<a href="dict.itervalues.htm"><strong>dict.itervalues</strong></a> methods:
+&#8220;pairs = zip(a.itervalues(), a.iterkeys())&#8221;
+provides the same value for <code>pairs</code>. Another way to create the same
+list is &#8220;pairs = [(v, k) for (k, v) in a.iteritems()]&#8221;.</p></body><div class="yui-g"></div><!-- yui-g --></div><!-- content --></div><!-- yui-b --></div><!-- yui-main --><div class="yui-b"><div id='menu'></div><!-- menu --></div><!-- yui-b --></div><!-- bd --><div id="ft"><!-- footer --></div><!-- ft --></div><!-- doc --><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

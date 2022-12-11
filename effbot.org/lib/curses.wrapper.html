@@ -1,0 +1,46 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>curses.wrapper</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-curses.wrapper.html'>original</a> :::
+<a href='curses.wrapper.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>curses.wrapper&#8212;Terminal handler for curses programs</h1>
+
+<p>New in version 1.6.</p>
+
+<p>This module supplies one function, <a class="link" href="#wrapper"><code>wrapper</code></a>, which runs another function which
+should be the rest of your curses-using application. If the
+application raises an exception, <a class="link" href="#wrapper"><code>wrapper</code></a> will restore the terminal to a sane
+state before re-raising the exception and generating a
+traceback.</p>
+</div>
+<dl><dt class="function" id="wrapper"><b>wrapper(func, ...)</b> <tt class="nav"><a class="nav" href="curses.wrapper.wrapper" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Wrapper function that initializes curses and calls another
+function, <var>func</var>, restoring normal keyboard/screen
+behavior on error. The callable object <var>func</var> is then
+passed the main window 'stdscr' as its first argument, followed by
+any other arguments passed to <a class="link" href="#wrapper"><code>
+wrapper</code></a>.</p>
+</dd>
+</dl><div class="text">
+<p>Before calling the hook function, <a class="link" href="#wrapper"><code>wrapper</code></a> turns on cbreak mode, turns off
+echo, enables the terminal keypad, and initializes colors if the
+terminal has color support. On exit (whether normally or by
+exception) it restores cooked mode, turns on echo, and disables the
+terminal keypad.</p>
+</div>
+</div></body></html>

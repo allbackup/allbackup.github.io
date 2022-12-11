@@ -1,0 +1,518 @@
+
+@@module inspect
+
+<h1>inspect&#8212;Inspect live objects</h1>
+
+<p>New in version 2.1.
+
+<p>The {@link inspect} module provides several useful functions to help
+get information about live objects such as modules, classes, methods,
+functions, tracebacks, frame objects, and code objects. For example, it
+can help you examine the contents of a class, retrieve the source code
+of a method, extract and format the argument list for a function, or get
+all the information you need to display a detailed traceback.
+
+<p>There are four main kinds of services provided by this module: type
+checking, getting source code, inspecting classes and functions, and
+examining the interpreter stack.
+
+<h2>Types and members</h2>
+
+<p>The {@link getmembers} function retrieves the members of an object
+such as a class or module. The eleven functions whose names begin with
+&#8220;is&#8221; are mainly provided as convenient choices for the
+second argument to {@link getmembers}. They also help you determine when
+you can expect to find the following special attributes:
+
+<p><table border=1>
+<tr> <th>
+<p>Type
+<th>
+<p>Attribute
+<th>
+<p>Description
+<th>
+<p>Notes
+<tr> <td>
+<p>module
+<td>
+<p>__doc__
+<td>
+<p>documentation string
+<td> <tr> <td> <td>
+<p>__file__
+<td>
+<p>filename (missing for built-in modules)
+<td> <tr> <td>
+<p>class
+<td>
+<p>__doc__
+<td>
+<p>documentation string
+<td> <tr> <td> <td>
+<p>__module__
+<td>
+<p>name of module in which this class was defined
+<td> <tr> <td>
+<p>method
+<td>
+<p>__doc__
+<td>
+<p>documentation string
+<td> <tr> <td> <td>
+<p>__name__
+<td>
+<p>name with which this method was defined
+<td> <tr> <td> <td>
+<p>im_class
+<td>
+<p>class object that asked for this method
+<td>
+<p>(1)
+<tr> <td> <td>
+<p>im_func
+<td>
+<p>function object containing implementation of method
+<td> <tr> <td> <td>
+<p>im_self
+<td>
+<p>instance to which this method is bound, or {@code None}
+<td> <tr> <td>
+<p>function
+<td>
+<p>__doc__
+<td>
+<p>documentation string
+<td> <tr> <td> <td>
+<p>__name__
+<td>
+<p>name with which this function was defined
+<td> <tr> <td> <td>
+<p>func_code
+<td>
+<p>code object containing compiled function bytecode
+<td> <tr> <td> <td>
+<p>func_defaults
+<td>
+<p>tuple of any default values for arguments
+<td> <tr> <td> <td>
+<p>func_doc
+<td>
+<p>(same as __doc__)
+<td> <tr> <td> <td>
+<p>func_globals
+<td>
+<p>global namespace in which this function was defined
+<td> <tr> <td> <td>
+<p>func_name
+<td>
+<p>(same as __name__)
+<td> <tr> <td>
+<p>traceback
+<td>
+<p>tb_frame
+<td>
+<p>frame object at this level
+<td> <tr> <td> <td>
+<p>tb_lasti
+<td>
+<p>index of last attempted instruction in bytecode
+<td> <tr> <td> <td>
+<p>tb_lineno
+<td>
+<p>current line number in Python source code
+<td> <tr> <td> <td>
+<p>tb_next
+<td>
+<p>next inner traceback object (called by this level)
+<td> <tr> <td>
+<p>frame
+<td>
+<p>f_back
+<td>
+<p>next outer frame object (this frame's caller)
+<td> <tr> <td> <td>
+<p>f_builtins
+<td>
+<p>built-in namespace seen by this frame
+<td> <tr> <td> <td>
+<p>f_code
+<td>
+<p>code object being executed in this frame
+<td> <tr> <td> <td>
+<p>f_exc_traceback
+<td>
+<p>traceback if raised in this frame, or {@code None}
+<td> <tr> <td> <td>
+<p>f_exc_type
+<td>
+<p>exception type if raised in this frame, or {@code None}
+<td> <tr> <td> <td>
+<p>f_exc_value
+<td>
+<p>exception value if raised in this frame, or {@code None}
+<td> <tr> <td> <td>
+<p>f_globals
+<td>
+<p>global namespace seen by this frame
+<td> <tr> <td> <td>
+<p>f_lasti
+<td>
+<p>index of last attempted instruction in bytecode
+<td> <tr> <td> <td>
+<p>f_lineno
+<td>
+<p>current line number in Python source code
+<td> <tr> <td> <td>
+<p>f_locals
+<td>
+<p>local namespace seen by this frame
+<td> <tr> <td> <td>
+<p>f_restricted
+<td>
+<p>0 or 1 if frame is in restricted execution mode
+<td> <tr> <td> <td>
+<p>f_trace
+<td>
+<p>tracing function for this frame, or {@code None}
+<td> <tr> <td>
+<p>code
+<td>
+<p>co_argcount
+<td>
+<p>number of arguments (not including * or ** args)
+<td> <tr> <td> <td>
+<p>co_code
+<td>
+<p>string of raw compiled bytecode
+<td> <tr> <td> <td>
+<p>co_consts
+<td>
+<p>tuple of constants used in the bytecode
+<td> <tr> <td> <td>
+<p>co_filename
+<td>
+<p>name of file in which this code object was created
+<td> <tr> <td> <td>
+<p>co_firstlineno
+<td>
+<p>number of first line in Python source code
+<td> <tr> <td> <td>
+<p>co_flags
+<td>
+<p>bitmap: 1=optimized {@code |} 2=newlocals {@code |} 4=*arg {@code |}
+8=**arg
+<td> <tr> <td> <td>
+<p>co_lnotab
+<td>
+<p>encoded mapping of line numbers to bytecode indices
+<td> <tr> <td> <td>
+<p>co_name
+<td>
+<p>name with which this code object was defined
+<td> <tr> <td> <td>
+<p>co_names
+<td>
+<p>tuple of names of local variables
+<td> <tr> <td> <td>
+<p>co_nlocals
+<td>
+<p>number of local variables
+<td> <tr> <td> <td>
+<p>co_stacksize
+<td>
+<p>virtual machine stack space required
+<td> <tr> <td> <td>
+<p>co_varnames
+<td>
+<p>tuple of names of arguments and local variables
+<td> <tr> <td>
+<p>builtin
+<td>
+<p>__doc__
+<td>
+<p>documentation string
+<td> <tr> <td> <td>
+<p>__name__
+<td>
+<p>original name of this function or method
+<td> <tr> <td> <td>
+<p>__self__
+<td>
+<p>instance to which a method is bound, or {@code None}
+<td> </table></p>
+
+<p>Note:
+
+@@variable (1)
+<blockquote>
+@since Changed in version 2.2: im_class used to refer to the class that
+defined the method. <br />
+</blockquote>
+
+@@function getmembers(object[, predicate])
+
+<p>Return all the members of an object in a list of (name, value) pairs
+sorted by name. If the optional {@var predicate} argument is supplied,
+only members for which the predicate returns a true value are included.
+
+@@function getmoduleinfo(path)
+
+<p>Return a tuple of values that describe how Python will interpret the
+file identified by {@var path} if it is a module, or {@link None} if it
+would not be identified as a module. The return tuple is {@code (}{@var
+name}, {@var suffix}, {@var mode}, {@var mtype}), where {@var name} is
+the name of the module without the name of any enclosing package, {@var
+suffix} is the trailing part of the file name (which may not be a
+dot-delimited extension), {@var mode} is the {@link open} mode that
+would be used ({@code 'r'} or {@code 'rb'}), and {@var mtype} is an
+integer giving the type of the module. {@var mtype} will have a value
+which can be compared to the constants defined in the {@link imp}
+module; see the documentation for that module for more information on
+module types.
+
+@@function getmodulename(path)
+
+<p>Return the name of the module named by the file {@var path}, without
+including the names of enclosing packages. This uses the same algorithm
+as the interpreter uses when searching for modules. If the name cannot
+be matched according to the interpreter's rules, {@link None} is
+returned.
+
+@@function ismodule(object)
+
+<p>Return true if the object is a module.
+
+@@function isclass(object)
+
+<p>Return true if the object is a class.
+
+@@function ismethod(object)
+
+<p>Return true if the object is a method.
+
+@@function isfunction(object)
+
+<p>Return true if the object is a Python function or unnamed (lambda)
+function.
+
+@@function istraceback(object)
+
+<p>Return true if the object is a traceback.
+
+@@function isframe(object)
+
+<p>Return true if the object is a frame.
+
+@@function iscode(object)
+
+<p>Return true if the object is a code.
+
+@@function isbuiltin(object)
+
+<p>Return true if the object is a built-in function.
+
+@@function isroutine(object)
+
+<p>Return true if the object is a user-defined or built-in function or
+method.
+
+@@function ismethoddescriptor(object)
+
+<p>Return true if the object is a method descriptor, but not if
+ismethod() or isclass() or isfunction() are true.
+
+<p>This is new as of Python 2.2, and, for example, is true of
+int.__add__. An object passing this test has a __get__ attribute but not
+a __set__ attribute, but beyond that the set of attributes varies.
+__name__ is usually sensible, and __doc__ often is.
+
+<p>Methods implemented via descriptors that also pass one of the other
+tests return false from the ismethoddescriptor() test, simply because
+the other tests promise more - you can, e.g., count on having the
+im_func attribute (etc) when an object passes ismethod().
+
+@@function isdatadescriptor(object)
+
+<p>Return true if the object is a data descriptor.
+
+<p>Data descriptors have both a __get__ and a __set__ attribute.
+Examples are properties (defined in Python) and getsets and members
+(defined in C). Typically, data descriptors will also have __name__ and
+__doc__ attributes (properties, getsets, and members have both of these
+attributes), but this is not guaranteed.
+<blockquote>
+@since New in version 2.3. <br />
+</blockquote>
+
+@@text 
+
+<h2>Retrieving source code</h2>
+
+@@function getdoc(object)
+
+<p>Get the documentation string for an object. All tabs are expanded to
+spaces. To clean up docstrings that are indented to line up with blocks
+of code, any whitespace than can be uniformly removed from the second
+line onwards is removed.
+
+@@function getcomments(object)
+
+<p>Return in a single string any lines of comments immediately preceding
+the object's source code (for a class, function, or method), or at the
+top of the Python source file (if the object is a module).
+
+@@function getfile(object)
+
+<p>Return the name of the (text or binary) file in which an object was
+defined. This will fail with a {@link exceptions.TypeError} if the
+object is a built-in module, class, or function.
+
+@@function getmodule(object)
+
+<p>Try to guess which module an object was defined in.
+
+@@function getsourcefile(object)
+
+<p>Return the name of the Python source file in which an object was
+defined. This will fail with a {@link exceptions.TypeError} if the
+object is a built-in module, class, or function.
+
+@@function getsourcelines(object)
+
+<p>Return a list of source lines and starting line number for an object.
+The argument may be a module, class, method, function, traceback, frame,
+or code object. The source code is returned as a list of the lines
+corresponding to the object and the line number indicates where in the
+original source file the first line of code was found. An {@link
+exceptions.IOError} is raised if the source code cannot be retrieved.
+
+@@function getsource(object)
+
+<p>Return the text of the source code for an object. The argument may be
+a module, class, method, function, traceback, frame, or code object. The
+source code is returned as a single string. An {@link
+exceptions.IOError} is raised if the source code cannot be retrieved.
+
+@@text 
+
+<h2>Classes and functions</h2>
+
+@@function getclasstree(classes[, unique])
+
+<p>Arrange the given list of classes into a hierarchy of nested lists.
+Where a nested list appears, it contains classes derived from the class
+whose entry immediately precedes the list. Each entry is a 2-tuple
+containing a class and a tuple of its base classes. If the {@var unique}
+argument is true, exactly one entry appears in the returned structure
+for each class in the given list. Otherwise, classes using multiple
+inheritance and their descendants will appear multiple times.
+
+@@function getargspec(func)
+
+<p>Get the names and default values of a function's arguments. A tuple
+of four things is returned: {@code (}{@var args}, {@var varargs}, {@var
+varkw}, {@var defaults}). {@var args} is a list of the argument names
+(it may contain nested lists). {@var varargs} and {@var varkw} are the
+names of the {@code *} and {@code **} arguments or {@code None}. {@var
+defaults} is a tuple of default argument values or None if there are no
+default arguments; if this tuple has {@var n} elements, they correspond
+to the last {@var n} elements listed in {@var args}.
+
+@@function getargvalues(frame)
+
+<p>Get information about arguments passed into a particular frame. A
+tuple of four things is returned: {@code (}{@var args}, {@var varargs},
+{@var varkw}, {@var locals}). {@var args} is a list of the argument
+names (it may contain nested lists). {@var varargs} and {@var varkw} are
+the names of the {@code *} and {@code **} arguments or {@code None}.
+{@var locals} is the locals dictionary of the given frame.
+
+@@function formatargspec(args[, varargs, varkw, defaults, argformat, varargsformat, varkwformat, defaultformat])
+
+<p>Format a pretty argument spec from the four values returned by {@link
+getargspec}. The other four arguments are the corresponding optional
+formatting functions that are called to turn names and values into
+strings.
+
+@@function formatargvalues(args[, varargs, varkw, locals, argformat, varargsformat, varkwformat, valueformat])
+
+<p>Format a pretty argument spec from the four values returned by {@link
+getargvalues}. The other four arguments are the corresponding optional
+formatting functions that are called to turn names and values into
+strings.
+
+@@function getmro(cls)
+
+<p>Return a tuple of class cls's base classes, including cls, in method
+resolution order. No class appears more than once in this tuple. Note
+that the method resolution order depends on cls's type. Unless a very
+peculiar user-defined metatype is in use, cls will be the first element
+of the tuple.
+
+@@text 
+
+<h2>The interpreter stack</h2>
+
+<p>When the following functions return &#8220;frame records,&#8221; each
+record is a tuple of six items: the frame object, the filename, the line
+number of the current line, the function name, a list of lines of
+context from the source code, and the index of the current line within
+that list.
+
+
+<p class='warning'><b>Warning:</b> Keeping references to frame objects,
+as found in the first element of the frame records these functions
+return, can cause your program to create reference cycles. Once a
+reference cycle has been created, the lifespan of all objects which can
+be accessed from the objects which form the cycle can become much longer
+even if Python's optional cycle detector is enabled. If such cycles must
+be created, it is important to ensure they are explicitly broken to
+avoid the delayed destruction of objects and increased memory
+consumption which occurs. Though the cycle detector will catch these,
+destruction of the frames (and local variables) can be made
+deterministic by removing the cycle in a {@link finally} clause. This is
+also important if the cycle detector was disabled when Python was
+compiled or using {@link gc}.disable(). For example: def
+handle_stackframe_without_leak(): frame = inspect.currentframe() try: #
+do something with the frame finally: del frame
+
+<p>The optional {@var context} argument supported by most of these
+functions specifies the number of lines of context to return, which are
+centered around the current line.
+
+@@function getframeinfo(frame[, context])
+
+<p>Get information about a frame or traceback object. A 5-tuple is
+returned, the last five elements of the frame's frame record.
+
+@@function getouterframes(frame[, context])
+
+<p>Get a list of frame records for a frame and all outer frames. These
+frames represent the calls that lead to the creation of {@var frame}.
+The first entry in the returned list represents {@var frame}; the last
+entry represents the outermost call on {@var frame}'s stack.
+
+@@function getinnerframes(traceback[, context])
+
+<p>Get a list of frame records for a traceback's frame and all inner
+frames. These frames represent calls made as a consequence of {@var
+frame}. The first entry in the list represents {@var traceback}; the
+last entry represents where the exception was raised.
+
+@@function currentframe()
+
+<p>Return the frame object for the caller's stack frame.
+
+@@function stack([context])
+
+<p>Return a list of frame records for the caller's stack. The first
+entry in the returned list represents the caller; the last entry
+represents the outermost call on the stack.
+
+@@function trace([context])
+
+<p>Return a list of frame records for the stack between the current
+frame and the frame in which an exception currently being handled was
+raised in. The first entry in the list represents the caller; the last
+entry represents where the exception was raised.

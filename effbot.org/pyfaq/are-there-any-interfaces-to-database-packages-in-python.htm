@@ -1,0 +1,23 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>Are there any interfaces to database packages in&nbsp;Python?</title></head><body data-page-id="731"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><p class="note" style="text-align: center"><strong>
+This is an old copy of the Python FAQ.  The information here may be
+outdated.
+</strong></p><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">Are there any interfaces to database packages in&nbsp;Python?</h1></div><div class="yui-ge"><div class="yui-u first"><p>Python has a standard DB-API interface (see <a href="http://www.python.org/dev/peps/pep-0249/"><strong>PEP
+249</strong></a>), and compatible implementations are available for all widely
+used database engines.  See the 
+<cite><a href="http://www.python.org/topics/database">Database Topic Guide</a></cite>
+for details.</p><p>Python 2.5 and later includes a DB-API compliant database package,
+<a href="/pyref/sqlite3.htm"><strong>sqlite3</strong></a>, which uses an embedded SQL database,
+<a href="http://sqlite.org">SQLite</a>.</p><pre><code>&gt;&gt;&gt; import sqlite3 as dbapi
+&gt;&gt;&gt; db = dbapi.connect("database.db")
+&gt;&gt;&gt; c = db.cursor()
+&gt;&gt;&gt; for record in c.execute("select * from table"):
+...     print record
+</code></pre><p>For earlier versions, this database
+can be downloaded separately (see <a href="http://pysqlite.org">http://pysqlite.org</a>).</p><p>There&#8217;s also a standard <a href="/pyref/bsddb.htm"><strong>bsddb</strong></a> package which provides an
+interface to the BerkeleyDB library.  Interfaces to disk-based hashes
+such as <a href="/pyref/dbm.htm"><strong>dbm</strong></a> and <a href="/pyref/gdbm.htm"><strong>gdbm</strong></a> are also included with
+standard Python.</p><p>For bridging Python and databases more naturally, there are a variety of object-relational mapping tools, like <a href="http://www.sqlobject.org/">SQLObject</a>
+and <a href="http://www.sqlalchemy.org/">SQLAlchemy</a>.</p><p>IronPython can use all DotNet database connections, of course, and Jython
+can use all Java database connections.</p><p>CATEGORY: library</p><p>CATEGORY: database</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to pyfaq index page.">::: pyfaq :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

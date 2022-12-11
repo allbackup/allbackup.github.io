@@ -1,0 +1,46 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>Editing Canvas Text&nbsp;Items</title> <script type="text/javascript">effbot_page_id=51;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> <!--
+<p style='color: #8f8f8f; background: #fff5bf; padding: 5px 10px;'> <b>2008-07-15:</b> Selected articles
+
+now have experimental "comment" links in the left column and at the bottom.
+You're welcome to use them for commenting and voting on articles.
+For a bit more on this, see <a
+href="http://effbot.slinkset.com/links/Welcome_to_discuss_effbot_org">this
+page</a>. /F
+</p>
+--> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <h1 class="maintitle">Editing Canvas Text&nbsp;Items</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p class="info">December 08, 1998 | Fredrik Lundh</p><h2>Introduction</h2><p>The Tkinter <i>Canvas</i> widget provides some basic editing
+support for text items, but no bindings. This guide briefly
+describes these editing functions, and shows how to use them.</p><h2 id="focus">Focus&#160;<a class="nav" href="#focus" title="bookmark!">#</a></h2><p>The canvas widget can redirect keyboard focus to any given
+canvas item that supports the internal text editing protocol. In
+the standard implementation, <i>text</i> is the only item type that
+supports this interface.</p><p>To change the focus, use the <i>focus</i> method:</p><p><b>focus(</b><i>item</i><b>)</b> moves focus to the given canvas
+item. If the item has keyboard bindings, it will receive all
+further keyboard events, given that the canvas itself also has
+focus. It&#8217;s usually best to call <i>focus_set</i> on the canvas
+whenever you set focus to a canvas item.</p><p>To remove focus from the item, call this method with an empty
+string.</p><p><b>focus()</b> returns the item that currently has the focus, or
+<i>None</i> if no item has focus.</p><h2 id="editing">Editing&#160;<a class="nav" href="#editing" title="bookmark!">#</a></h2>
+
+The canvas also keeps track of an insertion cursor for each item
+that supports text editing. Each item keeps track of it&#8217;s own
+cursor position, but the cursor is only display for the item that
+has focus. 
+
+<p>To manipulate the cursor, and the text displayed by the text
+item, you use methods similar to those provided by the <i>Edit</i>
+widget:</p><p><b>index(</b><i>item, index</i><b>)</b> returns the numerical
+index (an integer) corresponding to the given index. Numerical
+indexes work like Python&#8217;s sequence indexes; 0 is just to the left
+of the first character, and len(text) is just to the right of the
+last character.</p><p>The index argument can be <i>INSERT</i> (the current insertion
+cursor), <i>END</i> (the length of the text), or <i>SEL_FIRST</i>
+and <i>SEL_LAST</i> (the selection start and end). You can also use
+the form &#8220;@x,y&#8221; where <i>x</i> and <i>y</i> are canvas coordinates,
+to get the index closest to the given coordinate.</p><p><b>icursor(</b><i>item, index</i><b>)</b> moves the insertion
+cursor to the given position. You can either use a numerical index,
+or one of the special indexes described above.</p><p><b>insert(</b><i>item, index, text</i><b>)</b> inserts <i>
+text</i> at the given position. If you insert text at the <i>
+INSERT</i> index, the cursor is moved along with the text.</p><p><b>dchars(</b><i>item, index</i><b>)</b> deletes the character
+at the given index. <b>dchars(</b><i>item, from, to</i><b>)</b>
+r

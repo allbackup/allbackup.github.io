@@ -1,0 +1,15 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>file.readline</title> <script type="text/javascript">effbot_page_id=1298;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <h1 class="maintitle">file.readline</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p><strong>readline</strong>([size])</p><p>Read one entire line from the file. A trailing newline character is
+kept in the string (but may be absent when a file ends with an
+incomplete line).  If the <em>size</em> argument is present and non-negative,
+it is a maximum byte count (including the trailing newline) and an
+incomplete line may be returned. An empty string is returned <em>only</em>
+when EOF is encountered immediately. <strong>Note:</strong> Unlike <code>stdio</code>&#8216;s
+fgets(), the returned string contains null characters (<code>'\0'</code>) if they
+occurred in the input.</p><p>The advantage of leaving the newline on is that returning an empty
+string is then an unambiguous EOF indication. It is also possible (in
+cases where it might matter, for example, if you want to make an exact
+copy of a file while scanning its lines) to tell whether the last line
+of a file ended in a newline or not (yes this happens!).</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div> <!-- yui-g --></div> <!-- content --> </div> <!-- yui-b --> </div> <!-- yui-main --> <div class="yui-b"> <div id='menu'> <ul> <li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li> <li><b><a href="." title="Go to pyref index page.">::: pyref :::</a></b></li> </ul> </div> <!-- menu --> </div> <!-- yui-b --> </div> <!-- bd --> <div id="ft"> <!-- footer --> <p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;"></a>
+this page was rendered by a <a href="http://www.djangoproject.com/">django</a> application in 0.01s 2011-06-21 22:47:10.014717.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p> </div> <!-- ft --> </div> <!-- doc --> <script src="/media/js/effbot-min.js" type="text/javascript"> </script> </body> </html>

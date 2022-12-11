@@ -1,0 +1,132 @@
+<html>
+<head>
+<title>mimetypes ::: www.effbot.org</title>
+<link rel='stylesheet' href='/effbot.css' type='text/css' media='screen' />
+</head>
+<body bgcolor='#ccffcc'>
+<div>[<a href='mimetypes.htm'>back</a>]</div>
+<h3>Welcome to the effbot.org user editor!</h3>
+
+
+<p><b>Note: This is not a contact form!  Support questions, spam, and
+other off-topic stuff will be ignored.</b></p>
+
+<p>To suggest changes, edit the HTML fragment in the text box below.
+You can use the 'update preview' button to check your changes (the
+preview is displayed beneath the text box).  When done, fill in the
+name and address fields (optional) and click 'submit patch' to mail
+the patch to me.  (I reserve the right to decide which patches to
+include, of course.)  Thanks! /F</p>
+
+<form method='post' id='useredit'>
+<input type='hidden' name='name' value='mimetypes'/>
+<p>
+<input type='submit' name='preview' value='update preview' style='background:#084; color:white; width:200px; font-weight:bold;' >
+&nbsp;&nbsp;&nbsp;
+<input type='submit' name='submit' value='submit patch'  style='background:#084; color:white; width:200px; font-weight:bold;' >
+</p>
+<textarea name='text' rows='30' cols='80'>The mimetypes module
+
+&lt;!-- ADSENSE --&gt;
+&lt;p class='site'&gt;[&lt;a href='index.htm'&gt;contents&lt;/a&gt;]&lt;/p&gt;
+&lt;p class='site'&gt;[&lt;a href='index.htm'&gt;contents&lt;/a&gt;]&lt;/p&gt;
+
+&lt;p&gt;This module contains support for determining the MIME type for a
+given uniform resource locator. This is based on a built-in table,
+plus Apache and Netscape configuration files, if they are
+found.&lt;/p&gt;
+
+&lt;div class="example"&gt;
+
+&lt;b style="example"&gt;Example: Using the
+mimetypes module&lt;/b&gt;
+&lt;pre&gt;
+# File: &lt;a href="mimetypes-example-1.py"&gt;mimetypes-example-1.py&lt;/a&gt;
+
+import mimetypes
+import glob, urllib
+
+for file in glob.glob("samples/*"):
+    url = urllib.pathname2url(file)
+    print file, mimetypes.guess_type(url)
+
+&lt;/pre&gt;
+
+&lt;pre class="computeroutput" moreinfo="NONE"&gt;
+samples\sample.au ('audio/basic', None)
+samples\sample.ini (None, None)
+samples\sample.jpg ('image/jpeg', None)
+samples\sample.msg (None, None)
+samples\sample.tar ('application/x-tar', None)
+samples\sample.tgz ('application/x-tar', 'gzip')
+samples\sample.txt ('text/plain', None)
+samples\sample.wav ('audio/x-wav', None)
+samples\sample.zip ('application/zip', None)
+&lt;/pre&gt;
+
+&lt;/div&gt;</textarea>
+<table>
+<tr><td><label for='author'>Name:</label></td><td>
+<div><input name='author' value="" size=40></div>
+</td><td>(Optional)</td></tr>
+<tr><td><label for='email'>Mail:</label></td><td>
+<div><input name='email' value="" size=40></div>
+</td><td>(Optional)</td></tr>
+<tr><td><label for='note'>Comment:</label></td><td>
+<div><input name='note' value="" size=40></div>
+</td><td>(Optional)</td></tr>
+<tr><td><label for='password'>Password:</label></td><td>
+<div><input name='password' value="(replace with the sum of 7+4)" size=40></div>
+</td><td>(Required)</td></tr>
+</table>
+<p>
+<input type='submit' name='preview' value='update preview' style='background:#084; color:white; width:200px; font-weight:bold;' >
+&nbsp;&nbsp;&nbsp;
+<input type='submit' name='submit' value='submit patch'  style='background:#084; color:white; width:200px; font-weight:bold;' >
+</p>
+<p>&nbsp;</p>
+</form>
+<div style='background: white; border: 2px solid #084; padding: 0px 20px;'>
+<h2>The mimetypes module</h2>
+
+<!-- ADSENSE -->
+<p class='site'>[<a href='index.htm'>contents</a>]</p>
+<p class='site'>[<a href='index.htm'>contents</a>]</p>
+
+<p>This module contains support for determining the MIME type for a
+given uniform resource locator. This is based on a built-in table,
+plus Apache and Netscape configuration files, if they are
+found.</p>
+
+<div class="example">
+
+<b style="example">Example: Using the
+mimetypes module</b>
+<pre>
+# File: <a href="mimetypes-example-1.py">mimetypes-example-1.py</a>
+
+import mimetypes
+import glob, urllib
+
+for file in glob.glob("samples/*"):
+    url = urllib.pathname2url(file)
+    print file, mimetypes.guess_type(url)
+
+</pre>
+
+<pre class="computeroutput" moreinfo="NONE">
+samples\sample.au ('audio/basic', None)
+samples\sample.ini (None, None)
+samples\sample.jpg ('image/jpeg', None)
+samples\sample.msg (None, None)
+samples\sample.tar ('application/x-tar', None)
+samples\sample.tgz ('application/x-tar', 'gzip')
+samples\sample.txt ('text/plain', None)
+samples\sample.wav ('audio/x-wav', None)
+samples\sample.zip ('application/zip', None)
+</pre>
+
+</div>
+</div>
+</body>
+</html>

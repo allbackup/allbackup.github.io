@@ -1,0 +1,86 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>UserDict</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-UserDict.html'>original</a> :::
+<a href='UserDict.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>UserDict&#8212;Class wrapper for dictionary objects</h1>
+
+<p>The module defines a mixin, <a class="link" href="#DictMixin"><code>DictMixin</code></a>, defining all dictionary
+methods for classes that already have a minimum mapping interface.
+This greatly simplifies writing classes that need to be
+substitutable for dictionaries (such as the shelve module).</p>
+
+<p>This also module defines a class, <a class="link" href="#UserDict"><code>UserDict</code></a>, that acts as a wrapper around
+dictionary objects. The need for this class has been largely
+supplanted by the ability to subclass directly from <code>dict</code> (a feature that became available starting
+with Python version 2.2). Prior to the introduction of <code>dict</code>, the <a class="link" href="#UserDict"><code>UserDict</code></a> class was used to create
+dictionary-like sub-classes that obtained new behaviors by
+overriding existing methods or adding new ones.</p>
+
+<p>The <a class="link" href="#UserDict"><code>UserDict</code></a> module
+defines the <a class="link" href="#UserDict"><code>UserDict</code></a> class
+and <a class="link" href="#DictMixin"><code>DictMixin</code></a>:</p>
+</div>
+<dl><dt class="class" id="UserDict"><b>class UserDict([initialdata])</b> <tt class="nav"><a class="nav" href="UserDict.UserDict" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>Class that simulates a dictionary. The instance's contents are
+kept in a regular dictionary, which is accessible via the <code>data</code> attribute of <a class="link" href="#UserDict"><code>UserDict</code></a> instances. If <var>
+initialdata</var> is provided, <code>
+data</code> is initialized with its contents; note that a reference to
+<var>initialdata</var> will not be kept, allowing it be used for
+other purposes. Note: For backward compatibility, instances of <a class="link" href="#UserDict"><code>UserDict</code></a> are not
+iterable.</p>
+</dd>
+<dt class="class" id="IterableUserDict"><b>class IterableUserDict([initialdata])</b> <tt class="nav"><a class="nav" href="UserDict.IterableUserDict" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>Subclass of <a class="link" href="#UserDict"><code>UserDict</code></a>
+that supports direct iteration (e.g. <code>for key in
+myDict</code>).</p>
+</dd>
+</dl><div class="text">
+<p>In addition to supporting the methods and operations of mappings
+(see section <code>
+typesmapping.html#typesmapping</code>), <a class="link" href="#UserDict"><code>UserDict</code></a> and <a class="link" href="#IterableUserDict"><code>IterableUserDict</code></a> instances provide
+the following attribute:</p>
+</div>
+<dl><dt class="attribute" id="IterableUserDict.data"><b>data</b> <tt class="nav"><a class="nav" href="UserDict.IterableUserDict.data" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>A real dictionary used to store the contents of the <a class="link" href="#UserDict"><code>UserDict</code></a> class.</p>
+</dd>
+<dt class="class" id="DictMixin"><b>class DictMixin()</b> <tt class="nav"><a class="nav" href="UserDict.DictMixin" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>Mixin defining all dictionary methods for classes that already
+have a minimum dictionary interface including <code>__getitem__</code>, <code>__setitem__</code>, <code>__delitem__</code>, and <code>keys</code>.</p>
+
+<p>This mixin should be used as a superclass. Adding each of the
+above methods adds progressively more functionality. For instance,
+defining all but <code>
+__delitem__</code> will preclude only <code>
+pop</code> and <code>popitem</code> from
+the full interface.</p>
+
+<p>In addition to the four base methods, progressively more
+efficiency comes with defining <code>__contains__</code>, <code>__iter__</code>, and <code>iteritems</code>.</p>
+
+<p>Since the mixin has no knowledge of the subclass constructor, it
+does not define <code>__init__</code>
+or <code>copy</code>.</p>
+</dd>
+</dl></div></body></html>

@@ -1,0 +1,47 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>Grabbing del.icio.us posts with&nbsp;Python</title> <script type="text/javascript">effbot_page_id=37;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> <!--
+<p style='color: #8f8f8f; background: #fff5bf; padding: 5px 10px;'> <b>2008-07-15:</b> Selected articles
+
+now have experimental "comment" links in the left column and at the bottom.
+You're welcome to use them for commenting and voting on articles.
+For a bit more on this, see <a
+href="http://effbot.slinkset.com/links/Welcome_to_discuss_effbot_org">this
+page</a>. /F
+</p>
+--> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <h1 class="maintitle">Grabbing del.icio.us posts with&nbsp;Python</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p class="info">Fredrik Lundh | September 24, 2006 | Originally posted to <a href="http://online.effbot.org">online.effbot.org</a></p><p>The
+<a href="http://del.icio.us/">del.icio.us link management site</a>
+offers a convenient
+<a href="http://del.icio.us/help/json/">JSON interface</a>
+for fetching the last few posts as
+<a href="http://www.json.org/">a JSON object</a>.  While JSON
+is designed for use in JavaScript environments, it turns out
+that the JSON produced by del.icio.us is really easy to use
+from Python.</p><p>For example, fetching <b>http://del.icio.us/feeds/json/effbot?raw</b>
+URL gives you the 15 most recent additions to my del.icio.us feed as a
+single JSON object.  With some extra linefeeds added for clarity, the
+object might look something like this:</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><pre class="wide wide">
+[{"u":"http://faassen.n--tree.net/blog/view/weblog/2006/02/24/0",
+  "d":"Martijn Faassen: lxml and (c)ElementTree",
+  "t":["python","xml","elementtree","effbot:link","date:20060224"]},
+ {"u":"http://article.gmane.org/gmane.comp.python.tutor/24986",
+  "d":"Danny Yoo: elementtree mini-tutorial",
+  "t":["python","xml","elementtree","effbot:link","date:20050524"]},
+  ...
+</pre></div><div class="yui-g"><p class="wide">This looks a lot like Python, of course.  In fact, it&#8217;s perfectly
+compatible with Python&#8217;s syntax for dictionaries, lists, and ordinary
+strings.  To convert it into a Python object, you can simply pass it
+to <b>eval</b>:
+
+<pre class="python wide">
+&gt;&gt;&gt; <span class="pykeyword">import</span> urllib, pprint
+&gt;&gt;&gt; url = <span class="pystring">"http://del.icio.us/feeds/json/effbot?raw"</span>
+&gt;&gt;&gt; pprint.pprint(eval(urllib.urlopen(url).read()))
+[{<span class="pystring">'d'</span>: <span class="pystring">'Martijn Faassen: lxml and (c)ElementTree'</span>,
+  <span class="pystring">'t'</span>: [<span class="pystring">'python'</span>, <span class="pystring">'xml'</span>, <span class="pystring">'elementtree'</span>, <span class="pystring">'effbot:link'</span>, <span class="pystring">'date:20060224'</span>],
+  <span class="pystring">'u'</span>: <span class="pystring">'http://faassen.n--tree.net/blog/view/weblog/2006/02/24/0'</span>},
+ {<span class="pystring">'d'</span>: <span class="pystring">'Danny Yoo: elementtree mini-tutorial'</span>,
+  <span class="pystring">'t'</span>: [<span class="pystring">'python'</span>, <span class="pystring">'xml'</span>, <span class="pystring">'elementtree'</span>, <span class="pystring">'effbot:link'</span>, <span class="pystring">'date:20050524'</span>],
+  <span class="pystring">'u'</span>: <span class="pystring">'http://article.gmane.org/gmane.comp.python.tutor/24986'</span>},
+  ...
+]</pre></p></div><div class="yui-ge"><div class="yui-u first"><p>Not bad.  A complete del.icio.us post grabber in what&#8217;s bas

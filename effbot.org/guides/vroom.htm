@@ -1,0 +1,85 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>Vroom! - A Simple DarkRoom/WriteRoom Remake in&nbsp;Tkinter</title> <script type="text/javascript">effbot_page_id=342;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> <!--
+<p style='color: #8f8f8f; background: #fff5bf; padding: 5px 10px;'> <b>2008-07-15:</b> Selected articles
+ (including this one) 
+now have experimental "comment" links in the left column and at the bottom.
+You're welcome to use them for commenting and voting on articles.
+For a bit more on this, see <a
+href="http://effbot.slinkset.com/links/Welcome_to_discuss_effbot_org">this
+page</a>. /F
+</p>
+--> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <h1 class="maintitle">Vroom! - A Simple DarkRoom/WriteRoom Remake in&nbsp;Tkinter</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p class="info">Fredrik Lundh | August 2007</p><h2 id="room-editors">Room Editors&#160;<a class="nav" href="#room-editors" title="bookmark!">#</a></h2><p>Recently, I&#8217;ve been using Jeffrey Fuller&#8217;s <a href="http://they.misled.us/dark-room/">Dark Room</a> editor for a lot of my writing.  Dark Room is a Windows remake of the OS X application <a href="http://hogbaysoftware.com/projects/writeroom">WriteRoom</a>, and is designed, just as the original, to let you focus on the text you&#8217;re working on, instead of getting distracted by a plethora of fancy features.  To quote Jeffrey,</p><blockquote><p>&#8220;<em>Dark Room is a full screen, distraction free, writing environment. Unlike standard word processors that focus on features, Dark Room is just about you and your text.</em>&#8221;</p></blockquote><p>Dark Room provides plain text editing in a fixed-pitch font, using green text on a dark background, basic editing commands, and not much else.  The editor is designed to be used in full-screen mode.</p><p>While Dark Room has suited my needs quite well, the itch to create a clone of my own just had to be scratched.  My BMW-obsessed 4-year old came up with a suitable name, <strong>Vroom!</strong>, and, building on Tkinter&#8217;s <b>Text</b> widget, I got the first version up and running in a few short programming sessions spread over two days.</p><p>A few programming sessions and a short writing session, that is, because what&#8217;s more suitable for the &#8220;maiden voyage&#8221; of a new editor than an article describing the implementation?</p><h2 id="using-the-tkinter-text-widget">Using the Tkinter Text Widget&#160;<a class="nav" href="#using-the-tkinter-text-widget" title="bookmark!">#</a></h2><p>The Tkinter UI framework is nearly as minimalistic as the Room editors, but it does come with a couple of extraordinarily powerful widgets.  The <b>Canvas</b> widget provides structured graphics, and the <b>Text</b> widget provides a combined rich-text editing and presentation component, which makes it the perfect match for this project.</p><p>Using the <b>Text</b> widget as an editor is trivial; all you have to do is to create the widget, display it, and make sure it has keyboard focus:</p><pre class="python">
+<span class="pykeyword">from</span> Tkinter <span class="pykeyword">import</span> *
+
+editor = Text()
+editor.pack(fill=Y, expand=1)
+
+editor.config(font=<span class="pystring">"Courier 12"</span>)
+
+editor.focus_set()
+
+mainloop()</pre><p>The above creates a bare-bones editor widget, with a fixed-pitch Courier font, and basic emacs-style keyboard bindings.  The widget is also set up to resize itself to match the Tkinter root window.  If you run the script, you can start typing in text right away.</p><blockquote>
+<img alt="" height="282" src="/media/cache/6a5d43e406bb41e8120a9b075328e31b.png" width="400" />
+</blockquote><p>It doesn&#8217;t look much like the Dark Room editor, though.  To get closer, you need to apply some basic styling.</p><h2 id="styling-the-widget">Styling the Widget&#160;<a class="nav" href="#styling-the-widget" title="bookmark!">#</a></h2><p>The following slightly enhanced script creates a root window widget, and then places a styled <b>Text</b> widget inside it.  The editor now uses green text on black background, a white cursor (to make sure it&#8217;s visible on the black background), and a maximum width of 64 characters, even if the root window is made wider than that.  Finally, support for undo/redo is enabled, which lets you use Control-Z to undo changes to the text, and Control-Y to reapply them.</p><pre class="python">
+<span class="pykeyword">from</span> Tkinter <span class="pykeyword">import</span> *
+
+root = Tk()
+root.title(<span class="pystring">"Vroom!"</span>)
+root.config(background=<span class="pystring">"black"</span>)
+root.wm_state(<span class="pystring">"zoomed"</span>)
+
+editor = Text(root)
+editor.pack(fill=Y, expand=1)
+
+editor.config(
+    borderwidth=0,
+    font=<span class="pystring">"{Lucida Sans Typewriter} 12"</span>,
+    foreground=<span class="pystring">"green"</span>,
+    background=<span class="pystring">"black"</span>,
+    insertbackground=<span class="pystring">"white"</span>, <span class="pycomment"># cursor</span>
+    selectforeground=<span class="pystring">"green"</span>, <span class="pycomment"># selection</span>
+    selectbackground=<span class="pystring">"#008000"</span>,
+    wrap=WORD, <span class="pycomment"># use word wrapping</span>
+    width=64,
+    undo=True, <span class="pycomment"># Tk 8.4</span>
+    )
+
+editor.focus_set()
+
+mainloop()</pre><p>(Note that the undo/redo functionality requires Tk 8.4.)</p><blockquote>
+<img alt="" height="272" src="/media/cache/ce910cd876d257b1e6ce058390bc8897.png" width="400" />
+</blockquote><h2 id="loading-and-saving-text">Loading and Saving Text&#160;<a class="nav" href="#loading-and-saving-text" title="bookmark!">#</a></h2><p>The standard <b>Text</b> widget and some nice styling is pretty much all you need to get started.  However, the only way to get text into and out from this prototype is to copy the text via the clipboard, from or to some other editor (such as <em>notepad</em> or <em>emacs</em>).</p><p>Loading text into a Text widget is pretty straightforward; the following snippet shows how to delete the current contents (everything between line 1 column 0 and the END of the buffer), insert the new contents, and finally move the insertion cursor back to the beginning of the buffer:</p><pre class="python">
+text = open(filename).read()
+editor.delete(1.0, END)
+editor.insert(END, text)
+editor.mark_set(INSERT, 1.0)</pre><p>And here&#8217;s the corresponding code to save the contents to a file.  The Text widget has a habit of appending newlines to the end of the edit buffer, something that this code addresses by simply trimming away all trailing whitespace, and adding a single newline to the file on the way out.</p><pre class="python">
+f = open(filename, <span class="pystring">"w"</span>)
+text = editor.get(1.0, END)
+<span class="pykeyword">try</span>:
+    <span class="pycomment"># normalize trailing whitespace</span>
+    f.write(text.rstrip())
+    f.write(<span class="pystring">"\n"</span>)
+<span class="pykeyword">finally</span>:
+    f.close()</pre><h2 id="towards-a-production-quality-implementation">Towards a Production-Quality Implementation&#160;<a class="nav" href="#towards-a-production-quality-implementation" title="bookmark!">#</a></h2><p>Now, given the styled widget and the snippets that shows how to load and save text, let&#8217;s start building a slightly more organized implementation.  The first step is to create a custom widget class for the editor, to give us some place to add editor-related methods and attributes.  Since the editor is a specialized Text widget, you can simply inherit from the Text widget class, and do the necessary setup in the initialization method.</p><pre class="python">
+<span class="pykeyword">from</span> Tkinter <span class="pykeyword">import</span> *
+
+<span class="pykeyword">class</span> <span class="pyclass">RoomEditor</span>(Text):
+
+    <span class="pykeyword">def</span> <span class="pyfunction">__init__</span>(self, master, **options):
+        Text.__init__(self, master, **options)
+
+        self.config(
+            borderwidth=0,
+            font=<span class="pystring">"{Lucida Sans Typewriter} 14"</span>,
+            foreground=<span class="pystring">"green"</span>,
+            background=<span class="pystring">"black"</span>,
+            insertbackground=<span class="pystring">"white"</span>, <span class="pycomment"># cursor</span>
+            selectforeground=<span class="pystring">"green"</span>, <span class="pycomment"># selection</span>
+            selectbackground=<span class="pystring">"#008000"</span>,
+            wrap=WORD, <span class="pycomment"># use word wrapping</span>
+            undo=True,
+            width=64,
+            )
+
+        self.filename = None <span class="pycomment"># current document</span></pre><p>The editor class shown here inh

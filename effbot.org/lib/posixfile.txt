@@ -1,0 +1,231 @@
+
+@@module posixfile
+
+<h1>posixfile&#8212;File-like objects with locking support</h1>
+
+<p>Availability: Unix.
+@@error unexpected div versionnote
+
+<p>This module implements some additional functionality over the
+built-in file objects. In particular, it implements file locking,
+control over the file flags, and an easy interface to duplicate the file
+object. The module defines a new file object, the posixfile object. It
+has all the standard file object methods and adds the methods described
+below. This module only works for certain flavors of Unix, since it uses
+{@link fcntl.fcntl} for file locking.
+
+<p>To instantiate a posixfile object, use the {@link open} function in
+the {@link posixfile} module. The resulting object looks and feels
+roughly the same as a standard file object.
+
+<p>The {@link posixfile} module defines the following constants:
+
+@@variable SEEK_SET
+
+<p>Offset is calculated from the start of the file.
+
+@@variable SEEK_CUR
+
+<p>Offset is calculated from the current position in the file.
+
+@@variable SEEK_END
+
+<p>Offset is calculated from the end of the file.
+
+@@text 
+
+<p>The {@link posixfile} module defines the following functions:
+
+@@function open(filename[, mode[, bufsize]])
+
+<p>Create a new posixfile object with the given filename and mode. The
+{@var filename}, {@var mode} and {@var bufsize} arguments are
+interpreted the same way as by the built-in {@link open} function.
+
+@@function fileopen(fileobject)
+
+<p>Create a new posixfile object with the given standard file object.
+The resulting object has the same filename and mode as the original file
+object.
+
+@@text 
+
+<p>The posixfile object defines the following additional methods:
+
+@@function lock(fmt, [len[, start[, whence]]])
+
+<p>Lock the specified section of the file that the file object is
+referring to. The format is explained below in a table. The {@var len}
+argument specifies the length of the section that should be locked. The
+default is {@code 0}. {@var start} specifies the starting offset of the
+section, where the default is {@code 0}. The {@var whence} argument
+specifies where the offset is relative to. It accepts one of the
+constants {@code SEEK_SET}, {@code SEEK_CUR} or {@code SEEK_END}. The
+default is {@code SEEK_SET}. For more information about the arguments
+refer to the fcntl(2) manual page on your system.
+
+@@function flags([flags])
+
+<p>Set the specified flags for the file that the file object is
+referring to. The new flags are ORed with the old flags, unless
+specified otherwise. The format is explained below in a table. Without
+the {@var flags} argument a string indicating the current flags is
+returned (this is the same as the "{@code ?}" modifier). For more
+information about the flags refer to the fcntl(2) manual page on your
+system.
+
+@@function dup()
+
+<p>Duplicate the file object and the underlying file pointer and file
+descriptor. The resulting object behaves as if it were newly opened.
+
+@@function dup2(fd)
+
+<p>Duplicate the file object and the underlying file pointer and file
+descriptor. The new object will have the given file descriptor.
+Otherwise the resulting object behaves as if it were newly opened.
+
+@@function file()
+
+<p>Return the standard file object that the posixfile object is based
+on. This is sometimes necessary for functions that insist on a standard
+file object.
+
+@@text 
+
+<p>All methods raise {@link exceptions.IOError} when the request fails.
+
+<p>Format characters for the {@link lock} method have the following
+meaning:
+
+<p><table border=1>
+<tr> <th>
+<p>Format
+<th>
+<p>Meaning
+<tr> <td>
+<p>{@code u}
+<td>
+<p>unlock the specified region
+<tr> <td>
+<p>{@code r}
+<td>
+<p>request a read lock for the specified section
+<tr> <td>
+<p>{@code w}
+<td>
+<p>request a write lock for the specified section
+</table></p>
+
+<p>In addition the following modifiers can be added to the format:
+
+<p><table border=1>
+<tr> <th>
+<p>Modifier
+<th>
+<p>Meaning
+<th>
+<p>Notes
+<tr> <td>
+<p>{@code |}
+<td>
+<p>wait until the lock has been granted
+<td> <tr> <td>
+<p>{@code ?}
+<td>
+<p>return the first lock conflicting with the requested lock, or {@link
+None} if there is no conflict.
+<td>
+<p>(1)
+</table></p>
+
+<p>Note:
+
+@@variable (1)
+
+<p>The lock returned is in the format {@code (}{@var mode}, {@var len},
+{@var start}, {@var whence}, {@var pid}) where {@var mode} is a
+character representing the type of lock ('r' or 'w'). This modifier
+prevents a request from being granted; it is for query purposes only.
+
+@@text 
+
+<p>Format characters for the {@link flags} method have the following
+meanings:
+
+<p><table border=1>
+<tr> <th>
+<p>Format
+<th>
+<p>Meaning
+<tr> <td>
+<p>{@code a}
+<td>
+<p>append only flag
+<tr> <td>
+<p>{@code c}
+<td>
+<p>close on exec flag
+<tr> <td>
+<p>{@code n}
+<td>
+<p>no delay flag (also called non-blocking flag)
+<tr> <td>
+<p>{@code s}
+<td>
+<p>synchronization flag
+</table></p>
+
+<p>In addition the following modifiers can be added to the format:
+
+<p><table border=1>
+<tr> <th>
+<p>Modifier
+<th>
+<p>Meaning
+<th>
+<p>Notes
+<tr> <td>
+<p>{@code !}
+<td>
+<p>turn the specified flags 'off', instead of the default 'on'
+<td>
+<p>(1)
+<tr> <td>
+<p>{@code =}
+<td>
+<p>replace the flags, instead of the default 'OR' operation
+<td>
+<p>(1)
+<tr> <td>
+<p>{@code ?}
+<td>
+<p>return a string in which the characters represent the flags that are
+set.
+<td>
+<p>(2)
+</table></p>
+
+<p>Notes:
+
+@@variable (1)
+@@unknown The "!" and "=" modifiers are mutually exclusive.
+@@variable (2)
+
+<p>This string represents the flags after they may have been altered by
+the same call.
+
+@@text 
+
+<p>Examples:
+
+<pre>
+import posixfile
+
+file = posixfile.open('/tmp/test', 'w')
+file.lock('w|')
+...
+file.lock('u')
+file.close()
+</pre>
+

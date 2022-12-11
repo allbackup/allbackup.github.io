@@ -1,0 +1,24 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>string-conversions</title> <script type="text/javascript">effbot_page_id=1587;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <h1 class="maintitle">string-conversions</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p>A string conversion is an expression list enclosed in reverse
+(backward) quotes:</p><p>Syntax:</p><blockquote><p><strong>`</strong> <em><a href="syntax-expression">expression list</a></em> <strong>`</strong></p></blockquote><p>A string conversion evaluates the contained expression list and
+converts the resulting object into a string according to rules
+specific to its type.</p><p>If the object is a string, a number, <a href="None.htm"><strong>None</strong></a>, or a tuple, list or
+dictionary containing only objects whose type is one of these, the
+resulting string is a valid Python expression which can be passed to
+the built-in function <a href="eval.htm"><strong>eval</strong></a> to yield an expression with the same
+value (or an approximation, if floating point numbers are involved).</p><p>(In particular, converting a string adds quotes around it and converts
+<q>funny</q> characters to escape sequences that are safe to print.)</p><p>Recursive objects (for example, lists or dictionaries that contain a
+reference to themselves, directly or indirectly) use &#8220;&#8230;&#8221; to indicate
+a recursive reference, and the result cannot be passed to <a href="eval.htm"><strong>eval</strong></a> to
+get an equal value (<a href="SyntaxError.htm"><strong>SyntaxError</strong></a> will be raised instead).</p><p>The built-in function <a href="repr.htm"><strong>repr</strong></a> performs exactly the same conversion in
+its argument as enclosing it in parentheses and reverse quotes does.
+The built-in function <a href="str.htm"><strong>str</strong></a> performs a similar but more user-friendly
+conversion.</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><div class='comment'>
+<p><b>Comment:</b></p>
+<p>
+This syntax is deprecated.  Use repr() instead.</p>
+<p>Posted by <b class='author'><a href='http://pyref.infogami.com/string-conversions/_comments/59cl'>infogami</a></b></p>
+</div>
+</div> <!-- yui-g --></div> <!-- content --> </div> <!-- yui-b --> </div> <!-- yui-main --> <div class="yui-b"> <div id='menu'> <ul> <li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li> <li><b><a href="." title="Go to pyref index page.">::: pyref :::</a></b></li> </ul> </div> <!-- menu --> </div> <!-- yui-b --> </div> <!-- bd --> <div id="ft"> <!-- footer --> <p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;"></a>
+this page was rendered by a <a href="http://www.djangoproject.com/">django</a> application in 0.02s 2011-06-21 22:24:31.258523.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p> </div> <!-- ft --> </div> <!-- doc --> <script src="/media/js/effbot-min.js" type="text/javascript"> </script> </body> </html>

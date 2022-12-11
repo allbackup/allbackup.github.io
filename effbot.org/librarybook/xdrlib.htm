@@ -1,0 +1,78 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>The xdrlib&nbsp;module</title></head><body data-page-id="721"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">The xdrlib&nbsp;module</h1></div><div class="yui-ge"><div class="yui-u first"><p>This module converts between Python data types and Sun&#8217;s
+external data representation (XDR).</p><div class="example">
+<b style="example">Example: Using the xdrlib module</b>
+<pre>
+# File: <a href="xdrlib/xdrlib-example-1.py">xdrlib-example-1.py</a>
+
+import xdrlib
+
+#
+# <i>create a packer and add some data to it</i>
+
+p = xdrlib.Packer()
+p.pack_uint(1)
+p.pack_string("spam")
+
+data = p.get_buffer()
+
+print "packed:", repr(data)
+
+#
+# <i>create an unpacker and use it to decode the data</i>
+
+u = xdrlib.Unpacker(data)
+
+print "unpacked:", u.unpack_uint(), repr(u.unpack_string())
+
+u.done()
+
+</pre><pre class="computeroutput" moreinfo="NONE">
+$ python xdrlib-example-1.py
+packed: '\000\000\000\001\000\000\000\004spam'
+unpacked: 1 'spam'
+</pre></div><p>The XDR format is used by Sun&#8217;s remote procedure call (RPC)
+protocol. Here&#8217;s an incomplete (and rather contrived) example
+showing how to build an RPC request package:</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><div class="example wide">
+<b style="example">Example: Using the xdrlib
+module to send a RPC call package</b>
+<pre class="wide">
+# File: <a href="xdrlib/xdrlib-example-2.py">xdrlib-example-2.py</a>
+
+import xdrlib
+
+# <i>some constants (see the RPC specs for details)</i>
+RPC_CALL = 1
+RPC_VERSION = 2
+
+MY_PROGRAM_ID = 1234 # <i>assigned by Sun</i>
+MY_VERSION_ID = 1000
+MY_TIME_PROCEDURE_ID = 9999
+
+AUTH_NULL = 0
+
+transaction = 1
+
+p = xdrlib.Packer()
+
+# <i>send an Sun RPC call package</i>
+p.pack_uint(transaction)
+p.pack_enum(RPC_CALL)
+p.pack_uint(RPC_VERSION)
+p.pack_uint(MY_PROGRAM_ID)
+p.pack_uint(MY_VERSION_ID)
+p.pack_uint(MY_TIME_PROCEDURE_ID)
+p.pack_enum(AUTH_NULL)
+p.pack_uint(0)
+p.pack_enum(AUTH_NULL)
+p.pack_uint(0)
+
+print repr(p.get_buffer())
+
+</pre><pre class="computeroutput wide" moreinfo="NONE">
+$ python xdrlib-example-2.py
+'\000\000\000\001\000\000\000\001\000\000\000\002\000\000\004\322
+\000\000\003\350\000\000\'\017\000\000\000\000\000\000\000\000\000
+\000\000\000\000\000\000\000'
+</pre></div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to librarybook index page.">::: librarybook :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

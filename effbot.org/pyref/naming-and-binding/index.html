@@ -1,0 +1,40 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>Naming and&nbsp;binding</title> <script type="text/javascript">effbot_page_id=1477;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> <!--
+<p style='color: #8f8f8f; background: #fff5bf; padding: 5px 10px;'> <b>2008-07-15:</b> Selected articles
+
+now have experimental "comment" links in the left column and at the bottom.
+You're welcome to use them for commenting and voting on articles.
+For a bit more on this, see <a
+href="http://effbot.slinkset.com/links/Welcome_to_discuss_effbot_org">this
+page</a>. /F
+</p>
+--> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <h1 class="maintitle">Naming and&nbsp;binding</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p><em>Names</em> refer to objects. Names are introduced by name binding
+operations. Each occurrence of a name in the program text refers to
+the <em>binding</em> of that name established in the innermost function block
+containing the use.</p><p>A <em>block</em> is a piece of Python program text that is executed as a
+unit. The following are blocks: a module, a function body, and a class
+definition. Each command typed interactively is a block. A script file
+(a file given as standard input to the interpreter or specified on the
+interpreter command line the first argument) is a code block. A script
+command (a command specified on the interpreter command line with the
+<strong>-c</strong> option) is a code block. The file read by the built-in
+function <a href="execfile.htm"><strong>execfile</strong></a> is a code block. The string argument passed to the
+built-in function <a href="eval.htm"><strong>eval</strong></a> and to the <a href="exec.htm"><strong>exec</strong></a> statement is a code
+block. The expression read and evaluated by the built-in function
+<a href="input.htm"><strong>input</strong></a> is a code block.</p><p>A code block is executed in an <em>execution frame</em>. A frame contains
+some administrative information (used for debugging) and determines
+where and how execution continues after the code block&#8217;s execution has
+completed.</p><p>A <em>scope</em> defines the visibility of a name within a block. If a local
+variable is defined in a block, its scope includes that block. If the
+definition occurs in a function block, the scope extends to any blocks
+contained within the defining one, unless a contained block introduces
+a different binding for the name. The scope of names defined in a
+class block is limited to the class block; it does not extend to the
+code blocks of methods.</p><p>When a name is used in a code block, it is resolved using the nearest
+enclosing scope. The set of all such scopes visible to a code block is
+called the block&#8217;s <em>environment</em>.</p><p>If a name is bound in a block, it is a local variable of that
+block. If a name is bound at the module level, it is a global
+variable. (The variables of the module code block are local and
+global.) If a variable is used in a code block but not defined there,
+it is a <em>free variable</em>.</p><p>When a name is not found at all, a <a href="NameError.htm"><strong>NameError</strong></a> e

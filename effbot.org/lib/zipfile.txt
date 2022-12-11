@@ -1,0 +1,307 @@
+
+@@module zipfile
+
+<h1>zipfile&#8212;Work with ZIP archives</h1>
+
+<p>New in version 1.6.
+
+<p>The ZIP file format is a common archive and compression standard.
+This module provides tools to create, read, write, append, and list a
+ZIP file. Any advanced use of this module will require an understanding
+of the format, as defined in {@link http://www.pkware.com/appnote.html
+PKZIP Application Note}.
+
+<p>This module does not currently handle ZIP files which have appended
+comments, or multi-disk ZIP files.
+
+<p>The available attributes of this module are:
+
+@@exception error
+
+<p>The error raised for bad ZIP files.
+
+@@class ZipFile
+
+<p>The class for reading and writing ZIP files. See &#8220;{@em ZipFile
+Objects}&#8221; (section {@link zipfile-objects.html#zipfile-objects})
+for constructor details.
+
+@@class PyZipFile
+
+<p>Class for creating ZIP archives containing Python libraries.
+
+@@class ZipInfo([filename[, date_time]])
+
+<p>Class used to represent information about a member of an archive.
+Instances of this class are returned by the {@link getinfo} and {@link
+infolist} methods of {@link ZipFile} objects. Most users of the {@link
+zipfile} module will not need to create these, but only use those
+created by this module. {@var filename} should be the full name of the
+archive member, and {@var date_time} should be a tuple containing six
+fields which describe the time of the last modification to the file; the
+fields are described in section {@link
+zipinfo-objects.html#zipinfo-objects}, &#8220;ZipInfo Objects.&#8221;
+
+@@function is_zipfile(filename)
+
+<p>Returns {@link True} if {@var filename} is a valid ZIP file based on
+its magic number, otherwise returns {@code False}. This module does not
+currently handle ZIP files which have appended comments.
+
+@@variable ZIP_STORED
+
+<p>The numeric constant for an uncompressed archive member.
+
+@@variable ZIP_DEFLATED
+
+<p>The numeric constant for the usual ZIP compression method. This
+requires the zlib module. No other compression methods are currently
+supported.
+
+@@text 
+
+@see 
+{@link http://www.pkware.com/appnote.html PKZIP Application Note}
+
+Documentation on the ZIP file format by Phil Katz, the creator of the
+format and algorithms used.
+@see 
+{@link http://www.info-zip.org/pub/infozip/ Info-ZIP Home Page}
+
+Information about the Info-ZIP project's ZIP archive programs and
+development libraries.
+
+<h2>ZipFile Objects</h2>
+
+@@class ZipFile(file[, mode[, compression]])
+
+<p>Open a ZIP file, where {@var file} can be either a path to a file (a
+string) or a file-like object. The {@var mode} parameter should be
+{@code 'r'} to read an existing file, {@code 'w'} to truncate and write
+a new file, or {@code 'a'} to append to an existing file. For {@var
+mode} is {@code 'a'} and {@var file} refers to an existing ZIP file,
+then additional files are added to it. If {@var file} does not refer to
+a ZIP file, then a new ZIP archive is appended to the file. This is
+meant for adding a ZIP archive to another file, such as python.exe.
+Using
+
+<pre>
+cat myzip.zip &gt;&gt; python.exe
+</pre>
+
+
+<p>also works, and at least WinZip can read such files. {@var
+compression} is the ZIP compression method to use when writing the
+archive, and should be {@code ZIP_STORED} or {@code ZIP_DEFLATED};
+unrecognized values will cause {@link exceptions.RuntimeError} to be
+raised. If {@code ZIP_DEFLATED} is specified but the {@link zlib} module
+is not available, {@link exceptions.RuntimeError} is also raised. The
+default is {@code ZIP_STORED}.
+
+@@method ZipFile.close()
+
+<p>Close the archive file. You must call {@link close} before exiting
+your program or essential records will not be written.
+
+@@method ZipFile.getinfo(name)
+
+<p>Return a {@link ZipInfo} object with information about the archive
+member {@var name}.
+
+@@method ZipFile.infolist()
+
+<p>Return a list containing a {@link ZipInfo} object for each member of
+the archive. The objects are in the same order as their entries in the
+actual ZIP file on disk if an existing archive was opened.
+
+@@method ZipFile.namelist()
+
+<p>Return a list of archive members by name.
+
+@@method ZipFile.printdir()
+
+<p>Print a table of contents for the archive to {@code sys.stdout}.
+
+@@method ZipFile.read(name)
+
+<p>Return the bytes of the file in the archive. The archive must be open
+for read or append.
+
+@@method ZipFile.testzip()
+
+<p>Read all the files in the archive and check their CRC's. Return the
+name of the first bad file, or else return {@code None}.
+
+@@method ZipFile.write(filename[, arcname[, compress_type]])
+
+<p>Write the file named {@var filename} to the archive, giving it the
+archive name {@var arcname} (by default, this will be the same as {@var
+filename}). If given, {@var compress_type} overrides the value given for
+the {@var compression} parameter to the constructor for the new entry.
+The archive must be open with mode {@code 'w'} or {@code 'a'}.
+
+@@method ZipFile.writestr(zinfo_or_arcname, bytes)
+
+<p>Write the string {@var bytes} to the archive; {@var zinfo_or_arcname}
+is either the file name it will be given in the archive, or a {@link
+ZipInfo} instance. If it's an instance, at least the filename, date, and
+time must be given. If it's a name, the date and time is set to the
+current date and time. The archive must be opened with mode {@code 'w'}
+or {@code 'a'}.
+
+@@text 
+
+<p>The following data attribute is also available:
+
+@@attribute ZipFile.debug
+
+<p>The level of debug output to use. This may be set from {@code 0} (the
+default, no output) to {@code 3} (the most output). Debugging
+information is written to {@code sys.stdout}.
+
+@@text 
+
+<h2>PyZipFile Objects</h2>
+
+<p>The {@link PyZipFile} constructor takes the same parameters as the
+{@link ZipFile} constructor. Instances have one method in addition to
+those of {@link ZipFile} objects.
+
+@@method PyZipFile.writepy(pathname[, basename])
+
+<p>Search for files *.py and add the corresponding file to the archive.
+The corresponding file is a *.pyo file if available, else a *.pyc file,
+compiling if necessary. If the pathname is a file, the filename must end
+with .py, and just the (corresponding *.py[co]) file is added at the top
+level (no path information). If it is a directory, and the directory is
+not a package directory, then all the files *.py[co] are added at the
+top level. If the directory is a package directory, then all *.py[oc]
+are added under the package name as a file path, and if any
+subdirectories are package directories, all of these are added
+recursively. {@var basename} is intended for internal use only. The
+{@link writepy} method makes archives with file names like this:
+
+<pre>
+    string.pyc                                # Top level name 
+    test/__init__.pyc                         # Package directory 
+    test/testall.pyc                          # Module test.testall
+    test/bogus/__init__.pyc                   # Subpackage directory 
+    test/bogus/myfile.pyc                     # Submodule test.bogus.myfile
+</pre>
+
+
+@@text 
+
+<h2>ZipInfo Objects</h2>
+
+<p>Instances of the {@link ZipInfo} class are returned by the {@link
+getinfo} and {@link infolist} methods of {@link ZipFile} objects. Each
+object stores information about a single member of the ZIP archive.
+
+<p>Instances have the following attributes:
+
+@@attribute ZipInfo.filename
+
+<p>Name of the file in the archive.
+
+@@attribute ZipInfo.date_time
+
+<p>The time and date of the last modification to the archive member.
+This is a tuple of six values:
+
+<p><table border=1>
+<tr> <th>
+<p>Index
+<th>
+<p>Value
+<tr> <td>
+<p>{@code 0}
+<td>
+<p>Year
+<tr> <td>
+<p>{@code 1}
+<td>
+<p>Month (one-based)
+<tr> <td>
+<p>{@code 2}
+<td>
+<p>Day of month (one-based)
+<tr> <td>
+<p>{@code 3}
+<td>
+<p>Hours (zero-based)
+<tr> <td>
+<p>{@code 4}
+<td>
+<p>Minutes (zero-based)
+<tr> <td>
+<p>{@code 5}
+<td>
+<p>Seconds (zero-based)
+</table></p>
+
+@@attribute ZipInfo.compress_type
+
+<p>Type of compression for the archive member.
+
+@@attribute ZipInfo.comment
+
+<p>Comment for the individual archive member.
+
+@@attribute ZipInfo.extra
+
+<p>Expansion field data. The {@link http://www.pkware.com/appnote.html
+PKZIP Application Note} contains some comments on the internal structure
+of the data contained in this string.
+
+@@attribute ZipInfo.create_system
+
+<p>System which created ZIP archive.
+
+@@attribute ZipInfo.create_version
+
+<p>PKZIP version which created ZIP archive.
+
+@@attribute ZipInfo.extract_version
+
+<p>PKZIP version needed to extract archive.
+
+@@attribute ZipInfo.reserved
+
+<p>Must be zero.
+
+@@attribute ZipInfo.flag_bits
+
+<p>ZIP flag bits.
+
+@@attribute ZipInfo.volume
+
+<p>Volume number of file header.
+
+@@attribute ZipInfo.internal_attr
+
+<p>Internal attributes.
+
+@@attribute ZipInfo.external_attr
+
+<p>External file attributes.
+
+@@attribute ZipInfo.header_offset
+
+<p>Byte offset to the file header.
+
+@@attribute ZipInfo.file_offset
+
+<p>Byte offset to the start of the file data.
+
+@@attribute ZipInfo.CRC
+
+<p>CRC-32 of the uncompressed file.
+
+@@attribute ZipInfo.compress_size
+
+<p>Size of the compressed data.
+
+@@attribute ZipInfo.file_size
+
+<p>Size of the uncompressed file.

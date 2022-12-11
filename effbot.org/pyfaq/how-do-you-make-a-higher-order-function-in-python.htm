@@ -1,0 +1,28 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>How do you make a higher order function in&nbsp;Python?</title></head><body data-page-id="830"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><p class="note" style="text-align: center"><strong>
+This is an old copy of the Python FAQ.  The information here may be
+outdated.
+</strong></p><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">How do you make a higher order function in&nbsp;Python?</h1></div><div class="yui-ge"><div class="yui-u first"><p>Functions and methods are first-class objects in Python, so if you want to
+pass a function to another function, you can just treat it as any other
+object.</p><p>To bind a function object to a specific context, you can use either nested scopes or callable objects.  For example, suppose you wanted to define linear(a,b) which returns a function f(x) that computes the value a*x+b. Using nested scopes:</p><pre class="python"><span class="pykeyword">def</span> <span class="pyfunction">linear</span>(a, b):
+    <span class="pykeyword">def</span> <span class="pyfunction">result</span>(x):
+        <span class="pykeyword">return</span> a*x + b
+    <span class="pykeyword">return</span> result</pre><p>Or using a callable object:</p><pre class="python"><span class="pykeyword">class</span> <span class="pyclass">linear</span>:
+   <span class="pykeyword">def</span> <span class="pyfunction">__init__</span>(self, a, b):
+       self.a, self.b = a,b
+   <span class="pykeyword">def</span> <span class="pyfunction">__call__</span>(self, x):
+       <span class="pykeyword">return</span> self.a * x + self.b</pre><p>In both cases:</p><pre class="python">taxes = linear(0.3, 2)</pre><p>gives a callable object where taxes(10e6) == 0.3 * 10e6 + 2.</p><p>The callable object approach has the disadvantage that it is a bit slower and results in slightly longer code.  It can be a bit easier to understand, though, especially if you&#8217;re used to OO design.  It also allows a collection of callables to share their signature via inheritance:</p><pre class="python"><span class="pykeyword">class</span> <span class="pyclass">exponential</span>(linear):
+   <span class="pycomment"># __init__ inherited</span>
+   <span class="pykeyword">def</span> <span class="pyfunction">__call__</span>(self, x):
+       <span class="pykeyword">return</span> self.a * (x ** self.b)</pre><p>And the object can encapsulate state for several methods:</p><pre class="python"><span class="pykeyword">class</span> <span class="pyclass">counter</span>:
+    value = 0
+    <span class="pykeyword">def</span> <span class="pyfunction">set</span>(self, x):
+        self.value = x
+    <span class="pykeyword">def</span> <span class="pyfunction">up</span>(self):
+        self.value=self.value+1
+    <span class="pykeyword">def</span> <span class="pyfunction">down</span>(self):
+        self.value=self.value-1
+
+count = counter()
+inc, dec, reset = count.up, count.down, count.set</pre><p>Here  inc(),  dec() and reset() act like functions which share the same counting variable.</p><p>CATEGORY: programming</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to pyfaq index page.">::: pyfaq :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

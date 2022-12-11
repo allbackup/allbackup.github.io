@@ -1,0 +1,36 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>How do I run a subprocess with pipes connected to both input and&nbsp;output?</title></head><body data-page-id="817"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><p class="note" style="text-align: center"><strong>
+This is an old copy of the Python FAQ.  The information here may be
+outdated.
+</strong></p><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">How do I run a subprocess with pipes connected to both input and&nbsp;output?</h1></div><div class="yui-ge"><div class="yui-u first"><p>Use the <a href="/pyref/subprocess.htm"><strong>subprocess</strong></a> or <a href="/pyref/popen2.htm"><strong>popen2</strong></a> modules.  An example:</p><pre class="python"><span class="pykeyword">import</span> popen2
+fromchild, tochild = popen2.popen2(<span class="pystring">"command"</span>)
+tochild.write(<span class="pystring">"input\n"</span>)
+tochild.flush()
+output = fromchild.readline()</pre><p>Warning: in general it is unwise to do this because you can easily cause a deadlock where your process is blocked waiting for output from the child while the child is blocked waiting for input from you. This can be caused because the parent expects the child to output more text than it does, or it can be caused by data being stuck in stdio buffers due to lack of flushing. The Python parent can of course explicitly flush the data it sends to the child before it reads any output, but if the child is a naive C program it may have been written to never explicitly flush its output, even if it is interactive, since flushing is normally automatic.</p><p>Note that a deadlock is also possible if you use popen3 to read stdout and stderr. If one of the two is too large for the internal buffer (increasing the buffer size does not help) and you read() the other one first, there is a deadlock, too.</p><p>Note on a bug in popen2: unless your program calls wait() or  waitpid(), finished child processes are never removed, and eventually calls to popen2 will fail because of a limit on the number of child processes. Calling os.waitpid with the os.WNOHANG option can prevent this; a good place to insert such a call would be before calling  popen2 again.</p><p>In many cases, all you really need is to run some data through a command and get the result back. Unless the amount of data is very large, the easiest way to do this is to write it to a temporary file and run the command with that temporary file as input. The standard <a href="/pyref/tempfile.htm"><strong>tempfile</strong></a> exports a mktemp() function to generate unique temporary file names.</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><pre class="python wide wide"><span class="pykeyword">import</span> tempfile
+<span class="pykeyword">import</span> os
+<span class="pykeyword">class</span> <span class="pyclass">Popen3</span>:
+   <span class="pystring">"""</span>
+   This is a deadlock-safe version of popen that returns
+   an object with errorlevel, out (a string) and err (a string).
+   (capturestderr may not work under windows.)
+   Example: print Popen3('grep spam','\n\nhere spam\n\n').out
+   """
+   <span class="pykeyword">def</span> <span class="pyfunction">__init__</span>(self,command,input=None,capturestderr=None):
+       outfile=tempfile.mktemp()
+       command=<span class="pystring">"( %s ) &gt; %s"</span> % (command,outfile)
+       <span class="pykeyword">if</span> input:
+           infile=tempfile.mktemp()
+           open(infile,<span class="pystring">"w"</span>).write(input)
+           command=command+<span class="pystring">" &lt;"</span>+infile
+       <span class="pykeyword">if</span> capturestderr:
+           errfile=tempfile.mktemp()
+           command=command+<span class="pystring">" 2&gt;"</span>+errfile
+       self.errorlevel=os.system(command) &gt;&gt; 8
+       self.out=open(outfile,<span class="pystring">"r"</span>).read()
+       os.remove(outfile)
+       <span class="pykeyword">if</span> input:
+           os.remove(infile)
+       <span class="pykeyword">if</span> capturestderr:
+           self.err=open(errfile,<span class="pystring">"r"</span>).read()
+           os.remove(errfile)</pre></div><div class="yui-ge"><div class="yui-u first"><p>Note that many interactive programs (e.g. vi) don&#8217;t work well with pipes substituted for standard input and output. You will have to use pseudo ttys (&#8220;ptys&#8221;) instead of pipes. Or you can use a Python interface to Don Libes&#8217; &#8220;expect&#8221; library. A Python extension that interfaces to expect is called &#8220;expy&#8221; and available from <a href="http://expectpy.sourceforge.net"> http://expectpy.sourceforge.net</a>. A pure Python solution that works like expect is <code>pexpect</code> <a href="http://pexpect.sourceforge.net">http://pexpect.sourceforge.net</a>.</p><p>CATEGORY: library</p><p>CATEGORY: cleanup</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to pyfaq index page.">::: pyfaq :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

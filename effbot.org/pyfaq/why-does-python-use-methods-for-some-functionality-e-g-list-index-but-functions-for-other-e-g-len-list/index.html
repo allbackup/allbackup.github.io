@@ -1,0 +1,24 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>Why does Python use methods for some functionality (e.g. list.index()) but functions for other (e.g.&nbsp;len(list))?</title> <script type="text/javascript">effbot_page_id=939;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> <!--
+<p style='color: #8f8f8f; background: #fff5bf; padding: 5px 10px;'> <b>2008-07-15:</b> Selected articles
+
+now have experimental "comment" links in the left column and at the bottom.
+You're welcome to use them for commenting and voting on articles.
+For a bit more on this, see <a
+href="http://effbot.slinkset.com/links/Welcome_to_discuss_effbot_org">this
+page</a>. /F
+</p>
+--> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <h1 class="maintitle">Why does Python use methods for some functionality (e.g. list.index()) but functions for other (e.g.&nbsp;len(list))?</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p>Guido explains:</p><blockquote><p>There are two bits of &#8220;Python rationale&#8221; that I&#8217;d like to explain
+  first.</p><p>First of all, I chose len(x) over x.len() for <a href="http://en.wikipedia.org/wiki/Human-Computer_Interaction">HCI</a> reasons (def
+  __len__() came much later). There are two intertwined reasons
+  actually, both HCI:</p><p>(a) For some operations, prefix notation just reads better than
+  postfix &#8212; prefix (and infix!) operations have a long tradition in
+  mathematics which likes notations where the visuals help the
+  mathematician thinking about a problem.  Compare the easy with which
+  we rewrite a formula like <em>x*(a+b)</em> into <em>x*a + x*b</em> to the
+  clumsiness of doing the same thing using a raw OO notation.</p><p>(b) When I read code that says len(x) I <em>know</em> that it is asking for
+  the length of something.  This tells me two things: the result is an
+  integer, and the argument is some kind of container.  To the
+  contrary, when I read x.len(), I have to already know that <em>x</em> is
+  s

@@ -1,0 +1,19 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>How do I make python scripts&nbsp;executable?</title> <script type="text/javascript">effbot_page_id=809;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> <!--
+<p style='color: #8f8f8f; background: #fff5bf; padding: 5px 10px;'> <b>2008-07-15:</b> Selected articles
+
+now have experimental "comment" links in the left column and at the bottom.
+You're welcome to use them for commenting and voting on articles.
+For a bit more on this, see <a
+href="http://effbot.slinkset.com/links/Welcome_to_discuss_effbot_org">this
+page</a>. /F
+</p>
+--> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <h1 class="maintitle">How do I make python scripts&nbsp;executable?</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><h3 id="executing-py-files">Executing PY files&#160;<a class="nav" href="#executing-py-files" title="bookmark!">#</a></h3><p>On Windows 2000 and XP, the standard Python installer already
+associates the .py extension with a file type (Python.File) and gives
+that file type an open command that runs the interpreter (D:\Program
+Files\Python\python.exe &#8220;%1&#8221; %*).  This is enough to make scripts
+executable from the command prompt as &#8216;foo.py&#8217;.  If you&#8217;d rather be
+able to execute the script by simply typing &#8216;foo&#8217; with no extension
+you need to add .py to the PATHEXT environment variable.</p><p>On Windows NT, the steps taken by the installer as described above
+allow you to run a script with &#8216;foo.py&#8217;, but a longtime bug in the NT

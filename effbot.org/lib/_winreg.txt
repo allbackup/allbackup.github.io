@@ -1,0 +1,459 @@
+
+@@module _winreg
+
+<h1>_winreg - Windows registry access</h1>
+
+<p>Availability: Windows.
+
+<p>New in version 2.0.
+
+<p>These functions expose the Windows registry API to Python. Instead of
+using an integer as the registry handle, a handle object is used to
+ensure that the handles are closed correctly, even if the programmer
+neglects to explicitly close them.
+
+<p>This module exposes a very low-level interface to the Windows
+registry; it is expected that in the future a new {@code winreg} module
+will be created offering a higher-level interface to the registry API.
+
+<p>This module offers the following functions:
+
+@@function CloseKey(hkey)
+
+<p>Closes a previously opened registry key. The hkey argument specifies
+a previously opened key.
+
+<p>Note that if {@var hkey} is not closed using this method, (or the
+{@link handle.Close} closed when the {@var hkey} object is destroyed by
+Python.
+
+@@function ConnectRegistry(computer_name, key)
+
+<p>Establishes a connection to a predefined registry handle on another
+computer, and returns a handle object
+
+<p>{@var computer_name} is the name of the remote computer, of the form
+{@code r"\\computername"}. If {@link None}, the local computer is used.
+
+<p>{@var key} is the predefined handle to connect to.
+
+<p>The return value is the handle of the opened key. If the function
+fails, an {@link exceptions.EnvironmentError} exception is raised.
+
+@@function CreateKey(key, sub_key)
+
+<p>Creates or opens the specified key, returning a handle object
+
+<p>{@var key} is an already open key, or one of the predefined {@code
+HKEY_*} constants.
+
+<p>{@var sub_key} is a string that names the key this method opens or
+creates.
+
+<p>If {@var key} is one of the predefined keys, {@var sub_key} may be
+{@link None}. In that case, the handle returned is the same key handle
+passed in to the function.
+
+<p>If the key already exists, this function opens the existing key
+
+<p>The return value is the handle of the opened key. If the function
+fails, an {@link exceptions.EnvironmentError} exception is raised.
+
+@@function DeleteKey(key, sub_key)
+
+<p>Deletes the specified key.
+
+<p>{@var key} is an already open key, or any one of the predefined
+{@code HKEY_*} constants.
+
+<p>{@var sub_key} is a string that must be a subkey of the key
+identified by the {@var key} parameter. This value must not be {@link
+None}, and the key may not have subkeys.
+
+<p>{@em This method can not delete keys with subkeys.}
+
+<p>If the method succeeds, the entire key, including all of its values,
+is removed. If the method fails, an {@link exceptions.EnvironmentError}
+exception is raised.
+
+@@function DeleteValue(key, value)
+
+<p>Removes a named value from a registry key.
+
+<p>{@var key} is an already open key, or one of the predefined {@code
+HKEY_*} constants.
+
+<p>{@var value} is a string that identifies the value to remove.
+
+@@function EnumKey(key, index)
+
+<p>Enumerates subkeys of an open registry key, returning a string.
+
+<p>{@var key} is an already open key, or any one of the predefined
+{@code HKEY_*} constants.
+
+<p>{@var index} is an integer that identifies the index of the key to
+retrieve.
+
+<p>The function retrieves the name of one subkey each time it is called.
+It is typically called repeatedly until an {@link
+exceptions.EnvironmentError} exception is raised, indicating, no more
+values are available.
+
+@@function EnumValue(key, index)
+
+<p>Enumerates values of an open registry key, returning a tuple.
+
+<p>{@var key} is an already open key, or any one of the predefined
+{@code HKEY_*} constants.
+
+<p>{@var index} is an integer that identifies the index of the value to
+retrieve.
+
+<p>The function retrieves the name of one subkey each time it is called.
+It is typically called repeatedly, until an {@link
+exceptions.EnvironmentError} exception is raised, indicating no more
+values.
+
+<p>The result is a tuple of 3 items:
+
+<p><table border=1>
+<tr> <th>
+<p>Index
+<th>
+<p>Meaning
+<tr> <td>
+<p>{@code 0}
+<td>
+<p>A string that identifies the value name
+<tr> <td>
+<p>{@code 1}
+<td>
+<p>An object that holds the value data, and whose type depends on the
+underlying registry type
+<tr> <td>
+<p>{@code 2}
+<td>
+<p>An integer that identifies the type of the value data
+</table></p>
+
+@@function FlushKey(key)
+
+<p>Writes all the attributes of a key to the registry.
+
+<p>{@var key} is an already open key, or one of the predefined {@code
+HKEY_*} constants.
+
+<p>It is not necessary to call RegFlushKey to change a key. Registry
+changes are flushed to disk by the registry using its lazy flusher.
+Registry changes are also flushed to disk at system shutdown. Unlike
+{@link CloseKey}, the {@link FlushKey} method returns only when all the
+data has been written to the registry. An application should only call
+{@link FlushKey} if it requires absolute certainty that registry changes
+are on disk.
+
+<p>{@em If you don't know whether a }{@link FlushKey} call is required,
+it probably isn't.
+
+@@function RegLoadKey(key, sub_key, file_name)
+
+<p>Creates a subkey under the specified key and stores registration
+information from a specified file into that subkey.
+
+<p>{@var key} is an already open key, or any of the predefined {@code
+HKEY_*} constants.
+
+<p>{@var sub_key} is a string that identifies the sub_key to load
+
+<p>{@var file_name} is the name of the file to load registry data from.
+This file must have been created with the {@link SaveKey} function.
+Under the file allocation table (FAT) file system, the filename may not
+have an extension.
+
+<p>A call to LoadKey() fails if the calling process does not have the
+{@code SE_RESTORE_PRIVILEGE} privilege. Note that privileges are
+different than permissions - see the Win32 documentation for more
+details.
+
+<p>If {@var key} is a handle returned by {@link ConnectRegistry}, then
+the path specified in {@var fileName} is relative to the remote
+computer.
+
+<p>The Win32 documentation implies {@var key} must be in the {@code
+HKEY_USER} or {@code HKEY_LOCAL_MACHINE} tree. This may or may not be
+true.
+
+@@function OpenKey(key, sub_key[, res = 0][, sam = KEY_READ])
+
+<p>Opens the specified key, returning a handle object
+
+<p>{@var key} is an already open key, or any one of the predefined
+{@code HKEY_*} constants.
+
+<p>{@var sub_key} is a string that identifies the sub_key to open
+
+<p>{@var res} is a reserved integer, and must be zero. The default is
+zero.
+
+<p>{@var sam} is an integer that specifies an access mask that describes
+the desired security access for the key. Default is {@code KEY_READ}
+
+<p>The result is a new handle to the specified key
+
+<p>If the function fails, {@link exceptions.EnvironmentError} is raised.
+
+@@function OpenKeyEx()
+
+<p>The functionality of {@link OpenKeyEx} is provided via {@link
+OpenKey}, by the use of default arguments.
+
+@@function QueryInfoKey(key)
+
+<p>Returns information about a key, as a tuple.
+
+<p>{@var key} is an already open key, or one of the predefined {@code
+HKEY_*} constants.
+
+<p>The result is a tuple of 3 items:
+
+<p><table border=1>
+<tr> <th>
+<p>Index
+<th>
+<p>Meaning
+<tr> <td>
+<p>{@code 0}
+<td>
+<p>An integer giving the number of sub keys this key has.
+<tr> <td>
+<p>{@code 1}
+<td>
+<p>An integer giving the number of values this key has.
+<tr> <td>
+<p>{@code 2}
+<td>
+<p>A long integer giving when the key was last modified (if available)
+as 100's of nanoseconds since Jan 1, 1600.
+</table></p>
+
+@@function QueryValue(key, sub_key)
+
+<p>Retrieves the unnamed value for a key, as a string
+
+<p>{@var key} is an already open key, or one of the predefined {@code
+HKEY_*} constants.
+
+<p>{@var sub_key} is a string that holds the name of the subkey with
+which the value is associated. If this parameter is {@code None} or
+empty, the function retrieves the value set by the {@link SetValue}
+method for the key identified by {@var key}.
+
+<p>Values in the registry have name, type, and data components. This
+method retrieves the data for a key's first value that has a NULL name.
+But the underlying API call doesn't return the type, Lame Lame Lame, DO
+NOT USE THIS!!!
+
+@@function QueryValueEx(key, value_name)
+
+<p>Retrieves the type and data for a specified value name associated
+with an open registry key.
+
+<p>{@var key} is an already open key, or one of the predefined {@code
+HKEY_*} constants.
+
+<p>{@var value_name} is a string indicating the value to query.
+
+<p>The result is a tuple of 2 items:
+
+<p><table border=1>
+<tr> <th>
+<p>Index
+<th>
+<p>Meaning
+<tr> <td>
+<p>{@code 0}
+<td>
+<p>The value of the registry item.
+<tr> <td>
+<p>{@code 1}
+<td>
+<p>An integer giving the registry type for this value.
+</table></p>
+
+@@function SaveKey(key, file_name)
+
+<p>Saves the specified key, and all its subkeys to the specified file.
+
+<p>{@var key} is an already open key, or one of the predefined {@code
+HKEY_*} constants.
+
+<p>{@var file_name} is the name of the file to save registry data to.
+This file cannot already exist. If this filename includes an extension,
+it cannot be used on file allocation table (FAT) file systems by the
+{@link LoadKey}, {@link ReplaceKey} or {@link RestoreKey} methods.
+
+<p>If {@var key} represents a key on a remote computer, the path
+described by {@var file_name} is relative to the remote computer. The
+caller of this method must possess the {@code SeBackupPrivilege}
+security privilege. Note that privileges are different than permissions
+- see the Win32 documentation for more details.
+
+<p>This function passes NULL for {@var security_attributes} to the API.
+
+@@function SetValue(key, sub_key, type, value)
+
+<p>Associates a value with a specified key.
+
+<p>{@var key} is an already open key, or one of the predefined {@code
+HKEY_*} constants.
+
+<p>{@var sub_key} is a string that names the subkey with which the value
+is associated.
+
+<p>{@var type} is an integer that specifies the type of the data.
+Currently this must be {@code REG_SZ}, meaning only strings are
+supported. Use the {@link SetValueEx} function for support for other
+data types.
+
+<p>{@var value} is a string that specifies the new value.
+
+<p>If the key specified by the {@var sub_key} parameter does not exist,
+the SetValue function creates it.
+
+<p>Value lengths are limited by available memory. Long values (more than
+2048 bytes) should be stored as files with the filenames stored in the
+configuration registry. This helps the registry perform efficiently.
+
+<p>The key identified by the {@var key} parameter must have been opened
+with {@code KEY_SET_VALUE} access.
+
+@@function SetValueEx(key, value_name, reserved, type, value)
+
+<p>Stores data in the value field of an open registry key.
+
+<p>{@var key} is an already open key, or one of the predefined {@code
+HKEY_*} constants.
+
+<p>{@var sub_key} is a string that names the subkey with which the value
+is associated.
+
+<p>{@var type} is an integer that specifies the type of the data. This
+should be one of the following constants defined in this module:
+
+<p><table border=1>
+<tr> <th>
+<p>Constant
+<th>
+<p>Meaning
+<tr> <td>
+<p>{@code REG_BINARY}
+<td>
+<p>Binary data in any form.
+<tr> <td>
+<p>{@code REG_DWORD}
+<td>
+<p>A 32-bit number.
+<tr> <td>
+<p>{@code REG_DWORD_LITTLE_ENDIAN}
+<td>
+<p>A 32-bit number in little-endian format.
+<tr> <td>
+<p>{@code REG_DWORD_BIG_ENDIAN}
+<td>
+<p>A 32-bit number in big-endian format.
+<tr> <td>
+<p>{@code REG_EXPAND_SZ}
+<td>
+<p>Null-terminated string containing references to environment variables
+("{@code %PATH%}").
+<tr> <td>
+<p>{@code REG_LINK}
+<td>
+<p>A Unicode symbolic link.
+<tr> <td>
+<p>{@code REG_MULTI_SZ}
+<td>
+<p>A sequence of null-terminated strings, terminated by two null
+characters. (Python handles this termination automatically.)
+<tr> <td>
+<p>{@code REG_NONE}
+<td>
+<p>No defined value type.
+<tr> <td>
+<p>{@code REG_RESOURCE_LIST}
+<td>
+<p>A device-driver resource list.
+<tr> <td>
+<p>{@code REG_SZ}
+<td>
+<p>A null-terminated string.
+</table></p>
+
+<p>{@var reserved} can be anything - zero is always passed to the API.
+
+<p>{@var value} is a string that specifies the new value.
+
+<p>This method can also set additional value and type information for
+the specified key. The key identified by the key parameter must have
+been opened with {@code KEY_SET_VALUE} access.
+
+<p>To open the key, use the {@link CreateKeyEx} or {@link OpenKey}
+methods.
+
+<p>Value lengths are limited by available memory. Long values (more than
+2048 bytes) should be stored as files with the filenames stored in the
+configuration registry. This helps the registry perform efficiently.
+
+@@text 
+
+<h2>Registry Handle Objects</h2>
+
+<p>This object wraps a Windows HKEY object, automatically closing it
+when the object is destroyed. To guarantee cleanup, you can call either
+the {@link Close} method on the object, or the {@link CloseKey}
+function.
+
+<p>All registry functions in this module return one of these objects.
+
+<p>All registry functions in this module which accept a handle object
+also accept an integer, however, use of the handle object is encouraged.
+
+<p>Handle objects provide semantics for {@link __nonzero__} - thus
+
+<pre>
+    if handle:
+        print "Yes"
+</pre>
+
+
+<p>will print {@code Yes} if the handle is currently valid (has not been
+closed or detached).
+
+<p>The object also support comparison semantics, so handle objects will
+compare true if they both reference the same underlying Windows handle
+value.
+
+<p>Handle objects can be converted to an integer (eg, using the builtin
+{@link int} function, in which case the underlying Windows handle value
+is returned. You can also use the {@link Detach} method to return the
+integer handle, and also disconnect the Windows handle from the handle
+object.
+
+@@method Close()
+
+<p>Closes the underlying Windows handle.
+
+<p>If the handle is already closed, no error is raised.
+
+@@method Detach()
+
+<p>Detaches the Windows handle from the handle object.
+
+<p>The result is an integer (or long on 64 bit Windows) that holds the
+value of the handle before it is detached. If the handle is already
+detached or closed, this will return zero.
+
+<p>After calling this function, the handle is effectively invalidated,
+but the handle is not closed. You would call this function when you need
+the underlying Win32 handle to exist beyond the lifetime of the handle
+object.

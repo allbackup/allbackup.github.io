@@ -1,0 +1,136 @@
+<html>
+<head>
+<title>syntaxwarning-name-assigned-to-before-global-declaration ::: www.effbot.org</title>
+<link rel='stylesheet' href='/effbot.css' type='text/css' media='screen' />
+</head>
+<body bgcolor='#ccffcc'>
+<div>[<a href='syntaxwarning-name-assigned-to-before-global-declaration.htm'>back</a>]</div>
+<h3>Welcome to the effbot.org user editor!</h3>
+
+
+<p><b>Note: This is not a contact form!  Support questions, spam, and
+other off-topic stuff will be ignored.</b></p>
+
+<p>To suggest changes, edit the HTML fragment in the text box below.
+You can use the 'update preview' button to check your changes (the
+preview is displayed beneath the text box).  When done, fill in the
+name and address fields (optional) and click 'submit patch' to mail
+the patch to me.  (I reserve the right to decide which patches to
+include, of course.)  Thanks! /F</p>
+
+<form method='post' id='useredit'>
+<input type='hidden' name='name' value='syntaxwarning-name-assigned-to-before-global-declaration'/>
+<p>
+<input type='submit' name='preview' value='update preview' style='background:#084; color:white; width:200px; font-weight:bold;' >
+&nbsp;&nbsp;&nbsp;
+<input type='submit' name='submit' value='submit patch'  style='background:#084; color:white; width:200px; font-weight:bold;' >
+</p>
+<textarea name='text' rows='30' cols='80'>SyntaxWarning: name 'spam' is assigned to before global declaration
+
+&lt;p class='info'&gt;September 2005 | Fredrik Lundh&lt;/p&gt;
+
+&lt;p&gt;The most common reason for this error is that you're using multiple &lt;b&gt;global&lt;/b&gt; declarations in the same function.  Consider this example:&lt;/p&gt;
+
+&lt;pre&gt;
+x = 0
+
+def func(a, b, c):
+    if a == b:
+        global x
+        x = 10
+    elif b == c:
+        global x
+        x = 20
+&lt;/pre&gt;
+
+&lt;p&gt;If you run this in a recent version of Python, the compiler will
+issue a &lt;b&gt;SyntaxWarning&lt;/b&gt; pointing to the beginning of the &lt;b&gt;func&lt;/b&gt;
+function.&lt;/p&gt;
+
+&lt;p&gt;Here's the right way to write this:&lt;/p&gt;
+
+&lt;pre&gt;
+x = 0
+
+def func(a, b, c):
+    &lt;b class='highlight'&gt;global x&lt;/b&gt;
+    if a == b:
+        x = 10
+    elif b == c:
+        x = 20
+&lt;/pre&gt;
+
+&lt;p&gt;For more background, see the &lt;a href="http://docs.python.org/ref"&gt;Python Language Reference&lt;/a&gt;.  Excerpts:
+
+&lt;blockquote&gt;"&lt;i&gt;&lt;a href="http://docs.python.org/ref/naming.html"&gt;A block is a piece of Python program text that is executed as a unit. The following are blocks: a module, a function body, and a class definition.&lt;/a&gt;&lt;/i&gt;" (&lt;b&gt;if&lt;/b&gt;, &lt;b&gt;while&lt;/b&gt;, &lt;b&gt;for&lt;/b&gt;, and &lt;b&gt;try&lt;/b&gt; does not introduce new blocks).&lt;/blockquote&gt;
+
+&lt;blockquote&gt;"&lt;i&gt;&lt;a href="http://docs.python.org/ref/naming.html"&gt;If the global statement occurs within a block, all uses of the name specified in the statement refer to the binding of that name in the top-level namespace. /.../ The global statement must precede all uses of the name.&lt;/a&gt;&lt;/i&gt;" (throughout the entire block)&lt;/blockquote&gt;
+
+&lt;blockquote&gt;"&lt;i&gt;&lt;a href="http://docs.python.org/ref/global.html"&gt;The global statement is a declaration which holds for the entire current code block. It means that the listed identifiers are to be interpreted as globals. /.../ Names listed in a global statement must not be used in the same code block textually preceding that global statement. &lt;/a&gt;&lt;/i&gt;"&lt;/blockquote&gt;</textarea>
+<table>
+<tr><td><label for='author'>Name:</label></td><td>
+<div><input name='author' value="" size=40></div>
+</td><td>(Optional)</td></tr>
+<tr><td><label for='email'>Mail:</label></td><td>
+<div><input name='email' value="" size=40></div>
+</td><td>(Optional)</td></tr>
+<tr><td><label for='note'>Comment:</label></td><td>
+<div><input name='note' value="" size=40></div>
+</td><td>(Optional)</td></tr>
+<tr><td><label for='password'>Password:</label></td><td>
+<div><input name='password' value="(replace with the sum of 7+4)" size=40></div>
+</td><td>(Required)</td></tr>
+</table>
+<p>
+<input type='submit' name='preview' value='update preview' style='background:#084; color:white; width:200px; font-weight:bold;' >
+&nbsp;&nbsp;&nbsp;
+<input type='submit' name='submit' value='submit patch'  style='background:#084; color:white; width:200px; font-weight:bold;' >
+</p>
+<p>&nbsp;</p>
+</form>
+<div style='background: white; border: 2px solid #084; padding: 0px 20px;'>
+<h2>SyntaxWarning: name 'spam' is assigned to before global declaration</h2>
+
+<p class='info'>September 2005 | Fredrik Lundh</p>
+
+<p>The most common reason for this error is that you're using multiple <b>global</b> declarations in the same function.  Consider this example:</p>
+
+<pre>
+x = 0
+
+def func(a, b, c):
+    if a == b:
+        global x
+        x = 10
+    elif b == c:
+        global x
+        x = 20
+</pre>
+
+<p>If you run this in a recent version of Python, the compiler will
+issue a <b>SyntaxWarning</b> pointing to the beginning of the <b>func</b>
+function.</p>
+
+<p>Here's the right way to write this:</p>
+
+<pre>
+x = 0
+
+def func(a, b, c):
+    <b class='highlight'>global x</b>
+    if a == b:
+        x = 10
+    elif b == c:
+        x = 20
+</pre>
+
+<p>For more background, see the <a href="http://docs.python.org/ref">Python Language Reference</a>.  Excerpts:
+
+<blockquote>"<i><a href="http://docs.python.org/ref/naming.html">A block is a piece of Python program text that is executed as a unit. The following are blocks: a module, a function body, and a class definition.</a></i>" (<b>if</b>, <b>while</b>, <b>for</b>, and <b>try</b> does not introduce new blocks).</blockquote>
+
+<blockquote>"<i><a href="http://docs.python.org/ref/naming.html">If the global statement occurs within a block, all uses of the name specified in the statement refer to the binding of that name in the top-level namespace. /.../ The global statement must precede all uses of the name.</a></i>" (throughout the entire block)</blockquote>
+
+<blockquote>"<i><a href="http://docs.python.org/ref/global.html">The global statement is a declaration which holds for the entire current code block. It means that the listed identifiers are to be interpreted as globals. /.../ Names listed in a global statement must not be used in the same code block textually preceding that global statement. </a></i>"</blockquote>
+</div>
+</body>
+</html>

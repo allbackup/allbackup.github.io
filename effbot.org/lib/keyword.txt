@@ -1,0 +1,17 @@
+
+@@module keyword
+
+<h1>keyword&#8212;Testing for Python keywords</h1>
+
+<p>This module allows a Python program to determine if a string is a
+keyword.
+
+@@function iskeyword(s)
+
+<p>Return true if {@var s} is a Python keyword.
+
+@@variable kwlist
+
+<p>Sequence containing all the keywords defined for the interpreter. If
+any keywords are defined to only be active when particular {@link
+__future__} statements are in effect, these will be included as well.

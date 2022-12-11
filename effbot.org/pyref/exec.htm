@@ -1,0 +1,51 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>The exec&nbsp;statement</title><script type="text/javascript">effbot_page_id=1280;</script></head><body><div id="doc2" class="yui-t2"><div id="hd"><!-- header --></div><!-- hd --><div id="bd"><!-- body --><p class="note" style="text-align: center"><strong>
+
+We're back after a server migration that caused effbot.org to fall
+over a bit harder than expected.  Expect some glitches.
+
+</strong></p><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">The exec&nbsp;statement</h1></div><!-- yui-g --><body><p>Execute Python code.</p>
+
+<p>Syntax:</p>
+
+<blockquote>
+  <p><strong>exec</strong> <em>expression</em></p>
+</blockquote>
+
+<p>or</p>
+
+<blockquote>
+  <p><strong>exec</strong> <em>expression</em> <strong>in</strong> <em>expression</em> [<strong>,</strong> <em>expression</em>]</p>
+</blockquote>
+
+<p>This statement supports dynamic execution of Python code. The first
+expression should evaluate to either a string, an open file object, or
+a code object. If it is a string, the string is parsed as a suite of
+Python statements which is then executed (unless a syntax error
+occurs). If it is an open file, the file is parsed until EOF and
+executed. If it is a code object, it is simply executed. In all cases,
+the code that&#8217;s executed is expected to be valid as file input (see
+section&#160;<a href="file-input.html#file-input">8.2</a>, &#8220;File input&#8221;). Be aware that the <a href="return.htm"><strong>return</strong></a> and
+<a href="yield.htm"><strong>yield</strong></a> statements may not be used outside of function definitions even
+within the context of code passed to the <strong>exec</strong> statement.</p>
+
+<p>In all cases, if the optional parts are omitted, the code is executed
+in the current scope. If only the first expression after in is
+specified, it should be a dictionary, which will be used for both the
+global and the local variables. If two expressions are given, they are
+used for the global and local variables, respectively. If provided,
+locals can be any mapping object.  (Changed in version 2.4: formerly
+locals was required to be a dictionary.)</p>
+
+<p>As a side effect, an implementation may insert additional keys into
+the dictionaries given besides those corresponding to variable names
+set by the executed code. For example, the current implementation may
+add a reference to the dictionary of the built-in module
+<a href="__builtin__.htm"><strong>__builtin__</strong></a> under the key <code>__builtins__</code> (note the plural
+form!).</p>
+
+<p><strong>Programmer&#8217;s hints:</strong> Dynamic evaluation of expressions is supported
+by the built-in function <a href="eval.htm"><strong>eval</strong></a>. The built-in functions <a href="globals.htm"><strong>globals</strong></a> and
+<a href="locals.htm"><strong>locals</strong></a> return the current global and local dictionary, respectively,
+which may be useful to pass around for use by <strong>exec</strong>.</p></body><div class="yui-g"></div><!-- yui-g --></div><!-- content --></div><!-- yui-b --></div><!-- yui-main --><div class="yui-b"><div id='menu'></div><!-- menu --></div><!-- yui-b --></div><!-- bd --><div id="ft"><!-- footer --></div><!-- ft --></div><!-- doc --><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

@@ -1,0 +1,23 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>How do I make python scripts&nbsp;executable?</title></head><body data-page-id="809"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><p class="note" style="text-align: center"><strong>
+This is an old copy of the Python FAQ.  The information here may be
+outdated.
+</strong></p><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">How do I make python scripts&nbsp;executable?</h1></div><div class="yui-ge"><div class="yui-u first"><h3 id="executing-py-files">Executing PY files&#160;<a class="nav" href="#executing-py-files" title="bookmark!">#</a></h3><p>On Windows 2000 and XP, the standard Python installer already
+associates the .py extension with a file type (Python.File) and gives
+that file type an open command that runs the interpreter (D:\Program
+Files\Python\python.exe &#8220;%1&#8221; %*).  This is enough to make scripts
+executable from the command prompt as &#8216;foo.py&#8217;.  If you&#8217;d rather be
+able to execute the script by simply typing &#8216;foo&#8217; with no extension
+you need to add .py to the PATHEXT environment variable.</p><p>On Windows NT, the steps taken by the installer as described above
+allow you to run a script with &#8216;foo.py&#8217;, but a longtime bug in the NT
+command processor prevents you from redirecting the input or output of
+any script executed in this way.  This is often important.</p><p>The incantation for making a Python script executable under WinNT is
+to give the file an extension of .cmd and add the following as the
+first line:</p><pre><code>@setlocal enableextensions &amp; python -x %~f0 %* &amp; goto :EOF
+</code></pre><h3 id="creating-exe-files">Creating EXE files&#160;<a class="nav" href="#creating-exe-files" title="bookmark!">#</a></h3><p>You can also use deployment tools to wrap Python scripts or entire
+Python applications in EXE files.  For entire applications, you can
+use <strong>py2exe</strong>, among others:</p><blockquote><p><a href="how-can-i-create-a-stand-alone-binary-from-a-python-script.htm"><strong>how-can-i-create-a-stand-alone-binary-from-a-python-script</strong></a></p></blockquote><p>Another tool is <a href="http://effbot.org/zone/exemaker.htm">exemaker</a>,
+which takes a PY file and generates an EXE wrapper for it.  When you
+run the EXE, it automatically locates a suitable Python interpreter,
+and uses that to execute the PY file.</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to pyfaq index page.">::: pyfaq :::</a></b></li></ul><ul><li><b>::: contents</b></li></ul><ul><li><ul><li><ul><li><a href="#executing-py-files">Executing PY files</a></li><li><a href="#creating-exe-files">Creating EXE files</a></li></ul></li></ul></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

@@ -1,0 +1,42 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>Invoking&nbsp;Descriptors</title> <script type="text/javascript">effbot_page_id=1346;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <h1 class="maintitle">Invoking&nbsp;Descriptors</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p>In general, a descriptor is an object attribute with <q>binding
+behavior</q>, one whose attribute access has been overridden by
+methods in the descriptor protocol: <a href="method-get">__get__</a>,
+<a href="method-set">__set__</a>, and <a href="method-delete">__delete__</a>. If any
+of those methods are defined for an object, it is said to be a
+<em>descriptor</em>.</p><p>The default behavior for attribute access is to get, set, or delete
+the attribute from an object&#8217;s dictionary.  For instance, <code>a.x</code> has a
+lookup chain starting with <code>a.__dict__['x']</code>, then
+<code>type(a).__dict__['x']</code>, and continuing through the base classes of
+<code>type(a)</code> excluding metaclasses.</p><p>However, if the looked-up value is an object defining one of the
+descriptor methods, then Python may override the default behavior and
+invoke the descriptor method instead.  Where this occurs in the
+precedence chain depends on which descriptor methods were defined and
+how they were called.  Note that descriptors are only invoked for new
+style objects or classes (ones that subclass <a href="object.htm"><strong>object</strong></a> or <a href="type.htm"><strong>type</strong></a>).</p><p>The starting point for descriptor invocation is a binding, <code>a.x</code>. How
+the arguments are assembled depends on <code>a</code>:</p><p><strong>Direct Call</strong></p><p>The simplest and least common call is when user code directly invokes
+a descriptor method: <code>x.__get__(a)</code>.</p><p><strong>Instance Binding</strong></p><p>If <code>a</code> is a new-style object instance, <code>a.x</code> is transformed into the
+call: <code>type(a).__dict__['x'].__get__(a, type(a))</code>.</p><p><strong>Class Binding</strong></p><p>If <code>A</code> is a new-style class, <code>A.x</code> is transformed into the call:
+<code>A.__dict__['x'].__get__(None, A)</code>.</p><p><strong>Super Binding</strong></p><p>If <code>a</code> is an instance of <a href="super.htm"><strong>super</strong></a>, then the binding
+<code>super(B, obj).m()</code>
+searches <code>obj.__class__.__mro__</code> for the base class <code>A</code>
+immediately preceding <code>B</code> and then invokes the descriptor with the
+call: <code>A.__dict__['m'].__get__(obj, A)</code>.</p><p>For instance bindings, the precedence of descriptor invocation depends
+on the which descriptor methods are defined. Data descriptors define
+both <a href="method-get">__get__</a> and <a href="method-set">__set__</a>.
+Non-data descriptors have just the <a href="method-get">__get__</a> method.
+Data descriptors always override a redefinition in an instance
+dictionary.  In contrast, non-data descriptors can be overridden by
+instances.</p><p>Python methods (including <a href="staticmethod.htm"><strong>staticmethod</strong></a> and <a href="classmethod.htm"><strong>classmethod</strong></a>) are
+implemented as non-data descriptors.  Accordingly, instances can
+redefine and override methods.  This allows individual instances to
+acquire behaviors that differ from other instances of the same class.</p><p>The <a href="property.htm"><strong>property</strong></a> function is implemented as a data descriptor.
+Accordingly, instances <em>cannot</em> override the behavior of a property.</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><div class='comment'>
+<p><b>Comment:</b></p>
+<p>
+The "super binding" section could be clarified.  I think I understand what it says, but I think it could be said in a slightly less confusing way (e.g. by explaining why anyone would use an instance of super for anything).</p>
+<p>Posted by <b class='author'><a href='http://pyref.infogami.com/invoking-descriptors/_comments/55zr'>infogami</a></b></p>
+</div>
+</div> <!-- yui-g --></div> <!-- content --> </div> <!-- yui-b --> </div> <!-- yui-main --> <div class="yui-b"> <div id='menu'> <ul> <li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li> <li><b><a href="." title="Go to pyref index page.">::: pyref :::</a></b></li> </ul> </div> <!-- menu --> </div> <!-- yui-b --> </div> <!-- bd --> <div id="ft"> <!-- footer --> <p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;"></a>
+this page was rendered by a <a href="http://www.djangoproject.com/">django</a> application in 0.01s 2011-06-21 22:26:27.806701.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p> </div> <!-- ft --> </div> <!-- doc --> <script src="/media/js/effbot-min.js" type="text/javascript"> </script> </body> </html>

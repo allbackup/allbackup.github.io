@@ -1,0 +1,16 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>Why are default values shared between&nbsp;objects?</title> <script type="text/javascript">effbot_page_id=927;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> <!--
+<p style='color: #8f8f8f; background: #fff5bf; padding: 5px 10px;'> <b>2008-07-15:</b> Selected articles
+
+now have experimental "comment" links in the left column and at the bottom.
+You're welcome to use them for commenting and voting on articles.
+For a bit more on this, see <a
+href="http://effbot.slinkset.com/links/Welcome_to_discuss_effbot_org">this
+page</a>. /F
+</p>
+--> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <h1 class="maintitle">Why are default values shared between&nbsp;objects?</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p>Default values are created by the <a href="/pyref/def.htm"><strong>def</strong></a> statement, not when the
+function is called.  Consider this function:</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><pre class="python wide wide"><span class="pykeyword">def</span> <span class="pyfunction">foo</span>(D={}):  <span class="pycomment"># Danger: shared reference to one dict for all calls</span>
+    ... compute something ...
+    D[key] = value
+    <span class="pykeyword">return</span> D</pre></div><div class="yui-ge"><div class="yui-u first"><p>The first time you call this function, D contains a single item. The second time, D contains two items because when foo() begins executing,  D starts out with an item already in it.</p><p>It is often expected that a function call creates new objects for default values. This is not what happens. Default values are created exactly once, when the function is defined (by executing the <a href="/pyref/def.htm"><strong>def</strong></a> statement). If that object is changed, like the dictionary in this example, subsequent calls to the function will refer to this changed object.</p><p>By definition, immutable objects such as numbers, strings, tuples, and <a href="/pyref/None.htm"><strong>None</strong></a>, are safe from change. Changes to mutable objects such as dictionaries, lists, and class in

@@ -1,0 +1,35 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>Simple Iterator-based&nbsp;Parsing</title> <script type="text/javascript">effbot_page_id=267;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> <!--
+<p style='color: #8f8f8f; background: #fff5bf; padding: 5px 10px;'> <b>2008-07-15:</b> Selected articles
+ (including this one) 
+now have experimental "comment" links in the left column and at the bottom.
+You're welcome to use them for commenting and voting on articles.
+For a bit more on this, see <a
+href="http://effbot.slinkset.com/links/Welcome_to_discuss_effbot_org">this
+page</a>. /F
+</p>
+--> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <h1 class="maintitle">Simple Iterator-based&nbsp;Parsing</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p class="info">Fredrik Lundh | November 2005 | Originally posted to <a href="http://online.effbot.org">online.effbot.org</a></p><p>Iterator-based parsing is an efficient and straightforward way of writing recursive-descent parsers in Python. Here&#8217;s an outline:</p><ol><li>use an iterator to split the source into a stream of tokens or token descriptors.
+</li><li>pass the iterator&#8217;s <b>next</b> method and the first token to the toplevel parser class.
+</li><li>use separate functions, where appropriate, for individual grammar rules. pass the <b>next</b> method and the current token on to these functions as well.
+</li><li>to check the current token, inspect the token argument. to fetch the next token, call the <b>next</b> method. 
+</li></ol><p>Here&#8217;s a simple example.  This is a limited but hopefully safe version
+of Python&#8217;s <b>eval</b> function, which handles strings, floating point
+values, integers, and tuples only.  Tuples can be nested.</p><pre class="python">
+<span class="pykeyword">import</span> cStringIO, tokenize
+
+<span class="pykeyword">def</span> <span class="pyfunction">atom</span>(next, token):
+    <span class="pykeyword">if</span> token[1] == <span class="pystring">"("</span>:
+        out = []
+        token = next()
+        <span class="pykeyword">while</span> token[1] != <span class="pystring">")"</span>:
+            out.append(atom(next, token))
+            token = next()
+            <span class="pykeyword">if</span> token[1] == <span class="pystring">","</span>:
+                token = next()
+        <span class="pykeyword">return</span> tuple(out)
+    <span class="pykeyword">elif</span> token[0] <span class="pykeyword">is</span> tokenize.STRING:
+        <span class="pykeyword">return</span> token[1][1:-1].decode(<span class="pystring">"string-escape"</span>)
+    <span class="pykeyword">elif</span> token[0] <span class="pykeyword">is</span> tokenize.NUMBER:
+        <span class="pykeyword">try</span>:
+            <span class="pykeyword">return</span> int(to

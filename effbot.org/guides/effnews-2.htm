@@ -1,0 +1,112 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>EffNews Part 2: Fetching and Parsing RSS&nbsp;Data</title> <script type="text/javascript">effbot_page_id=60;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> <!--
+<p style='color: #8f8f8f; background: #fff5bf; padding: 5px 10px;'> <b>2008-07-15:</b> Selected articles
+
+now have experimental "comment" links in the left column and at the bottom.
+You're welcome to use them for commenting and voting on articles.
+For a bit more on this, see <a
+href="http://effbot.slinkset.com/links/Welcome_to_discuss_effbot_org">this
+page</a>. /F
+</p>
+--> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <p><a href="effnews-1.htm">back</a> <a href="effnews-3.htm">next</a></p> <h1 class="maintitle">EffNews Part 2: Fetching and Parsing RSS&nbsp;Data</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p class="info">September 10, 2002 | Fredrik Lundh</p><p>This is the second article covering <a href="effnews.htm">the
+effnews project</a>; a simple RSS newsreader written in Python.  Other
+articles in this series are available via <a href="effnews.htm">this
+page</a>.</p><h2 id="intermission">Intermission: Did Anyone Spot The Error Message?&#160;<a class="nav" href="#intermission" title="bookmark!">#</a></h2><p>As some of you may have noticed, if you add the last code snippet
+from <a href="effnews-1.htm">the previous article</a> to the test
+program, a couple of strange-looking lines of text appears among the
+ok/failed messages:</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><pre class="wide wide">
+online.effbot.org done
+www.bbc.co.uk done
+www.example.com failed
+<b>error: uncaptured python exception, closing channel &lt;async_http
+connected at 8eb07c&gt; (exceptions.AttributeError:file_consumer
+instance has no attribute 'file' [C:\py21\lib\asyncore.py|poll|95]
+[C:\py21\lib\asyncore.py|handle_read_event|383]
+[http_client.py|handle_read|77] [my-test-program.py|feed|15])</b>
+www.scripting.com done
+</pre></div><div class="yui-ge"><div class="yui-u first"><p>(Directory names and line numbers may vary.)</p><p>The <b>error: uncaptured python exception</b> message is generated
+by <b>asyncore</b>&#8216;s default error handler when a callback raises a
+Python exception.  This message is actually a compact rendition of a
+standard <b>python traceback</b>, printed on a single line.  Here&#8217;s
+the deciphered version:</p><pre>
+www.bbc.co.uk done
+www.example.com
+Traceback (most recent call last):
+  File C:\py21\lib\asyncore.py, line 95, in poll:
+  File C:\py21\lib\asyncore.py, line 383, in handle_read_event:
+  File http_client.py, line 77, in handle_read:
+  File my-test-program.py, line 15, in feed:
+AttributeError:file_consumer instance has no attribute 'file'
+online.effbot.org done
+www.scripting.com done
+</pre><p>So what&#8217;s causing this error?</p><p>Note that the AttributeError occurs in the <b>feed</b> method,
+which is appears to be called despite the fact that the consumer did
+close the socket in the <b>http_header</b> method.</p><p>The <b>http_client</b> is supposed code to deal with this, by
+checking the <b>connected</b> flag attribute after calling the
+<b>http_header</b> consumer method.  That flag was cleared by the
+<b>close</b> method in earlier versions of <b>asyncore</b>, but that
+was changed somewhere on the way from Python 1.5.2 to Python 2.1.</p><blockquote class="small">(And the reason I didn&#8217;t notice was sloppy
+testing: my test script contained enough debugging print statements to
+make me miss the error message.  Sorry for that.)</blockquote><h3>Closing the Channel From the Consumer, Revisited</h3><p>The obvious workaround is of course to explicitly clear the
+attribute in the consumer&#8217;s <b>http_header</b> method:</p><pre class="python">
+<span class="pykeyword">class</span> <span class="pyclass">file_consumer</span>:
+    <span class="pykeyword">def</span> <span class="pyfunction">http_header</span>(self, client):
+        <span class="pykeyword">if</span> (client.status[1] != <span class="pystring">"200"</span> <span class="pykeyword">or</span>
+            client.header[<span class="pystring">"content-type"</span>] != <span class="pystring">"text/xml"</span>):
+            <span class="pykeyword">print</span> client.host, <span class="pystring">"failed"</span>
+            client.close() <span class="pycomment"># bail out</span>
+            client.connected = 0
+            <span class="pykeyword">return</span>
+        self.host = client.host
+        self.file = None
+    ...</pre><p>However, the <b>connected</b> flag is undocumented, and may (in
+theory) disappear in future versions of <b>asyncore</b>.</p><p>To make your code more future-proof, it&#8217;s better to use return
+value or an exception to indicate that the channel should be closed.</p><p>The following example uses a custom <b>CloseConnection</b>
+exception for this purpose:</p><pre class="python">
+<span class="pykeyword">class</span> <span class="pyclass">file_consumer</span>:
+    <span class="pykeyword">def</span> <span class="pyfunction">http_header</span>(self, client):
+        <span class="pykeyword">if</span> (client.status[1] != <span class="pystring">"200"</span> <span class="pykeyword">or</span>
+            client.header[<span class="pystring">"content-type"</span>] != <span class="pystring">"text/xml"</span>):
+            <span class="pykeyword">print</span> client.host, <span class="pystring">"failed"</span>
+            <span class="pykeyword">raise</span> http_client.CloseConnection
+        self.host = client.host
+        self.file = None</pre><p>Here are the necessary additions to the <b>http_client</b>
+module:</p><pre class="python">
+<span class="pykeyword">class</span> <span class="pyclass">CloseConnection</span>(Exception):
+    <span class="pykeyword">pass</span>
+
+...
+
+<span class="pykeyword">try</span>:
+    self.consumer.http_header(self)
+<span class="pykeyword">except</span> CloseConnection:
+    self.close()
+    <span class="pykeyword">return</span></pre><h3>Overriding Asyncore&#8217;s Error Handling</h3><p>The error message is printed by a method called
+<b>handle_error</b>.  To change the look of the error message, you can
+override this in your <b>dispatcher</b> subclass.  For example, here&#8217;s
+a version that prints a traditional traceback:</p><pre class="python">
+<span class="pykeyword">import</span> traceback
+
+<span class="pykeyword">class</span> <span class="pyclass">my_channel</span>(asyncore.dispatcher_with_send):
+    ...
+    <span class="pykeyword">def</span> <span class="pyfunction">handle_error</span>(self):
+        traceback.print_exc()
+        self.close()
+    ...</pre><p>With the above lines added to the <b>async_http</b> class, you&#8217;ll
+get the following message instead:</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><pre class="wide wide">
+www.bbc.co.uk done
+www.example.com failed
+Traceback (most recent call last):
+  File "C:\py21\lib\asyncore.py", line 95, in poll
+    obj.handle_read_event()
+  File "C:\py21\lib\asyncore.py", line 383, in handle_read_event
+    self.handle_read()
+  File "http_client.py", line 77, in handle_read
+    self.consumer.feed(data)
+  File "my-test-program.py", line 15, in feed
+    if self.file is None:
+AttributeError: file_consumer instance has no attribute 'file'
+online.effbot.org done
+www.scripting.com done
+</pre></div><div class="yui-ge"><div class="yui-u first"><h2 id="parsing-rss-files">Parsing RSS Files&#160;<a class="nav" href="#parsing-rss-files" title="bookmark!">#</a></h2><p>As shown in the first article, an RSS file contains 

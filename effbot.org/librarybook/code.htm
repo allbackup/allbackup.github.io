@@ -1,0 +1,133 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>The code&nbsp;module</title></head><body data-page-id="490"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">The code&nbsp;module</h1></div><div class="yui-ge"><div class="yui-u first"><p>This module provides a number of functions that can be used to
+emulate the behavior of the standard interpreter&#8217;s interactive
+mode.</p><p>The <b>compile_command</b> behaves like the built-in
+<b>compile</b> function, but does some additional tests to make
+sure you pass it a complete Python statement.</p><p>In the following example, we&#8217;re compiling a program line by
+line, executing the resulting code objects as soon as we manage to
+compile. The program looks like this:</p><pre>
+a = (
+  1,
+  2,
+  3
+)
+print a
+</pre><p>Note that the tuple assignment cannot be properly compiled until
+we&#8217;ve reached the second parenthesis.</p><div class="example">
+<b style="example">Example: Using the code module to compile statements</b>
+<pre>
+# File: <a href="code/code-example-1.py">code-example-1.py</a>
+
+import code
+import string
+
+# 
+SCRIPT = [
+    "a = (",
+    "  1,",
+    "  2,",
+    "  3 ",
+    ")",
+    "print a"
+]
+
+script = ""
+
+for line in SCRIPT:
+    script = script + line + "\n"
+    co = code.compile_command(script, "&lt;stdin&gt;", "exec")
+    if co:
+        # <i>got a complete statement.  execute it!</i>
+        print "-"*40
+        print script,
+        print "-"*40
+        exec co
+        script = ""
+
+</pre><pre class="computeroutput" moreinfo="NONE">
+$ python code-example-1.py
+----------------------------------------
+a = (
+  1,
+  2,
+  3 
+)
+----------------------------------------
+----------------------------------------
+print a
+----------------------------------------
+(1, 2, 3)
+</pre></div><p>The <b>InteractiveConsole</b> class implements an interactive
+console, much like the one you get when you fire up the Python
+interpreter in interactive mode.</p><p>The console can be either active (it calls a function to get the
+next line) or passive (you call the <b>push</b> method when you
+have new data). The default is to use the built-in
+<b>raw_input</b> function. Overload the method with the same name
+if you prefer to use another input function.</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><div class="example wide">
+<b style="example">Example: Using the code
+module to emulate the interactive interpreter</b>
+<pre class="wide">
+# File: <a href="code/code-example-2.py">code-example-2.py</a>
+
+import code
+
+console = code.InteractiveConsole()
+console.interact()
+
+</pre><pre class="computeroutput wide" moreinfo="NONE">
+$ python code-example-2.py
+Python 1.5.2
+Copyright 1991-1995 Stichting Mathematisch Centrum, Amsterdam
+(InteractiveConsole)
+&gt;&gt;&gt; a = (
+...     1,
+...     2,
+...     3
+... )
+&gt;&gt;&gt; print a
+(1, 2, 3)
+</pre></div></div><div class="yui-ge"><div class="yui-u first"><p>The following script defines a function called
+<b>keyboard</b>. It allows you to hand control over to the
+interactive interpreter at any point in your program.</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><div class="example wide">
+<b style="example">Example: Using the code
+module for simple debugging</b>
+<pre class="wide">
+# File: <a href="code/code-example-3.py">code-example-3.py</a>
+
+def keyboard(banner=None):
+    import code, sys
+
+    # <i>use exception trick to pick up the current frame</i>
+    try:
+        raise None
+    except:
+        frame = sys.exc_info()[2].tb_frame.f_back
+
+    # <i>evaluate commands in current namespace</i>
+    namespace = frame.f_globals.copy()
+    namespace.update(frame.f_locals)
+
+    code.interact(banner=banner, local=namespace)
+
+def func():
+    print "START"
+    a = 10
+    keyboard()
+    print "END"
+
+func()
+
+</pre><pre class="computeroutput wide" moreinfo="NONE">
+$ python code-example-3.py
+START
+Python 1.5.2
+Copyright 1991-1995 Stichting Mathematisch Centrum, Amsterdam
+(InteractiveConsole)
+&gt;&gt;&gt; print a
+10
+&gt;&gt;&gt; print keyboard
+&lt;function keyboard at 9032c8&gt;
+^Z
+END
+</pre></div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to librarybook index page.">::: librarybook :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

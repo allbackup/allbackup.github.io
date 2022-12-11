@@ -1,0 +1,207 @@
+
+@@module pprint
+
+<h1>pprint&#8212;Data pretty printer</h1>
+
+<p>The {@link pprint} module provides a capability to
+&#8220;pretty-print&#8221; arbitrary Python data structures in a form
+which can be used as input to the interpreter. If the formatted
+structures include objects which are not fundamental Python types, the
+representation may not be loadable. This may be the case if objects such
+as files, sockets, classes, or instances are included, as well as many
+other builtin objects which are not representable as Python constants.
+
+<p>The formatted representation keeps objects on a single line if it
+can, and breaks them onto multiple lines if they don't fit within the
+allowed width. Construct {@link PrettyPrinter} objects explicitly if you
+need to adjust the width constraint.
+
+<p>The {@link pprint} module defines one class:
+
+@@class PrettyPrinter(...)
+
+<p>Construct a {@link PrettyPrinter} instance. This constructor
+understands several keyword parameters. An output stream may be set
+using the {@var stream} keyword; the only method used on the stream
+object is the file protocol's {@link write} method. If not specified,
+the {@link PrettyPrinter} adopts {@code sys.stdout}. Three additional
+parameters may be used to control the formatted representation. The
+keywords are {@var indent}, {@var depth}, and {@var width}. The amount
+of indentation added for each recursive level is specified by {@var
+indent}; the default is one. Other values can cause output to look a
+little odd, but can make nesting easier to spot. The number of levels
+which may be printed is controlled by {@var depth}; if the data
+structure being printed is too deep, the next contained level is
+replaced by "{@code ...}". By default, there is no constraint on the
+depth of the objects being formatted. The desired output width is
+constrained using the {@var width} parameter; the default is eighty
+characters. If a structure cannot be formatted within the constrained
+width, a best effort will be made.
+
+<pre>
+&gt;&gt;&gt; import pprint, sys
+&gt;&gt;&gt; stuff = sys.path[:]
+&gt;&gt;&gt; stuff.insert(0, stuff[:])
+&gt;&gt;&gt; pp = pprint.PrettyPrinter(indent=4)
+&gt;&gt;&gt; pp.pprint(stuff)
+[   [   '',
+        '/usr/local/lib/python1.5',
+        '/usr/local/lib/python1.5/test',
+        '/usr/local/lib/python1.5/sunos5',
+        '/usr/local/lib/python1.5/sharedmodules',
+        '/usr/local/lib/python1.5/tkinter'],
+    '',
+    '/usr/local/lib/python1.5',
+    '/usr/local/lib/python1.5/test',
+    '/usr/local/lib/python1.5/sunos5',
+    '/usr/local/lib/python1.5/sharedmodules',
+    '/usr/local/lib/python1.5/tkinter']
+&gt;&gt;&gt;
+&gt;&gt;&gt; import parser
+&gt;&gt;&gt; tup = parser.ast2tuple(
+...     parser.suite(open('pprint.py').read()))[1][1][1]
+&gt;&gt;&gt; pp = pprint.PrettyPrinter(depth=6)
+&gt;&gt;&gt; pp.pprint(tup)
+(266, (267, (307, (287, (288, (...))))))
+</pre>
+
+
+@@text 
+
+<p>The {@link PrettyPrinter} class supports several derivative
+functions:
+
+@@function pformat(object[, indent[, width[, depth]]])
+
+<p>Return the formatted representation of {@var object} as a string.
+{@var indent}, {@var width} and {@var depth} will be passed to the
+{@link PrettyPrinter} constructor as formatting parameters.
+<blockquote>
+@since Changed in version 2.4: The parameters indent, width and depth were added. <br />
+</blockquote>
+
+@@function pprint(object[, stream[, indent[, width[, depth]]]])
+
+<p>Prints the formatted representation of {@var object} on {@var
+stream}, followed by a newline. If {@var stream} is omitted, {@code
+sys.stdout} is used. This may be used in the interactive interpreter
+instead of a {@link print} statement for inspecting values. {@var
+indent}, {@var width} and {@var depth} will be passed to the {@link
+PrettyPrinter} constructor as formatting parameters.
+
+<pre>
+&gt;&gt;&gt; stuff = sys.path[:]
+&gt;&gt;&gt; stuff.insert(0, stuff)
+&gt;&gt;&gt; pprint.pprint(stuff)
+[&lt;Recursion on list with id=869440&gt;,
+ '',
+ '/usr/local/lib/python1.5',
+ '/usr/local/lib/python1.5/test',
+ '/usr/local/lib/python1.5/sunos5',
+ '/usr/local/lib/python1.5/sharedmodules',
+ '/usr/local/lib/python1.5/tkinter']
+</pre>
+
+<blockquote>
+@since Changed in version 2.4: The parameters
+indent, width and depth were
+added. <br />
+</blockquote>
+
+@@function isreadable(object)
+
+<p>Determine if the formatted representation of {@var object} is
+&#8220;readable,&#8221; or can be used to reconstruct the value using
+{@link eval}. This always returns false for recursive objects.
+
+<pre>
+&gt;&gt;&gt; pprint.isreadable(stuff)
+False
+</pre>
+
+
+@@function isrecursive(object)
+
+<p>Determine if {@var object} requires a recursive representation.
+
+@@text 
+
+<p>One more support function is also defined:
+
+@@function saferepr(object)
+
+<p>Return a string representation of {@var object}, protected against
+recursive data structures. If the representation of {@var object}
+exposes a recursive entry, the recursive reference will be represented
+as "{@code &ltRecursion on }{@var typename} with id={@var number}>". The
+representation is not otherwise formatted.
+
+@@text 
+
+<pre>
+&gt;&gt;&gt; pprint.saferepr(stuff)
+"[&lt;Recursion on list with id=682968&gt;, '', '/usr/local/lib/python1.5', '/usr/loca
+l/lib/python1.5/test', '/usr/local/lib/python1.5/sunos5', '/usr/local/lib/python
+1.5/sharedmodules', '/usr/local/lib/python1.5/tkinter']"
+</pre>
+
+
+<h2>PrettyPrinter Objects</h2>
+
+<p>{@link PrettyPrinter} instances have the following methods:
+
+@@method PrettyPrinter.pformat(object)
+
+<p>Return the formatted representation of {@var object}. This takes into
+Account the options passed to the {@link PrettyPrinter} constructor.
+
+@@method PrettyPrinter.pprint(object)
+
+<p>Print the formatted representation of {@var object} on the configured
+stream, followed by a newline.
+
+@@text 
+
+<p>The following methods provide the implementations for the
+corresponding functions of the same names. Using these methods on an
+instance is slightly more efficient since new {@link PrettyPrinter}
+objects don't need to be created.
+
+@@method PrettyPrinter.isreadable(object)
+
+<p>Determine if the formatted representation of the object is
+&#8220;readable,&#8221; or can be used to reconstruct the value using
+{@link eval}. Note that this returns false for recursive objects. If the
+{@var depth} parameter of the {@link PrettyPrinter} is set and the
+object is deeper than allowed, this returns false.
+
+@@method PrettyPrinter.isrecursive(object)
+
+<p>Determine if the object requires a recursive representation.
+
+@@text 
+
+<p>This method is provided as a hook to allow subclasses to modify the
+way objects are converted to strings. The default implementation uses
+the internals of the {@link saferepr} implementation.
+
+@@method PrettyPrinter.format(object, context, maxlevels, level)
+
+<p>Returns three values: the formatted version of {@var object} as a
+string, a flag indicating whether the result is readable, and a flag
+indicating whether recursion was detected. The first argument is the
+object to be presented. The second is a dictionary which contains the
+{@link id} of objects that are part of the current presentation context
+(direct and indirect containers for {@var object} that are affecting the
+presentation) as the keys; if an object needs to be presented which is
+already represented in {@var context}, the third return value should be
+true. Recursive calls to the {@link format} method should add additional
+entries for containers to this dictionary. The fourth argument, {@var
+maxlevels}, gives the requested limit to recursion; this will be {@code
+0} if there is no requested limit. This argument should be passed
+unmodified to recursive calls. The fourth argument, {@var level} gives
+the current level; recursive calls should be passed a value less than
+that of the current call.
+<blockquote>
+@since New in version 2.3. <br />
+</blockquote>

@@ -1,0 +1,53 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>The quopri&nbsp;module</title></head><body data-page-id="630"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">The quopri&nbsp;module</h1></div><div class="yui-ge"><div class="yui-u first"><p>This module implements quoted printable encoding, according to
+the MIME standard.</p><p>This encoding can be used if you need to convert text messages
+which mostly consists of plain US ASCII text, such as messages
+written in most European languages, to messages that only use US
+ASCII. This can be quite useful if you&#8217;re sending stuff via
+steam-powered mail transports to people using vintage mail
+agents.</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><div class="example wide">
+<b style="example">Example: Using the quopri
+module</b>
+<pre class="wide">
+# File: <a href="quopri/quopri-example-1.py">quopri-example-1.py</a>
+
+import quopri
+import StringIO
+
+# helpers (the quopri module only supports file-to-file conversion)
+
+def encodestring(instring, tabs=0):
+    outfile = StringIO.StringIO()
+    quopri.encode(StringIO.StringIO(instring), outfile, tabs)
+    return outfile.getvalue()
+
+def decodestring(instring):
+    outfile = StringIO.StringIO()
+    quopri.decode(StringIO.StringIO(instring), outfile)
+    return outfile.getvalue()
+
+#
+# try it out
+
+MESSAGE = "&#229; i &#229;a &#228; e &#246;!"
+
+encoded_message = encodestring(MESSAGE)
+decoded_message = decodestring(encoded_message)
+
+print "original:", MESSAGE
+print "encoded message:", repr(encoded_message)
+print "decoded message:", decoded_message
+
+</pre><pre class="computeroutput wide" moreinfo="NONE">
+original: &#229; i &#229;a &#228; e &#246;!
+encoded message: '=E5 i =E5a =E4 e =F6!\012'
+decoded message: &#229; i &#229;a &#228; e &#246;!
+</pre></div></div><div class="yui-ge"><div class="yui-u first"><p>As this example shows, non-US characters are mapped to an &#8216;=&#8217;
+followed by two hexadecimal digits. So is the &#8216;=&#8217; character itself
+(<span>&#8220;=3D&#8221;</span>), as well as whitespace at the end of lines
+(<span>&#8220;=20&#8221;</span>). Everything else looks just like before. So
+provided you don&#8217;t use too many weird characters, the encoded
+string is nearly as readable as the original.</p><p>(Europeans generally hate this encoding, and strongly believe
+that certain US programmers deserve to be slapped in the head with
+a huge great fish to the jolly music of Edward German&#8230;)</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to librarybook index page.">::: librarybook :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

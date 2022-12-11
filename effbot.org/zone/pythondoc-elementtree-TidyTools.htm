@@ -1,0 +1,42 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>The elementtree.TidyTools&nbsp;Module</title></head><body data-page-id="234"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">The elementtree.TidyTools&nbsp;Module</h1></div><div class="yui-ge"><div class="yui-u first"><p>Tools to build element trees from HTML, using the external <b>tidy</b>
+utility.
+</p><h2>Module Contents</h2><dl><dt><a id="elementtree.TidyTools.getbody-function" name="elementtree.TidyTools.getbody-function"><b>getbody(file, **options)</b></a> [<a href="#elementtree.TidyTools.getbody-function">#</a>]</dt><dd>
+<p>Get document body from a an HTML or HTML-like file.  This function
+uses the <b>tidy</b> function to convert HTML to XHTML, and cleans
+up the resulting XML tree.
+
+</p><dl><dt><i>file</i></dt><dd>
+Filename.</dd>
+<dt>Returns:</dt><dd>
+A <b>body</b> element, or None if not successful.
+</dd>
+</dl><br />
+</dd>
+<dt><a id="elementtree.TidyTools.getzonebody-function" name="elementtree.TidyTools.getzonebody-function"><b>getzonebody(file, **options)</b></a> [<a href="#elementtree.TidyTools.getzonebody-function">#</a>]</dt><dd>
+<p>Same as <b>getbody</b>, but turns plain text at the start of the
+document into an H1 tag.  This function can be used to parse zone
+documents.
+
+</p><dl><dt><i>file</i></dt><dd>
+Filename.</dd>
+<dt>Returns:</dt><dd>
+A <b>body</b> element, or None if not successful.
+</dd>
+</dl><br />
+</dd>
+<dt><a id="elementtree.TidyTools.tidy-function" name="elementtree.TidyTools.tidy-function"><b>tidy(file, new_inline_tags=None)</b></a> [<a href="#elementtree.TidyTools.tidy-function">#</a>]</dt><dd>
+<p>Convert an HTML or HTML-like file to XHTML, using the <b>tidy</b>
+command line utility.
+
+</p><dl><dt><i>file</i></dt><dd>
+Filename.</dd>
+<dt><i>new_inline_tags</i></dt><dd>
+An optional list of valid but non-standard
+    inline tags.</dd>
+<dt>Returns:</dt><dd>
+An element tree, or None if not successful.</dd>
+</dl><br />
+</dd>
+</dl></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to zone index page.">::: zone :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

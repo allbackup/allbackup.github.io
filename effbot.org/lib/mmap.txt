@@ -1,0 +1,157 @@
+
+@@module mmap
+
+<h1>mmap&#8212;Memory-mapped file support</h1>
+
+<p>Memory-mapped file objects behave like both strings and like file
+objects. Unlike normal string objects, however, these are mutable. You
+can use mmap objects in most places where strings are expected; for
+example, you can use the {@link re} module to search through a
+memory-mapped file. Since they're mutable, you can change a single
+character by doing {@code obj[}{@var index}] = 'a', or change a
+substring by assigning to a slice: {@code obj[}{@var i1}:{@var i2}] =
+'...'. You can also read and write data starting at the current file
+position, and {@link seek} through the file to different positions.
+
+<p>A memory-mapped file is created by the {@link mmap} function, which
+is different on Unix and on Windows. In either case you must provide a
+file descriptor for a file opened for update. If you wish to map an
+existing Python file object, use its {@link fileno} method to obtain the
+correct value for the {@var fileno} parameter. Otherwise, you can open
+the file using the {@link os.open} function, which returns a file
+descriptor directly (the file still needs to be closed when done).
+
+<p>For both the Unix and Windows versions of the function, {@var access}
+may be specified as an optional keyword parameter. {@var access} accepts
+one of three values: {@code ACCESS_READ}, {@code ACCESS_WRITE}, or
+{@code ACCESS_COPY} to specify readonly, write-through or copy-on-write
+memory respectively. {@var access} can be used on both Unix and Windows.
+If {@var access} is not specified, Windows mmap returns a write-through
+mapping. The initial memory values for all three access types are taken
+from the specified file. Assignment to an {@code ACCESS_READ} memory map
+raises a {@link exceptions.TypeError} exception. Assignment to an {@code
+ACCESS_WRITE} memory map affects both memory and the underlying file.
+Assignment to an {@code ACCESS_COPY} memory map affects memory but does
+not update the underlying file.
+
+@@function mmap(fileno, length[, tagname[, access]])
+
+<p>(Windows version) Maps {@var length} bytes from the file specified by
+the file handle {@var fileno}, and returns a mmap object. If {@var
+length} is larger than the current size of the file, the file is
+extended to contain {@var length} bytes. If {@var length} is {@code 0},
+the maximum length of the map is the current size of the file, except
+that if the file is empty Windows raises an exception (you cannot create
+an empty mapping on Windows).
+
+<p>{@var tagname}, if specified and not {@link None}, is a string giving
+a tag name for the mapping. Windows allows you to have many different
+mappings against the same file. If you specify the name of an existing
+tag, that tag is opened, otherwise a new tag of this name is created. If
+this parameter is omitted or {@code None}, the mapping is created
+without a name. Avoiding the use of the tag parameter will assist in
+keeping your code portable between Unix and Windows.
+
+@@function mmap(fileno, length[, flags[, prot[, access]]])
+
+<p>(Unix version) Maps {@var length} bytes from the file specified by
+the file descriptor {@var fileno}, and returns a mmap object.
+
+<p>{@var flags} specifies the nature of the mapping. {@code MAP_PRIVATE}
+creates a private copy-on-write mapping, so changes to the contents of
+the mmap object will be private to this process, and {@code MAP_SHARED}
+creates a mapping that's shared with all other processes mapping the
+same areas of the file. The default value is {@code MAP_SHARED}.
+
+<p>{@var prot}, if specified, gives the desired memory protection; the
+two most useful values are {@code PROT_READ} and {@code PROT_WRITE}, to
+specify that the pages may be read or written. {@var prot} defaults to
+{@code PROT_READ | PROT_WRITE}.
+
+<p>{@var access} may be specified in lieu of {@var flags} and {@var
+prot} as an optional keyword parameter. It is an error to specify both
+{@var flags}, {@var prot} and {@var access}. See the description of
+{@var access} above for information on how to use this parameter.
+
+@@text 
+
+<p>Memory-mapped file objects support the following methods:
+
+@@method close()
+
+<p>Close the file. Subsequent calls to other methods of the object will
+result in an exception being raised.
+
+@@method find(string[, start])
+
+<p>Returns the lowest index in the object where the substring {@var
+string} is found. Returns {@code -1} on failure. {@var start} is the
+index at which the search begins, and defaults to zero.
+
+@@method flush([offset, size])
+
+<p>Flushes changes made to the in-memory copy of a file back to disk.
+Without use of this call there is no guarantee that changes are written
+back before the object is destroyed. If {@var offset} and {@var size}
+are specified, only changes to the given range of bytes will be flushed
+to disk; otherwise, the whole extent of the mapping is flushed.
+
+@@method move(dest, src, count)
+
+<p>Copy the {@var count} bytes starting at offset {@var src} to the
+destination index {@var dest}. If the mmap was created with {@code
+ACCESS_READ}, then calls to move will throw a {@link
+exceptions.TypeError} exception.
+
+@@method read(num)
+
+<p>Return a string containing up to {@var num} bytes starting from the
+current file position; the file position is updated to point after the
+bytes that were returned.
+
+@@method read_byte()
+
+<p>Returns a string of length 1 containing the character at the current
+file position, and advances the file position by 1.
+
+@@method readline()
+
+<p>Returns a single line, starting at the current file position and up
+to the next newline.
+
+@@method resize(newsize)
+
+<p>Resizes the map and the underlying file, if any. If the mmap was
+created with {@code ACCESS_READ} or {@code ACCESS_COPY}, resizing the
+map will throw a {@link exceptions.TypeError} exception.
+
+@@method seek(pos[, whence])
+
+<p>Set the file's current position. {@var whence} argument is optional
+and defaults to {@code 0} (absolute file positioning); other values are
+{@code 1} (seek relative to the current position) and {@code 2} (seek
+relative to the file's end).
+
+@@method size()
+
+<p>Return the length of the file, which can be larger than the size of
+the memory-mapped area.
+
+@@method tell()
+
+<p>Returns the current position of the file pointer.
+
+@@method write(string)
+
+<p>Write the bytes in {@var string} into memory at the current position
+of the file pointer; the file position is updated to point after the
+bytes that were written. If the mmap was created with {@code
+ACCESS_READ}, then writing to it will throw a {@link
+exceptions.TypeError} exception.
+
+@@method write_byte(byte)
+
+<p>Write the single-character string {@var byte} into memory at the
+current position of the file pointer; the file position is advanced by
+{@code 1}.If the mmap was created with {@code ACCESS_READ}, then writing
+to it will throw a {@link exceptions.TypeError} exception.

@@ -1,0 +1,1837 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>datetime</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-datetime.html'>original</a> :::
+<a href='datetime.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>datetime&#8212;Basic date and time types</h1>
+
+<div class="toc"><dl><dt>On this page:</dt><dd><a href="#available-types">Available Types</a></dd><dd><a href="#timedelta-objects">timedelta Objects</a></dd><dd><a href="#date-objects">date Objects</a></dd><dd><a href="#datetime-objects">datetime Objects</a></dd><dd><a href="#time-objects">time Objects</a></dd><dd><a href="#tzinfo-objects">tzinfo Objects</a></dd><dd><a href="#strftime-behavior">strftime() Behavior</a></dd></dl></div><p>New in version 2.3.</p>
+
+<p>The <a class="link" href="#datetime"><code>datetime</code></a> module
+supplies classes for manipulating dates and times in both simple
+and complex ways. While date and time arithmetic is supported, the
+focus of the implementation is on efficient member extraction for
+output formatting and manipulation.</p>
+
+<p>There are two kinds of date and time objects:
+&#8220;naive&#8221; and &#8220;aware&#8221;. This distinction
+refers to whether the object has any notion of time zone, daylight
+saving time, or other kind of algorithmic or political time
+adjustment. Whether a naive <a class="link" href="#datetime"><code>
+datetime</code></a> object represents Coordinated Universal Time (UTC),
+local time, or time in some other timezone is purely up to the
+program, just like it's up to the program whether a particular
+number represents metres, miles, or mass. Naive <a class="link" href="#datetime"><code>datetime</code></a> objects are easy to understand
+and to work with, at the cost of ignoring some aspects of
+reality.</p>
+
+<p>For applications requiring more, <a class="link" href="#datetime"><code>datetime</code></a> and <a class="link" href="#time"><code>time</code></a> objects have an optional time zone
+information member, <a class="link" href="#tzinfo"><code>tzinfo</code></a>,
+that can contain an instance of a subclass of the abstract <a class="link" href="#tzinfo"><code>tzinfo</code></a> class. These <a class="link" href="#tzinfo"><code>tzinfo</code></a> objects capture
+information about the offset from UTC time, the time zone name, and
+whether Daylight Saving Time is in effect. Note that no concrete <a class="link" href="#tzinfo"><code>tzinfo</code></a> classes are supplied by
+the <a class="link" href="#datetime"><code>datetime</code></a> module.
+Supporting timezones at whatever level of detail is required is up
+to the application. The rules for time adjustment across the world
+are more political than rational, and there is no standard suitable
+for every application.</p>
+
+<p>The <a class="link" href="#datetime"><code>datetime</code></a> module
+exports the following constants:</p>
+</div>
+<dl><dt class="variable" id="MINYEAR"><b>MINYEAR</b> <tt class="nav"><a class="nav" href="datetime.MINYEAR" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>The smallest year number allowed in a <a class="link" href="#date"><code>date</code></a> or <a class="link" href="#datetime"><code>
+datetime</code></a> object. <code>MINYEAR</code> is <code>1</code>.</p>
+</dd>
+<dt class="variable" id="MAXYEAR"><b>MAXYEAR</b> <tt class="nav"><a class="nav" href="datetime.MAXYEAR" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>The largest year number allowed in a <a class="link" href="#date"><code>date</code></a> or <a class="link" href="#datetime"><code>
+datetime</code></a> object. <code>MAXYEAR</code> is <code>9999</code>.</p>
+</dd>
+</dl><div class="text"><span class="mark">@see</span> <code>Module calendar</code> General calendar related
+functions. <span class="mark">@see</span> <a class="link" href="#time"><code>Module time</code></a> Time access and conversions. 
+
+<h2 id="available-types">Available Types <a class="nav" href="#available-types">#</a></h2>
+</div>
+<dl><dt class="class" id="date"><b>class date</b> <tt class="nav"><a class="nav" href="datetime.date" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>An idealized naive date, assuming the current Gregorian calendar
+always was, and always will be, in effect. Attributes: <code>year</code>, <code>month</code>, and <code>
+day</code>.</p>
+</dd>
+<dt class="class" id="time"><b>class time</b> <tt class="nav"><a class="nav" href="datetime.time" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>An idealized time, independent of any particular day, assuming
+that every day has exactly 24*60*60 seconds (there is no notion of
+"leap seconds" here). Attributes: <code>
+hour</code>, <code>minute</code>, <code>second</code>, <code>microsecond</code>, and <a class="link" href="#tzinfo"><code>tzinfo</code></a>.</p>
+</dd>
+<dt class="class" id="datetime"><b>class datetime</b> <tt class="nav"><a class="nav" href="datetime.datetime" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>A combination of a date and a time. Attributes: <code>year</code>, <code>
+month</code>, <code>day</code>, <code>hour</code>, <code>
+minute</code>, <code>second</code>, <code>microsecond</code>, and <a class="link" href="#tzinfo"><code>tzinfo</code></a>.</p>
+</dd>
+<dt class="class" id="timedelta"><b>class timedelta</b> <tt class="nav"><a class="nav" href="datetime.timedelta" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>A duration expressing the difference between two <a class="link" href="#date"><code>date</code></a>, <a class="link" href="#time"><code>
+time</code></a>, or <a class="link" href="#datetime"><code>datetime</code></a>
+instances to microsecond resolution.</p>
+</dd>
+<dt class="class" id="tzinfo"><b>class tzinfo</b> <tt class="nav"><a class="nav" href="datetime.tzinfo" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>An abstract base class for time zone information objects. These
+are used by the <a class="link" href="#datetime"><code>datetime</code></a>
+and <a class="link" href="#time"><code>time</code></a> classes to provide a
+customizable notion of time adjustment (for example, to account for
+time zone and/or daylight saving time).</p>
+</dd>
+</dl><div class="text">
+<p>Objects of these types are immutable.</p>
+
+<p>Objects of the <a class="link" href="#date"><code>date</code></a> type
+are always naive.</p>
+
+<p>An object <var>d</var> of type <a class="link" href="#time"><code>
+time</code></a> or <a class="link" href="#datetime"><code>datetime</code></a> may
+be naive or aware. <var>d</var> is aware if <var>d</var>.tzinfo is
+not <code>None</code> and <var>
+d</var>.tzinfo.utcoffset(<var>d</var>) does not return <code>None</code>. If <var>d</var>.tzinfo is
+<code>None</code>, or if <var>d</var>.tzinfo is not <code>
+None</code> but <var>d</var>.tzinfo.utcoffset(<var>d</var>) returns
+<code>None</code>, <var>d</var> is naive.</p>
+
+<p>The distinction between naive and aware doesn't apply to <a class="link" href="#timedelta"><code>timedelta</code></a> objects.</p>
+
+<p>Subclass relationships:</p>
+
+<pre>
+object
+    timedelta
+    tzinfo
+    time
+    date
+        datetime
+</pre>
+
+<h2 id="timedelta-objects">timedelta Objects <a class="nav" href="#timedelta-objects">#</a></h2>
+
+<p>A <a class="link" href="#timedelta"><code>timedelta</code></a> object
+represents a duration, the difference between two dates or
+times.</p>
+</div>
+<dl><dt class="class"><b>class timedelta([days[, seconds[, microseconds[,
+milliseconds[, minutes[, hours[, weeks]]]]]]])</b> <tt class="nav"><a class="nav" href="datetime.timedelta" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>All arguments are optional and default to <code>0</code>.
+Arguments may be ints, longs, or floats, and may be positive or
+negative.</p>
+
+<p>Only <var>days</var>, <var>seconds</var> and <var>
+microseconds</var> are stored internally. Arguments are converted
+to those units:</p>
+
+<ul>
+<li>
+<p>A millisecond is converted to 1000 microseconds.</p>
+</li>
+
+<li>
+<p>A minute is converted to 60 seconds.</p>
+</li>
+
+<li>
+<p>An hour is converted to 3600 seconds.</p>
+</li>
+
+<li>
+<p>A week is converted to 7 days.</p>
+</li>
+</ul>
+
+<p>and days, seconds and microseconds are then normalized so that
+the representation is unique, with</p>
+
+<ul>
+<li>
+<p><code>0 &lt;=</code> <var>microseconds</var> &lt; 1000000</p>
+</li>
+
+<li>
+<p><code>0 &lt;=</code> <var>seconds</var> &lt; 3600*24 (the number
+of seconds in one day)</p>
+</li>
+
+<li>
+<p><code>-999999999 &lt;=</code> <var>days</var> &lt;=
+999999999</p>
+</li>
+</ul>
+
+<p>If any argument is a float and there are fractional
+microseconds, the fractional microseconds left over from all
+arguments are combined and their sum is rounded to the nearest
+microsecond. If no argument is a float, the conversion and
+normalization processes are exact (no information is lost).</p>
+
+<p>If the normalized value of days lies outside the indicated
+range, <code>
+exceptions.OverflowError</code> is raised.</p>
+
+<p>Note that normalization of negative values may be surprising at
+first. For example,</p>
+
+<pre>
+&gt;&gt;&gt; d = timedelta(microseconds=-1)
+&gt;&gt;&gt; (d.days, d.seconds, d.microseconds)
+(-1, 86399, 999999)
+</pre>
+</dd>
+</dl><div class="text">
+<p>Class attributes are:</p>
+</div>
+<dl><dt class="attribute" id="timedelta.min"><b>min</b> <tt class="nav"><a class="nav" href="datetime.timedelta.min" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>The most negative <a class="link" href="#timedelta"><code>
+timedelta</code></a> object, <code>timedelta(-999999999)</code>.</p>
+</dd>
+<dt class="attribute" id="timedelta.max"><b>max</b> <tt class="nav"><a class="nav" href="datetime.timedelta.max" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>The most positive <a class="link" href="#timedelta"><code>
+timedelta</code></a> object, <code>timedelta(days=999999999, hours=23,
+minutes=59, seconds=59, microseconds=999999)</code>.</p>
+</dd>
+<dt class="attribute" id="timedelta.resolution"><b>resolution</b> <tt class="nav"><a class="nav" href="datetime.timedelta.resolution" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>The smallest possible difference between non-equal <a class="link" href="#timedelta"><code>timedelta</code></a> objects, <code>
+timedelta(microseconds=1)</code>.</p>
+</dd>
+</dl><div class="text">
+<p>Note that, because of normalization, <code>timedelta.max</code>
+&gt; <code>-timedelta.min</code>. <code>-timedelta.max</code> is
+not representable as a <a class="link" href="#timedelta"><code>
+timedelta</code></a> object.</p>
+
+<p>Instance attributes (read-only):</p>
+
+<table border="1">
+<tr>
+<th>
+<p>Attribute</p>
+</th>
+<th>
+<p>Value</p>
+</th>
+</tr>
+
+<tr>
+<td>
+<p><code>days</code></p>
+</td>
+<td>
+<p>Between -999999999 and 999999999 inclusive</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>seconds</code></p>
+</td>
+<td>
+<p>Between 0 and 86399 inclusive</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>microseconds</code></p>
+</td>
+<td>
+<p>Between 0 and 999999 inclusive</p>
+</td>
+</tr>
+</table>
+
+<br />
+<br />
+ 
+
+<p>Supported operations:</p>
+
+<table border="1">
+<tr>
+<th>
+<p>Operation</p>
+</th>
+<th>
+<p>Result</p>
+</th>
+</tr>
+
+<tr>
+<td>
+<p><var>t1</var> = <var>t2</var> + <var>t3</var></p>
+</td>
+<td>
+<p>Sum of <var>t2</var> and <var>t3</var>. Afterwards <var>
+t1</var>-<var>t2</var> == <var>t3</var> and <var>
+t1</var>-<var>t3</var> == <var>t2</var> are true. (1)</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><var>t1</var> = <var>t2</var> - <var>t3</var></p>
+</td>
+<td>
+<p>Difference of <var>t2</var> and <var>t3</var>. Afterwards <var>
+t1</var> == <var>t2</var> - <var>t3</var> and <var>t2</var> ==
+<var>t1</var> + <var>t3</var> are true. (1)</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><var>t1</var> = <var>t2</var> * <var>i</var> or <var>t1</var> =
+<var>i</var> * <var>t2</var></p>
+</td>
+<td>
+<p>Delta multiplied by an integer or long. Afterwards <var>t1</var>
+// i == <var>t2</var> is true, provided <code>i != 0</code>.</p>
+</td>
+</tr>
+
+<tr>
+<td />
+<td>
+<p>In general, <var>t1</var> * i == <var>t1</var> * (i-1) + <var>
+t1</var> is true. (1)</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><var>t1</var> = <var>t2</var> // <var>i</var></p>
+</td>
+<td>
+<p>The floor is computed and the remainder (if any) is thrown away.
+(3)</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>+</code><var>t1</var></p>
+</td>
+<td>
+<p>Returns a <a class="link" href="#timedelta"><code>timedelta</code></a>
+object with the same value. (2)</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>-</code><var>t1</var></p>
+</td>
+<td>
+<p>equivalent to <a class="link" href="#timedelta"><code>
+timedelta</code></a>(-<var>t1.days</var>, -<var>t1.seconds</var>,
+-<var>t1.microseconds</var>), and to <var>t1</var>* -1. (1)(4)</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>abs(</code><var>t</var>)</p>
+</td>
+<td>
+<p>equivalent to +<var>t</var> when <code>t.days &gt;= 0</code>,
+and to -<var>t</var> when <code>t.days &lt; 0</code>. (2)</p>
+</td>
+</tr>
+</table>
+
+<br />
+<br />
+ 
+
+<p>Notes:</p>
+</div>
+<dl><dt class="variable"><b>(4)</b> <tt class="nav"><a class="nav" href="datetime." title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>-<var>timedelta.max</var> is not representable as a <a class="link" href="#timedelta"><code>timedelta</code></a> object.</p>
+</dd>
+</dl><div class="text">
+<p>In addition to the operations listed above <a class="link" href="#timedelta"><code>timedelta</code></a> objects support certain
+additions and subtractions with <a class="link" href="#date"><code>
+date</code></a> and <a class="link" href="#datetime"><code>datetime</code></a>
+objects (see below).</p>
+
+<p>Comparisons of <a class="link" href="#timedelta"><code>
+timedelta</code></a> objects are supported with the <a class="link" href="#timedelta"><code>timedelta</code></a> object representing the smaller
+duration considered to be the smaller timedelta. In order to stop
+mixed-type comparisons from falling back to the default comparison
+by object address, when a <a class="link" href="#timedelta"><code>
+timedelta</code></a> object is compared to an object of a different type,
+<code>
+exceptions.TypeError</code> is raised unless the comparison is <code>
+==</code> or <code>!=</code>. The latter cases return <code>
+False</code> or <code>True</code>, respectively.</p>
+
+<p><a class="link" href="#timedelta"><code>timedelta</code></a> objects are
+hashable (usable as dictionary keys), support efficient pickling,
+and in Boolean contexts, a <a class="link" href="#timedelta"><code>
+timedelta</code></a> object is considered to be true if and only if it
+isn't equal to <code>timedelta(0)</code>.</p>
+
+<h2 id="date-objects">date Objects <a class="nav" href="#date-objects">#</a></h2>
+
+<p>A <a class="link" href="#date"><code>date</code></a> object represents a
+date (year, month and day) in an idealized calendar, the current
+Gregorian calendar indefinitely extended in both directions.
+January 1 of year 1 is called day number 1, January 2 of year 1 is
+called day number 2, and so on. This matches the definition of the
+"proleptic Gregorian" calendar in Dershowitz and Reingold's book
+<em>Calendrical Calculations</em>, where it's the base calendar for
+all computations. See the book for algorithms for converting
+between proleptic Gregorian ordinals and many other calendar
+systems.</p>
+</div>
+<dl><dt class="class"><b>class date(year, month, day)</b> <tt class="nav"><a class="nav" href="datetime.date" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>All arguments are required. Arguments may be ints or longs, in
+the following ranges:</p>
+
+<ul>
+<li>
+<p><code>MINYEAR &lt;=</code> <var>year</var> &lt;= MAXYEAR</p>
+</li>
+
+<li>
+<p><code>1 &lt;=</code> <var>month</var> &lt;= 12</p>
+</li>
+
+<li>
+<p><code>1 &lt;=</code> <var>day</var> &lt;= number of days in the
+given month and year</p>
+</li>
+</ul>
+
+<p>If an argument outside those ranges is given, <code>exceptions.ValueError</code> is
+raised.</p>
+</dd>
+</dl><div class="text">
+<p>Other constructors, all class methods:</p>
+</div>
+<dl><dt class="method" id="date.today"><b>today()</b> <tt class="nav"><a class="nav" href="datetime.date.today" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return the current local date. This is equivalent to <code>
+date.fromtimestamp(time.time())</code>.</p>
+</dd>
+<dt class="method" id="date.fromtimestamp"><b>fromtimestamp(timestamp)</b> <tt class="nav"><a class="nav" href="datetime.date.fromtimestamp" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return the local date corresponding to the POSIX timestamp, such
+as is returned by <code>
+time.time</code>. This may raise <code>exceptions.ValueError</code>, if the
+timestamp is out of the range of values supported by the platform C
+<code>c:localtime</code> function.
+It's common for this to be restricted to years from 1970 through
+2038. Note that on non-POSIX systems that include leap seconds in
+their notion of a timestamp, leap seconds are ignored by <code>fromtimestamp</code>.</p>
+</dd>
+<dt class="method" id="date.fromordinal"><b>fromordinal(ordinal)</b> <tt class="nav"><a class="nav" href="datetime.date.fromordinal" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return the date corresponding to the proleptic Gregorian
+ordinal, where January 1 of year 1 has ordinal 1. <code>exceptions.ValueError</code> is
+raised unless <code>1 &lt;=</code> <var>ordinal</var> &lt;=
+date.max.toordinal(). For any date <var>d</var>, <code>
+date.fromordinal(</code><var>d</var>.toordinal()) == <var>
+d</var>.</p>
+</dd>
+</dl><div class="text">
+<p>Class attributes:</p>
+</div>
+<dl><dt class="attribute" id="date.min"><b>min</b> <tt class="nav"><a class="nav" href="datetime.date.min" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>The earliest representable date, <code>date(MINYEAR, 1,
+1)</code>.</p>
+</dd>
+<dt class="attribute" id="date.max"><b>max</b> <tt class="nav"><a class="nav" href="datetime.date.max" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>The latest representable date, <code>date(MAXYEAR, 12,
+31)</code>.</p>
+</dd>
+<dt class="attribute" id="date.resolution"><b>resolution</b> <tt class="nav"><a class="nav" href="datetime.date.resolution" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>The smallest possible difference between non-equal date objects,
+<code>timedelta(days=1)</code>.</p>
+</dd>
+</dl><div class="text">
+<p>Instance attributes (read-only):</p>
+</div>
+<dl><dt class="attribute" id="date.year"><b>year</b> <tt class="nav"><a class="nav" href="datetime.date.year" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>Between <code>MINYEAR</code> and <code>MAXYEAR</code>
+inclusive.</p>
+</dd>
+<dt class="attribute" id="date.month"><b>month</b> <tt class="nav"><a class="nav" href="datetime.date.month" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>Between 1 and 12 inclusive.</p>
+</dd>
+<dt class="attribute" id="date.day"><b>day</b> <tt class="nav"><a class="nav" href="datetime.date.day" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>Between 1 and the number of days in the given month of the given
+year.</p>
+</dd>
+</dl><div class="text">
+<p>Supported operations:</p>
+
+<table border="1">
+<tr>
+<th>
+<p>Operation</p>
+</th>
+<th>
+<p>Result</p>
+</th>
+</tr>
+
+<tr>
+<td>
+<p><var>date2</var> = <var>date1</var> + <var>timedelta</var></p>
+</td>
+<td>
+<p><var>date2</var> is <var>timedelta</var>.days days removed from
+<var>date1</var>. (1)</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><var>date2</var> = <var>date1</var> - <var>timedelta</var></p>
+</td>
+<td>
+<p>Computes <var>date2</var> such that <var>date2</var> + <var>
+timedelta</var> == <var>date1</var>. (2)</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><var>timedelta</var> = <var>date1</var> - <var>date2</var></p>
+</td>
+<td>
+<p>(3)</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><var>date1</var> &lt; <var>date2</var></p>
+</td>
+<td>
+<p><var>date1</var> is considered less than <var>date2</var> when
+<var>date1</var> precedes <var>date2</var> in time. (4)</p>
+</td>
+</tr>
+</table>
+
+<br />
+<br />
+ 
+
+<p>Notes:</p>
+</div>
+<dl><dt class="variable"><b>(4)</b> <tt class="nav"><a class="nav" href="datetime." title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>In other words, <code>date1 &lt; date2</code> if and only if
+<var>date1</var>.toordinal() &lt; <var>date2</var>.toordinal(). In
+order to stop comparison from falling back to the default scheme of
+comparing object addresses, date comparison normally raises <code>
+exceptions.TypeError</code> if the other comparand isn't also a <a class="link" href="#date"><code>date</code></a> object. However, <code>
+NotImplemented</code> is returned instead if the other comparand
+has a <code>timetuple</code>
+attribute. This hook gives other kinds of date objects a chance at
+implementing mixed-type comparison. If not, when a <a class="link" href="#date"><code>date</code></a> object is compared to an object of a
+different type, <code>
+exceptions.TypeError</code> is raised unless the comparison is <code>
+==</code> or <code>!=</code>. The latter cases return <code>
+False</code> or <code>True</code>, respectively.</p>
+</dd>
+</dl><div class="text">
+<p>Dates can be used as dictionary keys. In Boolean contexts, all
+<a class="link" href="#date"><code>date</code></a> objects are considered to
+be true.</p>
+
+<p>Instance methods:</p>
+</div>
+<dl><dt class="method" id="date.replace"><b>replace(year, month, day)</b> <tt class="nav"><a class="nav" href="datetime.date.replace" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return a date with the same value, except for those members
+given new values by whichever keyword arguments are specified. For
+example, if <code>d == date(2002, 12, 31)</code>, then <code>
+d.replace(day=26) == date(2002, 12, 26)</code>.</p>
+</dd>
+<dt class="method" id="date.timetuple"><b>timetuple()</b> <tt class="nav"><a class="nav" href="datetime.date.timetuple" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return a <code>
+time.struct_time</code> such as returned by <code>time.localtime</code>. The hours, minutes
+and seconds are 0, and the DST flag is -1. <var>d</var>.timetuple()
+is equivalent to <code>time.struct_time((</code><var>d</var>.year,
+<var>d</var>.month, <var>d</var>.day, 0, 0, 0, <var>
+d</var>.weekday(), <var>d</var>.toordinal() -
+date(<var>d</var>.year, 1, 1).toordinal() + 1, -1))</p>
+</dd>
+<dt class="method" id="date.toordinal"><b>toordinal()</b> <tt class="nav"><a class="nav" href="datetime.date.toordinal" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return the proleptic Gregorian ordinal of the date, where
+January 1 of year 1 has ordinal 1. For any <a class="link" href="#date"><code>date</code></a> object <var>d</var>, <code>
+date.fromordinal(</code><var>d</var>.toordinal()) == <var>
+d</var>.</p>
+</dd>
+<dt class="method" id="date.weekday"><b>weekday()</b> <tt class="nav"><a class="nav" href="datetime.date.weekday" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return the day of the week as an integer, where Monday is 0 and
+Sunday is 6. For example, <code>date(2002, 12, 4).weekday() ==
+2</code>, a Wednesday. See also <code>isoweekday</code>.</p>
+</dd>
+<dt class="method" id="date.isoweekday"><b>isoweekday()</b> <tt class="nav"><a class="nav" href="datetime.date.isoweekday" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return the day of the week as an integer, where Monday is 1 and
+Sunday is 7. For example, <code>date(2002, 12, 4).isoweekday() ==
+3</code>, a Wednesday. See also <code>weekday</code>, <code>isocalendar</code>.</p>
+</dd>
+<dt class="method" id="date.isocalendar"><b>isocalendar()</b> <tt class="nav"><a class="nav" href="datetime.date.isocalendar" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return a 3-tuple, (ISO year, ISO week number, ISO weekday).</p>
+
+<p>The ISO calendar is a widely used variant of the Gregorian
+calendar. See <a class="link" href="http://www.phys.uu.nl/~vgent/calendar/isocalendar.htm">
+http://www.phys.uu.nl/~vgent/calendar/isocalendar.htm</a> for a
+good explanation.</p>
+
+<p>The ISO year consists of 52 or 53 full weeks, and where a week
+starts on a Monday and ends on a Sunday. The first week of an ISO
+year is the first (Gregorian) calendar week of a year containing a
+Thursday. This is called week number 1, and the ISO year of that
+Thursday is the same as its Gregorian year.</p>
+
+<p>For example, 2004 begins on a Thursday, so the first week of ISO
+year 2004 begins on Monday, 29 Dec 2003 and ends on Sunday, 4 Jan
+2004, so that <code>date(2003, 12, 29).isocalendar() == (2004, 1,
+1)</code> and <code>date(2004, 1, 4).isocalendar() == (2004, 1,
+7)</code>.</p>
+</dd>
+<dt class="method" id="date.isoformat"><b>isoformat()</b> <tt class="nav"><a class="nav" href="datetime.date.isoformat" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return a string representing the date in ISO 8601 format,
+'YYYY-MM-DD'. For example, <code>date(2002, 12, 4).isoformat() ==
+'2002-12-04'</code>.</p>
+</dd>
+<dt class="method" id="date.__str__"><b>__str__()</b> <tt class="nav"><a class="nav" href="datetime.date.__str__" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>For a date <var>d</var>, <code>str(</code><var>d</var>) is
+equivalent to <var>d</var>.isoformat().</p>
+</dd>
+<dt class="method" id="date.ctime"><b>ctime()</b> <tt class="nav"><a class="nav" href="datetime.date.ctime" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return a string representing the date, for example date(2002,
+12, 4).ctime() == 'Wed Dec 4 00:00:00 2002'. <var>d</var>.ctime()
+is equivalent to <code>
+time.ctime(time.mktime(</code><var>d</var>.timetuple())) on
+platforms where the native C <code>
+c:ctime</code> function (which <code>
+time.ctime</code> invokes, but which <a class="link" href="#date.ctime"><code>date.ctime</code></a> does not invoke) conforms to
+the C standard.</p>
+</dd>
+<dt class="method" id="date.strftime"><b>strftime(format)</b> <tt class="nav"><a class="nav" href="datetime.date.strftime" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return a string representing the date, controlled by an explicit
+format string. Format codes referring to hours, minutes or seconds
+will see 0 values. See the section on <code>strftime</code> behavior.</p>
+</dd>
+</dl><div class="text">
+<h2 id="datetime-objects">datetime Objects <a class="nav" href="#datetime-objects">#</a></h2>
+
+<p>A <a class="link" href="#datetime"><code>datetime</code></a> object is a
+single object containing all the information from a <a class="link" href="#date"><code>date</code></a> object and a <a class="link" href="#time"><code>time</code></a> object. Like a <a class="link" href="#date"><code>date</code></a> object, <a class="link" href="#datetime"><code>datetime</code></a> assumes the current Gregorian
+calendar extended in both directions; like a time object, <a class="link" href="#datetime"><code>datetime</code></a> assumes there are
+exactly 3600*24 seconds in every day.</p>
+
+<p>Constructor:</p>
+</div>
+<dl><dt class="class"><b>class datetime(year, month, day[, hour[, minute[,
+second[, microsecond[, tzinfo]]]]])</b> <tt class="nav"><a class="nav" href="datetime.datetime" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>The year, month and day arguments are required. <var>
+tzinfo</var> may be <code>None</code>, or
+an instance of a <a class="link" href="#tzinfo"><code>tzinfo</code></a>
+subclass. The remaining arguments may be ints or longs, in the
+following ranges:</p>
+
+<ul>
+<li>
+<p><code>MINYEAR &lt;=</code> <var>year</var> &lt;= MAXYEAR</p>
+</li>
+
+<li>
+<p><code>1 &lt;=</code> <var>month</var> &lt;= 12</p>
+</li>
+
+<li>
+<p><code>1 &lt;=</code> <var>day</var> &lt;= number of days in the
+given month and year</p>
+</li>
+
+<li>
+<p><code>0 &lt;=</code> <var>hour</var> &lt; 24</p>
+</li>
+
+<li>
+<p><code>0 &lt;=</code> <var>minute</var> &lt; 60</p>
+</li>
+
+<li>
+<p><code>0 &lt;=</code> <var>second</var> &lt; 60</p>
+</li>
+
+<li>
+<p><code>0 &lt;=</code> <var>microsecond</var> &lt; 1000000</p>
+</li>
+</ul>
+
+<p>If an argument outside those ranges is given, <code>exceptions.ValueError</code> is
+raised.</p>
+</dd>
+</dl><div class="text">
+<p>Other constructors, all class methods:</p>
+</div>
+<dl><dt class="method" id="datetime.today"><b>today()</b> <tt class="nav"><a class="nav" href="datetime.datetime.today" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return the current local datetime, with <a class="link" href="#tzinfo"><code>tzinfo</code></a> <code>
+None</code>. This is equivalent to <code>
+datetime.fromtimestamp(time.time())</code>. See also <code>now</code>, <code>fromtimestamp</code>.</p>
+</dd>
+<dt class="method" id="datetime.now"><b>now([tz])</b> <tt class="nav"><a class="nav" href="datetime.datetime.now" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return the current local date and time. If optional argument
+<var>tz</var> is <code>None</code> or not
+specified, this is like <code>
+today</code>, but, if possible, supplies more precision than can be
+gotten from going through a <code>
+time.time</code> timestamp (for example, this may be possible on
+platforms supplying the C <code>c:gettimeofday</code> function).</p>
+
+<p>Else <var>tz</var> must be an instance of a class <a class="link" href="#tzinfo"><code>tzinfo</code></a> subclass, and the
+current date and time are converted to <var>tz</var>'s time zone.
+In this case the result is equivalent to <var>
+tz</var>.fromutc(datetime.utcnow().replace(tzinfo=<var>tz</var>)).
+See also <code>today</code>, <code>utcnow</code>.</p>
+</dd>
+<dt class="method" id="datetime.utcnow"><b>utcnow()</b> <tt class="nav"><a class="nav" href="datetime.datetime.utcnow" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return the current UTC date and time, with <a class="link" href="#tzinfo"><code>tzinfo</code></a> <code>
+None</code>. This is like <code>now</code>, but
+returns the current UTC date and time, as a naive <a class="link" href="#datetime"><code>datetime</code></a> object. See also <code>now</code>.</p>
+</dd>
+<dt class="method" id="datetime.fromtimestamp"><b>fromtimestamp(timestamp[, tz])</b> <tt class="nav"><a class="nav" href="datetime.datetime.fromtimestamp" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return the local date and time corresponding to the POSIX
+timestamp, such as is returned by <code>time.time</code>. If optional argument <var>
+tz</var> is <code>None</code> or not specified, the timestamp is
+converted to the platform's local date and time, and the returned
+<a class="link" href="#datetime"><code>datetime</code></a> object is
+naive.</p>
+
+<p>Else <var>tz</var> must be an instance of a class <a class="link" href="#tzinfo"><code>tzinfo</code></a> subclass, and the
+timestamp is converted to <var>tz</var>'s time zone. In this case
+the result is equivalent to <var>
+tz</var>.fromutc(datetime.utcfromtimestamp(<var>timestamp</var>).replace(tzinfo=<var>
+tz</var>)).</p>
+
+<p><code>fromtimestamp</code> may
+raise <code>
+exceptions.ValueError</code>, if the timestamp is out of the range of
+values supported by the platform C <code>c:localtime</code> or <code>c:gmtime</code> functions. It's common for this
+to be restricted to years in 1970 through 2038. Note that on
+non-POSIX systems that include leap seconds in their notion of a
+timestamp, leap seconds are ignored by <code>fromtimestamp</code>, and then it's possible
+to have two timestamps differing by a second that yield identical
+<a class="link" href="#datetime"><code>datetime</code></a> objects. See also
+<code>
+utcfromtimestamp</code>.</p>
+</dd>
+<dt class="method" id="datetime.utcfromtimestamp"><b>utcfromtimestamp(timestamp)</b> <tt class="nav"><a class="nav" href="datetime.datetime.utcfromtimestamp" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return the UTC <a class="link" href="#datetime"><code>datetime</code></a>
+corresponding to the POSIX timestamp, with <a class="link" href="#tzinfo"><code>tzinfo</code></a> <code>None</code>. This may raise <code>
+exceptions.ValueError</code>, if the timestamp is out of the range of
+values supported by the platform C <code>c:gmtime</code> function. It's common for this to
+be restricted to years in 1970 through 2038. See also <code>fromtimestamp</code>.</p>
+</dd>
+<dt class="method" id="datetime.fromordinal"><b>fromordinal(ordinal)</b> <tt class="nav"><a class="nav" href="datetime.datetime.fromordinal" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return the <a class="link" href="#datetime"><code>datetime</code></a>
+corresponding to the proleptic Gregorian ordinal, where January 1
+of year 1 has ordinal 1. <code>exceptions.ValueError</code> is
+raised unless <code>1 &lt;= ordinal &lt;=
+datetime.max.toordinal()</code>. The hour, minute, second and
+microsecond of the result are all 0, and <a class="link" href="#tzinfo"><code>tzinfo</code></a> is <code>
+None</code>.</p>
+</dd>
+<dt class="method" id="datetime.combine"><b>combine(date, time)</b> <tt class="nav"><a class="nav" href="datetime.datetime.combine" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return a new <a class="link" href="#datetime"><code>datetime</code></a>
+object whose date members are equal to the given <a class="link" href="#date"><code>date</code></a> object's, and whose time and <a class="link" href="#tzinfo"><code>tzinfo</code></a> members are equal to the
+given <a class="link" href="#time"><code>time</code></a> object's. For any
+<a class="link" href="#datetime"><code>datetime</code></a> object <var>
+d</var>, <var>d</var> == datetime.combine(<var>d</var>.date(),
+<var>d</var>.timetz()). If date is a <a class="link" href="#datetime"><code>datetime</code></a> object, its time and <a class="link" href="#tzinfo"><code>tzinfo</code></a> members are ignored.</p>
+</dd>
+</dl><div class="text">
+<p>Class attributes:</p>
+</div>
+<dl><dt class="attribute" id="datetime.min"><b>min</b> <tt class="nav"><a class="nav" href="datetime.datetime.min" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>The earliest representable <a class="link" href="#datetime"><code>
+datetime</code></a>, <code>datetime(MINYEAR, 1, 1,
+tzinfo=None)</code>.</p>
+</dd>
+<dt class="attribute" id="datetime.max"><b>max</b> <tt class="nav"><a class="nav" href="datetime.datetime.max" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>The latest representable <a class="link" href="#datetime"><code>
+datetime</code></a>, <code>datetime(MAXYEAR, 12, 31, 23, 59, 59, 999999,
+tzinfo=None)</code>.</p>
+</dd>
+<dt class="attribute" id="datetime.resolution"><b>resolution</b> <tt class="nav"><a class="nav" href="datetime.datetime.resolution" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>The smallest possible difference between non-equal <a class="link" href="#datetime"><code>datetime</code></a> objects, <code>
+timedelta(microseconds=1)</code>.</p>
+</dd>
+</dl><div class="text">
+<p>Instance attributes (read-only):</p>
+</div>
+<dl><dt class="attribute" id="datetime.year"><b>year</b> <tt class="nav"><a class="nav" href="datetime.datetime.year" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>Between <code>MINYEAR</code> and <code>MAXYEAR</code>
+inclusive.</p>
+</dd>
+<dt class="attribute" id="datetime.month"><b>month</b> <tt class="nav"><a class="nav" href="datetime.datetime.month" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>Between 1 and 12 inclusive.</p>
+</dd>
+<dt class="attribute" id="datetime.day"><b>day</b> <tt class="nav"><a class="nav" href="datetime.datetime.day" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>Between 1 and the number of days in the given month of the given
+year.</p>
+</dd>
+<dt class="attribute" id="datetime.hour"><b>hour</b> <tt class="nav"><a class="nav" href="datetime.datetime.hour" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>In <code>range(24)</code>.</p>
+</dd>
+<dt class="attribute" id="datetime.minute"><b>minute</b> <tt class="nav"><a class="nav" href="datetime.datetime.minute" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>In <code>range(60)</code>.</p>
+</dd>
+<dt class="attribute" id="datetime.second"><b>second</b> <tt class="nav"><a class="nav" href="datetime.datetime.second" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>In <code>range(60)</code>.</p>
+</dd>
+<dt class="attribute" id="datetime.microsecond"><b>microsecond</b> <tt class="nav"><a class="nav" href="datetime.datetime.microsecond" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>In <code>range(1000000)</code>.</p>
+</dd>
+<dt class="attribute" id="datetime.tzinfo"><b>tzinfo</b> <tt class="nav"><a class="nav" href="datetime.datetime.tzinfo" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>The object passed as the <var>tzinfo</var> argument to the <a class="link" href="#datetime"><code>datetime</code></a> constructor, or <code>None</code> if none was passed.</p>
+</dd>
+</dl><div class="text">
+<p>Supported operations:</p>
+
+<table border="1">
+<tr>
+<th>
+<p>Operation</p>
+</th>
+<th>
+<p>Result</p>
+</th>
+</tr>
+
+<tr>
+<td>
+<p><var>datetime2</var> = <var>datetime1</var> + <var>
+timedelta</var></p>
+</td>
+<td>
+<p>(1)</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><var>datetime2</var> = <var>datetime1</var> - <var>
+timedelta</var></p>
+</td>
+<td>
+<p>(2)</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><var>timedelta</var> = <var>datetime1</var> - <var>
+datetime2</var></p>
+</td>
+<td>
+<p>(3)</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><var>datetime1</var> &lt; <var>datetime2</var></p>
+</td>
+<td>
+<p>Compares <a class="link" href="#datetime"><code>datetime</code></a> to <a class="link" href="#datetime"><code>datetime</code></a>. (4)</p>
+</td>
+</tr>
+</table>
+
+<br />
+<br />
+</div>
+<dl><dt class="variable"><b>(4)</b> <tt class="nav"><a class="nav" href="datetime." title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p><var>datetime1</var> is considered less than <var>
+datetime2</var> when <var>datetime1</var> precedes <var>
+datetime2</var> in time.</p>
+
+<p class="note"><b>Note:</b> If one comparand is naive and the
+other is aware, In order to stop comparison from falling back to
+the default scheme of comparing object addresses, datetime
+comparison normally raises <code>exceptions.TypeError</code> if the
+other comparand isn't also a <a class="link" href="#datetime"><code>
+datetime</code></a> object. However, <code>NotImplemented</code> is
+returned instead if the other comparand has a <code>timetuple</code> attribute. This hook gives
+other kinds of date objects a chance at implementing mixed-type
+comparison. If not, when a <a class="link" href="#datetime"><code>
+datetime</code></a> object is compared to an object of a different type,
+<code>
+exceptions.TypeError</code> is raised unless the comparison is <code>
+==</code> or <code>!=</code>. The latter cases return <code>
+False</code> or <code>True</code>, respectively.</p>
+</dd>
+</dl><div class="text">
+<p><a class="link" href="#datetime"><code>datetime</code></a> objects can be
+used as dictionary keys. In Boolean contexts, all <a class="link" href="#datetime"><code>datetime</code></a> objects are considered to be
+true.</p>
+
+<p>Instance methods:</p>
+</div>
+<dl><dt class="method" id="Subtraction.date"><b>date()</b> <tt class="nav"><a class="nav" href="datetime.Subtraction.date" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return <a class="link" href="#date"><code>date</code></a> object with
+same year, month and day.</p>
+</dd>
+<dt class="method" id="Subtraction.time"><b>time()</b> <tt class="nav"><a class="nav" href="datetime.Subtraction.time" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return <a class="link" href="#time"><code>time</code></a> object with
+same hour, minute, second and microsecond. <a class="link" href="#tzinfo"><code>tzinfo</code></a> is <code>
+None</code>. See also method <code>
+timetz</code>.</p>
+</dd>
+<dt class="method" id="Subtraction.timetz"><b>timetz()</b> <tt class="nav"><a class="nav" href="datetime.Subtraction.timetz" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return <a class="link" href="#time"><code>time</code></a> object with
+same hour, minute, second, microsecond, and tzinfo members. See
+also method <a class="link" href="#time"><code>time</code></a>.</p>
+</dd>
+<dt class="method" id="Subtraction.replace"><b>replace([year[, month[, day[, hour[,
+minute[, second[, microsecond[, tzinfo]]]]]]]])</b> <tt class="nav"><a class="nav" href="datetime.Subtraction.replace" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return a datetime with the same members, except for those
+members given new values by whichever keyword arguments are
+specified. Note that <code>tzinfo=None</code> can be specified to
+create a naive datetime from an aware datetime with no conversion
+of date and time members.</p>
+</dd>
+<dt class="method" id="Subtraction.astimezone"><b>astimezone(tz)</b> <tt class="nav"><a class="nav" href="datetime.Subtraction.astimezone" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return a <a class="link" href="#datetime"><code>datetime</code></a>
+object with new <a class="link" href="#tzinfo"><code>tzinfo</code></a>
+member <var>tz</var>, adjusting the date and time members so the
+result is the same UTC time as <var>self</var>, but in <var>
+tz</var>'s local time.</p>
+
+<p><var>tz</var> must be an instance of a <a class="link" href="#tzinfo"><code>tzinfo</code></a> subclass, and its <code>utcoffset</code> and <code>dst</code> methods must not return <code>None</code>.
+<var>self</var> must be aware (<var>self</var>.tzinfo must not be
+<code>None</code>, and <var>
+self</var>.utcoffset() must not return <code>None</code>).</p>
+
+<p>If <var>self</var>.tzinfo is <var>tz</var>, <var>
+self</var>.astimezone(<var>tz</var>) is equal to <var>self</var>:
+no adjustment of date or time members is performed. Else the result
+is local time in time zone <var>tz</var>, representing the same UTC
+time as <var>self</var>: after <var>astz</var> = <var>
+dt</var>.astimezone(<var>tz</var>), <var>astz</var> - <var>
+astz</var>.utcoffset() will usually have the same date and time
+members as <var>dt</var> - <var>dt</var>.utcoffset(). The
+discussion of class <a class="link" href="#tzinfo"><code>tzinfo</code></a>
+explains the cases at Daylight Saving Time transition boundaries
+where this cannot be achieved (an issue only if <var>tz</var>
+models both standard and daylight time).</p>
+
+<p>If you merely want to attach a time zone object <var>tz</var> to
+a datetime <var>dt</var> without adjustment of date and time
+members, use <var>dt</var>.replace(tzinfo=<var>tz</var>). If you
+merely want to remove the time zone object from an aware datetime
+<var>dt</var> without conversion of date and time members, use
+<var>dt</var>.replace(tzinfo=None).</p>
+
+<p>Note that the default <a class="link" href="#tzinfo.fromutc"><code>tzinfo.fromutc</code></a> method can be
+overridden in a <a class="link" href="#tzinfo"><code>tzinfo</code></a>
+subclass to affect the result returned by <code>astimezone</code>. Ignoring error cases, <code>astimezone</code> acts like:</p>
+
+<pre>
+  def astimezone(self, tz):
+      if self.tzinfo is tz:
+          return self
+      # Convert self to UTC, and attach the new time zone object.
+      utc = (self - self.utcoffset()).replace(tzinfo=tz)
+      # Convert from UTC to tz's local time.
+      return tz.fromutc(utc)
+</pre>
+</dd>
+<dt class="method" id="Subtraction.utcoffset"><b>utcoffset()</b> <tt class="nav"><a class="nav" href="datetime.Subtraction.utcoffset" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>If <a class="link" href="#tzinfo"><code>tzinfo</code></a> is <code>None</code>, returns <code>None</code>, else returns <var>
+self</var>.tzinfo.utcoffset(<var>self</var>), and raises an
+exception if the latter doesn't return <code>None</code>, or a <a class="link" href="#timedelta"><code>timedelta</code></a> object representing a whole
+number of minutes with magnitude less than one day.</p>
+</dd>
+<dt class="method" id="Subtraction.dst"><b>dst()</b> <tt class="nav"><a class="nav" href="datetime.Subtraction.dst" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>If <a class="link" href="#tzinfo"><code>tzinfo</code></a> is <code>None</code>, returns <code>None</code>, else returns <var>
+self</var>.tzinfo.dst(<var>self</var>), and raises an exception if
+the latter doesn't return <code>
+None</code>, or a <a class="link" href="#timedelta"><code>timedelta</code></a>
+object representing a whole number of minutes with magnitude less
+than one day.</p>
+</dd>
+<dt class="method" id="Subtraction.tzname"><b>tzname()</b> <tt class="nav"><a class="nav" href="datetime.Subtraction.tzname" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>If <a class="link" href="#tzinfo"><code>tzinfo</code></a> is <code>None</code>, returns <code>None</code>, else returns <var>
+self</var>.tzinfo.tzname(<var>self</var>), raises an exception if
+the latter doesn't return <code>None</code>
+or a string object,</p>
+</dd>
+<dt class="method" id="Subtraction.timetuple"><b>timetuple()</b> <tt class="nav"><a class="nav" href="datetime.Subtraction.timetuple" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return a <code>
+time.struct_time</code> such as returned by <code>time.localtime</code>. <var>
+d</var>.timetuple() is equivalent to <code>
+time.struct_time((</code><var>d</var>.year, <var>d</var>.month,
+<var>d</var>.day, <var>d</var>.hour, <var>d</var>.minute, <var>
+d</var>.second, <var>d</var>.weekday(), <var>d</var>.toordinal() -
+date(<var>d</var>.year, 1, 1).toordinal() + 1, dst)) The <code>tm_isdst</code> flag of the result
+is set according to the <code>dst</code>
+method: <a class="link" href="#tzinfo"><code>tzinfo</code></a> is <code>None</code> or <code>dst</code> returns <code>
+None</code>, <code>tm_isdst</code> is set
+to <code>-1</code>; else if <code>dst</code>
+returns a non-zero value, <code>
+tm_isdst</code> is set to <code>1</code>; else <code>tm_isdst</code>
+is set to <code>0</code>.</p>
+</dd>
+<dt class="method" id="Subtraction.utctimetuple"><b>utctimetuple()</b> <tt class="nav"><a class="nav" href="datetime.Subtraction.utctimetuple" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>If <a class="link" href="#datetime"><code>datetime</code></a> instance
+<var>d</var> is naive, this is the same as <var>d</var>.timetuple()
+except that <code>tm_isdst</code> is
+forced to 0 regardless of what <code>d.dst()</code> returns. DST is
+never in effect for a UTC time.</p>
+
+<p>If <var>d</var> is aware, <var>d</var> is normalized to UTC
+time, by subtracting <var>d</var>.utcoffset(), and a <code>time.struct_time</code> for
+the normalized time is returned. <code>tm_isdst</code> is forced to 0. Note that the
+result's <code>tm_year</code> member may
+be <code>MINYEAR</code>-1 or <code>MAXYEAR</code>+1, if <var>
+d</var>.year was <code>MINYEAR</code> or <code>MAXYEAR</code> and
+UTC adjustment spills over a year boundary.</p>
+</dd>
+<dt class="method" id="Subtraction.toordinal"><b>toordinal()</b> <tt class="nav"><a class="nav" href="datetime.Subtraction.toordinal" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return the proleptic Gregorian ordinal of the date. The same as
+<code>self.date().toordinal()</code>.</p>
+</dd>
+<dt class="method" id="Subtraction.weekday"><b>weekday()</b> <tt class="nav"><a class="nav" href="datetime.Subtraction.weekday" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return the day of the week as an integer, where Monday is 0 and
+Sunday is 6. The same as <code>self.date().weekday()</code>. See
+also <code>isoweekday</code>.</p>
+</dd>
+<dt class="method" id="Subtraction.isoweekday"><b>isoweekday()</b> <tt class="nav"><a class="nav" href="datetime.Subtraction.isoweekday" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return the day of the week as an integer, where Monday is 1 and
+Sunday is 7. The same as <code>self.date().isoweekday()</code>. See
+also <code>weekday</code>, <code>isocalendar</code>.</p>
+</dd>
+<dt class="method" id="Subtraction.isocalendar"><b>isocalendar()</b> <tt class="nav"><a class="nav" href="datetime.Subtraction.isocalendar" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return a 3-tuple, (ISO year, ISO week number, ISO weekday). The
+same as <code>self.date().isocalendar()</code>.</p>
+</dd>
+<dt class="method" id="Subtraction.isoformat"><b>isoformat([sep])</b> <tt class="nav"><a class="nav" href="datetime.Subtraction.isoformat" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return a string representing the date and time in ISO 8601
+format, YYYY-MM-DDTHH:MM:SS.mmmmmm or, if <code>microsecond</code> is 0,
+YYYY-MM-DDTHH:MM:SS</p>
+
+<p>If <code>utcoffset</code> does not
+return <code>None</code>, a 6-character string is appended, giving
+the UTC offset in (signed) hours and minutes:
+YYYY-MM-DDTHH:MM:SS.mmmmmm+HH:MM or, if <code>microsecond</code> is 0
+YYYY-MM-DDTHH:MM:SS+HH:MM</p>
+
+<p>The optional argument <var>sep</var> (default <code>'T'</code>)
+is a one-character separator, placed between the date and time
+portions of the result. For example,</p>
+
+<pre>
+&gt;&gt;&gt; from datetime import tzinfo, timedelta, datetime
+&gt;&gt;&gt; class TZ(tzinfo):
+...     def utcoffset(self, dt): return timedelta(minutes=-399)
+...
+&gt;&gt;&gt; datetime(2002, 12, 25, tzinfo=TZ()).isoformat(' ')
+'2002-12-25 00:00:00-06:39'
+</pre>
+</dd>
+<dt class="method" id="Subtraction.__str__"><b>__str__()</b> <tt class="nav"><a class="nav" href="datetime.Subtraction.__str__" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>For a <a class="link" href="#datetime"><code>datetime</code></a> instance
+<var>d</var>, <code>str(</code><var>d</var>) is equivalent to <var>
+d</var>.isoformat(' ').</p>
+</dd>
+<dt class="method" id="Subtraction.ctime"><b>ctime()</b> <tt class="nav"><a class="nav" href="datetime.Subtraction.ctime" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return a string representing the date and time, for example
+<code>datetime(2002, 12, 4, 20, 30, 40).ctime() == 'Wed Dec 4
+20:30:40 2002'</code>. <code>d.ctime()</code> is equivalent to
+<code>time.ctime(time.mktime(d.timetuple()))</code> on platforms
+where the native C <code>c:ctime</code>
+function (which <code>
+time.ctime</code> invokes, but which <code>datetime.ctime</code> does not invoke)
+conforms to the C standard.</p>
+</dd>
+<dt class="method" id="Subtraction.strftime"><b>strftime(format)</b> <tt class="nav"><a class="nav" href="datetime.Subtraction.strftime" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return a string representing the date and time, controlled by an
+explicit format string. See the section on <code>strftime</code> behavior.</p>
+</dd>
+</dl><div class="text">
+<h2 id="time-objects">time Objects <a class="nav" href="#time-objects">#</a></h2>
+
+<p>A time object represents a (local) time of day, independent of
+any particular day, and subject to adjustment via a <a class="link" href="#tzinfo"><code>tzinfo</code></a> object.</p>
+</div>
+<dl><dt class="class"><b>class time(hour[, minute[, second[, microsecond[,
+tzinfo]]]])</b> <tt class="nav"><a class="nav" href="datetime.time" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>All arguments are optional. <var>tzinfo</var> may be <code>
+None</code>, or an instance of a <a class="link" href="#tzinfo"><code>tzinfo</code></a> subclass. The remaining arguments may
+be ints or longs, in the following ranges:</p>
+
+<ul>
+<li>
+<p><code>0 &lt;=</code> <var>hour</var> &lt; 24</p>
+</li>
+
+<li>
+<p><code>0 &lt;=</code> <var>minute</var> &lt; 60</p>
+</li>
+
+<li>
+<p><code>0 &lt;=</code> <var>second</var> &lt; 60</p>
+</li>
+
+<li>
+<p><code>0 &lt;=</code> <var>microsecond</var> &lt; 1000000.</p>
+</li>
+</ul>
+
+<p>If an argument outside those ranges is given, <code>exceptions.ValueError</code> is
+raised. All default to <code>0</code> except <var>tzinfo</var>,
+which defaults to <code>None</code>.</p>
+</dd>
+</dl><div class="text">
+<p>Class attributes:</p>
+</div>
+<dl><dt class="attribute" id="time.min"><b>min</b> <tt class="nav"><a class="nav" href="datetime.time.min" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>The earliest representable <a class="link" href="#time"><code>
+time</code></a>, <code>time(0, 0, 0, 0)</code>.</p>
+</dd>
+<dt class="attribute" id="time.max"><b>max</b> <tt class="nav"><a class="nav" href="datetime.time.max" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>The latest representable <a class="link" href="#time"><code>
+time</code></a>, <code>time(23, 59, 59, 999999)</code>.</p>
+</dd>
+<dt class="attribute" id="time.resolution"><b>resolution</b> <tt class="nav"><a class="nav" href="datetime.time.resolution" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>The smallest possible difference between non-equal <a class="link" href="#time"><code>time</code></a> objects, <code>
+timedelta(microseconds=1)</code>, although note that arithmetic on
+<a class="link" href="#time"><code>time</code></a> objects is not
+supported.</p>
+</dd>
+</dl><div class="text">
+<p>Instance attributes (read-only):</p>
+</div>
+<dl><dt class="attribute" id="time.hour"><b>hour</b> <tt class="nav"><a class="nav" href="datetime.time.hour" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>In <code>range(24)</code>.</p>
+</dd>
+<dt class="attribute" id="time.minute"><b>minute</b> <tt class="nav"><a class="nav" href="datetime.time.minute" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>In <code>range(60)</code>.</p>
+</dd>
+<dt class="attribute" id="time.second"><b>second</b> <tt class="nav"><a class="nav" href="datetime.time.second" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>In <code>range(60)</code>.</p>
+</dd>
+<dt class="attribute" id="time.microsecond"><b>microsecond</b> <tt class="nav"><a class="nav" href="datetime.time.microsecond" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>In <code>range(1000000)</code>.</p>
+</dd>
+<dt class="attribute" id="time.tzinfo"><b>tzinfo</b> <tt class="nav"><a class="nav" href="datetime.time.tzinfo" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>The object passed as the tzinfo argument to the <a class="link" href="#time"><code>time</code></a> constructor, or <code>None</code> if none was passed.</p>
+</dd>
+</dl><div class="text">
+<p>Supported operations:</p>
+
+<ul>
+<li>
+<p>comparison of <a class="link" href="#time"><code>time</code></a> to <a class="link" href="#time"><code>time</code></a>, where <var>a</var> is
+considered less than <var>b</var> when <var>a</var> precedes <var>
+b</var> in time. If one comparand is naive and the other is aware,
+<code>
+exceptions.TypeError</code> is raised. If both comparands are aware,
+and have the same <a class="link" href="#tzinfo"><code>tzinfo</code></a>
+member, the common <a class="link" href="#tzinfo"><code>tzinfo</code></a>
+member is ignored and the base times are compared. If both
+comparands are aware and have different <a class="link" href="#tzinfo"><code>tzinfo</code></a> members, the comparands are first
+adjusted by subtracting their UTC offsets (obtained from <code>
+self.utcoffset()</code>). In order to stop mixed-type comparisons
+from falling back to the default comparison by object address, when
+a <a class="link" href="#time"><code>time</code></a> object is compared to
+an object of a different type, <code>exceptions.TypeError</code> is raised
+unless the comparison is <code>==</code> or <code>!=</code>. The
+latter cases return <code>False</code> or <code>True</code>,
+respectively.</p>
+</li>
+
+<li>
+<p>hash, use as dict key</p>
+</li>
+
+<li>
+<p>efficient pickling</p>
+</li>
+
+<li>
+<p>in Boolean contexts, a <a class="link" href="#time"><code>time</code></a>
+object is considered to be true if and only if, after converting it
+to minutes and subtracting <code>
+utcoffset</code> (or <code>0</code> if that's <code>None</code>), the result is non-zero.</p>
+</li>
+</ul>
+
+<p>Instance methods:</p>
+</div>
+<dl><dt class="method" id="time.replace"><b>replace([hour[, minute[, second[,
+microsecond[, tzinfo]]]]])</b> <tt class="nav"><a class="nav" href="datetime.time.replace" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return a <a class="link" href="#time"><code>time</code></a> with the same
+value, except for those members given new values by whichever
+keyword arguments are specified. Note that <code>tzinfo=None</code>
+can be specified to create a naive <a class="link" href="#time"><code>time</code></a> from an aware <a class="link" href="#time"><code>time</code></a>, without conversion of the time
+members.</p>
+</dd>
+<dt class="method" id="time.isoformat"><b>isoformat()</b> <tt class="nav"><a class="nav" href="datetime.time.isoformat" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return a string representing the time in ISO 8601 format,
+HH:MM:SS.mmmmmm or, if self.microsecond is 0, HH:MM:SS If <code>utcoffset</code> does not return <code>None</code>, a 6-character string is
+appended, giving the UTC offset in (signed) hours and minutes:
+HH:MM:SS.mmmmmm+HH:MM or, if self.microsecond is 0,
+HH:MM:SS+HH:MM</p>
+</dd>
+<dt class="method" id="time.__str__"><b>__str__()</b> <tt class="nav"><a class="nav" href="datetime.time.__str__" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>For a time <var>t</var>, <code>str(</code><var>t</var>) is
+equivalent to <var>t</var>.isoformat().</p>
+</dd>
+<dt class="method" id="time.strftime"><b>strftime(format)</b> <tt class="nav"><a class="nav" href="datetime.time.strftime" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return a string representing the time, controlled by an explicit
+format string. See the section on <code>strftime</code> behavior.</p>
+</dd>
+<dt class="method" id="time.utcoffset"><b>utcoffset()</b> <tt class="nav"><a class="nav" href="datetime.time.utcoffset" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>If <a class="link" href="#tzinfo"><code>tzinfo</code></a> is <code>None</code>, returns <code>None</code>, else returns <var>
+self</var>.tzinfo.utcoffset(None), and raises an exception if the
+latter doesn't return <code>None</code> or
+a <a class="link" href="#timedelta"><code>timedelta</code></a> object
+representing a whole number of minutes with magnitude less than one
+day.</p>
+</dd>
+<dt class="method" id="time.dst"><b>dst()</b> <tt class="nav"><a class="nav" href="datetime.time.dst" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>If <a class="link" href="#tzinfo"><code>tzinfo</code></a> is <code>None</code>, returns <code>None</code>, else returns <var>
+self</var>.tzinfo.dst(None), and raises an exception if the latter
+doesn't return <code>None</code>, or a <a class="link" href="#timedelta"><code>timedelta</code></a> object
+representing a whole number of minutes with magnitude less than one
+day.</p>
+</dd>
+<dt class="method" id="time.tzname"><b>tzname()</b> <tt class="nav"><a class="nav" href="datetime.time.tzname" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>If <a class="link" href="#tzinfo"><code>tzinfo</code></a> is <code>None</code>, returns <code>None</code>, else returns <var>
+self</var>.tzinfo.tzname(None), or raises an exception if the
+latter doesn't return <code>None</code> or
+a string object.</p>
+</dd>
+</dl><div class="text">
+<h2 id="tzinfo-objects">tzinfo Objects <a class="nav" href="#tzinfo-objects">#</a></h2>
+
+<p><a class="link" href="#tzinfo"><code>tzinfo</code></a> is an abstract
+base clase, meaning that this class should not be instantiated
+directly. You need to derive a concrete subclass, and (at least)
+supply implementations of the standard <a class="link" href="#tzinfo"><code>tzinfo</code></a> methods needed by the <a class="link" href="#datetime"><code>datetime</code></a> methods you use. The <a class="link" href="#datetime"><code>datetime</code></a> module does not
+supply any concrete subclasses of <a class="link" href="#tzinfo"><code>tzinfo</code></a>.</p>
+
+<p>An instance of (a concrete subclass of) <a class="link" href="#tzinfo"><code>tzinfo</code></a> can be passed to the constructors for
+<a class="link" href="#datetime"><code>datetime</code></a> and <a class="link" href="#time"><code>time</code></a> objects. The latter objects
+view their members as being in local time, and the <a class="link" href="#tzinfo"><code>tzinfo</code></a> object supports methods revealing
+offset of local time from UTC, the name of the time zone, and DST
+offset, all relative to a date or time object passed to them.</p>
+
+<p>Special requirement for pickling: A <a class="link" href="#tzinfo"><code>tzinfo</code></a> subclass must have an <code>__init__</code> method that can be called with no
+arguments, else it can be pickled but possibly not unpickled again.
+This is a technical requirement that may be relaxed in the
+future.</p>
+
+<p>A concrete subclass of <a class="link" href="#tzinfo"><code>
+tzinfo</code></a> may need to implement the following methods. Exactly
+which methods are needed depends on the uses made of aware <a class="link" href="#datetime"><code>datetime</code></a> objects. If in
+doubt, simply implement all of them.</p>
+</div>
+<dl><dt class="method" id="tzinfo.utcoffset"><b>utcoffset(self, dt)</b> <tt class="nav"><a class="nav" href="datetime.tzinfo.utcoffset" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return offset of local time from UTC, in minutes east of UTC. If
+local time is west of UTC, this should be negative. Note that this
+is intended to be the total offset from UTC; for example, if a <a class="link" href="#tzinfo"><code>tzinfo</code></a> object represents both
+time zone and DST adjustments, <code>utcoffset</code> should return their sum. If the
+UTC offset isn't known, return <code>
+None</code>. Else the value returned must be a <a class="link" href="#timedelta"><code>timedelta</code></a> object specifying a whole
+number of minutes in the range -1439 to 1439 inclusive (1440 =
+24*60; the magnitude of the offset must be less than one day). Most
+implementations of <code>
+utcoffset</code> will probably look like one of these two:</p>
+
+<pre>
+    return CONSTANT                 # fixed-offset class
+    return CONSTANT + self.dst(dt)  # daylight-aware class
+</pre>
+
+<p>If <code>utcoffset</code> does not
+return <code>None</code>, <code>dst</code>
+should not return <code>None</code> either.</p>
+
+<p>The default implementation of <code>utcoffset</code> raises <code>
+exceptions.NotImplementedError</code>.</p>
+</dd>
+<dt class="method" id="tzinfo.dst"><b>dst(self, dt)</b> <tt class="nav"><a class="nav" href="datetime.tzinfo.dst" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return the daylight saving time (DST) adjustment, in minutes
+east of UTC, or <code>None</code> if DST
+information isn't known. Return <code>timedelta(0)</code> if DST is
+not in effect. If DST is in effect, return the offset as a <a class="link" href="#timedelta"><code>timedelta</code></a> object (see <code>utcoffset</code> for details). Note
+that DST offset, if applicable, has already been added to the UTC
+offset returned by <code>
+utcoffset</code>, so there's no need to consult <code>dst</code> unless you're interested in obtaining DST
+info separately. For example, <code>datetime.timetuple</code> calls its <a class="link" href="#tzinfo"><code>tzinfo</code></a> member's <code>dst</code> method to determine how the <code>tm_isdst</code> flag should be set, and <a class="link" href="#tzinfo.fromutc"><code>tzinfo.fromutc</code></a> calls <code>dst</code> to account for DST changes
+when crossing time zones.</p>
+
+<p>An instance <var>tz</var> of a <a class="link" href="#tzinfo"><code>tzinfo</code></a> subclass that models both standard
+and daylight times must be consistent in this sense:</p>
+
+<p><var>tz</var>.utcoffset(<var>dt</var>) - <var>
+tz</var>.dst(<var>dt</var>)</p>
+
+<p>must return the same result for every <a class="link" href="#datetime"><code>datetime</code></a> <var>dt</var> with <var>
+dt</var>.tzinfo == <var>tz</var> For sane <a class="link" href="#tzinfo"><code>tzinfo</code></a> subclasses, this expression yields
+the time zone's "standard offset", which should not depend on the
+date or the time, but only on geographic location. The
+implementation of <code>
+datetime.astimezone</code> relies on this, but cannot detect
+violations; it's the programmer's responsibility to ensure it. If a
+<a class="link" href="#tzinfo"><code>tzinfo</code></a> subclass cannot
+guarantee this, it may be able to override the default
+implementation of <a class="link" href="#tzinfo.fromutc"><code>
+tzinfo.fromutc</code></a> to work correctly with <code>astimezone</code> regardless.</p>
+
+<p>Most implementations of <code>dst</code>
+will probably look like one of these two:</p>
+
+<pre>
+    def dst(self):
+        # a fixed-offset class:  doesn't account for DST
+        return timedelta(0)
+</pre>
+
+<p>or</p>
+
+<pre>
+    def dst(self):
+        # Code to set dston and dstoff to the time zone's DST
+        # transition times based on the input dt.year, and expressed
+        # in standard local time.  Then
+
+        if dston &lt;= dt.replace(tzinfo=None) &lt; dstoff:
+            return timedelta(hours=1)
+        else:
+            return timedelta(0)
+</pre>
+
+<p>The default implementation of <code>
+dst</code> raises <code>
+exceptions.NotImplementedError</code>.</p>
+</dd>
+<dt class="method" id="tzinfo.tzname"><b>tzname(self, dt)</b> <tt class="nav"><a class="nav" href="datetime.tzinfo.tzname" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return the time zone name corresponding to the <a class="link" href="#datetime"><code>datetime</code></a> object <var>dt</var>, as a
+string. Nothing about string names is defined by the <a class="link" href="#datetime"><code>datetime</code></a> module, and there's
+no requirement that it mean anything in particular. For example,
+"GMT", "UTC", "-500", "-5:00", "EDT", "US/Eastern", "America/New
+York" are all valid replies. Return <code>None</code> if a string name isn't known. Note that
+this is a method rather than a fixed string primarily because some
+<a class="link" href="#tzinfo"><code>tzinfo</code></a> subclasses will wish
+to return different names depending on the specific value of <var>
+dt</var> passed, especially if the <a class="link" href="#tzinfo"><code>tzinfo</code></a> class is accounting for daylight
+time.</p>
+
+<p>The default implementation of <code>tzname</code> raises <code>
+exceptions.NotImplementedError</code>.</p>
+</dd>
+</dl><div class="text">
+<p>These methods are called by a <a class="link" href="#datetime"><code>datetime</code></a> or <a class="link" href="#time"><code>time</code></a> object, in response to their methods of
+the same names. A <a class="link" href="#datetime"><code>datetime</code></a>
+object passes itself as the argument, and a <a class="link" href="#time"><code>time</code></a> object passes <code>None</code> as the argument. A <a class="link" href="#tzinfo"><code>tzinfo</code></a> subclass's methods should therefore
+be prepared to accept a <var>dt</var> argument of <code>None</code>, or of class <a class="link" href="#datetime"><code>datetime</code></a>.</p>
+
+<p>When <code>None</code> is passed, it's
+up to the class designer to decide the best response. For example,
+returning <code>None</code> is appropriate if the class wishes to
+say that time objects don't participate in the <a class="link" href="#tzinfo"><code>tzinfo</code></a> protocols. It may be more useful for
+<code>utcoffset(None)</code> to return the standard UTC offset, as
+there is no other convention for discovering the standard
+offset.</p>
+
+<p>When a <a class="link" href="#datetime"><code>datetime</code></a> object
+is passed in response to a <a class="link" href="#datetime"><code>
+datetime</code></a> method, <code>dt.tzinfo</code> is the same object as
+<var>self</var>. <a class="link" href="#tzinfo"><code>tzinfo</code></a>
+methods can rely on this, unless user code calls <a class="link" href="#tzinfo"><code>tzinfo</code></a> methods directly. The intent is that
+the <a class="link" href="#tzinfo"><code>tzinfo</code></a> methods interpret
+<var>dt</var> as being in local time, and not need worry about
+objects in other timezones.</p>
+
+<p>There is one more <a class="link" href="#tzinfo"><code>tzinfo</code></a>
+method that a subclass may wish to override:</p>
+</div>
+<dl><dt class="method" id="tzinfo.fromutc"><b>fromutc(self, dt)</b> <tt class="nav"><a class="nav" href="datetime.tzinfo.fromutc" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>This is called from the default <code>datetime.astimezone</code>
+implementation. When called from that, <var>dt</var>.tzinfo is
+<var>self</var>, and <var>dt</var>'s date and time members are to
+be viewed as expressing a UTC time. The purpose of <code>fromutc</code> is to adjust the date and time
+members, returning an equivalent datetime in <var>self</var>'s
+local time.</p>
+
+<p>Most <a class="link" href="#tzinfo"><code>tzinfo</code></a> subclasses
+should be able to inherit the default <code>fromutc</code> implementation without problems.
+It's strong enough to handle fixed-offset time zones, and time
+zones accounting for both standard and daylight time, and the
+latter even if the DST transition times differ in different years.
+An example of a time zone the default <code>fromutc</code> implementation may not handle
+correctly in all cases is one where the standard offset (from UTC)
+depends on the specific date and time passed, which can happen for
+political reasons. The default implementations of <code>astimezone</code> and <code>fromutc</code> may not produce the result you want
+if the result is one of the hours straddling the moment the
+standard offset changes.</p>
+
+<p>Skipping code for error cases, the default <code>fromutc</code> implementation acts like:</p>
+
+<pre>
+  def fromutc(self, dt):
+      # raise ValueError error if dt.tzinfo is not self
+      dtoff = dt.utcoffset()
+      dtdst = dt.dst()
+      # raise ValueError if dtoff is None or dtdst is None
+      delta = dtoff - dtdst  # this is self's standard offset
+      if delta:
+          dt += delta   # convert to standard local time
+          dtdst = dt.dst()
+          # raise ValueError if dtdst is None
+      if dtdst:
+          return dt + dtdst
+      else:
+          return dt
+</pre>
+</dd>
+</dl><div class="text">
+<p>Example <a class="link" href="#tzinfo"><code>tzinfo</code></a>
+classes:</p>
+
+<pre>
+from datetime import tzinfo, timedelta, datetime
+
+ZERO = timedelta(0)
+HOUR = timedelta(hours=1)
+
+# A UTC class.
+
+class UTC(tzinfo):
+    """UTC"""
+
+    def utcoffset(self, dt):
+        return ZERO
+
+    def tzname(self, dt):
+        return "UTC"
+
+    def dst(self, dt):
+        return ZERO
+
+utc = UTC()
+
+# A class building tzinfo objects for fixed-offset time zones.
+# Note that FixedOffset(0, "UTC") is a different way to build a
+# UTC tzinfo object.
+
+class FixedOffset(tzinfo):
+    """Fixed offset in minutes east from UTC."""
+
+    def __init__(self, offset, name):
+        self.__offset = timedelta(minutes = offset)
+        self.__name = name
+
+    def utcoffset(self, dt):
+        return self.__offset
+
+    def tzname(self, dt):
+        return self.__name
+
+    def dst(self, dt):
+        return ZERO
+
+# A class capturing the platform's idea of local time.
+
+import time as _time
+
+STDOFFSET = timedelta(seconds = -_time.timezone)
+if _time.daylight:
+    DSTOFFSET = timedelta(seconds = -_time.altzone)
+else:
+    DSTOFFSET = STDOFFSET
+
+DSTDIFF = DSTOFFSET - STDOFFSET
+
+class LocalTimezone(tzinfo):
+
+    def utcoffset(self, dt):
+        if self._isdst(dt):
+            return DSTOFFSET
+        else:
+            return STDOFFSET
+
+    def dst(self, dt):
+        if self._isdst(dt):
+            return DSTDIFF
+        else:
+            return ZERO
+
+    def tzname(self, dt):
+        return _time.tzname[self._isdst(dt)]
+
+    def _isdst(self, dt):
+        tt = (dt.year, dt.month, dt.day,
+              dt.hour, dt.minute, dt.second,
+              dt.weekday(), 0, -1)
+        stamp = _time.mktime(tt)
+        tt = _time.localtime(stamp)
+        return tt.tm_isdst &gt; 0
+
+Local = LocalTimezone()
+
+# A complete implementation of current DST rules for major US time zones.
+
+def first_sunday_on_or_after(dt):
+    days_to_go = 6 - dt.weekday()
+    if days_to_go:
+        dt += timedelta(days_to_go)
+    return dt
+
+# In the US, DST starts at 2am (standard time) on the first Sunday in April.
+DSTSTART = datetime(1, 4, 1, 2)
+# and ends at 2am (DST time; 1am standard time) on the last Sunday of Oct.
+# which is the first Sunday on or after Oct 25.
+DSTEND = datetime(1, 10, 25, 1)
+
+class USTimeZone(tzinfo):
+
+    def __init__(self, hours, reprname, stdname, dstname):
+        self.stdoffset = timedelta(hours=hours)
+        self.reprname = reprname
+        self.stdname = stdname
+        self.dstname = dstname
+
+    def __repr__(self):
+        return self.reprname
+
+    def tzname(self, dt):
+        if self.dst(dt):
+            return self.dstname
+        else:
+            return self.stdname
+
+    def utcoffset(self, dt):
+        return self.stdoffset + self.dst(dt)
+
+    def dst(self, dt):
+        if dt is None or dt.tzinfo is None:
+            # An exception may be sensible here, in one or both cases.
+            # It depends on how you want to treat them.  The default
+            # fromutc() implementation (called by the default astimezone()
+            # implementation) passes a datetime with dt.tzinfo is self.
+            return ZERO
+        assert dt.tzinfo is self
+
+        # Find first Sunday in April &amp; the last in October.
+        start = first_sunday_on_or_after(DSTSTART.replace(year=dt.year))
+        end = first_sunday_on_or_after(DSTEND.replace(year=dt.year))
+
+        # Can't compare naive to aware objects, so strip the timezone from
+        # dt first.
+        if start &lt;= dt.replace(tzinfo=None) &lt; end:
+            return HOUR
+        else:
+            return ZERO
+
+Eastern  = USTimeZone(-5, "Eastern",  "EST", "EDT")
+Central  = USTimeZone(-6, "Central",  "CST", "CDT")
+Mountain = USTimeZone(-7, "Mountain", "MST", "MDT")
+Pacific  = USTimeZone(-8, "Pacific",  "PST", "PDT")
+</pre>
+
+<p>Note that there are unavoidable subtleties twice per year in a
+<a class="link" href="#tzinfo"><code>tzinfo</code></a> subclass accounting
+for both standard and daylight time, at the DST transition points.
+For concreteness, consider US Eastern (UTC -0500), where EDT begins
+the minute after 1:59 (EST) on the first Sunday in April, and ends
+the minute after 1:59 (EDT) on the last Sunday in October:</p>
+
+<pre>
+    UTC   3:MM  4:MM  5:MM  6:MM  7:MM  8:MM
+    EST  22:MM 23:MM  0:MM  1:MM  2:MM  3:MM
+    EDT  23:MM  0:MM  1:MM  2:MM  3:MM  4:MM
+
+  start  22:MM 23:MM  0:MM  1:MM  3:MM  4:MM
+
+    end  23:MM  0:MM  1:MM  1:MM  2:MM  3:MM
+</pre>
+
+<p>When DST starts (the "start" line), the local wall clock leaps
+from 1:59 to 3:00. A wall time of the form 2:MM doesn't really make
+sense on that day, so <code>astimezone(Eastern)</code> won't
+deliver a result with <code>hour == 2</code> on the day DST begins.
+In order for <code>astimezone</code>
+to make this guarantee, the <code>
+rzinfo.dst</code> method must consider times in the "missing hour"
+(2:MM for Eastern) to be in daylight time.</p>
+
+<p>When DST ends (the "end" line), there's a potentially worse
+problem: there's an hour that can't be spelled unambiguously in
+local wall time: the last hour of daylight time. In Eastern, that's
+times of the form 5:MM UTC on the day daylight time ends. The local
+wall clock leaps from 1:59 (daylight time) back to 1:00 (standard
+time) again. Local times of the form 1:MM are ambiguous. <code>astimezone</code> mimics the local
+clock's behavior by mapping two adjacent UTC hours into the same
+local hour then. In the Eastern example, UTC times of the form 5:MM
+and 6:MM both map to 1:MM when converted to Eastern. In order for
+<code>astimezone</code> to make this
+guarantee, the <a class="link" href="#tzinfo.dst"><code>
+tzinfo.dst</code></a> method must consider times in the "repeated hour" to
+be in standard time. This is easily arranged, as in the example, by
+expressing DST switch times in the time zone's standard local
+time.</p>
+
+<p>Applications that can't bear such ambiguities should avoid using
+hybrid <a class="link" href="#tzinfo"><code>tzinfo</code></a> subclasses;
+there are no ambiguities when using UTC, or any other fixed-offset
+<a class="link" href="#tzinfo"><code>tzinfo</code></a> subclass (such as a
+class representing only EST (fixed offset -5 hours), or only EDT
+(fixed offset -4 hours)).</p>
+
+<h2 id="strftime-behavior">strftime() Behavior <a class="nav" href="#strftime-behavior">#</a></h2>
+
+<p><a class="link" href="#date"><code>date</code></a>, <a class="link" href="#datetime"><code>datetime</code></a>, and <a class="link" href="#time"><code>time</code></a> objects all support a <code>
+strftime(</code><var>format</var>) method, to create a string
+representing the time under the control of an explicit format
+string. Broadly speaking, <code>d.strftime(fmt)</code> acts like
+the <a class="link" href="#time"><code>time</code></a> module's <code>
+time.strftime(fmt, d.timetuple())</code> although not all objects
+support a <code>timetuple</code>
+method.</p>
+
+<p>For <a class="link" href="#time"><code>time</code></a> objects, the
+format codes for year, month, and day should not be used, as time
+objects have no such values. If they're used anyway, <code>
+1900</code> is substituted for the year, and <code>0</code> for the
+month and day.</p>
+
+<p>For <a class="link" href="#date"><code>date</code></a> objects, the
+format codes for hours, minutes, and seconds should not be used, as
+<a class="link" href="#date"><code>date</code></a> objects have no such
+values. If they're used anyway, <code>0</code> is substituted for
+them.</p>
+
+<p>For a naive object, the <code>%z</code> and <code>%Z</code>
+format codes are replaced by empty strings.</p>
+
+<p>For an aware object:</p>
+</div>
+<dl><dt class="variable"><b>%Z</b> <tt class="nav"><a class="nav" href="datetime." title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>If <code>tzname</code> returns <code>None</code>, <code>%Z</code> is replaced
+by an empty string. Otherwise <code>%Z</code> is replaced by the
+returned value, which must be a string.</p>
+</dd>
+</dl><div class="text">
+<p>The full set of format codes supported varies across platforms,
+because Python calls the platform C library's <code>strftime</code> function, and platform variations
+are common. The documentation for Python's <a class="link" href="#time"><code>time</code></a> module lists the format codes that the C
+standard (1989 version) requires, and those work on all platforms
+with a standard C implementation. Note that the 1999 version of the
+C standard added additional format codes.</p>
+
+<p>The exact range of years for which <code>strftime</code> works also varies across
+platforms. Regardless of platform, years before 1900 cannot be
+used.</p>
+</div>
+</div></body></html>

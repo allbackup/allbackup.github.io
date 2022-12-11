@@ -1,0 +1,98 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>The uu&nbsp;module</title></head><body data-page-id="711"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">The uu&nbsp;module</h1></div><div class="yui-ge"><div class="yui-u first"><p>The <b>UU</b> encoding scheme is used to convert arbitrary
+binary data to plain text. This format is quite popular on the
+Usenet, but is slowly being superseded by
+<a href="base64.htm">base64</a> encoding.</p><p>A UU encoder takes groups of three bytes (24 bits), and
+converts each group to a sequence of four printable characters (6
+bits per character), using characters from chr(32) (space) to
+chr(95). Including the length marker and line feed characters, UU
+encoding typically expands data by 40%.</p><p>An encoded data stream starts with a <b>begin</b> line, which
+also includes the file privileges (the Unix mode field, as an octal
+number) and the filename (or a hyphen, if the name is not known),
+and ends with an <b>end</b> line:</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><pre class="wide wide">
+begin 666 sample.jpg
+M_]C_X  02D9)1@ ! 0   0 !  #_VP!#  @&amp;!@&lt;&amp;!0@'!P&lt;)'0@*#!0-# L+
+...more lines like this...
+end
+</pre></div><div class="yui-ge"><div class="yui-u first"><p>The <b>uu</b> module provides two functions, <b>encode</b>
+and <b>decode</b>:</p><p><b>encode(infile, outfile, filename)</b> encodes data from the
+input file and writes it to the output file. The input and output
+file arguments can be either filenames or file objects. The third
+argument is used as filename in the <b>begin</b> field.</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><div class="example wide">
+<b style="example">Example: Using the uu
+module to encode a binary file</b>
+<pre class="wide">
+# File: <a href="uu/uu-example-1.py">uu-example-1.py</a>
+
+import uu
+import os, sys
+
+infile = "samples/sample.jpg"
+
+uu.encode(infile, sys.stdout, os.path.basename(infile))
+
+</pre><pre class="computeroutput wide" moreinfo="NONE">
+begin 666 sample.jpg
+M_]C_X  02D9)1@ ! 0   0 !  #_VP!#  @&amp;!@&lt;&amp;!0@'!P&lt;)"0@*#!0-# L+
+M#!D2$P\4'1H?'AT:'!P@)"XG("(L(QP&lt;*#&lt;I+# Q-#0T'R&lt;Y/3@R/"XS-#+_
+MVP!# 0D)"0P+#!@-#1@R(1PA,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C(R
+M,C(R,C(R,C(R,C(R,C(R,C(R,C(R,C+_P  1" "  ( # 2(  A$! Q$!_\0 
+M'P   04! 0$! 0$           $" P0%!@&lt;("0H+_\0 M1   @$# P($ P4%
+</pre></div></div><div class="yui-ge"><div class="yui-u first"><p><b>decode(infile, outfile)</b> decodes uu-encoded data from
+the input text file, and writes it to the output file. Again, both
+arguments can be either filenames or file objects.</p><div class="example">
+<b style="example">Example: Using the uu
+module to decode a uu-encoded file</b>
+<pre>
+# File: <a href="uu/uu-example-2.py">uu-example-2.py</a>
+
+import uu
+import StringIO
+
+infile = "samples/sample.uue"
+outfile = "samples/sample.jpg"
+
+#
+# <i>decode</i>
+
+fi = open(infile)
+fo = StringIO.StringIO()
+
+uu.decode(fi, fo)
+
+#
+# <i>compare with original data file</i>
+
+data = open(outfile, "rb").read()
+
+if fo.getvalue() == data:
+    print len(data), "bytes ok"
+</pre></div><p>The <b>encode</b> and <b>decode</b> functions work with arbitrary file
+objects.  You can use the <a href="stringio.htm"><b>StringIO</b></a> module
+to encode and decode texts that you have in memory:</p><div class="example">
+<b style="example">Example: Using the uu module to encode and decode text
+strings</b>
+<pre>
+# File: uu-example-3.py
+
+import uu
+import StringIO
+
+def uu_encodestring(text):
+    fin = StringIO.StringIO(text)
+    fout = StringIO.StringIO()
+    uu.encode(fin, fout)
+    return fout.getvalue()
+
+def uu_decodestring(text):
+    fin = StringIO.StringIO(text)
+    fout = StringIO.StringIO()
+    uu.decode(fin, fout)
+    return fout.getvalue()
+
+text = "hello" * 1000
+
+data = uu_encodestring(text)
+text = uu_decodestring(data)
+</pre></div></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to librarybook index page.">::: librarybook :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

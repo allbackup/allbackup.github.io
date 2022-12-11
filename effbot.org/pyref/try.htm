@@ -1,0 +1,77 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>The try&nbsp;statement</title> <script type="text/javascript">effbot_page_id=1699;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <h1 class="maintitle">The try&nbsp;statement</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p>The <strong>try</strong> statement specifies exception handlers and/or cleanup code for a group of statements:</p><p>Syntax (simplified):</p><blockquote><p><strong>try:</strong> <br />
+  &#160;&#160;&#160;&#160;<em><a href="syntax-suite">suite</a></em> <br />
+  [<strong>except</strong> [<em><a href="syntax-expression">expression</a></em> [<strong>,</strong> <em><a href="syntax-target">target</a></em>]] <strong>:</strong> <br />
+  &#160;&#160;&#160;&#160;<em><a href="syntax-suite">suite</a></em> ]&#8230; <br />
+  [<strong>else:</strong> <br />
+  &#160;&#160;&#160;&#160;<em><a href="syntax-suite">suite</a></em> ] <br />
+  [<strong>finally:</strong> <br />
+  &#160;&#160;&#160;&#160;<em><a href="syntax-suite">suite</a></em> ]</p></blockquote><p /><p>Changed in version 2.5: In previous versions of Python,
+try&#8230;except&#8230;finally did not work. try&#8230;except had to be nested in
+try&#8230;finally.</p><p>The <a href="except">except</a> clause(s) specify one or more exception handlers. When
+no exception occurs in the <a href="try">try</a> clause, no exception handler is
+executed. When an exception occurs in the <a href="try">try</a> suite, a search for an
+exception handler is started. This search inspects the <a href="except">except</a> clauses
+in turn until one is found that matches the exception. An
+expression-less <a href="except">except</a> clause, if present, must be last; it matches
+any exception. For an <a href="except">except</a> clause with an expression, that
+expression is evaluated, and the clause matches the exception if the
+resulting object is <q>compatible</q> with the exception. An object is
+compatible with an exception if it is the class or a base class of the
+exception object, a <a href="type-tuple">tuple</a> containing an item compatible
+with the exception, or, in the (deprecated) case of string exceptions,
+is the raised string itself (note that the object identities must match,
+i.e. it must be the same string object, not just a string with the
+same value).</p><p>If no <a href="except">except</a> clause matches the exception, the search for an exception
+handler continues in the surrounding code and on the invocation
+stack.</p><p>If the evaluation of an expression in the header of an <a href="except">except</a> clause
+raises an exception, the original search for a handler is canceled and
+a search starts for the new exception in the surrounding code and on
+the call stack (it is treated as if the entire <a href="try">try</a> statement raised
+the exception).</p><p>When a matching <a href="except">except</a> clause is found, the exception is assigned to
+the target specified in that <a href="except">except</a> clause, if present, and the <a href="except">except</a>
+clause&#8217;s suite is executed. All <a href="except">except</a> clauses must have an executable
+block. When the end of this block is reached, execution continues
+normally after the entire <a href="try">try</a> statement. (This means that if two
+nested handlers exist for the same exception, and the exception occurs
+in the <a href="try">try</a> clause of the inner handler, the outer handler will not
+handle the exception.)</p><p>Before an <a href="except">except</a> clause&#8217;s suite is executed, details about
+te exception are assigned to three variables in the <a href="sys">sys</a> module:
+<a href="sys.exc_type">sys.exc_type</a> receives the object identifying the exception;
+<a href="sys.exc_value">sys.exc_value</a> receives the exception&#8217;s parameter;
+<a href="sys.exc_traceback">sys.exc_traceback</a> receives a
+<a href="type-traceback">traceback</a> object
+identifying the point in the program where the
+exception occurred. These details are also available through the
+<a href="sys.exc_info">sys.exc_info</a> function, which returns a tuple
+(<a href="exc_type">exc_type</a>,
+<a href="exc_value">exc_value</a>,
+<a href="exc_traceback">exc_traceback</a>).
+Use of the corresponding variables is deprecated in favor of this
+function, since their use is unsafe in a threaded program. As of
+Python 1.5, the variables are restored to their previous values
+(before the call) when returning from a function that handled an
+exception.</p><p>The optional <a href="else">else</a> clause is executed if and when control flows off
+the end of the <a href="try">try</a> clause.   Exceptions in the <a href="else">else</a> clause are
+not handled by the preceding <a href="except">except</a> clauses.</p><p>If <a href="finally">finally</a> is present, it specifies a <q>cleanup</q> handler. The
+<a href="try">try</a> clause is executed, including any <a href="except">except</a> and <a href="else">else</a> clauses.
+If an exception occurs in any of the clauses and is not handled, the
+exception is temporarily saved. The <a href="finally">finally</a> clause is executed. If
+there is a saved exception, it is re-raised at the end of the <a href="finally">finally</a>
+clause. If the <a href="finally">finally</a> clause raises another exception or executes a
+<a href="return">return</a> or <a href="break">break</a> statement, the saved exception is lost. A <a href="continue">continue</a>
+statement is illegal in the <a href="finally">finally</a> clause. (The reason is a problem
+with the current implementation - this restriction may be lifted in
+the future). The exception information is not available to the program
+during execution of the <a href="finally">finally</a> clause.</p><p>When a <a href="return.htm"><strong>return</strong></a>, <a href="break.htm"><strong>break</strong></a> or <a href="continue.htm"><strong>continue</strong></a> statement is executed in
+the <strong>try</strong> suite of a try-finally statement, the <a href="finally.htm"><strong>finally</strong></a> clause is also
+executed <q>on the way out.</q> A <a href="continue.htm"><strong>continue</strong></a> statement is illegal in
+the <a href="finally.htm"><strong>finally</strong></a> clause. (The reason is a problem with the current
+implementation &#8212; this restriction may be lifted in the future).</p><p>Additional information on exceptions can be found in
+<a href="exceptions.htm"><strong>exceptions</strong></a>, and information on using the <a href="raise.htm"><strong>raise</strong></a> statement to
+generate exceptions may be found in <a href="raise.htm"><strong>raise</strong></a>.</p><hr /><h4>Footnotes</h4><p>&#8230; stack.<a href="try.html#tex2html11">7.1</a>
+    The exception is propogated to the invocation stack only if there is no <a href="finally.htm"><strong>finally</strong></a> clause that negates the exception.
+&#8230; clause.<a href="try.html#tex2html12">7.2</a>
+    Currently, control &#8220;flows off the end&#8221; except in the case of an exception or the execution of a <a href="return.htm"><strong>return</strong></a>, <a href="continue.htm"><strong>continue</strong></a>, or <a href="break.htm"><strong>break</strong></a> statement.</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div> <!-- yui-g --></div> <!-- content --> </div> <!-- yui-b --> </div> <!-- yui-main --> <div class="yui-b"> <div id='menu'> <ul> <li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li> <li><b><a href="." title="Go to pyref index page.">::: pyref :::</a></b></li> </ul> </div> <!-- menu --> </div> <!-- yui-b --> </div> <!-- bd --> <div id="ft"> <!-- footer --> <p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;"></a>
+this page was rendered by a <a href="http://www.djangoproject.com/">django</a> application in 0.02s 2011-06-21 20:57:31.482719.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p> </div> <!-- ft --> </div> <!-- doc --> <script src="/media/js/effbot-min.js" type="text/javascript"> </script> </body> </html>

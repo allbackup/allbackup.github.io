@@ -1,0 +1,66 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>The select&nbsp;module</title></head><body data-page-id="646"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">The select&nbsp;module</h1></div><div class="yui-ge"><div class="yui-u first"><p>This module allows you to check for incoming data on one or more
+sockets, pipes, or other compatible stream objects.</p><p>You can pass one or more sockets to the <b>select</b>
+function, to wait for them to become readable, writable, or signal
+an error.</p><ul><li><p>A socket becomes <i>ready for reading</i> when 1) someone
+connects after a call to <b>listen</b> (which means that
+<b>accept</b> won&#8217;t block), or 2) data arrives from the remote
+end, or 3) the socket is closed or reset (in this case,
+<b>recv</b> will return an empty string).</p></li><li><p>A socket becomes <i>ready for writing</i> when 1) the connection
+is established after a non-blocking call to <b>connect</b>, or 2)
+data can be written to the socket.</p></li><li><p>A socket signals an <i>error condition</i> when the connection
+fails after a non-blocking call to <b>connect</b>.</p></li></ul></div><div class="yui-u">&#160;</div></div><div class="yui-g"><div class="example wide">
+<b style="example">Example: Using the select
+module to wait for data arriving over sockets</b>
+<pre class="wide">
+# File: <a href="select/select-example-1.py">select-example-1.py</a>
+
+import select
+import socket
+import time
+
+PORT = 8037
+
+TIME1970 = 2208988800L
+
+service = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+service.bind(("", PORT))
+service.listen(1)
+
+print "listening on port", PORT
+
+while 1:
+    is_readable = [service]
+    is_writable = []
+    is_error = []
+    r, w, e = select.select(is_readable, is_writable, is_error, 1.0)
+    if r:
+        channel, info = service.accept()
+        print "connection from", info
+        t = int(time.time()) + TIME1970
+        t = chr(t&gt;&gt;24&amp;255) + chr(t&gt;&gt;16&amp;255) + chr(t&gt;&gt;8&amp;255) + chr(t&amp;255)
+        channel.send(t) # send timestamp
+        channel.close() # disconnect
+    else:
+        print "still waiting"
+
+</pre><pre class="computeroutput wide" moreinfo="NONE">
+listening on port 8037
+still waiting
+still waiting
+connection from ('127.0.0.1', 1469)
+still waiting
+connection from ('127.0.0.1', 1470)
+...
+</pre></div></div><div class="yui-ge"><div class="yui-u first"><p>In this example, we wait for the listening socket to become
+readable, which indicates that a connection request has arrived. We
+treat the channel socket as usual, since it&#8217;s not very likely that
+writing the four bytes will fill the network buffers. If you need
+to send larger amounts of data to the client, you should add it to
+the <b>is_writable</b> list at the top of the loop, and write
+only when <b>select</b> tells you to.</p><p>If you set the socket in <i>non-blocking mode</i> (by calling
+the <b>setblocking</b> method), you can use <b>select</b> also
+to wait for a socket to become connected. But the <b><a href="asyncore.htm">asyncore</a></b> module
+(see the next section) provides a powerful framework which handles
+all this for you, so I won&#8217;t go into further details here.</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to librarybook index page.">::: librarybook :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

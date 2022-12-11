@@ -1,0 +1,114 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>The Tkinter Listbox&nbsp;Widget</title> <script type="text/javascript">effbot_page_id=1927;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> <!--
+<p style='color: #8f8f8f; background: #fff5bf; padding: 5px 10px;'> <b>2008-07-15:</b> Selected articles
+ (including this one) 
+now have experimental "comment" links in the left column and at the bottom.
+You're welcome to use them for commenting and voting on articles.
+For a bit more on this, see <a
+href="http://effbot.slinkset.com/links/Welcome_to_discuss_effbot_org">this
+page</a>. /F
+</p>
+--> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <p><a href="labelframe.htm">back</a> <a href="menu.htm">next</a></p> <h1 class="maintitle">The Tkinter Listbox&nbsp;Widget</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p>The <b>Listbox</b> widget is a standard Tkinter widget used to
+display a list of alternatives. The listbox can only contain text
+items, and all items must have the same font and color. Depending
+on the widget configuration, the user can choose one or more
+alternatives from the list.</p><h2>When to use the Listbox Widget</h2><p>Listboxes are used to select from a group of textual items.
+Depending on how the listbox is configured, the user can select one
+or many items from that list.</p><h2 id="patterns">Patterns&#160;<a class="nav" href="#patterns" title="bookmark!">#</a></h2><p>When you first create the listbox, it is empty. The first thing
+to do is usually to insert one or more lines of text. The
+<b>insert</b> method takes an index and a string to insert. The
+index is usually an item number (0 for the first item in the list),
+but you can also use some special indexes, including <b>ACTIVE</b>,
+which refers to the <span>&#8220;active&#8221;</span> item (set when you click
+on an item, or by the arrow keys), and <b>END</b>, which is used to
+append items to the list.</p><pre class="python">
+<span class="pykeyword">from</span> Tkinter <span class="pykeyword">import</span> *
+
+master = Tk()
+
+listbox = Listbox(master)
+listbox.pack()
+
+listbox.insert(END, <span class="pystring">"a list entry"</span>)
+
+<span class="pykeyword">for</span> item <span class="pykeyword">in</span> [<span class="pystring">"one"</span>, <span class="pystring">"two"</span>, <span class="pystring">"three"</span>, <span class="pystring">"four"</span>]:
+    listbox.insert(END, item)
+
+mainloop()</pre><p>To remove items from the list, use the <b>delete</b> method. The
+most common operation is to delete all items in the list (something
+you often need to do when updating the list).</p><pre class="python">
+listbox.delete(0, END)
+listbox.insert(END, newitem)</pre><p>You can also delete individual items. In the following example,
+a separate button is used to delete the <b>ACTIVE</b> item from a
+list.</p><pre class="python">
+lb = Listbox(master)
+b = Button(master, text=<span class="pystring">"Delete"</span>,
+           command=<span class="pykeyword">lambda</span> lb=lb: lb.delete(ANCHOR))</pre><p>The listbox offers four different selection modes through the
+<b>selectmode</b> option. These are <b>SINGLE</b> (just a single
+choice), <b>BROWSE</b> (same, but the selection can be moved using
+the mouse), <b>MULTIPLE</b> (multiple item can be choosen, by
+clicking at them one at a time), or <b>EXTENDED</b> (multiple
+ranges of items can be chosen, using the <b>Shift</b> and
+<b>Control</b> keyboard modifiers). The default is <b>BROWSE</b>.
+Use <b>MULTIPLE</b> to get &#8220;checklist&#8221; behavior, and
+<b>EXTENDED</b> when the user would usually pick only one item, but
+sometimes would like to select one or more ranges of items.</p><pre class="python">
+lb = Listbox(selectmode=EXTENDED)</pre><p>To query the selection, use <b>curselection</b> method. It
+returns a list of item indexes, but a bug in Tkinter 1.160 (Python
+2.2) and earlier versions causes this list to be returned as a list
+of strings, instead of integers. This may be fixed in later
+versions of Tkinter, so you should make sure that your code is
+written to handle either case. Here&#8217;s one way to do that:</p><pre class="python">
+items = map(int, list.curselection())</pre><p>In versions before Python 1.5, use <b>string.atoi</b> instead of
+<b>int</b>.</p><p>Use the <b>get</b> method to get the list item corresponding to
+a given index. Note that <b>get</b> accepts either strings or
+integers, so you don&#8217;t have to convert the indexes to integers if
+all you&#8217;re going to do is to pass them to <b>get</b>.</p><p>You can also use a listbox to represent arbitrary Python
+objects. In the next example, we assume that the input data is
+represented as a list of tuples, where the first item in each tuple
+is the string to display in the list. For example, you could
+display a dictionary by using the <b>items</b> method to get such a
+list.</p><pre class="python">
+self.lb.delete(0, END) <span class="pycomment"># clear</span>
+<span class="pykeyword">for</span> key, value <span class="pykeyword">in</span> data:
+    self.lb.insert(END, key)
+self.data = data</pre><p>When querying the list, simply fetch the items from the
+<b>data</b> attribute, using the selection as an index:</p><pre class="python">
+items = self.lb.curselection()
+items = [self.data[int(item)] <span class="pykeyword">for</span> item <span class="pykeyword">in</span> items]</pre><p>In earlier versions of Python, you can use this instead:</p><pre class="python">
+items = self.lb.curselection()
+<span class="pykeyword">try</span>:
+    items = map(int, items)
+<span class="pykeyword">except</span> ValueError: <span class="pykeyword">pass</span>
+items = map(<span class="pykeyword">lambda</span> i,d=self.data: d[i], items)</pre><p>Unfortunately, the listbox doesn&#8217;t provide a <b>command</b>
+option allowing you to track changes to the selection. The standard
+solution is to bind a <i>double-click</i> event to the same
+callback as the OK (or Select, or whatever) button. This allows the
+user to either select an alternative as usual, and click OK to
+carry out the operation, or to select and carry out the operation
+in one go by double-clicking on an alternative. This solution works
+best in <b>BROWSE</b> and <b>EXTENDED</b> modes.</p><pre class="python">
+lb.bind(<span class="pystring">"&lt;Double-Button-1&gt;"</span>, self.ok)</pre><p class="fixme">FIXME: show how to use bindtags to insert custom
+bindings <i>after</i> the standard bindings</p><p class="fixme">FIXME: show how to use custom events in later
+versions of Tkinter</p><p>If you wish to track arbitrary changes to the selection, you can
+either rebind the whole bunch of selection related events (see the
+Tk manual pages for a complete list of Listbox event bindings), or,
+much easier, poll the list using a timer:</p><pre class="python">
+<span class="pykeyword">class</span> <span class="pyclass">Dialog</span>(Frame):
+
+    <span class="pykeyword">def</span> <span class="pyfunction">__init__</span>(self, master):
+        Frame.__init__(self, master)
+        self.list = Listbox(self, selectmode=EXTENDED)
+        self.list.pack(fill=BOTH, expand=1)
+        self.current = None
+        self.poll() <span class="pycomment"># start polling the list</span>
+
+    <span class="pykeyword">def</span> <span class="pyfunction">poll</span>(self):
+        now = self.list.curselection()
+        <span class="pykeyword">if</span> now != self.current:
+            self.list_has_changed(now)
+            self.current = now
+        self.after(250, self.poll)
+
+    <span clas

@@ -1,0 +1,235 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>winsound</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-winsound.html'>original</a> :::
+<a href='winsound.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>winsound&#8212;Sound-playing interface for Windows</h1>
+
+<p>Availability: Windows.</p>
+
+<p>New in version 1.5.2.</p>
+
+<p>The <code>winsound</code> module
+provides access to the basic sound-playing machinery provided by
+Windows platforms. It includes functions and several constants.</p>
+</div>
+<dl><dt class="function" id="Beep"><b>Beep(frequency, duration)</b> <tt class="nav"><a class="nav" href="winsound.Beep" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Beep the PC's speaker. The <var>frequency</var> parameter
+specifies frequency, in hertz, of the sound, and must be in the
+range 37 through 32,767. The <var>duration</var> parameter
+specifies the number of milliseconds the sound should last. If the
+system is not able to beep the speaker, <code>exceptions.RuntimeError</code> is
+raised. Note: Under Windows 95 and 98, the Windows <code>c:Beep</code> function exists but is useless (it
+ignores its arguments). In that case Python simulates it via direct
+port manipulation (added in version 2.1). It's unknown whether that
+will work on all systems.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+1.6.<br />
+</blockquote>
+</dd>
+<dt class="function" id="PlaySound"><b>PlaySound(sound, flags)</b> <tt class="nav"><a class="nav" href="winsound.PlaySound" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Call the underlying <code>
+c:PlaySound</code> function from the Platform API. The <var>
+sound</var> parameter may be a filename, audio data as a string, or
+<code>None</code>. Its interpretation
+depends on the value of <var>flags</var>, which can be a bit-wise
+ORed combination of the constants described below. If the system
+indicates an error, <code>exceptions.RuntimeError</code> is
+raised.</p>
+</dd>
+<dt class="function" id="MessageBeep"><b>MessageBeep([type=MB_OK])</b> <tt class="nav"><a class="nav" href="winsound.MessageBeep" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Call the underlying <code>
+c:MessageBeep</code> function from the Platform API. This plays a
+sound as specified in the registry. The <var>type</var> argument
+specifies which sound to play; possible values are <code>-1</code>,
+<code>MB_ICONASTERISK</code>, <code>MB_ICONEXCLAMATION</code>,
+<code>MB_ICONHAND</code>, <code>MB_ICONQUESTION</code>, and <code>
+MB_OK</code>, all described below. The value <code>-1</code>
+produces a &#8220;simple beep&#8221;; this is the final fallback if
+a sound cannot be played otherwise.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.3.<br />
+</blockquote>
+</dd>
+<dt class="variable" id="SND_FILENAME"><b>SND_FILENAME</b> <tt class="nav"><a class="nav" href="winsound.SND_FILENAME" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>The <var>sound</var> parameter is the name of a WAV file. Do not
+use with <code>SND_ALIAS</code>.</p>
+</dd>
+<dt class="variable" id="SND_ALIAS"><b>SND_ALIAS</b> <tt class="nav"><a class="nav" href="winsound.SND_ALIAS" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>The <var>sound</var> parameter is a sound association name from
+the registry. If the registry contains no such name, play the
+system default sound unless <code>SND_NODEFAULT</code> is also
+specified. If no default sound is registered, raise <code>exceptions.RuntimeError</code>. Do
+not use with <code>SND_FILENAME</code>.</p>
+
+<p>All Win32 systems support at least the following; most systems
+support many more:</p>
+
+<table border="1">
+<tr>
+<th>
+<p><a class="link" href="#PlaySound"><code>PlaySound</code></a> <var>
+name</var></p>
+</th>
+<th>
+<p>Corresponding Control Panel Sound name</p>
+</th>
+</tr>
+
+<tr>
+<td>
+<p><code>'SystemAsterisk'</code></p>
+</td>
+<td>
+<p>Asterisk</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>'SystemExclamation'</code></p>
+</td>
+<td>
+<p>Exclamation</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>'SystemExit'</code></p>
+</td>
+<td>
+<p>Exit Windows</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>'SystemHand'</code></p>
+</td>
+<td>
+<p>Critical Stop</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>'SystemQuestion'</code></p>
+</td>
+<td>
+<p>Question</p>
+</td>
+</tr>
+</table>
+
+<br />
+<br />
+ 
+
+<p>For example:</p>
+
+<pre>
+import winsound
+# Play Windows exit sound.
+winsound.PlaySound("SystemExit", winsound.SND_ALIAS)
+
+# Probably play Windows default sound, if any is registered (because
+# "*" probably isn't the registered name of any sound).
+winsound.PlaySound("*", winsound.SND_ALIAS)
+</pre>
+</dd>
+<dt class="variable" id="SND_LOOP"><b>SND_LOOP</b> <tt class="nav"><a class="nav" href="winsound.SND_LOOP" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Play the sound repeatedly. The <code>SND_ASYNC</code> flag must
+also be used to avoid blocking. Cannot be used with <code>
+SND_MEMORY</code>.</p>
+</dd>
+<dt class="variable" id="SND_MEMORY"><b>SND_MEMORY</b> <tt class="nav"><a class="nav" href="winsound.SND_MEMORY" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>The <var>sound</var> parameter to <a class="link" href="#PlaySound"><code>PlaySound</code></a> is a memory image of a WAV
+file, as a string.</p>
+
+<p class="note"><b>Note:</b> This module does not support playing
+from a memory image asynchronously, so a combination of this flag
+and <code>SND_ASYNC</code> will raise <code>
+exceptions.RuntimeError</code>.</p>
+</dd>
+<dt class="variable" id="SND_PURGE"><b>SND_PURGE</b> <tt class="nav"><a class="nav" href="winsound.SND_PURGE" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Stop playing all instances of the specified sound.</p>
+</dd>
+<dt class="variable" id="SND_ASYNC"><b>SND_ASYNC</b> <tt class="nav"><a class="nav" href="winsound.SND_ASYNC" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Return immediately, allowing sounds to play asynchronously.</p>
+</dd>
+<dt class="variable" id="SND_NODEFAULT"><b>SND_NODEFAULT</b> <tt class="nav"><a class="nav" href="winsound.SND_NODEFAULT" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>If the specified sound cannot be found, do not play the system
+default sound.</p>
+</dd>
+<dt class="variable" id="SND_NOSTOP"><b>SND_NOSTOP</b> <tt class="nav"><a class="nav" href="winsound.SND_NOSTOP" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Do not interrupt sounds currently playing.</p>
+</dd>
+<dt class="variable" id="SND_NOWAIT"><b>SND_NOWAIT</b> <tt class="nav"><a class="nav" href="winsound.SND_NOWAIT" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Return immediately if the sound driver is busy.</p>
+</dd>
+<dt class="variable" id="MB_ICONASTERISK"><b>MB_ICONASTERISK</b> <tt class="nav"><a class="nav" href="winsound.MB_ICONASTERISK" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Play the <code>SystemDefault</code> sound.</p>
+</dd>
+<dt class="variable" id="MB_ICONEXCLAMATION"><b>MB_ICONEXCLAMATION</b> <tt class="nav"><a class="nav" href="winsound.MB_ICONEXCLAMATION" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Play the <code>SystemExclamation</code> sound.</p>
+</dd>
+<dt class="variable" id="MB_ICONHAND"><b>MB_ICONHAND</b> <tt class="nav"><a class="nav" href="winsound.MB_ICONHAND" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Play the <code>SystemHand</code> sound.</p>
+</dd>
+<dt class="variable" id="MB_ICONQUESTION"><b>MB_ICONQUESTION</b> <tt class="nav"><a class="nav" href="winsound.MB_ICONQUESTION" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Play the <code>SystemQuestion</code> sound.</p>
+</dd>
+<dt class="variable" id="MB_OK"><b>MB_OK</b> <tt class="nav"><a class="nav" href="winsound.MB_OK" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Play the <code>SystemDefault</code> sound.</p>
+</dd>
+</dl></div></body></html>

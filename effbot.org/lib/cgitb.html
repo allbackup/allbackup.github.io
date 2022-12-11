@@ -1,0 +1,80 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>cgitb</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-cgitb.html'>original</a> :::
+<a href='cgitb.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>cgitb&#8212;Traceback manager for CGI scripts</h1>
+
+<p>New in version 2.2.</p>
+
+<p>The <code>cgitb</code> module provides
+a special exception handler for Python scripts. (Its name is a bit
+misleading. It was originally designed to display extensive
+traceback information in HTML for CGI scripts. It was later
+generalized to also display this information in plain text.) After
+this module is activated, if an uncaught exception occurs, a
+detailed, formatted report will be displayed. The report includes a
+traceback showing excerpts of the source code for each level, as
+well as the values of the arguments and local variables to
+currently running functions, to help you debug the problem.
+Optionally, you can save this information to a file instead of
+sending it to the browser.</p>
+
+<p>To enable this feature, simply add one line to the top of your
+CGI script:</p>
+
+<pre>
+import cgitb; cgitb.enable()
+</pre>
+
+<p>The options to the <a class="link" href="#enable"><code>enable</code></a>
+function control whether the report is displayed in the browser and
+whether the report is logged to a file for later analysis.</p>
+</div>
+<dl><dt class="function" id="enable"><b>enable([display[, logdir[, context[,
+format]]]])</b> <tt class="nav"><a class="nav" href="cgitb.enable" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>This function causes the <code>
+cgitb</code> module to take over the interpreter's default handling
+for exceptions by setting the value of <code>sys</code>.excepthook.</p>
+
+<p>The optional argument <var>display</var> defaults to <code>
+1</code> and can be set to <code>0</code> to suppress sending the
+traceback to the browser. If the argument <var>logdir</var> is
+present, the traceback reports are written to files. The value of
+<var>logdir</var> should be a directory where these files will be
+placed. The optional argument <var>context</var> is the number of
+lines of context to display around the current line of source code
+in the traceback; this defaults to <code>5</code>. If the optional
+argument <var>format</var> is <code>"html"</code>, the output is
+formatted as HTML. Any other value forces plain text output. The
+default value is <code>"html"</code>.</p>
+</dd>
+<dt class="function" id="handler"><b>handler([info])</b> <tt class="nav"><a class="nav" href="cgitb.handler" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>This function handles an exception using the default settings
+(that is, show a report in the browser, but don't log to a file).
+This can be used when you've caught an exception and want to report
+it using <code>cgitb</code>. The optional
+<var>info</var> argument should be a 3-tuple containing an
+exception type, exception value, and traceback object, exactly like
+the tuple returned by <code>
+sys</code>.exc_info(). If the <var>info</var> argument is not
+supplied, the current exception is obtained from <code>sys</code>.exc_info().</p>
+</dd>
+</dl></div></body></html>

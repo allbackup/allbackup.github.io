@@ -1,0 +1,122 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>fpectl</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-fpectl.html'>original</a> :::
+<a href='fpectl.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>fpectl&#8212;Floating point exception control</h1>
+
+<div class="toc"><dl><dt>On this page:</dt><dd><a href="#example">Example</a></dd><dd><a href="#limitations-and-other-considerations">Limitations and other considerations</a></dd></dl></div><p>Availability: Unix.</p>
+
+<p>Most computers carry out floating point operations in
+conformance with the so-called IEEE-754 standard. On any real
+computer, some floating point operations produce results that
+cannot be expressed as a normal floating point value. For example,
+try</p>
+
+<pre>
+&gt;&gt;&gt; import math
+&gt;&gt;&gt; math.exp(1000)
+inf
+&gt;&gt;&gt; math.exp(1000) / math.exp(1000)
+nan
+</pre>
+
+<p>(The example above will work on many platforms. DEC Alpha may be
+one exception.) "Inf" is a special, non-numeric value in IEEE-754
+that stands for "infinity", and "nan" means "not a number." Note
+that, other than the non-numeric results, nothing special happened
+when you asked Python to carry out those calculations. That is in
+fact the default behaviour prescribed in the IEEE-754 standard, and
+if it works for you, stop reading now.</p>
+
+<p>In some circumstances, it would be better to raise an exception
+and stop processing at the point where the faulty operation was
+attempted. The <code>fpectl</code> module
+is for use in that situation. It provides control over floating
+point units from several hardware manufacturers, allowing the user
+to turn on the generation of <code>SIGFPE</code> whenever any of
+the IEEE-754 exceptions Division by Zero, Overflow, or Invalid
+Operation occurs. In tandem with a pair of wrapper macros that are
+inserted into the C code comprising your python system, <code>
+SIGFPE</code> is trapped and converted into the Python <code>
+exceptions.FloatingPointError</code> exception.</p>
+
+<p>The <code>fpectl</code> module defines
+the following functions and may raise the given exception:</p>
+</div>
+<dl><dt class="function" id="turnon_sigfpe"><b>turnon_sigfpe()</b> <tt class="nav"><a class="nav" href="fpectl.turnon_sigfpe" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Turn on the generation of <code>SIGFPE</code>, and set up an
+appropriate signal handler.</p>
+</dd>
+<dt class="function" id="turnoff_sigfpe"><b>turnoff_sigfpe()</b> <tt class="nav"><a class="nav" href="fpectl.turnoff_sigfpe" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Reset default handling of floating point exceptions.</p>
+</dd>
+<dt class="exception" id="FloatingPointError"><b>exception FloatingPointError</b> <tt class="nav"><a class="nav" href="fpectl.FloatingPointError" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="exception">
+<p>After <a class="link" href="#turnon_sigfpe"><code>
+turnon_sigfpe</code></a> has been executed, a floating point operation
+that raises one of the IEEE-754 exceptions Division by Zero,
+Overflow, or Invalid operation will in turn raise this standard
+Python exception.</p>
+</dd>
+</dl><div class="text">
+<h2 id="example">Example <a class="nav" href="#example">#</a></h2>
+
+<p>The following example demonstrates how to start up and test
+operation of the <code>fpectl</code>
+module.</p>
+
+<pre>
+&gt;&gt;&gt; import fpectl
+&gt;&gt;&gt; import fpetest
+&gt;&gt;&gt; fpectl.turnon_sigfpe()
+&gt;&gt;&gt; fpetest.test()
+overflow        PASS
+FloatingPointError: Overflow
+
+div by 0        PASS
+FloatingPointError: Division by zero
+  [ more output from test elided ]
+&gt;&gt;&gt; import math
+&gt;&gt;&gt; math.exp(1000)
+Traceback (most recent call last):
+  File "&lt;stdin&gt;", line 1, in ?
+FloatingPointError: in math_1
+</pre>
+
+<h2 id="limitations-and-other-considerations">Limitations and other considerations <a class="nav" href="#limitations-and-other-considerations">#</a></h2>
+
+<p>Setting up a given processor to trap IEEE-754 floating point
+errors currently requires custom code on a per-architecture basis.
+You may have to modify <code>
+fpectl</code> to control your particular hardware.</p>
+
+<p>Conversion of an IEEE-754 exception to a Python exception
+requires that the wrapper macros <code>PyFPE_START_PROTECT</code>
+and <code>PyFPE_END_PROTECT</code> be inserted into your code in an
+appropriate fashion. Python itself has been modified to support the
+<code>fpectl</code> module, but many
+other codes of interest to numerical analysts have not.</p>
+
+<p>The <code>fpectl</code> module is not
+thread-safe.</p>
+</div>
+</div></body></html>

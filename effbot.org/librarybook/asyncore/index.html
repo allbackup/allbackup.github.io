@@ -1,0 +1,92 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>The asyncore&nbsp;module</title> <script type="text/javascript">effbot_page_id=469;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> <!--
+<p style='color: #8f8f8f; background: #fff5bf; padding: 5px 10px;'> <b>2008-07-15:</b> Selected articles
+ (including this one) 
+now have experimental "comment" links in the left column and at the bottom.
+You're welcome to use them for commenting and voting on articles.
+For a bit more on this, see <a
+href="http://effbot.slinkset.com/links/Welcome_to_discuss_effbot_org">this
+page</a>. /F
+</p>
+--> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <h1 class="maintitle">The asyncore&nbsp;module</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p>This module provides a <span>&#8220;reactive&#8221;</span> socket
+implementation. Instead of creating socket objects, and calling
+methods on them to do things, this module lets you write code that
+is called when something can be done. To implement an asynchronous
+socket handler, subclass the <b>dispatcher</b> class, and
+override one or more of the following methods:</p><ul><li><p><b>writable</b> is called by the asyncore framework to check if the dispatcher has data to send.  The default implementation always returns True.</p></li><li><p><b>readable</b> is called to check if the dispatcher is ready
+to process incoming data, if any.  The default implementation always
+returns True.</p></li><li><p><b>handle_connect</b> is called when a connection is
+successfully established.</p></li><li><p><b>handle_expt</b> is called when a connection fails (Windows),
+or when out-of-band data arrives (Unix).</p></li><li><p><b>handle_accept</b> is called when a connection request is
+made to a listening socket. The callback should call the
+<b>accept</b> method to get the client socket.  In most cases, the
+callback should create another socket handler to handle the actual
+communication.</p></li><li><p><b>handle_read</b> is called when there is data waiting to be
+read from the socket.  The callback should call the <b>recv</b>
+method to get the data.</p></li><li><p><b>handle_write</b> is called when data can be written to the
+socket. Use the <b>send</b> method to write data.</p></li><li><p><b>handle_close</b> is called when the socket is closed or
+reset.</p></li><li><p><b>handle_error(type, value, traceback)</b> is called if a
+Python error occurs in any of the other callbacks. The default
+implementation prints an abbreviated traceback to
+<b>sys.stdout</b>.</p></li></ul><p>The first example shows a time client, similar to the one for
+the <b>socket</b> module:</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><div class="example wide">
+<b style="example">Example: Using the asyncore
+module to get the time from a time server</b>
+<pre class="wide">
+# File: <a href="asyncore-example-1.py">asyncore-example-1.py</a>
+
+import asyncore
+import socket, time
+
+# reference time (in seconds since 1900-01-01 00:00:00)
+TIME1970 = 2208988800L # 1970-01-01 00:00:00
+
+class TimeRequest(asyncore.dispatcher):
+    # time requestor (as defined in RFC 868)
+
+    def __init__(self, host, port=37):
+        asyncore.dispatcher.__init__(self)
+        self.create_socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.connect((host, port))
+
+    def writable(self):
+        return 0 # don't have anything to write
+
+    def handle_connect(self):
+        pass # connection succeeded
+
+    def handle_expt(self):
+        self.close() # connection failed, shutdown
+
+    def handle_read(self):
+        # get local time
+        here = int(time.time()) + TIME1970
+
+        # get and unpack server time
+        s = self.recv(4)
+        there = ord(s[3]) + (ord(s[2])&lt;&lt;8) + (ord(s[1])&lt;&lt;16) + (ord(s[0])&lt;&lt;24L)
+
+        self.adjust_time(int(here - there))
+
+        self.handle_close() # we don't expect more data
+
+    def handle_close(self):
+        self.close()
+
+    def adjust_time(self, delta):
+        # override this method!
+        print "time difference is", delta
+
+#
+# try it out
+
+request = TimeRequest("www.python.org")
+
+asyncore.loop()
+
+</pre><pre class="computeroutput wide" moreinfo="NONE">
+log: adding channel &lt;TimeRequest  at 8cbe90&gt;
+time difference is 28
+log: closing channel 192:&lt;TimeRequest connected at 8cbe90&gt;
+</pre></div></div><div class="yui-ge"><div class="yui-u first"><p>If you don&#8217;t 

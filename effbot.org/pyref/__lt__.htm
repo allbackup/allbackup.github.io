@@ -1,0 +1,26 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>The __lt__&nbsp;method</title> <script type="text/javascript">effbot_page_id=1854;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <h1 class="maintitle">The __lt__&nbsp;method</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p><strong>__lt__</strong>(self, other)</p><p>New in version 2.1. These are the so-called <q>rich comparison</q>
+methods, and are called for comparison operators in preference to
+<a href="__cmp__.htm"><strong>__cmp__</strong></a>. The correspondence between operator symbols and
+method names is as follows:
+<em>x</em> &lt; <em>y</em> calls <em>x</em>.__lt__(<em>y</em>),
+<em>x</em> &lt;= <em>y</em> calls <em>x</em>.__le__(<em>y</em>),
+<em>x</em>==<em>y</em> calls <em>x</em>.__eq__(<em>y</em>),
+<em>x</em> != <em>y</em> and <em>x</em> &lt;&gt; <em>y</em> call <em>x</em>.__ne__(<em>y</em>),
+<em>x</em> &gt; <em>y</em> calls <em>x</em>.__gt__(<em>y</em>), and
+<em>x</em> &gt;= <em>y</em> calls <em>x</em>.__ge__(<em>y</em>).</p><p>These methods can return any value, but if the comparison operator is
+used in a Boolean context, the return value should be interpretable as a
+Boolean value, else a <a href="TypeError.htm"><strong>TypeError</strong></a> will be raised. By convention,
+<a href="False.htm"><strong>False</strong></a> is used for false and <a href="True.htm"><strong>True</strong></a> for true.</p><p>There are no implied relationships among the comparison operators. The
+truth of <code>x==y</code> does not imply that <code>x!=y</code> is false. Accordingly, when
+defining <a href="__eq__.htm"><strong>__eq__</strong></a>, one should also define <a href="__ne__.htm"><strong>__ne__</strong></a> so that
+the operators will behave as expected.</p><p>There are no reflected (swapped-argument) versions of these methods
+(to be used when the left argument does not support the operation but
+the right argument does); rather, <a href="__lt__.htm"><strong>__lt__</strong></a> and <a href="__gt__.htm"><strong>__gt__</strong></a> are
+each other&#8217;s reflection, <a href="__le__.htm"><strong>__le__</strong></a> and <a href="__ge__.htm"><strong>__ge__</strong></a> are each
+other&#8217;s reflection, and <a href="__eq__.htm"><strong>__eq__</strong></a> and <a href="__ne__.htm"><strong>__ne__</strong></a> are their
+own reflection.</p><p>Arguments to rich comparison methods are never coerced. A rich
+comparison method may return <a href="NotImplemented.htm"><strong>NotImplemented</strong></a> if it does not
+implement the operation for a given pair of arguments.</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div> <!-- yui-g --></div> <!-- content --> </div> <!-- yui-b --> </div> <!-- yui-main --> <div class="yui-b"> <div id='menu'> <ul> <li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li> <li><b><a href="." title="Go to pyref index page.">::: pyref :::</a></b></li> </ul> </div> <!-- menu --> </div> <!-- yui-b --> </div> <!-- bd --> <div id="ft"> <!-- footer --> <p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;"></a>
+this page was rendered by a <a href="http://www.djangoproject.com/">django</a> application in 0.01s 2013-02-13 04:45:43.137839.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p> </div> <!-- ft --> </div> <!-- doc --> <script src="/media/js/effbot-min.js" type="text/javascript"> </script> </body> </html>

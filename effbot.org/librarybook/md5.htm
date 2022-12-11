@@ -1,0 +1,174 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>The md5&nbsp;module</title></head><body data-page-id="580"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">The md5&nbsp;module</h1></div><div class="yui-ge"><div class="yui-u first"><p class="note"><b>Note:</b> In Python 2.5, this module is a
+compatibility wrapper for <a href="hashlib.htm">hashlib</a>.</p><p>This module is used to calculate message signatures (so-called
+<span>&#8220;message digests&#8221;</span>).</p><p>The MD5 algorithm calculates a strong 128-bit signature. This
+means that if two strings are different, it&#8217;s highly likely that
+their MD5 signatures are different as well. Or to put it another
+way, given an MD5 digest, it&#8217;s supposed to be nearly impossible to
+come up with a string that generates that digest.</p><p class="note"><b>Note:</b>
+Since this was written, MD5 has been broken.  It&#8217;s now relatively
+easy to generate files that differ slightly, but have the same MD5
+signature, if you can insert random-looking data somewhere in
+the file (e.g in a comment, or in a part of the file that&#8217;s not
+used for any other purpose).  Most published attacks use environments
+where such differences can be used to control the result in some
+way (e.g. a PostScript document that contains two texts, and
+code that selects which one to display, or a self-extracting
+executable that extracts different files).  While applications that
+use MD5 to sign only the data that&#8217;s actually displayed or extracted
+should be safe for now, use of MD5 in new applications should be
+avoided.
+</p><div class="example">
+<b style="example">Example: Using the md5 module</b>
+<pre class="python">
+<span class="pycomment"># File: md5-example-1.py</span>
+
+<span class="pykeyword">import</span> md5
+
+hash = md5.new()
+hash.update(<span class="pystring">"spam, spam, and eggs"</span>)
+
+<span class="pykeyword">print</span> repr(hash.digest())</pre><pre class="computeroutput" moreinfo="NONE">
+'L\005J\243\266\355\243u`\305r\203\267\020F\303'
+</pre></div><p>Note that the checksum is returned as a binary string. Getting a
+hexadecimal or base64-encoded string is quite easy, though:</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><div class="example wide">
+<b style="example">Example: Using the md5
+module to get a hexadecimal or base64-encoded md5 value</b>
+<pre class="python wide">
+<span class="pycomment"># File: md5-example-2.py</span>
+
+<span class="pykeyword">import</span> md5
+<span class="pykeyword">import</span> string
+<span class="pykeyword">import</span> base64
+
+hash = md5.new()
+hash.update(<span class="pystring">"spam, spam, and eggs"</span>)
+
+value = hash.digest()
+
+<span class="pykeyword">print</span> hash.hexdigest()
+
+<span class="pycomment"># in Python 1.5.2 and earlier, use this instead:</span>
+<span class="pycomment"># print string.join(map(lambda v: "%02x" % ord(v), value), "")</span>
+
+<span class="pykeyword">print</span> base64.encodestring(value)</pre><pre class="computeroutput wide" moreinfo="NONE">
+4c054aa3b6eda37560c57283b71046c3
+TAVKo7bto3VgxXKDtxBGww==
+</pre></div></div><div class="yui-ge"><div class="yui-u first"><p>Among other things, the MD5 checksum can be used for
+challenge-response authentication (but see the note on random
+numbers below):</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><div class="example wide">
+<b style="example">Example: Using the md5
+module for challenge-response authentication</b>
+<pre class="python wide">
+<span class="pycomment"># File: md5-example-3.py</span>
+
+<span class="pykeyword">import</span> md5
+<span class="pykeyword">import</span> string, random
+
+<span class="pykeyword">def</span> <span class="pyfunction">getchallenge</span>():
+    <span class="pycomment"># generate a 16-byte long random string.  (note that the built-</span>
+    <span class="pycomment"># in pseudo-random generator uses a 24-bit seed, so this is not</span>
+    <span class="pycomment"># as good as it may seem...)</span>
+    challenge = map(<span class="pykeyword">lambda</span> i: chr(random.randint(0, 255)), range(16))
+    <span class="pykeyword">return</span> string.join(challenge, <span class="pystring">""</span>)
+
+<span class="pykeyword">def</span> <span class="pyfunction">getresponse</span>(password, challenge):
+    <span class="pycomment"># calculate combined digest for password and challenge</span>
+    m = md5.new()
+    m.update(password)
+    m.update(challenge)
+    <span class="pykeyword">return</span> m.digest()
+
+<span class="pycomment">#</span>
+<span class="pycomment"># server/client communication</span>
+
+<span class="pycomment"># 1. client connects.  server issues challenge.</span>
+
+<span class="pykeyword">print</span> <span class="pystring">"client:"</span>, <span class="pystring">"connect"</span>
+
+challenge = getchallenge()
+
+<span class="pykeyword">print</span> <span class="pystring">"server:"</span>, repr(challenge)
+
+<span class="pycomment"># 2. client combines password and challenge, and calculates</span>
+<span class="pycomment"># the response</span>
+
+client_response = getresponse(<span class="pystring">"trustno1"</span>, challenge)
+
+<span class="pykeyword">print</span> <span class="pystring">"client:"</span>, repr(client_response)
+
+<span class="pycomment"># 3. server does the same, and compares the result with the</span>
+<span class="pycomment"># client response.  the result is a safe login in which the</span>
+<span class="pycomment"># password is never sent across the communication channel.</span>
+
+server_response = getresponse(<span class="pystring">"trustno1"</span>, challenge)
+
+<span class="pykeyword">if</span> server_response == client_response:
+    <span class="pykeyword">print</span> <span class="pystring">"server:"</span>, <span class="pystring">"login ok"</span></pre><pre class="computeroutput wide" moreinfo="NONE">
+client: connect
+server: '\334\352\227Z#\272\273\212KG\330\265\032&gt;\311o'
+client: "l'\305\240-x\245\237\035\225A\254\233\337\225\001"
+server: login ok
+</pre></div></div><div class="yui-ge"><div class="yui-u first"><p>A variation of this can be used to sign messages sent over a
+public network, so that their integrity can be verified at the
+receiving end.</p><div class="example">
+<b style="example">Example: Using the md5
+module for data integrity checks</b>
+<pre class="python">
+<span class="pycomment"># File: md5-example-4.py</span>
+
+<span class="pykeyword">import</span> md5
+<span class="pykeyword">import</span> array
+
+<span class="pykeyword">class</span> <span class="pyclass">HMAC_MD5</span>:
+    <span class="pycomment"># keyed MD5 message authentication</span>
+
+    <span class="pykeyword">def</span> <span class="pyfunction">__init__</span>(self, key):
+        <span class="pykeyword">if</span> len(key) &gt; 64:
+            key = md5.new(key).digest()
+        ipad = array.array(<span class="pystring">"B"</span>, [0x36] * 64)
+        opad = array.array(<span class="pystring">"B"</span>, [0x5C] * 64)
+        <span class="pykeyword">for</span> i <span class="pykeyword">in</span> range(len(key)):
+            ipad[i] = ipad[i] ^ ord(key[i])
+            opad[i] = opad[i] ^ ord(key[i])
+        self.ipad = md5.md5(ipad.tostring())
+        self.opad = md5.md5(opad.tostring())
+
+    <span class="pykeyword">def</span> <span class="pyfunction">digest</span>(self, data):
+        ipad = self.ipad.copy()
+        opad = self.opad.copy()
+        ipad.update(data)
+        opad.update(ipad.digest())
+        <span class="pykeyword">return</span> opad.digest()
+
+<span class="pycomment">#</span>
+<span class="pycomment"># simulate server end</span>
+
+key = <span class="pystring">"this should be a well-kept secret"</span>
+message = open(<span class="pystring">"samples/sample.txt"</span>).read()
+
+signature = HMAC_MD5(key).digest(message)
+
+<span class="pycomment"># (send message and signature across a public network)</span>
+
+<span class="pycomment">#</span>
+<span class="pycomment"># simulate client end</span>
+
+key = <span class="pystring">"this should be a well-kept secret"</span>
+
+client_signature = HMAC_MD5(key).digest(message)
+
+<span class="pykeyword">if</span> client_signature == signature:
+    <span class="pykeyword">print</span> <span class="pystring">"this is the original message:"</span>
+    <span class="pykeyword">print</span>
+    <span class="pykeyword">print</span> message
+<span class="pykeyword">else</span>:
+    <span class="pykeyword">print</span> <span class="pystring">"someone has modified the message!!!"</span></pre></div><p>The <b>copy</b> method takes a snapshot of the internal object
+state. This allows you to precalculate partial digests (such as the
+padded key, in this example).</p><p>For details on this algorithm, see <a href="http://www.research.ibm.com/security/draft-ietf-ipsec-hmac-md5-00.txt">
+<i>HMAC-MD5: Keyed-MD5 for Message Authentication</i></a> by
+Krawczyk et al.</p><p class="note"><b>Warning:</b>
+Don&#8217;t forget that the built-in psuedo random number generator
+isn&#8217;t really good enough for encryption purposes. Be careful.
+</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to librarybook index page.">::: librarybook :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

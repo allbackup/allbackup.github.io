@@ -1,0 +1,54 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>gopherlib</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-gopherlib.html'>original</a> :::
+<a href='gopherlib.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>gopherlib&#8212;Gopher protocol client</h1>
+
+<p>This module provides a minimal implementation of client side of
+the Gopher protocol. It is used by the module <code>urllib</code> to handle URLs that use the Gopher
+protocol.</p>
+
+<p>The module defines the following functions:</p>
+</div>
+<dl><dt class="function" id="send_selector"><b>send_selector(selector, host[, port])</b> <tt class="nav"><a class="nav" href="gopherlib.send_selector" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Send a <var>selector</var> string to the gopher server at <var>
+host</var> and <var>port</var> (default <code>70</code>). Returns
+an open file object from which the returned document can be
+read.</p>
+</dd>
+<dt class="function" id="send_query"><b>send_query(selector, query, host[, port])</b> <tt class="nav"><a class="nav" href="gopherlib.send_query" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Send a <var>selector</var> string and a <var>query</var> string
+to a gopher server at <var>host</var> and <var>port</var> (default
+<code>70</code>). Returns an open file object from which the
+returned document can be read.</p>
+</dd>
+</dl><div class="text">
+<p>Note that the data returned by the Gopher server can be of any
+type, depending on the first character of the selector string. If
+the data is text (first character of the selector is
+"<code>0</code>"), lines are terminated by CRLF, and the data is
+terminated by a line consisting of a single "<code>.</code>", and a
+leading "<code>.</code>" should be stripped from lines that begin
+with "<code>..</code>". Directory listings (first character of the
+selector is "<code>1</code>") are transferred using the same
+protocol.</p>
+</div>
+</div></body></html>

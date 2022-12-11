@@ -1,0 +1,589 @@
+
+@@module gettext
+
+<h1>gettext&#8212;Multilingual internationalization services</h1>
+
+<p>The {@link gettext} module provides internationalization (I18N) and
+localization (L10N) services for your Python modules and applications.
+It supports both the GNU {@code gettext} message catalog API and a
+higher level, class-based API that may be more appropriate for Python
+files. The interface described below allows you to write your module and
+application messages in one natural language, and provide a catalog of
+translated messages for running under different natural languages.
+
+<p>Some hints on localizing your Python modules and applications are
+also given.
+
+<h2>GNU gettext API</h2>
+
+<p>The {@link gettext} module defines the following API, which is very
+similar to the GNU gettext API. If you use this API you will affect the
+translation of your entire application globally. Often this is what you
+want if your application is monolingual, with the choice of language
+dependent on the locale of your user. If you are localizing a Python
+module, or if your application needs to switch languages on the fly, you
+probably want to use the class-based API instead.
+
+@@function bindtextdomain(domain[, localedir])
+
+<p>Bind the {@var domain} to the locale directory {@var localedir}. More
+concretely, {@link gettext} will look for binary .mo files for the given
+domain using the path (on Unix): {@var localedir}/{@var
+language}/LC_MESSAGES/{@var domain}.mo, where {@var languages} is
+searched for in the environment variables LANGUAGE, LC_ALL, LC_MESSAGES,
+and LANG respectively.
+
+<p>If {@var localedir} is omitted or {@link None}, then the current
+binding for {@var domain} is returned.{@link footnote:36716}
+
+@@function bind_textdomain_codeset(domain[, codeset])
+
+<p>Bind the {@var domain} to {@var codeset}, changing the encoding of
+strings returned by the {@link gettext} family of functions. If {@var
+codeset} is omitted, then the current binding is returned.
+<blockquote>
+@since New in version 2.4. <br />
+</blockquote>
+
+@@function textdomain([domain])
+
+<p>Change or query the current global domain. If {@var domain} is {@link
+None}, then the current global domain is returned, otherwise the global
+domain is set to {@var domain}, which is returned.
+
+@@function gettext(message)
+
+<p>Return the localized translation of {@var message}, based on the
+current global domain, language, and locale directory. This function is
+usually aliased as {@link _} in the local namespace (see examples
+below).
+
+@@function lgettext(message)
+
+<p>Equivalent to {@link gettext}, but the translation is returned in the
+preferred system encoding, if no other encoding was explicitly set with
+{@link bind_textdomain_codeset}.
+<blockquote>
+@since New in version 2.4. <br />
+</blockquote>
+
+@@function dgettext(domain, message)
+
+<p>Like {@link gettext}, but look the message up in the specified {@var
+domain}.
+
+@@function ldgettext(domain, message)
+
+<p>Equivalent to {@link dgettext}, but the translation is returned in
+the preferred system encoding, if no other encoding was explicitly set
+with {@link bind_textdomain_codeset}.
+<blockquote>
+@since New in version 2.4. <br />
+</blockquote>
+
+@@function ngettext(singular, plural, n)
+
+<p>Like {@link gettext}, but consider plural forms. If a translation is
+found, apply the plural formula to {@var n}, and return the resulting
+message (some languages have more than two plural forms). If no
+translation is found, return {@var singular} if {@var n} is 1; return
+{@var plural} otherwise.
+
+<p>The Plural formula is taken from the catalog header. It is a C or
+Python expression that has a free variable n; the expression evaluates
+to the index of the plural in the catalog. See the GNU gettext
+documentation for the precise syntax to be used in .po files, and the
+formulas for a variety of languages.
+<blockquote>
+@since New in version 2.3. <br />
+</blockquote>
+
+@@function lngettext(singular, plural, n)
+
+<p>Equivalent to {@link ngettext}, but the translation is returned in
+the preferred system encoding, if no other encoding was explicitly set
+with {@link bind_textdomain_codeset}.
+<blockquote>
+@since New in version 2.4. <br />
+</blockquote>
+
+@@function dngettext(domain, singular, plural, n)
+
+<p>Like {@link ngettext}, but look the message up in the specified {@var
+domain}.
+<blockquote>
+@since New in version 2.3. <br />
+</blockquote>
+
+@@function ldngettext(domain, singular, plural, n)
+
+<p>Equivalent to {@link dngettext}, but the translation is returned in
+the preferred system encoding, if no other encoding was explicitly set
+with {@link bind_textdomain_codeset}.
+<blockquote>
+@since New in version 2.4. <br />
+</blockquote>
+
+@@text 
+
+<p>Note that GNU gettext also defines a {@link dcgettext} method, but
+this was deemed not useful and so it is currently unimplemented.
+
+<p>Here's an example of typical usage for this API:
+
+<pre>
+import gettext
+gettext.bindtextdomain('myapplication', '/path/to/my/language/directory')
+gettext.textdomain('myapplication')
+_ = gettext.gettext
+# ...
+print _('This is a translatable string.')
+</pre>
+
+
+<h4>Footnotes</h4>
+
+@@variable ... returned.6.2
+
+<p>The default locale directory is system dependent; for example, on
+RedHat Linux it is /usr/share/locale, but on Solaris it is
+/usr/lib/locale. The {@link gettext} module does not try to support
+these system dependent defaults; instead its default is {@code
+sys.prefix}/share/locale. For this reason, it is always best to call
+{@link bindtextdomain} with an explicit absolute path at the start of
+your application.
+
+@@text 
+
+<h2>Class-based API</h2>
+
+<p>The class-based API of the {@link gettext} module gives you more
+flexibility and greater convenience than the GNU gettext API. It is the
+recommended way of localizing your Python applications and modules.
+{@link gettext} defines a &#8220;translations&#8221; class which
+implements the parsing of GNU .mo format files, and has methods for
+returning either standard 8-bit strings or Unicode strings. Instances of
+this &#8220;translations&#8221; class can also install themselves in the
+built-in namespace as the function {@link _}.
+
+@@function find(domain[, localedir[, languages[, all]]])
+
+<p>This function implements the standard .mo file search algorithm. It
+takes a {@var domain}, identical to what {@link textdomain} takes.
+Optional {@var localedir} is as in {@link bindtextdomain} Optional {@var
+languages} is a list of strings, where each string is a language code.
+
+<p>If {@var localedir} is not given, then the default system locale
+directory is used.{@link footnote:36704} If {@var languages} is not
+given, then the following environment variables are searched: LANGUAGE,
+LC_ALL, LC_MESSAGES, and LANG. The first one returning a non-empty value
+is used for the {@var languages} variable. The environment variables
+should contain a colon separated list of languages, which will be split
+on the colon to produce the expected list of language code strings.
+
+<p>{@link find} then expands and normalizes the languages, and then
+iterates through them, searching for an existing file built of these
+components:
+
+<p>{@var localedir}/{@var language}/LC_MESSAGES/{@var domain}.mo
+
+<p>The first such file name that exists is returned by {@link find}. If
+no such file is found, then {@code None} is returned. If {@var all} is
+given, it returns a list of all file names, in the order in which they
+appear in the languages list or the environment variables.
+
+@@function translation(domain[, localedir[, languages[, class_[, fallback[, codeset]]]]])
+
+<p>Return a {@link Translations} instance based on the {@var domain},
+{@var localedir}, and {@var languages}, which are first passed to {@link
+find} to get a list of the associated .mo file paths. Instances with
+identical .mo file names are cached. The actual class instantiated is
+either {@var class_} if provided, otherwise {@link GNUTranslations}. The
+class's constructor must take a single file object argument. If
+provided, {@var codeset} will change the charset used to encode
+translated strings.
+
+<p>If multiple files are found, later files are used as fallbacks for
+earlier ones. To allow setting the fallback, {@link copy.copy} is used
+to clone each translation object from the cache; the actual instance
+data is still shared with the cache.
+
+<p>If no .mo file is found, this function raises {@link
+exceptions.IOError} if {@var fallback} is false (which is the default),
+and returns a {@link NullTranslations} instance if {@var fallback} is
+true.
+<blockquote>
+@since Changed in version 2.4: Added the
+codeset parameter. <br />
+</blockquote>
+
+@@function install(domain[, localedir[, unicode [, codeset]]])
+
+<p>This installs the function {@link _} in Python's builtin namespace,
+based on {@var domain}, {@var localedir}, and {@var codeset} which are
+passed to the function {@link translation}. The {@var unicode} flag is
+passed to the resulting translation object's {@link install} method.
+
+<p>As seen below, you usually mark the strings in your application that
+are candidates for translation, by wrapping them in a call to the {@link
+_} function, like this:
+
+<pre>
+print _('This string will be translated.')
+</pre>
+
+
+<p>For convenience, you want the {@link _} function to be installed in
+Python's builtin namespace, so it is easily accessible in all modules of
+your application.
+<blockquote>
+@since Changed in version 2.4: Added the
+codeset parameter. <br />
+</blockquote>
+
+@@text 
+
+<h4>Footnotes</h4>
+
+@@variable ... used.6.3
+
+<p>See the footnote for {@link bindtextdomain} above.
+
+@@text 
+@@error unexpected div online-navigation
+
+<h3>The NullTranslations class</h3>
+@@error unexpected tt class
+@@error unexpected tt class
+
+@@method __init__([fp])
+
+<p>Takes an optional file object {@var fp}, which is ignored by the base
+class. Initializes &#8220;protected&#8221; instance variables {@var
+_info} and {@var _charset} which are set by derived classes, as well as
+{@var _fallback}, which is set through {@link add_fallback}. It then
+calls {@code self._parse(fp)} if {@var fp} is not {@code None}.
+
+@@method _parse(fp)
+
+<p>No-op'd in the base class, this method takes file object {@var fp},
+and reads the data from the file, initializing its message catalog. If
+you have an unsupported message catalog file format, you should override
+this method to parse your format.
+
+@@method add_fallback(fallback)
+
+<p>Add {@var fallback} as the fallback object for the current
+translation object. A translation object should consult the fallback if
+it cannot provide a translation for a given message.
+
+@@method gettext(message)
+
+<p>If a fallback has been set, forward {@link gettext} to the fallback.
+Otherwise, return the translated message. Overridden in derived classes.
+
+@@method lgettext(message)
+
+<p>If a fallback has been set, forward {@link lgettext} to the fallback.
+Otherwise, return the translated message. Overridden in derived classes.
+<blockquote>
+@since New in version 2.4. <br />
+</blockquote>
+
+@@method ugettext(message)
+
+<p>If a fallback has been set, forward {@link ugettext} to the fallback.
+Otherwise, return the translated message as a Unicode string. Overridden
+in derived classes.
+
+@@method ngettext(singular, plural, n)
+
+<p>If a fallback has been set, forward {@link ngettext} to the fallback.
+Otherwise, return the translated message. Overridden in derived classes.
+<blockquote>
+@since New in version 2.3. <br />
+</blockquote>
+
+@@method lngettext(singular, plural, n)
+
+<p>If a fallback has been set, forward {@link ngettext} to the fallback.
+Otherwise, return the translated message. Overridden in derived classes.
+<blockquote>
+@since New in version 2.4. <br />
+</blockquote>
+
+@@method ungettext(singular, plural, n)
+
+<p>If a fallback has been set, forward {@link ungettext} to the
+fallback. Otherwise, return the translated message as a Unicode string.
+Overridden in derived classes.
+<blockquote>
+@since New in version 2.3. <br />
+</blockquote>
+
+@@method info()
+
+<p>Return the &#8220;protected&#8221; {@link _info} variable.
+
+@@method charset()
+
+<p>Return the &#8220;protected&#8221; {@link _charset} variable.
+
+@@method output_charset()
+
+<p>Return the &#8220;protected&#8221; {@link _output_charset} variable,
+which defines the encoding used to return translated messages.
+<blockquote>
+@since New in version 2.4. <br />
+</blockquote>
+
+@@method set_output_charset(charset)
+
+<p>Change the &#8220;protected&#8221; {@link _output_charset} variable,
+which defines the encoding used to return translated messages.
+<blockquote>
+@since New in version 2.4. <br />
+</blockquote>
+
+@@method install([unicode])
+
+<p>If the {@var unicode} flag is false, this method installs {@link
+self.gettext} into the built-in namespace, binding it to "{@code _}". If
+{@var unicode} is true, it binds {@link self.ugettext} instead. By
+default, {@var unicode} is false.
+
+<p>Note that this is only one way, albeit the most convenient way, to
+make the {@link _} function available to your application. Because it
+affects the entire application globally, and specifically the built-in
+namespace, localized modules should never install {@link _}. Instead,
+they should use this code to make {@link _} available to their module:
+
+<pre>
+import gettext
+t = gettext.translation('mymodule', ...)
+_ = t.gettext
+</pre>
+
+
+<p>This puts {@link _} only in the module's global namespace and so only
+affects calls within this module.
+
+@@text 
+
+<h3>The GNUTranslations class</h3>
+
+<p>The {@link gettext} module provides one additional class derived from
+{@link NullTranslations}: {@link GNUTranslations}. This class overrides
+{@link _parse} to enable reading GNU gettext format .mo files in both
+big-endian and little-endian format. It also coerces both message ids
+and message strings to Unicode.
+
+<p>{@link GNUTranslations} parses optional meta-data out of the
+translation catalog. It is convention with GNU gettext to include
+meta-data as the translation for the empty string. This meta-data is in
+{@link http://www.faqs.org/rfcs/rfc822.html RFC 822}-style {@code key:
+value} pairs, and should contain the {@code Project-Id-Version} key. If
+the key {@code Content-Type} is found, then the {@code charset} property
+is used to initialize the &#8220;protected&#8221; {@link _charset}
+instance variable, defaulting to {@link None} if not found. If the
+charset encoding is specified, then all message ids and message strings
+read from the catalog are converted to Unicode using this encoding. The
+{@link ugettext} method always returns a Unicode, while the {@link
+gettext} returns an encoded 8-bit string. For the message id arguments
+of both methods, either Unicode strings or 8-bit strings containing only
+US-ASCII characters are acceptable. Note that the Unicode version of the
+methods (i.e. {@link ugettext} and {@link ungettext}) are the
+recommended interface to use for internationalized Python programs.
+
+<p>The entire set of key/value pairs are placed into a dictionary and
+set as the &#8220;protected&#8221; {@link _info} instance variable.
+
+<p>If the .mo file's magic number is invalid, or if other problems occur
+while reading the file, instantiating a {@link GNUTranslations} class
+can raise {@link exceptions.IOError}.
+
+<p>The following methods are overridden from the base class
+implementation:
+
+@@method gettext(message)
+
+<p>Look up the {@var message} id in the catalog and return the
+corresponding message string, as an 8-bit string encoded with the
+catalog's charset encoding, if known. If there is no entry in the
+catalog for the {@var message} id, and a fallback has been set, the look
+up is forwarded to the fallback's {@link gettext} method. Otherwise, the
+{@var message} id is returned.
+
+@@method lgettext(message)
+
+<p>Equivalent to {@link gettext}, but the translation is returned in the
+preferred system encoding, if no other encoding was explicitly set with
+{@link set_output_charset}.
+<blockquote>
+@since New in version 2.4. <br />
+</blockquote>
+
+@@method ugettext(message)
+
+<p>Look up the {@var message} id in the catalog and return the
+corresponding message string, as a Unicode string. If there is no entry
+in the catalog for the {@var message} id, and a fallback has been set,
+the look up is forwarded to the fallback's {@link ugettext} method.
+Otherwise, the {@var message} id is returned.
+
+@@method ngettext(singular, plural, n)
+
+<p>Do a plural-forms lookup of a message id. {@var singular} is used as
+the message id for purposes of lookup in the catalog, while {@var n} is
+used to determine which plural form to use. The returned message string
+is an 8-bit string encoded with the catalog's charset encoding, if
+known.
+
+<p>If the message id is not found in the catalog, and a fallback is
+specified, the request is forwarded to the fallback's {@link ngettext}
+method. Otherwise, when {@var n} is 1 {@var singular} is returned, and
+{@var plural} is returned in all other cases.
+<blockquote>
+@since New in version 2.3. <br />
+</blockquote>
+
+@@method lngettext(singular, plural, n)
+
+<p>Equivalent to {@link gettext}, but the translation is returned in the
+preferred system encoding, if no other encoding was explicitly set with
+{@link set_output_charset}.
+<blockquote>
+@since New in version 2.4. <br />
+</blockquote>
+
+@@method ungettext(singular, plural, n)
+
+<p>Do a plural-forms lookup of a message id. {@var singular} is used as
+the message id for purposes of lookup in the catalog, while {@var n} is
+used to determine which plural form to use. The returned message string
+is a Unicode string.
+
+<p>If the message id is not found in the catalog, and a fallback is
+specified, the request is forwarded to the fallback's {@link ungettext}
+method. Otherwise, when {@var n} is 1 {@var singular} is returned, and
+{@var plural} is returned in all other cases.
+
+<p>Here is an example:
+
+<pre>
+n = len(os.listdir('.'))
+cat = GNUTranslations(somefile)
+message = cat.ungettext(
+    'There is %(num)d file in this directory',
+    'There are %(num)d files in this directory',
+    n) % {'num': n}
+</pre>
+
+<blockquote>
+@since New in version 2.3. <br />
+</blockquote>
+
+@@text 
+
+<h3>Solaris message catalog support</h3>
+
+<p>The Solaris operating system defines its own binary .mo file format,
+but since no documentation can be found on this format, it is not
+supported at this time.
+
+<h3>The Catalog constructor</h3>
+
+<p>GNOME uses a version of the {@link gettext} module by James
+Henstridge, but this version has a slightly different API. Its
+documented usage was:
+
+<pre>
+import gettext
+cat = gettext.Catalog(domain, localedir)
+_ = cat.gettext
+print _('hello world')
+</pre>
+
+
+<p>For compatibility with this older module, the function {@link
+Catalog} is an alias for the {@link translation} function described
+above.
+
+<p>One difference between this module and Henstridge's: his catalog
+objects supported access through a mapping API, but this appears to be
+unused and so is not currently supported.
+
+<h2>Internationalizing your programs and modules</h2>
+<ol>
+<li>
+<p>prepare your program or module by specially marking translatable
+strings
+<li>
+<p>run a suite of tools over your marked files to generate raw messages
+catalogs
+<li>
+<p>create language specific translations of the message catalogs
+<li>
+<p>use the {@link gettext} module so that message strings are properly
+translated
+</ol>
+
+<p>In order to prepare your code for I18N, you need to look at all the
+strings in your files. Any string that needs to be translated should be
+marked by wrapping it in {@code _('...')} -- that is, a call to the
+function {@link _}. For example:
+
+<pre>
+filename = 'mylog.txt'
+message = _('writing a log message')
+fp = open(filename, 'w')
+fp.write(message)
+fp.close()
+</pre>
+
+
+<p>In this example, the string {@code 'writing a log message'} is marked
+as a candidate for translation, while the strings {@code 'mylog.txt'}
+and {@code 'w'} are not.
+
+<p>The Python distribution comes with two tools which help you generate
+the message catalogs once you've prepared your source code. These may or
+may not be available from a binary distribution, but they can be found
+in a source distribution, in the Tools/i18n directory.
+
+<p>The pygettext{@link footnote:36712} program scans all your Python
+source code looking for the strings you previously marked as
+translatable. It is similar to the GNU gettext program except that it
+understands all the intricacies of Python source code, but knows nothing
+about C or C++ source code. You don't need GNU {@code gettext} unless
+you're also going to be translating C code (such as C extension
+modules).
+
+<p>pygettext generates textual Uniforum-style human readable message
+catalog .pot files, essentially structured human readable files which
+contain every marked string in the source code, along with a placeholder
+for the translation strings. pygettext is a command line script that
+supports a similar command line interface as xgettext; for details on
+its use, run:
+
+<pre>
+pygettext.py --help
+</pre>
+
+
+<p>Copies of these .pot files are then handed over to the individual
+human translators who write language-specific versions for every
+supported natural language. They send you back the filled in
+language-specific versions as a .po file. Using the msgfmt.py{@link
+footnote:36713} program (in the Tools/i18n directory), you take the .po
+files from your translators and generate the machine-readable .mo binary
+catalog files. The .mo files are what the {@link gettext} module uses
+for the actual translation processing during run-time.
+
+<p>How you use the {@link gettext} module in your code depends on
+whether you are internationalizing your entire application or a single
+module.
+
+<h4>Footnotes</h4>
+
+@@variable ...pygettext6.4

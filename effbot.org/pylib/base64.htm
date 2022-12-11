@@ -1,0 +1,113 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>base64 -- RFC 3548: Base16, Base32, Base64 Data&nbsp;Encodings</title> <script type="text/javascript">effbot_page_id=968;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> <!--
+<p style='color: #8f8f8f; background: #fff5bf; padding: 5px 10px;'> <b>2008-07-15:</b> Selected articles
+
+now have experimental "comment" links in the left column and at the bottom.
+You're welcome to use them for commenting and voting on articles.
+For a bit more on this, see <a
+href="http://effbot.slinkset.com/links/Welcome_to_discuss_effbot_org">this
+page</a>. /F
+</p>
+--> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <h1 class="maintitle">base64 -- RFC 3548: Base16, Base32, Base64 Data&nbsp;Encodings</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><div class="module"><p>This module provides data encoding and decoding as specified in
+<a class="link" href="http://www.faqs.org/rfcs/rfc3548.html">RFC
+3548</a>. This standard defines the Base16, Base32, and Base64
+algorithms for encoding and decoding arbitrary binary strings into
+text strings that can be safely sent by email, used as parts of
+URLs, or included as part of an HTTP POST request. The encoding
+algorithm is not the same as the uuencode program.</p><p>There are two interfaces provided by this module. The modern
+interface supports encoding and decoding string objects using all
+three alphabets. The legacy interface provides for encoding and
+decoding to and from file-like objects as well as strings, but only
+using the Base64 standard alphabet.</p><p>The modern interface provides:</p></div><dl><dt class="function" id="base64.b64encode"><b>b64encode(s[, altchars])</b> <tt class="mark"><a href="#base64.b64encode" title="bookmark">#</a>|<a href="/comment/pylib/base64.htm%23base64.b64encode" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="function">
+<p>Encode a string use Base64.</p><p><var>s</var> is the string to encode. Optional <var>
+altchars</var> must be a string of at least length 2 (additional
+characters are ignored) which specifies an alternative alphabet for
+the <code>+</code> and <code>/</code> characters. This allows an
+application to e.g. generate URL or filesystem safe Base64 strings.
+The default is <a class="link" href="/pyref/None">None</a>, for which
+the standard Base64 alphabet is used.</p><p>The encoded string is returned.</p></dd>
+<dt class="function" id="base64.b64decode"><b>b64decode(s[, altchars])</b> <tt class="mark"><a href="#base64.b64decode" title="bookmark">#</a>|<a href="/comment/pylib/base64.htm%23base64.b64decode" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="function">
+<p>Decode a Base64 encoded string.</p><p><var>s</var> is the string to decode. Optional <var>
+altchars</var> must be a string of at least length 2 (additional
+characters are ignored) which specifies the alternative alphabet
+used instead of the <code>+</code> and <code>/</code>
+characters.</p><p>The decoded string is returned. A <a class="link" href="exceptions.htm#exceptions.TypeError">exceptions.TypeError</a> is raised
+if <var>s</var> were incorrectly padded or if there are
+non-alphabet characters present in the string.</p></dd>
+<dt class="function" id="base64.standard_b64encode"><b>standard_b64encode(s)</b> <tt class="mark"><a href="#base64.standard_b64encode" title="bookmark">#</a>|<a href="/comment/pylib/base64.htm%23base64.standard_b64encode" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="function">
+<p>Encode string <var>s</var> using the standard Base64
+alphabet.</p></dd>
+<dt class="function" id="base64.standard_b64decode"><b>standard_b64decode(s)</b> <tt class="mark"><a href="#base64.standard_b64decode" title="bookmark">#</a>|<a href="/comment/pylib/base64.htm%23base64.standard_b64decode" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="function">
+<p>Decode string <var>s</var> using the standard Base64
+alphabet.</p></dd>
+<dt class="function" id="base64.urlsafe_b64encode"><b>urlsafe_b64encode(s)</b> <tt class="mark"><a href="#base64.urlsafe_b64encode" title="bookmark">#</a>|<a href="/comment/pylib/base64.htm%23base64.urlsafe_b64encode" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="function">
+<p>Encode string <var>s</var> using a URL-safe alphabet, which
+substitutes <code>-</code> instead of <code>+</code> and <code>
+_</code> instead of <code>/</code> in the standard Base64
+alphabet.</p></dd>
+<dt class="function" id="base64.urlsafe_b64decode"><b>urlsafe_b64decode(s)</b> <tt class="mark"><a href="#base64.urlsafe_b64decode" title="bookmark">#</a>|<a href="/comment/pylib/base64.htm%23base64.urlsafe_b64decode" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="function">
+<p>Decode string <var>s</var> using a URL-safe alphabet, which
+substitutes <code>-</code> instead of <code>+</code> and <code>
+_</code> instead of <code>/</code> in the standard Base64
+alphabet.</p></dd>
+<dt class="function" id="base64.b32encode"><b>b32encode(s)</b> <tt class="mark"><a href="#base64.b32encode" title="bookmark">#</a>|<a href="/comment/pylib/base64.htm%23base64.b32encode" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="function">
+<p>Encode a string using Base32. <var>s</var> is the string to
+encode. The encoded string is returned.</p></dd>
+<dt class="function" id="base64.b32decode"><b>b32decode(s[, casefold[, map01]])</b> <tt class="mark"><a href="#base64.b32decode" title="bookmark">#</a>|<a href="/comment/pylib/base64.htm%23base64.b32decode" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="function">
+<p>Decode a Base32 encoded string.</p><p><var>s</var> is the string to decode. Optional <var>
+casefold</var> is a flag specifying whether a lowercase alphabet is
+acceptable as input. For security purposes, the default is <code>
+False</code>.</p><p><a class="link" href="http://www.faqs.org/rfcs/rfc3548.html">RFC
+3548</a> allows for optional mapping of the digit 0 (zero) to the
+letter O (oh), and for optional mapping of the digit 1 (one) to
+either the letter I (eye) or letter L (el). The optional argument
+<var>map01</var> when not <a class="link" href="/pyref/None">
+None</a>, specifies which letter the digit 1 should be mapped to
+(when map01 is not <a class="link" href="/pyref/None">None</a>, the
+digit 0 is always mapped to the letter O). For security purposes
+the default is <a class="link" href="/pyref/None">None</a>, so that 0
+and 1 are not allowed in the input.</p><p>The decoded string is returned. A <a class="link" href="exceptions.htm#exceptions.TypeError">exceptions.TypeError</a> is raised
+if <var>s</var> were incorrectly padded or if there are
+non-alphabet characters present in the string.</p></dd>
+<dt class="function" id="base64.b16encode"><b>b16encode(s)</b> <tt class="mark"><a href="#base64.b16encode" title="bookmark">#</a>|<a href="/comment/pylib/base64.htm%23base64.b16encode" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="function">
+<p>Encode a string using Base16.</p><p><var>s</var> is the string to encode. The encoded string is
+returned.</p></dd>
+<dt class="function" id="base64.b16decode"><b>b16decode(s[, casefold])</b> <tt class="mark"><a href="#base64.b16decode" title="bookmark">#</a>|<a href="/comment/pylib/base64.htm%23base64.b16decode" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="function">
+<p>Decode a Base16 encoded string.</p><p><var>s</var> is the string to decode. Optional <var>
+casefold</var> is a flag specifying whether a lowercase alphabet is
+acceptable as input. For security purposes, the default is <code>
+False</code>.</p><p>The decoded string is returned. A <a class="link" href="exceptions.htm#exceptions.TypeError">exceptions.TypeError</a> is raised
+if <var>s</var> were incorrectly padded or if there are
+non-alphabet characters present in the string.</p></dd>
+</dl><div class="text"><p>The legacy interface:</p></div><dl><dt class="function" id="base64.decode"><b>decode(input, output)</b> <tt class="mark"><a href="#base64.decode" title="bookmark">#</a>|<a href="/comment/pylib/base64.htm%23base64.decode" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="function">
+<p>Decode the contents of the <var>input</var> file and write the
+resulting binary data to the <var>output</var> file. <var>
+input</var> and <var>output</var> must either be file objects or
+objects that mimic the file object interface. <var>input</var> will
+be read until <var>input</var>.read() returns an empty string.</p></dd>
+<dt class="function" id="base64.decodestring"><b>decodestring(s)</b> <tt class="mark"><a href="#base64.decodestring" title="bookmark">#</a>|<a href="/comment/pylib/base64.htm%23base64.decodestring" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="function">
+<p>Decode the string <var>s</var>, which must contain one or more
+lines of base64 encoded data, and return a string containing the
+resulting binary data.</p></dd>
+<dt class="function" id="base64.encode"><b>encode(input, output)</b> <tt class="mark"><a href="#base64.encode" title="bookmark">#</a>|<a href="/comment/pylib/base64.htm%23base64.encode" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="function">
+<p>Encode the contents of the <var>input</var> file and write the
+resulting base64 encoded data to the <var>output</var> file. <var>
+input</var> and <var>output</var> must either be file objects or
+objects that mimic the file object interface. <var>input</var> will
+be read until <var>input</var>.read() returns an empty string. <a class="link" href="base64.htm#base64.encode">encode</a> returns the encoded data
+plus a trailing newline character (<code>'\n'</code>).</p></dd>
+<dt class="function" id="base64.encodestring"><b>encodestring(s)</b> <tt class="mark"><a href="#base64.encodestring" title="bookmark">#</a>|<a href="/comment/pylib/base64.htm%23base64.encodestring" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="function">
+<p>Encode the string <var>s</var>, which can contain arbitrary
+binary data, and return a string containing one or more lines of
+base64-encoded data. <a class="link" href="base64.htm#base64.encodestring">
+encodestring</a> returns a string containing one or more lines of
+base64-encoded data always including an extra trailing newline
+(<code>'\n'</code>).</p></dd>
+</dl><div class="text"><span class="mark">@see</span> <a class="link" href="binascii.htm#binascii">Module binascii</a> Support module containing
+ASCII-to-binary and binary-to-ASCII conversions. <span class="mark">@see</span> <a class="link" href="http://www.faqs.org/rfcs/rfc1521.html">RFC 1521, MIME
+(Multipurpose Internet Mail Extensions) Part One: Mechanisms for
+Specifying and Describing the Format of Internet Message Bodies</a>
+Section 5.2, &#8220;Base64 Content-Transfer-Encoding,&#8221;
+provides the definition of the base64 encoding.</div></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div> <!-- yui-g --></div> <!-- content --> </div> <!-- yui-b --> </div> <!-- yui-main --> <div class="yui-b"> <div id='menu'> <ul> <li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li> <li><b><a href="." title="Go to pylib index page.">::: pylib :::</a></b></li> </ul> </div> <!-- menu --> </div> <!-- yui-b --> </div> <!-- bd --> <div id="ft"> <!-- footer --> <p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15_grey.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;"></a>
+this page was rendered by a <a href="http://www.djangoproject.com/">django</a> application in 0.03s 2009-02-25 17:33:48.757393.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p> </div> <!-- ft --> </div> <!-- doc --> <script src="/media/js/effbot-min.js" type="text/javascript"> </script> </body> </html>

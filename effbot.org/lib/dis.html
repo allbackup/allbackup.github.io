@@ -1,0 +1,649 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>dis</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-dis.html'>original</a> :::
+<a href='dis.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>dis&#8212;Disassembler for Python byte code</h1>
+
+<div class="toc"><dl><dt>On this page:</dt><dd><a href="#python-byte-code-instructions">Python Byte Code Instructions</a></dd></dl></div><p>The <a class="link" href="#dis"><code>dis</code></a> module supports the
+analysis of Python byte code by disassembling it. Since there is no
+Python assembler, this module defines the Python assembly language.
+The Python byte code which this module takes as an input is defined
+in the file Include/opcode.h and used by the compiler and the
+interpreter.</p>
+
+<p>Example: Given the function <code>
+myfunc</code>:</p>
+
+<pre>
+def myfunc(alist):
+    return len(alist)
+</pre>
+
+<p>the following command can be used to get the disassembly of <code>myfunc</code>:</p>
+
+<pre>
+&gt;&gt;&gt; dis.dis(myfunc)
+  2           0 LOAD_GLOBAL              0 (len)
+              3 LOAD_FAST                0 (alist)
+              6 CALL_FUNCTION            1
+              9 RETURN_VALUE        
+             10 LOAD_CONST               0 (None)
+             13 RETURN_VALUE
+</pre>
+
+<p>(The &#8220;2&#8221; is a line number).</p>
+
+<p>The <a class="link" href="#dis"><code>dis</code></a> module defines the
+following functions and constants:</p>
+</div>
+<dl><dt class="function" id="dis"><b>dis([bytesource])</b> <tt class="nav"><a class="nav" href="dis.dis" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Disassemble the <var>bytesource</var> object. <var>
+bytesource</var> can denote either a module, a class, a method, a
+function, or a code object. For a module, it disassembles all
+functions. For a class, it disassembles all methods. For a single
+code sequence, it prints one line per byte code instruction. If no
+object is provided, it disassembles the last traceback.</p>
+</dd>
+<dt class="function" id="distb"><b>distb([tb])</b> <tt class="nav"><a class="nav" href="dis.distb" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Disassembles the top-of-stack function of a traceback, using the
+last traceback if none was passed. The instruction causing the
+exception is indicated.</p>
+</dd>
+<dt class="function" id="disassemble"><b>disassemble(code[, lasti])</b> <tt class="nav"><a class="nav" href="dis.disassemble" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Disassembles a code object, indicating the last instruction if
+<var>lasti</var> was provided. The output is divided in the
+following columns:</p>
+
+<ol>
+<li>
+<p>the line number, for the first instruction of each line</p>
+</li>
+
+<li>
+<p>the current instruction, indicated as "<code>--&gt;</code>",</p>
+</li>
+
+<li>
+<p>a labelled instruction, indicated with
+"<code>&gt;</code><code>&gt;</code>",</p>
+</li>
+
+<li>
+<p>the address of the instruction,</p>
+</li>
+
+<li>
+<p>the operation code name,</p>
+</li>
+
+<li>
+<p>operation parameters, and</p>
+</li>
+
+<li>
+<p>interpretation of the parameters in parentheses.</p>
+</li>
+</ol>
+
+<p>The parameter interpretation recognizes local and global
+variable names, constant values, branch targets, and compare
+operators.</p>
+</dd>
+<dt class="function" id="disco"><b>disco(code[, lasti])</b> <tt class="nav"><a class="nav" href="dis.disco" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>A synonym for disassemble. It is more convenient to type, and
+kept for compatibility with earlier Python releases.</p>
+</dd>
+<dt class="variable" id="opname"><b>opname</b> <tt class="nav"><a class="nav" href="dis.opname" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Sequence of operation names, indexable using the byte code.</p>
+</dd>
+<dt class="variable" id="cmp_op"><b>cmp_op</b> <tt class="nav"><a class="nav" href="dis.cmp_op" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Sequence of all compare operation names.</p>
+</dd>
+<dt class="variable" id="hasconst"><b>hasconst</b> <tt class="nav"><a class="nav" href="dis.hasconst" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Sequence of byte codes that have a constant parameter.</p>
+</dd>
+<dt class="variable" id="hasfree"><b>hasfree</b> <tt class="nav"><a class="nav" href="dis.hasfree" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Sequence of byte codes that access a free variable.</p>
+</dd>
+<dt class="variable" id="hasname"><b>hasname</b> <tt class="nav"><a class="nav" href="dis.hasname" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Sequence of byte codes that access an attribute by name.</p>
+</dd>
+<dt class="variable" id="hasjrel"><b>hasjrel</b> <tt class="nav"><a class="nav" href="dis.hasjrel" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Sequence of byte codes that have a relative jump target.</p>
+</dd>
+<dt class="variable" id="hasjabs"><b>hasjabs</b> <tt class="nav"><a class="nav" href="dis.hasjabs" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Sequence of byte codes that have an absolute jump target.</p>
+</dd>
+<dt class="variable" id="haslocal"><b>haslocal</b> <tt class="nav"><a class="nav" href="dis.haslocal" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Sequence of byte codes that access a local variable.</p>
+</dd>
+<dt class="variable" id="hascompare"><b>hascompare</b> <tt class="nav"><a class="nav" href="dis.hascompare" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Sequence of byte codes of Boolean operations.</p>
+</dd>
+</dl><div class="text">
+<h2 id="python-byte-code-instructions">Python Byte Code Instructions <a class="nav" href="#python-byte-code-instructions">#</a></h2>
+
+<p>The Python compiler currently generates the following byte code
+instructions.</p>
+</div>
+<div class="unknown">
+<p>Indicates end-of-code to the compiler, not used by the
+interpreter.</p>
+</div>
+<div class="unknown">
+<p>Do nothing code. Used as a placeholder by the bytecode
+optimizer.</p>
+</div>
+<div class="unknown">
+<p>Removes the top-of-stack (TOS) item.</p>
+</div>
+<div class="unknown">
+<p>Swaps the two top-most stack items.</p>
+</div>
+<div class="unknown">
+<p>Lifts second and third stack item one position up, moves top
+down to position three.</p>
+</div>
+<div class="unknown">
+<p>Lifts second, third and forth stack item one position up, moves
+top down to position four.</p>
+</div>
+<div class="unknown">
+<p>Duplicates the reference on top of the stack.</p>
+</div>
+<div class="text">
+<p>Unary Operations take the top of the stack, apply the operation,
+and push the result back on the stack.</p>
+</div>
+<div class="unknown">
+<p>Implements <code>TOS = +TOS</code>.</p>
+</div>
+<div class="unknown">
+<p>Implements <code>TOS = -TOS</code>.</p>
+</div>
+<div class="unknown">
+<p>Implements <code>TOS = not TOS</code>.</p>
+</div>
+<div class="unknown">
+<p>Implements <code>TOS = `TOS`</code>.</p>
+</div>
+<div class="unknown">
+<p>Implements <code>TOS = ~TOS</code>.</p>
+</div>
+<div class="unknown">
+<p>Implements <code>TOS = iter(TOS)</code>.</p>
+</div>
+<div class="text">
+<p>Binary operations remove the top of the stack (TOS) and the
+second top-most stack item (TOS1) from the stack. They perform the
+operation, and put the result back on the stack.</p>
+</div>
+<div class="unknown">
+<p>Implements <code>TOS = TOS1 ** TOS</code>.</p>
+</div>
+<div class="unknown">
+<p>Implements <code>TOS = TOS1 * TOS</code>.</p>
+</div>
+<div class="unknown">
+<p>Implements <code>TOS = TOS1 / TOS</code> when <code>from
+__future__ import division</code> is not in effect.</p>
+</div>
+<div class="unknown">
+<p>Implements <code>TOS = TOS1 // TOS</code>.</p>
+</div>
+<div class="unknown">
+<p>Implements <code>TOS = TOS1 / TOS</code> when <code>from
+__future__ import division</code> is in effect.</p>
+</div>
+<div class="unknown">
+<p>Implements <code>TOS = TOS1 % TOS</code>.</p>
+</div>
+<div class="unknown">
+<p>Implements <code>TOS = TOS1 + TOS</code>.</p>
+</div>
+<div class="unknown">
+<p>Implements <code>TOS = TOS1 - TOS</code>.</p>
+</div>
+<div class="unknown">
+<p>Implements <code>TOS = TOS1[TOS]</code>.</p>
+</div>
+<div class="unknown">
+<p>Implements <code>TOS = TOS1 &lt;</code>&lt; TOS.</p>
+</div>
+<div class="unknown">
+<p>Implements <code>TOS = TOS1 &gt;</code>&gt; TOS.</p>
+</div>
+<div class="unknown">
+<p>Implements <code>TOS = TOS1 &amp; TOS</code>.</p>
+</div>
+<div class="unknown">
+<p>Implements <code>TOS = TOS1 ^ TOS</code>.</p>
+</div>
+<div class="unknown">
+<p>Implements <code>TOS = TOS1 | TOS</code>.</p>
+</div>
+<div class="text">
+<p>In-place operations are like binary operations, in that they
+remove TOS and TOS1, and push the result back on the stack, but the
+operation is done in-place when TOS1 supports it, and the resulting
+TOS may be (but does not have to be) the original TOS1.</p>
+</div>
+<div class="unknown">
+<p>Implements in-place <code>TOS = TOS1 ** TOS</code>.</p>
+</div>
+<div class="unknown">
+<p>Implements in-place <code>TOS = TOS1 * TOS</code>.</p>
+</div>
+<div class="unknown">
+<p>Implements in-place <code>TOS = TOS1 / TOS</code> when <code>
+from __future__ import division</code> is not in effect.</p>
+</div>
+<div class="unknown">
+<p>Implements in-place <code>TOS = TOS1 // TOS</code>.</p>
+</div>
+<div class="unknown">
+<p>Implements in-place <code>TOS = TOS1 / TOS</code> when <code>
+from __future__ import division</code> is in effect.</p>
+</div>
+<div class="unknown">
+<p>Implements in-place <code>TOS = TOS1 % TOS</code>.</p>
+</div>
+<div class="unknown">
+<p>Implements in-place <code>TOS = TOS1 + TOS</code>.</p>
+</div>
+<div class="unknown">
+<p>Implements in-place <code>TOS = TOS1 - TOS</code>.</p>
+</div>
+<div class="unknown">
+<p>Implements in-place <code>TOS = TOS1 &lt;</code>&lt; TOS.</p>
+</div>
+<div class="unknown">
+<p>Implements in-place <code>TOS = TOS1 &gt;</code>&gt; TOS.</p>
+</div>
+<div class="unknown">
+<p>Implements in-place <code>TOS = TOS1 &amp; TOS</code>.</p>
+</div>
+<div class="unknown">
+<p>Implements in-place <code>TOS = TOS1 ^ TOS</code>.</p>
+</div>
+<div class="unknown">
+<p>Implements in-place <code>TOS = TOS1 | TOS</code>.</p>
+</div>
+<div class="text">
+<p>The slice opcodes take up to three parameters.</p>
+</div>
+<div class="unknown">
+<p>Implements <code>TOS = TOS[:]</code>.</p>
+</div>
+<div class="unknown">
+<p>Implements <code>TOS = TOS1[TOS:]</code>.</p>
+</div>
+<div class="unknown">
+<p>Implements <code>TOS = TOS1[:TOS]</code>.</p>
+</div>
+<div class="unknown">
+<p>Implements <code>TOS = TOS2[TOS1:TOS]</code>.</p>
+</div>
+<div class="text">
+<p>Slice assignment needs even an additional parameter. As any
+statement, they put nothing on the stack.</p>
+</div>
+<div class="unknown">
+<p>Implements <code>TOS[:] = TOS1</code>.</p>
+</div>
+<div class="unknown">
+<p>Implements <code>TOS1[TOS:] = TOS2</code>.</p>
+</div>
+<div class="unknown">
+<p>Implements <code>TOS1[:TOS] = TOS2</code>.</p>
+</div>
+<div class="unknown">
+<p>Implements <code>TOS2[TOS1:TOS] = TOS3</code>.</p>
+</div>
+<div class="unknown">
+<p>Implements <code>del TOS[:]</code>.</p>
+</div>
+<div class="unknown">
+<p>Implements <code>del TOS1[TOS:]</code>.</p>
+</div>
+<div class="unknown">
+<p>Implements <code>del TOS1[:TOS]</code>.</p>
+</div>
+<div class="unknown">
+<p>Implements <code>del TOS2[TOS1:TOS]</code>.</p>
+</div>
+<div class="unknown">
+<p>Implements <code>TOS1[TOS] = TOS2</code>.</p>
+</div>
+<div class="unknown">
+<p>Implements <code>del TOS1[TOS]</code>.</p>
+</div>
+<div class="text">
+<p>Miscellaneous opcodes.</p>
+</div>
+<div class="unknown">
+<p>Implements the expression statement for the interactive mode.
+TOS is removed from the stack and printed. In non-interactive mode,
+an expression statement is terminated with <code>
+POP_STACK</code>.</p>
+</div>
+<div class="unknown">
+<p>Prints TOS to the file-like object bound to <code>
+sys.stdout</code>. There is one such instruction for each item in
+the <code>print</code> statement.</p>
+</div>
+<div class="unknown">
+<p>Like <code>PRINT_ITEM</code>, but prints the item second from
+TOS to the file-like object at TOS. This is used by the extended
+print statement.</p>
+</div>
+<div class="unknown">
+<p>Prints a new line on <code>sys.stdout</code>. This is generated
+as the last operation of a <code>
+print</code> statement, unless the statement ends with a comma.</p>
+</div>
+<div class="unknown">
+<p>Like <code>PRINT_NEWLINE</code>, but prints the new line on the
+file-like object on the TOS. This is used by the extended print
+statement.</p>
+</div>
+<div class="unknown">
+<p>Terminates a loop due to a <code>
+break</code> statement.</p>
+</div>
+<div class="unknown">
+<p>Continues a loop due to a <code>
+continue</code> statement. <var>target</var> is the address to jump to
+(which should be a <code>FOR_ITER</code> instruction).</p>
+</div>
+<div class="unknown">
+<p>Calls <code>list.append(TOS1, TOS)</code>. Used to implement
+list comprehensions.</p>
+</div>
+<div class="unknown">
+<p>Pushes a reference to the locals of the current scope on the
+stack. This is used in the code for a class definition: After the
+class body is evaluated, the locals are passed to the class
+definition.</p>
+</div>
+<div class="unknown">
+<p>Returns with TOS to the caller of the function.</p>
+</div>
+<div class="unknown">
+<p>Pops <code>TOS</code> and yields it from a generator.</p>
+</div>
+<div class="unknown">
+<p>Loads all symbols not starting with "<code>_</code>" directly
+from the module TOS to the local namespace. The module is popped
+after loading all names. This opcode implements <code>from module
+import *</code>.</p>
+</div>
+<div class="unknown">
+<p>Implements <code>exec TOS2,TOS1,TOS</code>. The compiler fills
+missing optional parameters with <code>
+None</code>.</p>
+</div>
+<div class="unknown">
+<p>Removes one block from the block stack. Per frame, there is a
+stack of blocks, denoting nested loops, try statements, and
+such.</p>
+</div>
+<div class="unknown">
+<p>Terminates a <code>finally</code>
+clause. The interpreter recalls whether the exception has to be
+re-raised, or whether the function returns, and continues with the
+outer-next block.</p>
+</div>
+<div class="unknown">
+<p>Creates a new class object. TOS is the methods dictionary, TOS1
+the tuple of the names of the base classes, and TOS2 the class
+name.</p>
+</div>
+<div class="text">
+<p>All of the following opcodes expect arguments. An argument is
+two bytes, with the more significant byte last.</p>
+</div>
+<div class="unknown">
+<p>Implements <code>name = TOS</code>. <var>namei</var> is the
+index of <var>name</var> in the attribute <code>co_names</code> of the code object. The compiler
+tries to use <code>STORE_LOCAL</code> or <code>STORE_GLOBAL</code>
+if possible.</p>
+</div>
+<div class="unknown">
+<p>Implements <code>del name</code>, where <var>namei</var> is the
+index into <code>co_names</code>
+attribute of the code object.</p>
+</div>
+<div class="unknown">
+<p>Unpacks TOS into <var>count</var> individual values, which are
+put onto the stack right-to-left.</p>
+</div>
+<div class="unknown">
+<p>Duplicate <var>count</var> items, keeping them in the same
+order. Due to implementation limits, <var>count</var> should be
+between 1 and 5 inclusive.</p>
+</div>
+<div class="unknown">
+<p>Implements <code>TOS.name = TOS1</code>, where <var>namei</var>
+is the index of name in <code>
+co_names</code>.</p>
+</div>
+<div class="unknown">
+<p>Implements <code>del TOS.name</code>, using <var>namei</var> as
+index into <code>co_names</code>.</p>
+</div>
+<div class="unknown">
+<p>Works as <code>STORE_NAME</code>, but stores the name as a
+global.</p>
+</div>
+<div class="unknown">
+<p>Works as <code>DELETE_NAME</code>, but deletes a global
+name.</p>
+</div>
+<div class="unknown">
+<p>Pushes "<code>co_consts[</code><var>consti</var>]" onto the
+stack.</p>
+</div>
+<div class="unknown">
+<p>Pushes the value associated with
+"<code>co_names[</code><var>namei</var>]" onto the stack.</p>
+</div>
+<div class="unknown">
+<p>Creates a tuple consuming <var>count</var> items from the stack,
+and pushes the resulting tuple onto the stack.</p>
+</div>
+<div class="unknown">
+<p>Works as <code>BUILD_TUPLE</code>, but creates a list.</p>
+</div>
+<div class="unknown">
+<p>Pushes a new empty dictionary object onto the stack. The
+argument is ignored and set to zero by the compiler.</p>
+</div>
+<div class="unknown">
+<p>Replaces TOS with <code>getattr(TOS,
+co_names[</code><var>namei</var>]).</p>
+</div>
+<div class="unknown">
+<p>Performs a Boolean operation. The operation name can be found in
+<code>cmp_op[</code><var>opname</var>].</p>
+</div>
+<div class="unknown">
+<p>Imports the module <code>co_names[</code><var>namei</var>]. The
+module object is pushed onto the stack. The current namespace is
+not affected: for a proper import statement, a subsequent <code>
+STORE_FAST</code> instruction modifies the namespace.</p>
+</div>
+<div class="unknown">
+<p>Loads the attribute <code>co_names[</code><var>namei</var>] from
+the module found in TOS. The resulting object is pushed onto the
+stack, to be subsequently stored by a <code>STORE_FAST</code>
+instruction.</p>
+</div>
+<div class="unknown">
+<p>Increments byte code counter by <var>delta</var>.</p>
+</div>
+<div class="unknown">
+<p>If TOS is true, increment the byte code counter by <var>
+delta</var>. TOS is left on the stack.</p>
+</div>
+<div class="unknown">
+<p>If TOS is false, increment the byte code counter by <var>
+delta</var>. TOS is not changed.</p>
+</div>
+<div class="unknown">
+<p>Set byte code counter to <var>target</var>.</p>
+</div>
+<div class="unknown">
+<p><code>TOS</code> is an iterator. Call its <code>next</code> method. If this yields a new value, push
+it on the stack (leaving the iterator below it). If the iterator
+indicates it is exhausted <code>TOS</code> is popped, and the byte
+code counter is incremented by <var>delta</var>.</p>
+</div>
+<div class="unknown">
+<p>Loads the global named <code>co_names[</code><var>namei</var>]
+onto the stack.</p>
+</div>
+<div class="unknown">
+<p>Pushes a block for a loop onto the block stack. The block spans
+from the current instruction with a size of <var>delta</var>
+bytes.</p>
+</div>
+<div class="unknown">
+<p>Pushes a try block from a try-except clause onto the block
+stack. <var>delta</var> points to the first except block.</p>
+</div>
+<div class="unknown">
+<p>Pushes a try block from a try-except clause onto the block
+stack. <var>delta</var> points to the finally block.</p>
+</div>
+<div class="unknown">
+<p>Pushes a reference to the local <code>
+co_varnames[</code><var>var_num</var>] onto the stack.</p>
+</div>
+<div class="unknown">
+<p>Stores TOS into the local <code>
+co_varnames[</code><var>var_num</var>].</p>
+</div>
+<div class="unknown">
+<p>Deletes local <code>co_varnames[</code><var>var_num</var>].</p>
+</div>
+<div class="unknown">
+<p>Pushes a reference to the cell contained in slot <var>i</var> of
+the cell and free variable storage. The name of the variable is
+<code>co_cellvars[</code><var>i</var>] if <var>i</var> is less than
+the length of <var>co_cellvars</var>. Otherwise it is <code>
+co_freevars[</code><var>i</var> - len(co_cellvars)].</p>
+</div>
+<div class="unknown">
+<p>Loads the cell contained in slot <var>i</var> of the cell and
+free variable storage. Pushes a reference to the object the cell
+contains on the stack.</p>
+</div>
+<div class="unknown">
+<p>Stores TOS into the cell contained in slot <var>i</var> of the
+cell and free variable storage.</p>
+</div>
+<div class="unknown">
+<p>This opcode is obsolete.</p>
+</div>
+<div class="unknown">
+<p>Raises an exception. <var>argc</var> indicates the number of
+parameters to the raise statement, ranging from 0 to 3. The handler
+will find the traceback as TOS2, the parameter as TOS1, and the
+exception as TOS.</p>
+</div>
+<div class="unknown">
+<p>Calls a function. The low byte of <var>argc</var> indicates the
+number of positional parameters, the high byte the number of
+keyword parameters. On the stack, the opcode finds the keyword
+parameters first. For each keyword argument, the value is on top of
+the key. Below the keyword parameters, the positional parameters
+are on the stack, with the right-most parameter on top. Below the
+parameters, the function object to call is on the stack.</p>
+</div>
+<div class="unknown">
+<p>Pushes a new function object on the stack. TOS is the code
+associated with the function. The function object is defined to
+have <var>argc</var> default parameters, which are found below
+TOS.</p>
+</div>
+<div class="unknown">
+<p>Creates a new function object, sets its <var>func_closure</var>
+slot, and pushes it on the stack. TOS is the code associated with
+the function. If the code object has N free variables, the next N
+items on the stack are the cells for these variables. The function
+also has <var>argc</var> default parameters, where are found before
+the cells.</p>
+</div>
+<div class="unknown">
+<p>Pushes a slice object on the stack. <var>argc</var> must be 2 or
+3. If it is 2, <code>slice(TOS1, TOS)</code> is pushed; if it is 3,
+<code>slice(TOS2, TOS1, TOS)</code> is pushed. See the <code>
+slice()</code> built-in function for more information.</p>
+</div>
+<div class="unknown">
+<p>Prefixes any opcode which has an argument too big to fit into
+the default two bytes. <var>ext</var> holds two additional bytes
+which, taken together with the subsequent opcode's argument,
+comprise a four-byte argument, <var>ext</var> being the two
+most-significant bytes.</p>
+</div>
+<div class="unknown">
+<p>Calls a function. <var>argc</var> is interpreted as in <code>
+CALL_FUNCTION</code>. The top element on the stack contains the
+variable argument list, followed by keyword and positional
+arguments.</p>
+</div>
+<div class="unknown">
+<p>Calls a function. <var>argc</var> is interpreted as in <code>
+CALL_FUNCTION</code>. The top element on the stack contains the
+keyword arguments dictionary, followed by explicit keyword and
+positional arguments.</p>
+</div>
+<div class="unknown">
+<p>Calls a function. <var>argc</var> is interpreted as in <code>
+CALL_FUNCTION</code>. The top element on the stack contains the
+keyword arguments dictionary, followed by the variable-arguments
+tuple, followed by explicit keyword and positional arguments.</p>
+</div>
+</div></body></html>

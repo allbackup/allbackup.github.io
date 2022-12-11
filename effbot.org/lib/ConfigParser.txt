@@ -1,0 +1,334 @@
+
+@@module ConfigParser
+
+<h1>ConfigParser&#8212;Configuration file parser</h1>
+
+<p>This module defines the class {@link ConfigParser}. The {@link
+ConfigParser} class implements a basic configuration file parser
+language which provides a structure similar to what you would find on
+Microsoft Windows INI files. You can use this to write Python programs
+which can be customized by end users easily.
+
+
+<p class='warning'><b>Warning:</b> This library does {@em not} interpret
+or write the value-type prefixes used in the Windows Registry extended
+version of INI syntax.
+
+<p>The configuration file consists of sections, led by a "{@code
+[section]}" header and followed by "{@code name: value}" entries, with
+continuations in the style of {@link
+http://www.faqs.org/rfcs/rfc822.html RFC 822}; "{@code name=value}" is
+also accepted. Note that leading whitespace is removed from values. The
+optional values can contain format strings which refer to other values
+in the same section, or values in a special {@code DEFAULT} section.
+Additional defaults can be provided on initialization and retrieval.
+Lines beginning with "{@code #}" or "{@code ;}" are ignored and may be
+used to provide comments.
+
+<p>For example:
+
+<pre>
+[My Section]
+foodir: %(dir)s/whatever
+dir=frob
+</pre>
+
+
+<p>would resolve the "{@code %(dir)s}" to the value of "{@code dir}"
+("{@code frob}" in this case). All reference expansions are done on
+demand.
+
+<p>Default values can be specified by passing them into the {@link
+ConfigParser} constructor as a dictionary. Additional defaults may be
+passed into the {@link get} method which will override all others.
+
+@@class RawConfigParser([defaults])
+
+<p>The basic configuration object. When {@var defaults} is given, it is
+initialized into the dictionary of intrinsic defaults. This class does
+not support the magical interpolation behavior.
+<blockquote>
+@since New in version 2.3. <br />
+</blockquote>
+
+@@class ConfigParser([defaults])
+
+<p>Derived class of {@link RawConfigParser} that implements the magical
+interpolation feature and adds optional arguments to the {@link get} and
+{@link items} methods. The values in {@var defaults} must be appropriate
+for the "{@code %()s}" string interpolation. Note that {@var __name__}
+is an intrinsic default; its value is the section name, and will
+override any value provided in {@var defaults}.
+
+<p>All option names used in interpolation will be passed through the
+{@link optionxform} method just like any other option name reference.
+For example, using the default implementation of {@link optionxform}
+(which converts option names to lower case), the values "{@code foo
+%(bar)s}" and "{@code foo %(BAR)s}" are equivalent.
+
+@@class SafeConfigParser([defaults])
+
+<p>Derived class of {@link ConfigParser} that implements a more-sane
+variant of the magical interpolation feature. This implementation is
+more predictable as well. New applications should prefer this version if
+they don't need to be compatible with older versions of Python.
+<blockquote>
+@since New in version 2.3. <br />
+</blockquote>
+
+@@exception NoSectionError
+
+<p>Exception raised when a specified section is not found.
+
+@@exception DuplicateSectionError
+
+<p>Exception raised if {@link add_section} is called with the name of a
+section that is already present.
+
+@@exception NoOptionError
+
+<p>Exception raised when a specified option is not found in the
+specified section.
+
+@@exception InterpolationError
+
+<p>Base class for exceptions raised when problems occur performing
+string interpolation.
+
+@@exception InterpolationDepthError
+
+<p>Exception raised when string interpolation cannot be completed
+because the number of iterations exceeds {@code
+MAX_INTERPOLATION_DEPTH}. Subclass of {@link InterpolationError}.
+
+@@exception InterpolationMissingOptionError
+
+<p>Exception raised when an option referenced from a value does not
+exist. Subclass of {@link InterpolationError}.
+<blockquote>
+@since New in version
+2.3. <br />
+</blockquote>
+
+@@exception InterpolationSyntaxError
+
+<p>Exception raised when the source text into which substitutions are
+made does not conform to the required syntax. Subclass of {@link
+InterpolationError}.
+<blockquote>
+@since New in version 2.3. <br />
+</blockquote>
+
+@@exception MissingSectionHeaderError
+
+<p>Exception raised when attempting to parse a file which has no section
+headers.
+
+@@exception ParsingError
+
+<p>Exception raised when errors occur attempting to parse a file.
+
+@@variable MAX_INTERPOLATION_DEPTH
+
+<p>The maximum depth for recursive interpolation for {@link get} when
+the {@var raw} parameter is false. This is relevant only for the {@link
+ConfigParser} class.
+
+@@text 
+
+@see 
+{@link shlex Module shlex}
+
+Support for a creating Unix shell-like mini-languages which can be used
+as an alternate format for application configuration files.
+
+<h2>RawConfigParser Objects</h2>
+
+<p>{@link RawConfigParser} instances have the following methods:
+
+@@method RawConfigParser.defaults()
+
+<p>Return a dictionary containing the instance-wide defaults.
+
+@@method RawConfigParser.sections()
+
+<p>Return a list of the sections available; {@code DEFAULT} is not
+included in the list.
+
+@@method RawConfigParser.add_section(section)
+
+<p>Add a section named {@var section} to the instance. If a section by
+the given name already exists, {@link DuplicateSectionError} is raised.
+
+@@method RawConfigParser.has_section(section)
+
+<p>Indicates whether the named section is present in the configuration.
+The {@code DEFAULT} section is not acknowledged.
+
+@@method RawConfigParser.options(section)
+
+<p>Returns a list of options available in the specified {@var section}.
+
+@@method RawConfigParser.has_option(section, option)
+
+<p>If the given section exists, and contains the given option, return
+{@code True}; otherwise return {@code False}.
+<blockquote>
+@since New in
+version 1.6. <br />
+</blockquote>
+
+@@method RawConfigParser.read(filenames)
+
+<p>Attempt to read and parse a list of filenames, returning a list of
+filenames which were successfully parsed. If {@var filenames} is a
+string or Unicode string, it is treated as a single filename. If a file
+named in {@var filenames} cannot be opened, that file will be ignored.
+This is designed so that you can specify a list of potential
+configuration file locations (for example, the current directory, the
+user's home directory, and some system-wide directory), and all existing
+configuration files in the list will be read. If none of the named files
+exist, the {@link ConfigParser} instance will contain an empty dataset.
+An application which requires initial values to be loaded from a file
+should load the required file or files using {@link readfp} before
+calling {@link read} for any optional files:
+
+<pre>
+import ConfigParser, os
+
+config = ConfigParser.ConfigParser()
+config.readfp(open('defaults.cfg'))
+config.read(['site.cfg', os.path.expanduser('~/.myapp.cfg')])
+</pre>
+
+<blockquote>
+@since Changed in version 2.4: Returns list of
+successfully parsed filenames. <br />
+</blockquote>
+
+@@method RawConfigParser.readfp(fp[, filename])
+
+<p>Read and parse configuration data from the file or file-like object
+in {@var fp} (only the {@link readline} method is used). If {@var
+filename} is omitted and {@var fp} has a {@link name} attribute, that is
+used for {@var filename}; the default is "{@code &lt???>}".
+
+@@method RawConfigParser.get(section, option)
+
+<p>Get an {@var option} value for the named {@var section}.
+
+@@method RawConfigParser.getint(section, option)
+
+<p>A convenience method which coerces the {@var option} in the specified
+{@var section} to an integer.
+
+@@method RawConfigParser.getfloat(section, option)
+
+<p>A convenience method which coerces the {@var option} in the specified
+{@var section} to a floating point number.
+
+@@method RawConfigParser.getboolean(section, option)
+
+<p>A convenience method which coerces the {@var option} in the specified
+{@var section} to a Boolean value. Note that the accepted values for the
+option are {@code "1"}, {@code "yes"}, {@code "true"}, and {@code "on"},
+which cause this method to return {@link True}, and {@code "0"}, {@code
+"no"}, {@code "false"}, and {@code "off"}, which cause it to return
+{@link False}. These string values are checked in a case-insensitive
+manner. Any other value will cause it to raise {@link
+exceptions.ValueError}.
+
+@@method RawConfigParser.items(section)
+
+<p>Return a list of {@code (}{@var name}, {@var value}) pairs for each
+option in the given {@var section}.
+
+@@method RawConfigParser.set(section, option, value)
+
+<p>If the given section exists, set the given option to the specified
+value; otherwise raise {@link NoSectionError}. While it is possible to
+use {@link RawConfigParser} (or {@link ConfigParser} with {@var raw}
+parameters set to true) for {@em internal} storage of non-string values,
+full functionality (including interpolation and output to files) can
+only be achieved using string values.
+<blockquote>
+@since New in version
+1.6. <br />
+</blockquote>
+
+@@method RawConfigParser.write(fileobject)
+
+<p>Write a representation of the configuration to the specified file
+object. This representation can be parsed by a future {@link read} call.
+<blockquote>
+@since New in
+version 1.6. <br />
+</blockquote>
+
+@@method RawConfigParser.remove_option(section, option)
+
+<p>Remove the specified {@var option} from the specified {@var section}.
+If the section does not exist, raise {@link NoSectionError}. If the
+option existed to be removed, return {@code True}; otherwise return
+{@code False}.
+<blockquote>
+@since New in
+version 1.6. <br />
+</blockquote>
+
+@@method RawConfigParser.remove_section(section)
+
+<p>Remove the specified {@var section} from the configuration. If the
+section in fact existed, return {@link True}. Otherwise return {@link
+False}.
+
+@@method RawConfigParser.optionxform(option)
+
+<p>Transforms the option name {@var option} as found in an input file or
+as passed in by client code to the form that should be used in the
+internal structures. The default implementation returns a lower-case
+version of {@var option}; subclasses may override this or client code
+can set an attribute of this name on instances to affect this behavior.
+Setting this to {@link str}, for example, would make option names case
+sensitive.
+
+@@text 
+
+<h2>ConfigParser Objects</h2>
+
+<p>The {@link ConfigParser} class extends some methods of the {@link
+RawConfigParser} interface, adding some optional arguments.
+
+@@method ConfigParser.get(section, option[, raw[, vars]])
+
+<p>Get an {@var option} value for the named {@var section}. All the
+"{@code %}" interpolations are expanded in the return values, based on
+the defaults passed into the constructor, as well as the options {@var
+vars} provided, unless the {@var raw} argument is true.
+
+@@method ConfigParser.items(section[, raw[, vars]])
+
+<p>Return a list of {@code (}{@var name}, {@var value}) pairs for each
+option in the given {@var section}. Optional arguments have the same
+meaning as for the {@link get} method.
+<blockquote>
+@since New
+in version 2.3. <br />
+</blockquote>
+
+@@text 
+
+<h2>SafeConfigParser Objects</h2>
+
+<p>The {@link SafeConfigParser} class implements the same extended
+interface as {@link ConfigParser}, with the following addition:
+
+@@method SafeConfigParser.set(section, option, value)
+
+<p>If the given section exists, set the given option to the specified
+value; otherwise raise {@link NoSectionError}. {@var value} must be a
+string ({@link str} or {@link unicode}); if not, {@link
+exceptions.TypeError} is raised.
+<blockquote>
+@since New in version 2.4. <br />
+</blockquote>

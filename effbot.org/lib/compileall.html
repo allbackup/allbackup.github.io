@@ -1,0 +1,62 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>compileall</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-compileall.html'>original</a> :::
+<a href='compileall.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>compileall&#8212;Byte-compile Python libraries</h1>
+
+<p>This module provides some utility functions to support
+installing Python libraries. These functions compile Python source
+files in a directory tree, allowing users without permission to
+write to the libraries to take advantage of cached byte-code
+files.</p>
+
+<p>The source file for this module may also be used as a script to
+compile Python sources in directories named on the command line or
+in <code>sys.path</code>.</p>
+</div>
+<dl><dt class="function" id="compile_dir"><b>compile_dir(dir[, maxlevels[, ddir[, force[, rx[,
+quiet]]]]])</b> <tt class="nav"><a class="nav" href="compileall.compile_dir" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Recursively descend the directory tree named by <var>dir</var>,
+compiling all .py files along the way. The <var>maxlevels</var>
+parameter is used to limit the depth of the recursion; it defaults
+to <code>10</code>. If <var>ddir</var> is given, it is used as the
+base path from which the filenames used in error messages will be
+generated. If <var>force</var> is true, modules are re-compiled
+even if the timestamps are up to date.</p>
+
+<p>If <var>rx</var> is given, it specifies a regular expression of
+file names to exclude from the search; that expression is searched
+for in the full path.</p>
+
+<p>If <var>quiet</var> is true, nothing is printed to the standard
+output in normal operation.</p>
+</dd>
+<dt class="function" id="compile_path"><b>compile_path([skip_curdir[, maxlevels[,
+force]]])</b> <tt class="nav"><a class="nav" href="compileall.compile_path" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Byte-compile all the .py files found along <code>
+sys.path</code>. If <var>skip_curdir</var> is true (the default),
+the current directory is not included in the search. The <var>
+maxlevels</var> and <var>force</var> parameters default to <code>
+0</code> and are passed to the <a class="link" href="#compile_dir"><code>compile_dir</code></a> function.</p>
+</dd>
+</dl><div class="text"><span class="mark">@see</span> <code>Module py_compile</code> Byte-compile a single
+source file.</div>
+</div></body></html>

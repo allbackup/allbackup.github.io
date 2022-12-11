@@ -1,0 +1,23 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>How can I have modules that mutually import each&nbsp;other?</title></head><body data-page-id="764"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><p class="note" style="text-align: center"><strong>
+This is an old copy of the Python FAQ.  The information here may be
+outdated.
+</strong></p><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">How can I have modules that mutually import each&nbsp;other?</h1></div><div class="yui-ge"><div class="yui-u first"><p>Suppose you have the following modules:</p><p>File foo.py:</p><pre class="python"><span class="pykeyword">from</span> bar <span class="pykeyword">import</span> bar_var
+foo_var=1</pre><p>File bar.py:</p><pre class="python"><span class="pykeyword">from</span> foo <span class="pykeyword">import</span> foo_var
+bar_var=2</pre><p>If you import the <em>foo</em> module from your main program, you get the following traceback:</p><pre><code>Traceback (most recent call last):
+  File "program.py", line 14, in &lt;module&gt;
+    import foo
+  File "foo.py", line 1, in &lt;module&gt;
+    from bar import bar_var
+  File "bar.py", line 1, in &lt;module&gt;
+    from foo import foo_var
+ImportError: cannot import name foo_var
+</code></pre><p>The problem is that the interpreter will do things in the following order:</p><ul><li>The main program imports <em>foo</em></li><li>Empty globals for <em>foo</em> are created</li><li><em>foo</em> is compiled and starts executing</li><li><em>foo</em> imports <em>bar</em></li><li>Empty globals for <em>bar</em> are created</li><li><em>bar</em> is compiled and starts executing</li><li><em>bar</em> imports <em>foo</em> (which is a no-op since there already is a module named <em>foo</em>)</li><li>bar.foo_var = foo.foo_var</li></ul><p>The last step fails, because Python isn&#8217;t done with interpreting foo
+yet and the global symbol dictionary for <em>foo</em> is still empty.</p><p>The same thing happens when you use import foo, and then try to access
+foo.foo_var in global code.</p><p>There are a few ways to get around this problem:</p><p>The preferred way is simply to avoid <q>recursive</q> use of <a href="/pyref/from.htm"><strong>from</strong></a>-<a href="/pyref/import.htm"><strong>import</strong></a>, placing all code inside functions.
+Initializations of global variables and class variables should use
+constants and built-in or locally defined functions only.  This means
+everything from an imported module is referenced as
+&lt;module&gt;.&lt;name&gt;.</p><p>Another way is to do things in the following order in each module:</p><ul><li>exports (globals, functions, and classes that don&#8217;t need imported base classes)</li><li>import statements</li><li>active code (including globals that are initialized from imported values).</li></ul><p>Yet another way is to move the <a href="/pyref/import.htm"><strong>import</strong></a> statements into the
+functions that are using the imported objects.</p><p>CATEGORY: programming</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to pyfaq index page.">::: pyfaq :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

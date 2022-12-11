@@ -1,0 +1,74 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>Assignment&nbsp;statements</title><script type="text/javascript">effbot_page_id=1209;</script></head><body><div id="doc2" class="yui-t2"><div id="hd"><!-- header --></div><!-- hd --><div id="bd"><!-- body --><p class="note" style="text-align: center"><strong>
+
+We're back after a server migration that caused effbot.org to fall
+over a bit harder than expected.  Expect some glitches.
+
+</strong></p><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">Assignment&nbsp;statements</h1></div><!-- yui-g --><body><p>Assignment statements are used to (re)bind names to values and to modify attributes or items of mutable objects:</p>
+<p>Syntax (simplified):</p>
+<blockquote>
+<p><em><a href="syntax-target">target</a></em> <strong>=</strong> <em><a href="syntax-expression">expression list</a></em></p>
+</blockquote>
+<p>or</p>
+<blockquote>
+<p><em><a href="syntax-target">target list</a></em> <strong>=</strong> <em><a href="syntax-expression">expression list</a></em></p>
+</blockquote>
+<p>or</p>
+<blockquote>
+<p><em><a href="syntax-target">target list</a></em> [<strong>=</strong> <em><a href="syntax-target">target list</a></em> ]&#8230; <strong>=</strong> <em><a href="syntax-expression">expression list</a></em></p>
+</blockquote>
+<p>assignment_stmt ::= ([target_list][1] &#8220;=&#8221;)+ [ expression_list][2]
+target_list ::= [ target][3] (&#8220;,&#8221; [target][3])* [&#8220;,&#8221;]
+target ::= [ identifier][4]
+<code>| "(" [target\_list][1] ")"</code>
+<code>| "[" [target\_list][1] "]"</code>
+<code>| [ attributeref][5]</code>
+<code>| [ subscription][6]</code>
+<code>| [slicing][7]</code></p>
+<p>(See section [5.3][9] for the syntax definitions for the last three symbols.)</p>
+<p>An assignment statement evaluates the expression list (remember that this can be a single expression or a comma-separated list, the latter yielding a tuple) and assigns the single resulting object to each of the target lists, from left to right.</p>
+<p>Assignment is defined recursively depending on the form of the target (list). When a target is part of a mutable object (an attribute reference, subscription or slicing), the mutable object must ultimately perform the assignment and decide about its validity, and may raise an exception if the assignment is unacceptable. The rules observed by various types and the exceptions raised are given with the definition of the object types (see section [3.2][10]).</p>
+<p>Assignment of an object to a target list is recursively defined as follows.</p>
+<ul>
+<li><p>If the target list is a single target: The object is assigned to that target.</p></li>
+<li><p>If the target list is a comma-separated list of targets: The object must be a sequence with the same number of items as there are targets in the target list, and the items are assigned, from left to right, to the corresponding targets. (This rule is relaxed as of Python 1.5; in earlier versions, the object had to be a tuple. Since strings are sequences, an assignment like &#8220;a, b = &#8220;xy&#8221;&#8221; is now legal as long as the string has the right length.)</p></li>
+</ul>
+<p>Assignment of an object to a single target is recursively defined as follows.</p>
+<ul>
+<li><p>If the target is an identifier (name):</p>
+<ul>
+<li>If the name does not occur in a global statement in the current code block: the name is bound to the object in the current local namespace. </li>
+<li>Otherwise: the name is bound to the object in the current global namespace.</li>
+</ul>
+<p /><p>The name is rebound if it was already bound. This may cause the reference count for the object previously bound to the name to reach zero, causing the object to be deallocated and its destructor (if it has one) to be called.</p></li>
+<li><p>If the target is a target list enclosed in parentheses or in square brackets: The object must be a sequence with the same number of items as there are targets in the target list, and its items are assigned, from left to right, to the corresponding targets.</p></li>
+<li><p>If the target is an attribute reference, see <a href="attribute-references.htm"><strong>attribute-references</strong></a>.</p></li>
+<li><p>If the target is a subscription, see <a href="subscriptions.htm"><strong>subscriptions</strong></a>.</p></li>
+<li><p>If the target is a slicing, see <a href="slicings.htm"><strong>slicings</strong></a>.</p></li>
+</ul>
+(In the current implementation, the syntax for targets is taken to be the same as for an expressions, and invalid syntax is rejected during the code generation phase, causing less detailed error messages.)
+<p><strong>Note:</strong> Although the definition of assignment implies that overlaps between the left-hand side and the right-hand side are `safe&#8217; (for example &#8220;a, b = b, a&#8221; swaps two variables), overlaps <em>within</em> the collection of assigned-to variables are not safe! For instance, the following program prints &#8220;[0, 2]&#8221;:</p>
+<pre class="python"><code>x = [0, 1]
+i = 0
+i, x[i] = 1, 2
+print x
+</code></pre>
+<h2 id="augmented-assignment-statements">Augmented assignment statements</h2>
+<p>Augmented assignment is the combination, in a single statement, of a binary operation and an assignment statement:</p>
+<p>Syntax:</p>
+<blockquote>
+<p><em><a href="syntax-target">target</a></em> <em>operation=</em> <em><a href="syntax-expression">expression list</a></em></p>
+</blockquote>
+<p>where <em>operation=</em> is one of</p>
+<pre><code>+=  -=  *=  /=  %=  **=  &gt;&gt;=  &lt;&lt;=  &amp;=  ^=  |=
+</code></pre>
+<p>An augmented assignment evaluates the target (which must be a single target, not a target list) and the expression list, performs the binary operation specific to the type of assignment on the two operands, and assigns the result to the original target. The target is only evaluated once.</p>
+<p>An augmented assignment expression like <code>x += 1</code> can be rewritten as <code>x = x + 1</code> to achieve a similar, but not exactly equal effect. In the augmented version, <code>x</code> is only evaluated once. Also, when possible, the actual operation is performed <em>in-place</em>, meaning that rather than creating a new object and assigning that to the target, the old object is modified instead.</p>
+<p>With the exception of assigning to tuples and multiple targets in a single statement, the assignment done by augmented assignment statements is handled the same way as normal assignments. Similarly, with the exception of the possible <em>in-place</em> behavior, the binary operation performed by augmented assignment is the same as the normal binary operations.</p>
+<p>For targets which are attribute references, the initial value is retrieved with a <a href="getattr.htm"><strong>getattr</strong></a> and the result is assigned with a <a href="setattr.htm"><strong>setattr</strong></a>. Notice that the two methods do not necessarily refer to the same variable. When <a href="getattr.htm"><strong>getattr</strong></a> refers to a class variable, <a href="setattr.htm"><strong>setattr</strong></a> still writes to an instance variable. For example:</p>
+<pre class="python"><code>class A:
+    x = 3    # class variable
+a = A()
+a.x += 1     # writes a.x as 4 leaving A.x as 3
+</code></pre></body><div class="yui-g"></div><!-- yui-g --></div><!-- content --></div><!-- yui-b --></div><!-- yui-main --><div class="yui-b"><div id='menu'></div><!-- menu --></div><!-- yui-b --></div><!-- bd --><div id="ft"><!-- footer --></div><!-- ft --></div><!-- doc --><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

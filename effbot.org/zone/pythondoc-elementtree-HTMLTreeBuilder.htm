@@ -1,0 +1,32 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>The elementtree.HTMLTreeBuilder&nbsp;Module</title></head><body data-page-id="233"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">The elementtree.HTMLTreeBuilder&nbsp;Module</h1></div><div class="yui-ge"><div class="yui-u first"><p>Tools to build element trees from HTML files.</p><h2>Module Contents</h2><dl><dt><b>HTMLTreeBuilder(builder=None)</b> (class) [<a href="#elementtree.HTMLTreeBuilder.HTMLTreeBuilder-class">#</a>]</dt><dd>
+<p>ElementTree builder for HTML source code.</p><p>For more information about this class, see <a href="#elementtree.HTMLTreeBuilder.HTMLTreeBuilder-class"><i>The HTMLTreeBuilder Class</i></a>.</p></dd>
+<dt><a id="elementtree.HTMLTreeBuilder.parse-function" name="elementtree.HTMLTreeBuilder.parse-function"><b>parse(source)</b></a> [<a href="#elementtree.HTMLTreeBuilder.parse-function">#</a>]</dt><dd>
+<p>Parse an HTML document or document fragment.</p><dl><dt><i>source</i></dt><dd>
+A filename or file object containing HTML data.</dd>
+<dt>Returns:</dt><dd>
+An ElementTree instance</dd>
+</dl><br />
+</dd>
+<dt><a id="elementtree.HTMLTreeBuilder.TreeBuilder-variable" name="elementtree.HTMLTreeBuilder.TreeBuilder-variable"><b>TreeBuilder</b></a> (variable) [<a href="#elementtree.HTMLTreeBuilder.TreeBuilder-variable">#</a>]</dt><dd>
+<p>An alias for the <b>HTMLTreeBuilder</b> class.
+</p></dd>
+</dl><h2><a id="elementtree.HTMLTreeBuilder.HTMLTreeBuilder-class" name="elementtree.HTMLTreeBuilder.HTMLTreeBuilder-class">The HTMLTreeBuilder Class</a></h2><dl><dt><b>HTMLTreeBuilder(builder=None)</b> (class) [<a href="#elementtree.HTMLTreeBuilder.HTMLTreeBuilder-class">#</a>]</dt><dd>
+<p>ElementTree builder for HTML source code.  This builder converts an
+HTML document or fragment to an ElementTree.
+</p><p>
+The parser is relatively picky, and requires balanced tags for most
+elements.  However, elements belonging to the following group are
+automatically closed: P, LI, TR, TH, and TD.  In addition, the
+parser automatically inserts end tags immediately after the start
+tag, and ignores any end tags for the following group: IMG, HR,
+META, and LINK.
+
+</p></dd>
+<dt><a id="elementtree.HTMLTreeBuilder.HTMLTreeBuilder.close-method" name="elementtree.HTMLTreeBuilder.HTMLTreeBuilder.close-method"><b>close()</b></a> [<a href="#elementtree.HTMLTreeBuilder.HTMLTreeBuilder.close-method">#</a>]</dt><dd>
+<p>Flush parser buffers, and return the root element.</p><dl><dt>Returns:</dt><dd>
+An Element instance.</dd>
+</dl><br />
+</dd>
+</dl></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to zone index page.">::: zone :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

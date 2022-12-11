@@ -1,0 +1,23 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>How can I embed Python into a Windows&nbsp;application?</title></head><body data-page-id="759"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><p class="note" style="text-align: center"><strong>
+This is an old copy of the Python FAQ.  The information here may be
+outdated.
+</strong></p><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">How can I embed Python into a Windows&nbsp;application?</h1></div><div class="yui-ge"><div class="yui-u first"><p>The easiest way to embed a Python interpreter in a Windows application
+is to use a standard Python DLL (e.g. python25.dll), and link it into
+your application.  By using a standard DLL, you can use both Python
+modules and existing extension modules with your application.</p><p>To link the DLL into your application, you can either use an import
+library (the python.org distribution includes import libraries in the
+./libs directory), or use <b>LoadLibrary</b> to load the DLL on the
+fly, and use <b>GetProcAddress</b> to dig out the necessary API
+functions.  The latter is more work, but can give you a more flexible
+solution (e.g. you can make your application work even if no Python
+DLL is available, or even support multiple Python versions with a
+single EXE).</p><p>For information on how to initialize and configure the embedded Python
+interpreter, see the standard <cite><s><a href="http://docs.python.org/ext/ext.html">Extending and Embedding the Python Interpreter</a></s> (dead link)</cite> documentation.</p><h3 id="notes">Notes&#160;<a class="nav" href="#notes" title="bookmark!">#</a></h3><p>If you mix compilers or run-time libraries, some Python API functions
+may not work properly.  Most notably, functions that take FILE*
+arguments may crash or otherwise misbehave, and should be avoided.
+See the following article for more on this:</p><blockquote><p><a href="pyrun-simplefile-crashes-on-windows-but-not-on-unix-why.htm"><strong>pyrun-simplefile-crashes-on-windows-but-not-on-unix-why</strong></a></p></blockquote><p>The <strong>Py_None</strong> macro sometimes causes similar problems, since
+it expands to a reference to a data structure (_Py_NoneStruct) that&#8217;s
+defined inside the Python DLL.  To create a new reference to Py_None
+without relying on _Py_NoneStruct, use:</p><pre class="python">object = Py_BuildValue(<span class="pystring">""</span>);</pre><p>CATEGORY: windows</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to pyfaq index page.">::: pyfaq :::</a></b></li></ul><ul><li><b>::: contents</b></li></ul><ul><li><ul><li><ul><li><a href="#notes">Notes</a></li></ul></li></ul></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

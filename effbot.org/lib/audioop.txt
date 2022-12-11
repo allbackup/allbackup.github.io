@@ -1,0 +1,248 @@
+
+@@module audioop
+
+<h1>audioop&#8212;Manipulate raw audio data</h1>
+
+<p>The {@link audioop} module contains some useful operations on sound
+fragments. It operates on sound fragments consisting of signed integer
+samples 8, 16 or 32 bits wide, stored in Python strings. This is the
+same format as used by the {@link al} and {@link sunaudiodev} modules.
+All scalar items are integers, unless specified otherwise.
+
+<p>This module provides support for u-LAW and Intel/DVI ADPCM encodings.
+
+<p>A few of the more complicated operations only take 16-bit samples,
+otherwise the sample size (in bytes) is always a parameter of the
+operation.
+
+<p>The module defines the following variables and functions:
+
+@@exception error
+
+<p>This exception is raised on all errors, such as unknown number of
+bytes per sample, etc.
+
+@@function add(fragment1, fragment2, width)
+
+<p>Return a fragment which is the addition of the two samples passed as
+parameters. {@var width} is the sample width in bytes, either {@code 1},
+{@code 2} or {@code 4}. Both fragments should have the same length.
+
+@@function adpcm2lin(adpcmfragment, width, state)
+
+<p>Decode an Intel/DVI ADPCM coded fragment to a linear fragment. See
+the description of {@link lin2adpcm} for details on ADPCM coding. Return
+a tuple {@code (}{@var sample}, {@var newstate}) where the sample has
+the width specified in {@var width}.
+
+@@function adpcm32lin(adpcmfragment, width, state)
+
+<p>Decode an alternative 3-bit ADPCM code. See {@link lin2adpcm3} for
+details.
+
+@@function avg(fragment, width)
+
+<p>Return the average over all samples in the fragment.
+
+@@function avgpp(fragment, width)
+
+<p>Return the average peak-peak value over all samples in the fragment.
+No filtering is done, so the usefulness of this routine is questionable.
+
+@@function bias(fragment, width, bias)
+
+<p>Return a fragment that is the original fragment with a bias added to
+each sample.
+
+@@function cross(fragment, width)
+
+<p>Return the number of zero crossings in the fragment passed as an
+argument.
+
+@@function findfactor(fragment, reference)
+
+<p>Return a factor {@var F} such that {@code rms(add(}{@var fragment},
+mul({@var reference}, -{@var F}))) is minimal, i.e., return the factor
+with which you should multiply {@var reference} to make it match as well
+as possible to {@var fragment}. The fragments should both contain 2-byte
+samples.
+
+<p>The time taken by this routine is proportional to {@code len(}{@var
+fragment}).
+
+@@function findfit(fragment, reference)
+
+<p>Try to match {@var reference} as well as possible to a portion of
+{@var fragment} (which should be the longer fragment). This is
+(conceptually) done by taking slices out of {@var fragment}, using
+{@link findfactor} to compute the best match, and minimizing the result.
+The fragments should both contain 2-byte samples. Return a tuple {@code
+(}{@var offset}, {@var factor}) where {@var offset} is the (integer)
+offset into {@var fragment} where the optimal match started and {@var
+factor} is the (floating-point) factor as per {@link findfactor}.
+
+@@function findmax(fragment, length)
+
+<p>Search {@var fragment} for a slice of length {@var length} samples
+(not bytes!) with maximum energy, i.e., return {@var i} for which {@code
+rms(fragment[i*2:(i+length)*2])} is maximal. The fragments should both
+contain 2-byte samples.
+
+<p>The routine takes time proportional to {@code len(}{@var fragment}).
+
+@@function getsample(fragment, width, index)
+
+<p>Return the value of sample {@var index} from the fragment.
+
+@@function lin2lin(fragment, width, newwidth)
+
+<p>Convert samples between 1-, 2- and 4-byte formats.
+
+@@function lin2adpcm(fragment, width, state)
+
+<p>Convert samples to 4 bit Intel/DVI ADPCM encoding. ADPCM coding is an
+adaptive coding scheme, whereby each 4 bit number is the difference
+between one sample and the next, divided by a (varying) step. The
+Intel/DVI ADPCM algorithm has been selected for use by the IMA, so it
+may well become a standard.
+
+<p>{@var state} is a tuple containing the state of the coder. The coder
+returns a tuple {@code (}{@var adpcmfrag}, {@var newstate}), and the
+{@var newstate} should be passed to the next call of {@link lin2adpcm}.
+In the initial call, {@link None} can be passed as the state. {@var
+adpcmfrag} is the ADPCM coded fragment packed 2 4-bit values per byte.
+
+@@function lin2adpcm3(fragment, width, state)
+
+<p>This is an alternative ADPCM coder that uses only 3 bits per sample.
+It is not compatible with the Intel/DVI ADPCM coder and its output is
+not packed (due to laziness on the side of the author). Its use is
+discouraged.
+
+@@function lin2ulaw(fragment, width)
+
+<p>Convert samples in the audio fragment to u-LAW encoding and return
+this as a Python string. u-LAW is an audio encoding format whereby you
+get a dynamic range of about 14 bits using only 8 bit samples. It is
+used by the Sun audio hardware, among others.
+
+@@function minmax(fragment, width)
+
+<p>Return a tuple consisting of the minimum and maximum values of all
+samples in the sound fragment.
+
+@@function max(fragment, width)
+
+<p>Return the maximum of the {@em absolute value} of all samples in a
+fragment.
+
+@@function maxpp(fragment, width)
+
+<p>Return the maximum peak-peak value in the sound fragment.
+
+@@function mul(fragment, width, factor)
+
+<p>Return a fragment that has all samples in the original fragment
+multiplied by the floating-point value {@var factor}. Overflow is
+silently ignored.
+
+@@function ratecv(fragment, width, nchannels, inrate, outrate, state[, weightA[, weightB]])
+
+<p>Convert the frame rate of the input fragment.
+
+<p>{@var state} is a tuple containing the state of the converter. The
+converter returns a tuple {@code (}{@var newfragment}, {@var newstate}),
+and {@var newstate} should be passed to the next call of {@link ratecv}.
+The initial call should pass {@code None} as the state.
+
+<p>The {@var weightA} and {@var weightB} arguments are parameters for a
+simple digital filter and default to {@code 1} and {@code 0}
+respectively.
+
+@@function reverse(fragment, width)
+
+<p>Reverse the samples in a fragment and returns the modified fragment.
+
+@@function rms(fragment, width)
+
+<p>Return the root-mean-square of the fragment, i.e.
+
+<img alt="\begin{displaymath} \catcode\lq _=8 \sqrt{\frac{\sum{{S_{i}}^{2}}}{n}} \end{displaymath}" border="0" height="55" src="img3.png" width="61" />
+
+
+<p>This is a measure of the power in an audio signal.
+
+@@function tomono(fragment, width, lfactor, rfactor)
+
+<p>Convert a stereo fragment to a mono fragment. The left channel is
+multiplied by {@var lfactor} and the right channel by {@var rfactor}
+before adding the two channels to give a mono signal.
+
+@@function tostereo(fragment, width, lfactor, rfactor)
+
+<p>Generate a stereo fragment from a mono fragment. Each pair of samples
+in the stereo fragment are computed from the mono sample, whereby left
+channel samples are multiplied by {@var lfactor} and right channel
+samples by {@var rfactor}.
+
+@@function ulaw2lin(fragment, width)
+
+<p>Convert sound fragments in u-LAW encoding to linearly encoded sound
+fragments. u-LAW encoding always uses 8 bits samples, so {@var width}
+refers only to the sample width of the output fragment here.
+
+@@text 
+
+<p>Note that operations such as {@link mul} or {@link max} make no
+distinction between mono and stereo fragments, i.e. all samples are
+treated equal. If this is a problem the stereo fragment should be split
+into two mono fragments first and recombined later. Here is an example
+of how to do that:
+
+<pre>
+def mul_stereo(sample, width, lfactor, rfactor):
+    lsample = audioop.tomono(sample, width, 1, 0)
+    rsample = audioop.tomono(sample, width, 0, 1)
+    lsample = audioop.mul(sample, width, lfactor)
+    rsample = audioop.mul(sample, width, rfactor)
+    lsample = audioop.tostereo(lsample, width, 1, 0)
+    rsample = audioop.tostereo(rsample, width, 0, 1)
+    return audioop.add(lsample, rsample, width)
+</pre>
+
+
+<p>If you use the ADPCM coder to build network packets and you want your
+protocol to be stateless (i.e. to be able to tolerate packet loss) you
+should not only transmit the data but also the state. Note that you
+should send the {@var initial} state (the one you passed to {@link
+lin2adpcm}) along to the decoder, not the final state (as returned by
+the coder). If you want to use {@link struct.struct} to store the state
+in binary you can code the first element (the predicted value) in 16
+bits and the second (the delta index) in 8.
+
+<p>The ADPCM coders have never been tried against other ADPCM coders,
+only against themselves. It could well be that I misinterpreted the
+standards in which case they will not be interoperable with the
+respective standards.
+
+<p>The {@link find*} routines might look a bit funny at first sight.
+They are primarily meant to do echo cancellation. A reasonably fast way
+to do this is to pick the most energetic piece of the output sample,
+locate that in the input sample and subtract the whole output sample
+from the input sample:
+
+<pre>
+def echocancel(outputdata, inputdata):
+    pos = audioop.findmax(outputdata, 800)    # one tenth second
+    out_test = outputdata[pos*2:]
+    in_test = inputdata[pos*2:]
+    ipos, factor = audioop.findfit(in_test, out_test)
+    # Optional (for better cancellation):
+    # factor = audioop.findfactor(in_test[ipos*2:ipos*2+len(out_test)], 
+    #              out_test)
+    prefill = '\0'*(pos+ipos)*2
+    postfill = '\0'*(len(inputdata)-len(prefill)-len(outputdata))
+    outputdata = prefill + audioop.mul(outputdata,2,-factor) + postfill
+    return audioop.add(inputdata, outputdata, 2)
+</pre>
+

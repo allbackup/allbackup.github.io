@@ -1,0 +1,27 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>The soundex&nbsp;module</title></head><body data-page-id="661"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">The soundex&nbsp;module</h1></div><div class="yui-ge"><div class="yui-u first"><p>(Optional, 1.5.2 only). This module implements a simple hash
+algorithm, which converts words to 6-character strings based on
+their English pronunciation.</p><p>As of version 2.0, this module is no longer included.  Several
+Python implementations are available on the net, including this one
+by Skip Montanaro:</p><blockquote>
+<s><a href="http://orca.mojam.com/~skip/python/soundex.py">http://orca.mojam.com/~skip/python/soundex.py</a></s> (dead link)
+</blockquote><div class="example">
+<b style="example">Example: Using the soundex
+module</b>
+<pre>
+# File: <a href="soundex/soundex-example-1.py">soundex-example-1.py</a>
+
+import soundex
+
+a = "fredrik"
+b = "friedrich"
+
+print soundex.get_soundex(a), soundex.get_soundex(b)
+
+print soundex.sound_similar(a, b)
+
+</pre><pre class="computeroutput" moreinfo="NONE">
+F63620 F63620
+1
+</pre></div></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to librarybook index page.">::: librarybook :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

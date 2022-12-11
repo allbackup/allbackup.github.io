@@ -1,0 +1,30 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>Why are default values shared between&nbsp;objects?</title></head><body data-page-id="927"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><p class="note" style="text-align: center"><strong>
+This is an old copy of the Python FAQ.  The information here may be
+outdated.
+</strong></p><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">Why are default values shared between&nbsp;objects?</h1></div><div class="yui-ge"><div class="yui-u first"><p>Default values are created by the <a href="/pyref/def.htm"><strong>def</strong></a> statement, not when the
+function is called.  Consider this function:</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><pre class="python wide wide"><span class="pykeyword">def</span> <span class="pyfunction">foo</span>(D={}):  <span class="pycomment"># Danger: shared reference to one dict for all calls</span>
+    ... compute something ...
+    D[key] = value
+    <span class="pykeyword">return</span> D</pre></div><div class="yui-ge"><div class="yui-u first"><p>The first time you call this function, D contains a single item. The second time, D contains two items because when foo() begins executing,  D starts out with an item already in it.</p><p>It is often expected that a function call creates new objects for default values. This is not what happens. Default values are created exactly once, when the function is defined (by executing the <a href="/pyref/def.htm"><strong>def</strong></a> statement). If that object is changed, like the dictionary in this example, subsequent calls to the function will refer to this changed object.</p><p>By definition, immutable objects such as numbers, strings, tuples, and <a href="/pyref/None.htm"><strong>None</strong></a>, are safe from change. Changes to mutable objects such as dictionaries, lists, and class instances can lead to confusion.</p><p>Because of this feature, it is good programming practice to not use mutable objects as default values. Instead, use <a href="/pyref/None.htm"><strong>None</strong></a> as the default value and inside the function, check if the parameter is <a href="/pyref/None.htm"><strong>None</strong></a> and create a new list/dictionary/whatever if it is. For example, don&#8217;t write:</p><pre class="python"><span class="pykeyword">def</span> <span class="pyfunction">foo</span>(dict={}):
+    ...</pre><p>but:</p><pre class="python"><span class="pykeyword">def</span> <span class="pyfunction">foo</span>(dict=None):
+    <span class="pykeyword">if</span> dict <span class="pykeyword">is</span> None:
+        dict = {} <span class="pycomment"># create a new dict for local namespace</span></pre><p>This feature can be useful. When you have a function that&#8217;s time-consuming to compute, a common technique is to cache the parameters and the resulting value of each call to the function, and return the cached value if the same value is requested again. This is called <q>memoizing</q>, and can be implemented like this:</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><pre class="wide wide"><code># Callers will never provide a third parameter for this function.
+def expensive(arg1, arg2, _cache={}):
+    if _cache.has_key((arg1, arg2)):
+        return _cache[(arg1, arg2)]
+
+    # Calculate the value
+    result = ... expensive computation ...
+    _cache[(arg1, arg2)] = result           # Store result in the cache
+    return result
+</code></pre></div><div class="yui-ge"><div class="yui-u first"><p>You could use a global variable containing a dictionary instead of the default value; it&#8217;s a matter of taste.</p><p>You can also use default arguments to bind local variables to objects rather than names.  The first loop in the following example creates a new callback for each slot, but all callbacks end up with reference to the outer variable <em>slot</em>.  In the second loop, explicit object binding is used to bind to the current value instead:</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><pre class="python wide wide"><span class="pykeyword">for</span> slot <span class="pykeyword">in</span> range(10):
+    <span class="pykeyword">def</span> <span class="pyfunction">callback</span>():
+        <span class="pykeyword">print</span> <span class="pystring">"called from slot"</span>, slot      <span class="pycomment"># This always prints "9"</span>
+    register_callback(slot, callback)
+
+<span class="pykeyword">for</span> slot <span class="pykeyword">in</span> range(10):
+    <span class="pykeyword">def</span> <span class="pyfunction">callback</span>(slot=slot):
+        <span class="pykeyword">print</span> <span class="pystring">"called from slot"</span>, slot
+    register_callback(slot, callback)       <span class="pycomment"># This does the right thing</span></pre></div><div class="yui-ge"><div class="yui-u first"><p>CATEGORY: general</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to pyfaq index page.">::: pyfaq :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

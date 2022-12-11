@@ -1,0 +1,927 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>socket</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-socket.html'>original</a> :::
+<a href='socket.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>socket&#8212;Low-level networking interface</h1>
+
+<div class="toc"><dl><dt>On this page:</dt><dd><a href="#socket-objects">Socket Objects</a></dd><dd><a href="#ssl-objects">SSL Objects</a></dd><dd><a href="#example">Example</a></dd></dl></div><p>This module provides access to the BSD <em>socket</em>
+interface. It is available on all modern Unix systems, Windows,
+MacOS, BeOS, OS/2, and probably additional platforms.</p>
+
+<p>For an introduction to socket programming (in C), see the
+following papers: <em>An Introductory 4.3BSD Interprocess
+Communication Tutorial</em>, by Stuart Sechrest and <em>An Advanced
+4.3BSD Interprocess Communication Tutorial</em>, by Samuel J.
+Leffler et al, both in the Unix Programmer's Manual, Supplementary
+Documents 1 (sections PS1:7 and PS1:8). The platform-specific
+reference material for the various socket-related system calls are
+also a valuable source of information on the details of socket
+semantics. For Unix, refer to the manual pages; for Windows, see
+the WinSock (or Winsock 2) specification. For IPv6-ready APIs,
+readers may want to refer to <a class="link" href="http://www.faqs.org/rfcs/rfc2553.html">RFC 2553</a> titled
+<em>Basic Socket Interface Extensions for IPv6</em>.</p>
+
+<p>The Python interface is a straightforward transliteration of the
+Unix system call and library interface for sockets to Python's
+object-oriented style: the <a class="link" href="#socket"><code>
+socket</code></a> function returns a socket object whose methods implement
+the various socket system calls. Parameter types are somewhat
+higher-level than in the C interface: as with <code>read</code> and <code>
+write</code> operations on Python files, buffer allocation on receive
+operations is automatic, and buffer length is implicit on send
+operations.</p>
+
+<p>Socket addresses are represented as follows: A single string is
+used for the <code>AF_UNIX</code> address family. A pair <code>
+(</code><var>host</var>, <var>port</var>) is used for the <code>
+AF_INET</code> address family, where <var>host</var> is a string
+representing either a hostname in Internet domain notation like
+<code>'daring.cwi.nl'</code> or an IPv4 address like <code>
+'100.50.200.5'</code>, and <var>port</var> is an integral port
+number. For <code>AF_INET6</code> address family, a four-tuple
+<code>(</code><var>host</var>, <var>port</var>, <var>
+flowinfo</var>, <var>scopeid</var>) is used, where <var>
+flowinfo</var> and <var>scopeid</var> represents <code>
+sin6_flowinfo</code> and <code>sin6_scope_id</code> member in
+<code>struct sockaddr_in6</code> in C. For <a class="link" href="#socket"><code>socket</code></a> module methods, <var>flowinfo</var>
+and <var>scopeid</var> can be omitted just for backward
+compatibility. Note, however, omission of <var>scopeid</var> can
+cause problems in manipulating scoped IPv6 addresses. Other address
+families are currently not supported. The address format required
+by a particular socket object is automatically selected based on
+the address family specified when the socket object was
+created.</p>
+
+<p>For IPv4 addresses, two special forms are accepted instead of a
+host address: the empty string represents <code>INADDR_ANY</code>,
+and the string <code>'&amp;ltbroadcast&gt;'</code> represents
+<code>INADDR_BROADCAST</code>. The behavior is not available for
+IPv6 for backward compatibility, therefore, you may want to avoid
+these if you intend to support IPv6 with your Python programs.</p>
+
+<p>If you use a hostname in the <var>host</var> portion of IPv4/v6
+socket address, the program may show a nondeterministic behavior,
+as Python uses the first address returned from the DNS resolution.
+The socket address will be resolved differently into an actual
+IPv4/v6 address, depending on the results from DNS resolution
+and/or the host configuration. For deterministic behavior use a
+numeric address in <var>host</var> portion.</p>
+
+<p>All errors raise exceptions. The normal exceptions for invalid
+argument types and out-of-memory conditions can be raised; errors
+related to socket or address semantics raise the error <code>socket.error</code>.</p>
+
+<p>Non-blocking mode is supported through <code>setblocking</code>. A generalization of this
+based on timeouts is supported through <code>settimeout</code>.</p>
+
+<p>The module <a class="link" href="#socket"><code>socket</code></a> exports
+the following constants and functions:</p>
+</div>
+<dl><dt class="exception" id="error"><b>exception error</b> <tt class="nav"><a class="nav" href="socket.error" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="exception">
+<p>This exception is raised for socket-related errors. The
+accompanying value is either a string telling what went wrong or a
+pair <code>(</code><var>errno</var>, <var>string</var>)
+representing an error returned by a system call, similar to the
+value accompanying <code>
+os.error</code>. See the module <code>
+errno</code>, which contains names for the error codes defined by the
+underlying operating system.</p>
+</dd>
+<dt class="exception" id="herror"><b>exception herror</b> <tt class="nav"><a class="nav" href="socket.herror" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="exception">
+<p>This exception is raised for address-related errors, i.e. for
+functions that use <var>h_errno</var> in the C API, including <a class="link" href="#gethostbyname_ex"><code>gethostbyname_ex</code></a> and
+<a class="link" href="#gethostbyaddr"><code>gethostbyaddr</code></a>.</p>
+
+<p>The accompanying value is a pair <code>
+(</code><var>h_errno</var>, <var>string</var>) representing an
+error returned by a library call. <var>string</var> represents the
+description of <var>h_errno</var>, as returned by the <code>c:hstrerror</code> C
+function.</p>
+</dd>
+<dt class="exception" id="gaierror"><b>exception gaierror</b> <tt class="nav"><a class="nav" href="socket.gaierror" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="exception">
+<p>This exception is raised for address-related errors, for <a class="link" href="#getaddrinfo"><code>getaddrinfo</code></a> and <a class="link" href="#getnameinfo"><code>getnameinfo</code></a>. The
+accompanying value is a pair <code>(</code><var>error</var>, <var>
+string</var>) representing an error returned by a library call.
+<var>string</var> represents the description of <var>error</var>,
+as returned by the <code>
+c:gai_strerror</code> C function. The <var>error</var> value will
+match one of the <code>EAI_*</code> constants defined in this
+module.</p>
+</dd>
+<dt class="exception" id="timeout"><b>exception timeout</b> <tt class="nav"><a class="nav" href="socket.timeout" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="exception">
+<p>This exception is raised when a timeout occurs on a socket which
+has had timeouts enabled via a prior call to <code>settimeout</code>. The accompanying value is a
+string whose value is currently always &#8220;timed out&#8221;.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.3.<br />
+</blockquote>
+</dd>
+<dt class="variable" id="AF_INET6"><b>AF_INET6</b> <tt class="nav"><a class="nav" href="socket.AF_INET6" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>These constants represent the address (and protocol) families,
+used for the first argument to <a class="link" href="#socket"><code>
+socket</code></a>. If the <code>AF_UNIX</code> constant is not defined
+then this protocol is unsupported.</p>
+</dd>
+<dt class="variable" id="SOCK_SEQPACKET"><b>SOCK_SEQPACKET</b> <tt class="nav"><a class="nav" href="socket.SOCK_SEQPACKET" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>These constants represent the socket types, used for the second
+argument to <a class="link" href="#socket"><code>socket</code></a>. (Only
+<code>SOCK_STREAM</code> and <code>SOCK_DGRAM</code> appear to be
+generally useful.)</p>
+</dd>
+<dt class="variable" id="TCP_"><b>TCP_*</b> <tt class="nav"><a class="nav" href="socket.TCP_" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Many constants of these forms, documented in the Unix
+documentation on sockets and/or the IP protocol, are also defined
+in the socket module. They are generally used in arguments to the
+<code>setsockopt</code> and <code>getsockopt</code> methods of
+socket objects. In most cases, only those symbols that are defined
+in the Unix header files are defined; for a few symbols, default
+values are provided.</p>
+</dd>
+<dt class="variable" id="has_ipv6"><b>has_ipv6</b> <tt class="nav"><a class="nav" href="socket.has_ipv6" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>This constant contains a boolean value which indicates if IPv6
+is supported on this platform.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.3.<br />
+</blockquote>
+</dd>
+<dt class="function" id="getaddrinfo"><b>getaddrinfo(host, port[, family[, socktype[,
+proto[, flags]]]])</b> <tt class="nav"><a class="nav" href="socket.getaddrinfo" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Resolves the <var>host</var>/<var>port</var> argument, into a
+sequence of 5-tuples that contain all the necessary argument for
+the sockets manipulation. <var>host</var> is a domain name, a
+string representation of IPv4/v6 address or <code>None</code>. <var>port</var> is a string service name
+(like <code>'http'</code>), a numeric port number or <code>None</code>.</p>
+
+<p>The rest of the arguments are optional and must be numeric if
+specified. For <var>host</var> and <var>port</var>, by passing
+either an empty string or <code>
+None</code>, you can pass <code>NULL</code> to the C API. The <a class="link" href="#getaddrinfo"><code>getaddrinfo</code></a> function
+returns a list of 5-tuples with the following structure:</p>
+
+<p><code>(</code><var>family</var>, <var>socktype</var>, <var>
+proto</var>, <var>canonname</var>, <var>sockaddr</var>)</p>
+
+<p><var>family</var>, <var>socktype</var>, <var>proto</var> are all
+integer and are meant to be passed to the <a class="link" href="#socket"><code>socket</code></a> function. <var>canonname</var> is a
+string representing the canonical name of the <var>host</var>. It
+can be a numeric IPv4/v6 address when <code>AI_CANONNAME</code> is
+specified for a numeric <var>host</var>. <var>sockaddr</var> is a
+tuple describing a socket address, as described above. See the
+source for the <code>httplib</code> and
+other library modules for a typical usage of the function.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.2.<br />
+</blockquote>
+</dd>
+<dt class="function" id="getfqdn"><b>getfqdn([name])</b> <tt class="nav"><a class="nav" href="socket.getfqdn" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return a fully qualified domain name for <var>name</var>. If
+<var>name</var> is omitted or empty, it is interpreted as the local
+host. To find the fully qualified name, the hostname returned by <a class="link" href="#gethostbyaddr"><code>gethostbyaddr</code></a> is
+checked, then aliases for the host, if available. The first name
+which includes a period is selected. In case no fully qualified
+domain name is available, the hostname as returned by <a class="link" href="#gethostname"><code>gethostname</code></a> is
+returned.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.0.<br />
+</blockquote>
+</dd>
+<dt class="function" id="gethostbyname"><b>gethostbyname(hostname)</b> <tt class="nav"><a class="nav" href="socket.gethostbyname" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Translate a host name to IPv4 address format. The IPv4 address
+is returned as a string, such as <code>'100.50.200.5'</code>. If
+the host name is an IPv4 address itself it is returned unchanged.
+See <a class="link" href="#gethostbyname_ex"><code>
+gethostbyname_ex</code></a> for a more complete interface. <a class="link" href="#gethostbyname"><code>gethostbyname</code></a> does not support IPv6
+name resolution, and <a class="link" href="#getaddrinfo"><code>
+getaddrinfo</code></a> should be used instead for IPv4/v6 dual stack
+support.</p>
+</dd>
+<dt class="function" id="gethostbyname_ex"><b>gethostbyname_ex(hostname)</b> <tt class="nav"><a class="nav" href="socket.gethostbyname_ex" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Translate a host name to IPv4 address format, extended
+interface. Return a triple <code>(</code><var>hostname</var>, <var>
+aliaslist</var>, <var>ipaddrlist</var>) where <var>hostname</var>
+is the primary host name responding to the given <var>
+ip_address</var>, <var>aliaslist</var> is a (possibly empty) list
+of alternative host names for the same address, and <var>
+ipaddrlist</var> is a list of IPv4 addresses for the same interface
+on the same host (often but not always a single address). <a class="link" href="#gethostbyname_ex"><code>gethostbyname_ex</code></a> does
+not support IPv6 name resolution, and <a class="link" href="#getaddrinfo"><code>getaddrinfo</code></a> should be used instead for
+IPv4/v6 dual stack support.</p>
+</dd>
+<dt class="function" id="gethostname"><b>gethostname()</b> <tt class="nav"><a class="nav" href="socket.gethostname" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return a string containing the hostname of the machine where the
+Python interpreter is currently executing. If you want to know the
+current machine's IP address, you may want to use <code>
+gethostbyname(gethostname())</code>. This operation assumes that
+there is a valid address-to-host mapping for the host, and the
+assumption does not always hold. Note: <a class="link" href="#gethostname"><code>gethostname</code></a> doesn't always return the
+fully qualified domain name; use <code>
+gethostbyaddr(gethostname())</code> (see below).</p>
+</dd>
+<dt class="function" id="gethostbyaddr"><b>gethostbyaddr(ip_address)</b> <tt class="nav"><a class="nav" href="socket.gethostbyaddr" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return a triple <code>(</code><var>hostname</var>, <var>
+aliaslist</var>, <var>ipaddrlist</var>) where <var>hostname</var>
+is the primary host name responding to the given <var>
+ip_address</var>, <var>aliaslist</var> is a (possibly empty) list
+of alternative host names for the same address, and <var>
+ipaddrlist</var> is a list of IPv4/v6 addresses for the same
+interface on the same host (most likely containing only a single
+address). To find the fully qualified domain name, use the function
+<a class="link" href="#getfqdn"><code>getfqdn</code></a>. <a class="link" href="#gethostbyaddr"><code>gethostbyaddr</code></a> supports both IPv4 and
+IPv6.</p>
+</dd>
+<dt class="function" id="getnameinfo"><b>getnameinfo(sockaddr, flags)</b> <tt class="nav"><a class="nav" href="socket.getnameinfo" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Translate a socket address <var>sockaddr</var> into a 2-tuple
+<code>(</code><var>host</var>, <var>port</var>). Depending on the
+settings of <var>flags</var>, the result can contain a
+fully-qualified domain name or numeric address representation in
+<var>host</var>. Similarly, <var>port</var> can contain a string
+port name or a numeric port number.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.2.<br />
+</blockquote>
+</dd>
+<dt class="function" id="getprotobyname"><b>getprotobyname(protocolname)</b> <tt class="nav"><a class="nav" href="socket.getprotobyname" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Translate an Internet protocol name (for example, <code>
+'icmp'</code>) to a constant suitable for passing as the (optional)
+third argument to the <a class="link" href="#socket"><code>socket</code></a>
+function. This is usually only needed for sockets opened in
+&#8220;raw&#8221; mode (<code>SOCK_RAW</code>); for the normal
+socket modes, the correct protocol is chosen automatically if the
+protocol is omitted or zero.</p>
+</dd>
+<dt class="function" id="getservbyname"><b>getservbyname(servicename[, protocolname])</b> <tt class="nav"><a class="nav" href="socket.getservbyname" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Translate an Internet service name and protocol name to a port
+number for that service. The optional protocol name, if given,
+should be <code>'tcp'</code> or <code>'udp'</code>, otherwise any
+protocol will match.</p>
+</dd>
+<dt class="function" id="getservbyport"><b>getservbyport(port[, protocolname])</b> <tt class="nav"><a class="nav" href="socket.getservbyport" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Translate an Internet port number and protocol name to a service
+name for that service. The optional protocol name, if given, should
+be <code>'tcp'</code> or <code>'udp'</code>, otherwise any protocol
+will match.</p>
+</dd>
+<dt class="function" id="socket"><b>socket([family[, type[, proto]]])</b> <tt class="nav"><a class="nav" href="socket.socket" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Create a new socket using the given address family, socket type
+and protocol number. The address family should be <code>
+AF_INET</code> (the default), <code>AF_INET6</code> or <code>
+AF_UNIX</code>. The socket type should be <code>SOCK_STREAM</code>
+(the default), <code>SOCK_DGRAM</code> or perhaps one of the other
+"<code>SOCK_</code>" constants. The protocol number is usually zero
+and may be omitted in that case.</p>
+</dd>
+<dt class="function" id="ssl"><b>ssl(sock[, keyfile, certfile])</b> <tt class="nav"><a class="nav" href="socket.ssl" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Initiate a SSL connection over the socket <var>sock</var>. <var>
+keyfile</var> is the name of a PEM formatted file that contains
+your private key. <var>certfile</var> is a PEM formatted
+certificate chain file. On success, a new <code>SSLObject</code> is returned.</p>
+
+<p class="warning"><b>Warning:</b> This does not do any certificate
+verification!</p>
+</dd>
+<dt class="function" id="socketpair"><b>socketpair([family[, type[, proto]]])</b> <tt class="nav"><a class="nav" href="socket.socketpair" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Build a pair of connected socket objects using the given address
+family, socket type, and protocol number. Address family, socket
+type, and protocol number are as for the <a class="link" href="#socket"><code>socket</code></a> function above. The default family is
+<code>AF_UNIX</code> if defined on the platform; otherwise, the
+default is <code>AF_INET</code>. Availability: Unix.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.4.<br />
+</blockquote>
+</dd>
+<dt class="function" id="fromfd"><b>fromfd(fd, family, type[, proto])</b> <tt class="nav"><a class="nav" href="socket.fromfd" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Build a socket object from an existing file descriptor (an
+integer as returned by a file object's <code>fileno</code> method). Address family, socket type
+and protocol number are as for the <a class="link" href="#socket"><code>socket</code></a> function above. The file descriptor
+should refer to a socket, but this is not checked -- subsequent
+operations on the object may fail if the file descriptor is
+invalid. This function is rarely needed, but can be used to get or
+set socket options on a socket passed to a program as standard
+input or output (such as a server started by the Unix inet daemon).
+The socket is assumed to be in blocking mode. Availability:
+Unix.</p>
+</dd>
+<dt class="function" id="ntohl"><b>ntohl(x)</b> <tt class="nav"><a class="nav" href="socket.ntohl" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Convert 32-bit integers from network to host byte order. On
+machines where the host byte order is the same as network byte
+order, this is a no-op; otherwise, it performs a 4-byte swap
+operation.</p>
+</dd>
+<dt class="function" id="ntohs"><b>ntohs(x)</b> <tt class="nav"><a class="nav" href="socket.ntohs" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Convert 16-bit integers from network to host byte order. On
+machines where the host byte order is the same as network byte
+order, this is a no-op; otherwise, it performs a 2-byte swap
+operation.</p>
+</dd>
+<dt class="function" id="htonl"><b>htonl(x)</b> <tt class="nav"><a class="nav" href="socket.htonl" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Convert 32-bit integers from host to network byte order. On
+machines where the host byte order is the same as network byte
+order, this is a no-op; otherwise, it performs a 4-byte swap
+operation.</p>
+</dd>
+<dt class="function" id="htons"><b>htons(x)</b> <tt class="nav"><a class="nav" href="socket.htons" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Convert 16-bit integers from host to network byte order. On
+machines where the host byte order is the same as network byte
+order, this is a no-op; otherwise, it performs a 2-byte swap
+operation.</p>
+</dd>
+<dt class="function" id="inet_aton"><b>inet_aton(ip_string)</b> <tt class="nav"><a class="nav" href="socket.inet_aton" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Convert an IPv4 address from dotted-quad string format (for
+example, '123.45.67.89') to 32-bit packed binary format, as a
+string four characters in length. This is useful when conversing
+with a program that uses the standard C library and needs objects
+of type <code>in_addr</code>, which is
+the C type for the 32-bit packed binary this function returns.</p>
+
+<p>If the IPv4 address string passed to this function is invalid,
+<code>socket.error</code> will be
+raised. Note that exactly what is valid depends on the underlying C
+implementation of <code>
+c:inet_aton</code>.</p>
+
+<p><a class="link" href="#inet_aton"><code>inet_aton</code></a> does not
+support IPv6, and <a class="link" href="#getnameinfo"><code>
+getnameinfo</code></a> should be used instead for IPv4/v6 dual stack
+support.</p>
+</dd>
+<dt class="function" id="inet_ntoa"><b>inet_ntoa(packed_ip)</b> <tt class="nav"><a class="nav" href="socket.inet_ntoa" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Convert a 32-bit packed IPv4 address (a string four characters
+in length) to its standard dotted-quad string representation (for
+example, '123.45.67.89'). This is useful when conversing with a
+program that uses the standard C library and needs objects of type
+<code>in_addr</code>, which is the C
+type for the 32-bit packed binary data this function takes as an
+argument.</p>
+
+<p>If the string passed to this function is not exactly 4 bytes in
+length, <code>socket.error</code>
+will be raised. <a class="link" href="#inet_ntoa"><code>inet_ntoa</code></a>
+does not support IPv6, and <a class="link" href="#getnameinfo"><code>
+getnameinfo</code></a> should be used instead for IPv4/v6 dual stack
+support.</p>
+</dd>
+<dt class="function" id="inet_pton"><b>inet_pton(address_family, ip_string)</b> <tt class="nav"><a class="nav" href="socket.inet_pton" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Convert an IP address from its family-specific string format to
+a packed, binary format. <a class="link" href="#inet_pton"><code>
+inet_pton</code></a> is useful when a library or network protocol calls
+for an object of type <code>
+in_addr</code> (similar to <a class="link" href="#inet_aton"><code>
+inet_aton</code></a>) or <code>
+in6_addr</code>.</p>
+
+<p>Supported values for <var>address_family</var> are currently
+<code>AF_INET</code> and <code>AF_INET6</code>. If the IP address
+string <var>ip_string</var> is invalid, <code>socket.error</code> will be raised. Note that
+exactly what is valid depends on both the value of <var>
+address_family</var> and the underlying implementation of <code>c:inet_pton</code>.</p>
+
+<p>Availability: Unix (maybe not all platforms).</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.3.<br />
+</blockquote>
+</dd>
+<dt class="function" id="inet_ntop"><b>inet_ntop(address_family, packed_ip)</b> <tt class="nav"><a class="nav" href="socket.inet_ntop" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Convert a packed IP address (a string of some number of
+characters) to its standard, family-specific string representation
+(for example, <code>'7.10.0.5'</code> or <code>'5aef:2b::8'</code>)
+<a class="link" href="#inet_ntop"><code>inet_ntop</code></a> is useful when
+a library or network protocol returns an object of type <code>in_addr</code> (similar to <a class="link" href="#inet_ntoa"><code>inet_ntoa</code></a>) or <code>in6_addr</code>.</p>
+
+<p>Supported values for <var>address_family</var> are currently
+<code>AF_INET</code> and <code>AF_INET6</code>. If the string <var>
+packed_ip</var> is not the correct length for the specified address
+family, <code>
+exceptions.ValueError</code> will be raised. A <code>socket.error</code> is raised for errors from
+the call to <a class="link" href="#inet_ntop"><code>
+inet_ntop</code></a>.</p>
+
+<p>Availability: Unix (maybe not all platforms).</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.3.<br />
+</blockquote>
+</dd>
+<dt class="function" id="getdefaulttimeout"><b>getdefaulttimeout()</b> <tt class="nav"><a class="nav" href="socket.getdefaulttimeout" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return the default timeout in floating seconds for new socket
+objects. A value of <code>None</code>
+indicates that new socket objects have no timeout. When the socket
+module is first imported, the default is <code>None</code>.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.3.<br />
+</blockquote>
+</dd>
+<dt class="function" id="setdefaulttimeout"><b>setdefaulttimeout(timeout)</b> <tt class="nav"><a class="nav" href="socket.setdefaulttimeout" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Set the default timeout in floating seconds for new socket
+objects. A value of <code>None</code>
+indicates that new socket objects have no timeout. When the socket
+module is first imported, the default is <code>None</code>.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.3.<br />
+</blockquote>
+</dd>
+<dt class="variable" id="SocketType"><b>SocketType</b> <tt class="nav"><a class="nav" href="socket.SocketType" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>This is a Python type object that represents the socket object
+type. It is the same as <code>type(socket(...))</code>.</p>
+</dd>
+</dl><div class="text"><span class="mark">@see</span> <code>Module SocketServer</code> Classes that
+simplify writing network servers. 
+
+<h2 id="socket-objects">Socket Objects <a class="nav" href="#socket-objects">#</a></h2>
+
+<p>Socket objects have the following methods. Except for <code>makefile</code> these correspond to
+Unix system calls applicable to sockets.</p>
+</div>
+<dl><dt class="method" id="Socket.accept"><b>accept()</b> <tt class="nav"><a class="nav" href="socket.Socket.accept" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Accept a connection. The socket must be bound to an address and
+listening for connections. The return value is a pair <code>
+(</code><var>conn</var>, <var>address</var>) where <var>conn</var>
+is a <em>new</em> socket object usable to send and receive data on
+the connection, and <var>address</var> is the address bound to the
+socket on the other end of the connection.</p>
+</dd>
+<dt class="method" id="Socket.bind"><b>bind(address)</b> <tt class="nav"><a class="nav" href="socket.Socket.bind" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Bind the socket to <var>address</var>. The socket must not
+already be bound. (The format of <var>address</var> depends on the
+address family -- see above.) Note: This method has historically
+accepted a pair of parameters for <code>AF_INET</code> addresses
+instead of only a tuple. This was never intentional and is no
+longer available in Python 2.0 and later.</p>
+</dd>
+<dt class="method" id="Socket.close"><b>close()</b> <tt class="nav"><a class="nav" href="socket.Socket.close" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Close the socket. All future operations on the socket object
+will fail. The remote end will receive no more data (after queued
+data is flushed). Sockets are automatically closed when they are
+garbage-collected.</p>
+</dd>
+<dt class="method" id="Socket.connect"><b>connect(address)</b> <tt class="nav"><a class="nav" href="socket.Socket.connect" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Connect to a remote socket at <var>address</var>. (The format of
+<var>address</var> depends on the address family -- see above.)
+Note: This method has historically accepted a pair of parameters
+for <code>AF_INET</code> addresses instead of only a tuple. This
+was never intentional and is no longer available in Python 2.0 and
+later.</p>
+</dd>
+<dt class="method" id="Socket.connect_ex"><b>connect_ex(address)</b> <tt class="nav"><a class="nav" href="socket.Socket.connect_ex" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Like <code>connect(</code><var>address</var>), but return an
+error indicator instead of raising an exception for errors returned
+by the C-level <code>c:connect</code>
+call (other problems, such as &#8220;host not found,&#8221; can
+still raise exceptions). The error indicator is <code>0</code> if
+the operation succeeded, otherwise the value of the errno variable.
+This is useful to support, for example, asynchronous connects.
+Note: This method has historically accepted a pair of parameters
+for <code>AF_INET</code> addresses instead of only a tuple. This
+was never intentional and is no longer available in Python 2.0 and
+later.</p>
+</dd>
+<dt class="method" id="Socket.fileno"><b>fileno()</b> <tt class="nav"><a class="nav" href="socket.Socket.fileno" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return the socket's file descriptor (a small integer). This is
+useful with <code>
+select.select</code>.</p>
+
+<p>Under Windows the small integer returned by this method cannot
+be used where a file descriptor can be used (such as <code>os.fdopen</code>). Unix does not
+have this limitation.</p>
+</dd>
+<dt class="method" id="Socket.getpeername"><b>getpeername()</b> <tt class="nav"><a class="nav" href="socket.Socket.getpeername" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return the remote address to which the socket is connected. This
+is useful to find out the port number of a remote IPv4/v6 socket,
+for instance. (The format of the address returned depends on the
+address family -- see above.) On some systems this function is not
+supported.</p>
+</dd>
+<dt class="method" id="Socket.getsockname"><b>getsockname()</b> <tt class="nav"><a class="nav" href="socket.Socket.getsockname" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return the socket's own address. This is useful to find out the
+port number of an IPv4/v6 socket, for instance. (The format of the
+address returned depends on the address family -- see above.)</p>
+</dd>
+<dt class="method" id="Socket.getsockopt"><b>getsockopt(level, optname[, buflen])</b> <tt class="nav"><a class="nav" href="socket.Socket.getsockopt" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return the value of the given socket option (see the Unix man
+page getsockopt(2)). The needed symbolic constants
+(<code>SO_*</code> etc.) are defined in this module. If <var>
+buflen</var> is absent, an integer option is assumed and its
+integer value is returned by the function. If <var>buflen</var> is
+present, it specifies the maximum length of the buffer used to
+receive the option in, and this buffer is returned as a string. It
+is up to the caller to decode the contents of the buffer (see the
+optional built-in module <code>
+struct</code> for a way to decode C structures encoded as
+strings).</p>
+</dd>
+<dt class="method" id="Socket.listen"><b>listen(backlog)</b> <tt class="nav"><a class="nav" href="socket.Socket.listen" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Listen for connections made to the socket. The <var>
+backlog</var> argument specifies the maximum number of queued
+connections and should be at least 1; the maximum value is
+system-dependent (usually 5).</p>
+</dd>
+<dt class="method" id="Socket.makefile"><b>makefile([mode[, bufsize]])</b> <tt class="nav"><a class="nav" href="socket.Socket.makefile" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return a file object associated with the socket. (File objects
+are described in <code>
+bltin-file-objects.html#bltin-file-objects</code>, &#8220;File
+Objects.&#8221;) The file object references a <code>c:dup</code>ped version of the socket file
+descriptor, so the file object and socket object may be closed or
+garbage-collected independently. The socket should be in blocking
+mode. The optional <var>mode</var> and <var>bufsize</var> arguments
+are interpreted the same way as by the built-in <code>file</code> function; see &#8220;Built-in
+Functions&#8221; (section <code>
+built-in-funcs.html#built-in-funcs</code>) for more information.</p>
+</dd>
+<dt class="method" id="Socket.recv"><b>recv(bufsize[, flags])</b> <tt class="nav"><a class="nav" href="socket.Socket.recv" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Receive data from the socket. The return value is a string
+representing the data received. The maximum amount of data to be
+received at once is specified by <var>bufsize</var>. See the Unix
+manual page recv(2) for the meaning of the optional argument <var>
+flags</var>; it defaults to zero.</p>
+</dd>
+<dt class="method" id="Socket.recvfrom"><b>recvfrom(bufsize[, flags])</b> <tt class="nav"><a class="nav" href="socket.Socket.recvfrom" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Receive data from the socket. The return value is a pair <code>
+(</code><var>string</var>, <var>address</var>) where <var>
+string</var> is a string representing the data received and <var>
+address</var> is the address of the socket sending the data. The
+optional <var>flags</var> argument has the same meaning as for <code>recv</code> above. (The format of <var>
+address</var> depends on the address family -- see above.)</p>
+</dd>
+<dt class="method" id="Socket.send"><b>send(string[, flags])</b> <tt class="nav"><a class="nav" href="socket.Socket.send" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Send data to the socket. The socket must be connected to a
+remote socket. The optional <var>flags</var> argument has the same
+meaning as for <code>recv</code> above.
+Returns the number of bytes sent. Applications are responsible for
+checking that all data has been sent; if only some of the data was
+transmitted, the application needs to attempt delivery of the
+remaining data.</p>
+</dd>
+<dt class="method" id="Socket.sendall"><b>sendall(string[, flags])</b> <tt class="nav"><a class="nav" href="socket.Socket.sendall" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Send data to the socket. The socket must be connected to a
+remote socket. The optional <var>flags</var> argument has the same
+meaning as for <code>recv</code> above.
+Unlike <code>send</code>, this method
+continues to send data from <var>string</var> until either all data
+has been sent or an error occurs. <code>
+None</code> is returned on success. On error, an exception is raised,
+and there is no way to determine how much data, if any, was
+successfully sent.</p>
+</dd>
+<dt class="method" id="Socket.sendto"><b>sendto(string[, flags], address)</b> <tt class="nav"><a class="nav" href="socket.Socket.sendto" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Send data to the socket. The socket should not be connected to a
+remote socket, since the destination socket is specified by <var>
+address</var>. The optional <var>flags</var> argument has the same
+meaning as for <code>recv</code> above.
+Return the number of bytes sent. (The format of <var>address</var>
+depends on the address family -- see above.)</p>
+</dd>
+<dt class="method" id="Socket.setblocking"><b>setblocking(flag)</b> <tt class="nav"><a class="nav" href="socket.Socket.setblocking" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Set blocking or non-blocking mode of the socket: if <var>
+flag</var> is 0, the socket is set to non-blocking, else to
+blocking mode. Initially all sockets are in blocking mode. In
+non-blocking mode, if a <code>recv</code>
+call doesn't find any data, or if a <code>send</code> call can't immediately dispose of the
+data, a <a class="link" href="#error"><code>error</code></a> exception is
+raised; in blocking mode, the calls block until they can proceed.
+<code>s.setblocking(0)</code> is equivalent to <code>
+s.settimeout(0)</code>; <code>s.setblocking(1)</code> is equivalent
+to <code>s.settimeout(None)</code>.</p>
+</dd>
+<dt class="method" id="Socket.settimeout"><b>settimeout(value)</b> <tt class="nav"><a class="nav" href="socket.Socket.settimeout" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Set a timeout on blocking socket operations. The <var>
+value</var> argument can be a nonnegative float expressing seconds,
+or <code>None</code>. If a float is given,
+subsequent socket operations will raise an <a class="link" href="#timeout"><code>timeout</code></a> exception if the timeout period
+<var>value</var> has elapsed before the operation has completed.
+Setting a timeout of <code>None</code>
+disables timeouts on socket operations. <code>
+s.settimeout(0.0)</code> is equivalent to <code>
+s.setblocking(0)</code>; <code>s.settimeout(None)</code> is
+equivalent to <code>s.setblocking(1)</code>.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.3.<br />
+</blockquote>
+</dd>
+<dt class="method" id="Socket.gettimeout"><b>gettimeout()</b> <tt class="nav"><a class="nav" href="socket.Socket.gettimeout" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Returns the timeout in floating seconds associated with socket
+operations, or <code>None</code> if no
+timeout is set. This reflects the last call to <code>setblocking</code> or <code>settimeout</code>.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.3.<br />
+</blockquote>
+</dd>
+</dl><div class="text">
+<p>Some notes on socket blocking and timeouts: A socket object can
+be in one of three modes: blocking, non-blocking, or timeout.
+Sockets are always created in blocking mode. In blocking mode,
+operations block until complete. In non-blocking mode, operations
+fail (with an error that is unfortunately system-dependent) if they
+cannot be completed immediately. In timeout mode, operations fail
+if they cannot be completed within the timeout specified for the
+socket. The <code>setblocking</code>
+method is simply a shorthand for certain <code>settimeout</code> calls.</p>
+
+<p>Timeout mode internally sets the socket in non-blocking mode.
+The blocking and timeout modes are shared between file descriptors
+and socket objects that refer to the same network endpoint. A
+consequence of this is that file objects returned by the <code>makefile</code> method should only
+be used when the socket is in blocking mode; in timeout or
+non-blocking mode file operations that cannot be completed
+immediately will fail.</p>
+
+<p>Note that the <code>connect</code>
+operation is subject to the timeout setting, and in general it is
+recommended to call <code>
+settimeout</code> before calling <code>
+connect</code>.</p>
+</div>
+<dl><dt class="method" id="Socket.setsockopt"><b>setsockopt(level, optname, value)</b> <tt class="nav"><a class="nav" href="socket.Socket.setsockopt" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Set the value of the given socket option (see the Unix manual
+page setsockopt(2)). The needed symbolic constants are defined in
+the <a class="link" href="#socket"><code>socket</code></a> module
+(<code>SO_*</code> etc.). The value can be an integer or a string
+representing a buffer. In the latter case it is up to the caller to
+ensure that the string contains the proper bits (see the optional
+built-in module <code>struct</code> for a
+way to encode C structures as strings).</p>
+</dd>
+<dt class="method" id="Socket.shutdown"><b>shutdown(how)</b> <tt class="nav"><a class="nav" href="socket.Socket.shutdown" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Shut down one or both halves of the connection. If <var>
+how</var> is <code>SHUT_RD</code>, further receives are disallowed.
+If <var>how</var> is <code>SHUT_WR</code>, further sends are
+disallowed. If <var>how</var> is <code>SHUT_RDWR</code>, further
+sends and receives are disallowed.</p>
+</dd>
+</dl><div class="text">
+<p>Note that there are no methods <code>
+read</code> or <code>write</code>; use <code>recv</code> and <code>send</code> without <var>flags</var> argument
+instead.</p>
+
+<h2 id="ssl-objects">SSL Objects <a class="nav" href="#ssl-objects">#</a></h2>
+
+<p>SSL objects have the following methods.</p>
+</div>
+<dl><dt class="method" id="SSL.write"><b>write(s)</b> <tt class="nav"><a class="nav" href="socket.SSL.write" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Writes the string <var>s</var> to the on the object's SSL
+connection. The return value is the number of bytes written.</p>
+</dd>
+<dt class="method" id="SSL.read"><b>read([n])</b> <tt class="nav"><a class="nav" href="socket.SSL.read" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>If <var>n</var> is provided, read <var>n</var> bytes from the
+SSL connection, otherwise read until EOF. The return value is a
+string of the bytes read.</p>
+</dd>
+</dl><div class="text">
+<h2 id="example">Example <a class="nav" href="#example">#</a></h2>
+
+<p>Here are four minimal example programs using the TCP/IP
+protocol: a server that echoes all data that it receives back
+(servicing only one client), and a client using it. Note that a
+server must perform the sequence <a class="link" href="#socket"><code>socket</code></a>, <code>
+bind</code>, <code>listen</code>, <code>accept</code> (possibly repeating the
+<code>accept</code> to service more than
+one client), while a client only needs the sequence <a class="link" href="#socket"><code>socket</code></a>, <code>
+connect</code>. Also note that the server does not <code>send</code>/<code>recv</code>
+on the socket it is listening on but on the new socket returned by
+<code>accept</code>.</p>
+
+<p>The first two examples support IPv4 only.</p>
+
+<pre>
+# Echo server program
+import socket
+
+HOST = ''                 # Symbolic name meaning the local host
+PORT = 50007              # Arbitrary non-privileged port
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.bind((HOST, PORT))
+s.listen(1)
+conn, addr = s.accept()
+print 'Connected by', addr
+while 1:
+    data = conn.recv(1024)
+    if not data: break
+    conn.send(data)
+conn.close()
+</pre>
+
+<pre>
+# Echo client program
+import socket
+
+HOST = 'daring.cwi.nl'    # The remote host
+PORT = 50007              # The same port as used by the server
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.connect((HOST, PORT))
+s.send('Hello, world')
+data = s.recv(1024)
+s.close()
+print 'Received', repr(data)
+</pre>
+
+<p>The next two examples are identical to the above two, but
+support both IPv4 and IPv6. The server side will listen to the
+first address family available (it should listen to both instead).
+On most of IPv6-ready systems, IPv6 will take precedence and the
+server may not accept IPv4 traffic. The client side will try to
+connect to the all addresses returned as a result of the name
+resolution, and sends traffic to the first one connected
+successfully.</p>
+
+<pre>
+# Echo server program
+import socket
+import sys
+
+HOST = ''                 # Symbolic name meaning the local host
+PORT = 50007              # Arbitrary non-privileged port
+s = None
+for res in socket.getaddrinfo(HOST, PORT, socket.AF_UNSPEC, socket.SOCK_STREAM, 0, socket.AI_PASSIVE):
+    af, socktype, proto, canonname, sa = res
+    try:
+    s = socket.socket(af, socktype, proto)
+    except socket.error, msg:
+    s = None
+    continue
+    try:
+    s.bind(sa)
+    s.listen(1)
+    except socket.error, msg:
+    s.close()
+    s = None
+    continue
+    break
+if s is None:
+    print 'could not open socket'
+    sys.exit(1)
+conn, addr = s.accept()
+print 'Connected by', addr
+while 1:
+    data = conn.recv(1024)
+    if not data: break
+    conn.send(data)
+conn.close()
+</pre>
+
+<pre>
+# Echo client program
+import socket
+import sys
+
+HOST = 'daring.cwi.nl'    # The remote host
+PORT = 50007              # The same port as used by the server
+s = None
+for res in socket.getaddrinfo(HOST, PORT, socket.AF_UNSPEC, socket.SOCK_STREAM):
+    af, socktype, proto, canonname, sa = res
+    try:
+    s = socket.socket(af, socktype, proto)
+    except socket.error, msg:
+    s = None
+    continue
+    try:
+    s.connect(sa)
+    except socket.error, msg:
+    s.close()
+    s = None
+    continue
+    break
+if s is None:
+    print 'could not open socket'
+    sys.exit(1)
+s.send('Hello, world')
+data = s.recv(1024)
+s.close()
+print 'Received', repr(data)
+</pre>
+</div>
+</div></body></html>

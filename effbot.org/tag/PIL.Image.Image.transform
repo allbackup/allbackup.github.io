@@ -1,0 +1,50 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>The Image&nbsp;Module</title> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> <div style='padding-top: 1em'> <p class="note" align="center">This is an excerpt from  <a href="/imagingbook/">The Python Imaging Library Handbook</a>, taken from the chapter <a href="/imagingbook/image.htm"><cite>The Image Module</cite></a>.</p> </div> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <h1 class="maintitle">The Image&nbsp;Module</h1> </div> <!-- yui-g --><h3 id="tag-Image.Image.transform">transform&#160;<a class="nav" href="http://effbot.org/imagingbook/image.htm#tag-Image.Image.transform" title="bookmark!">#</a></h3><div class="method" id="image-transform-method"><p><b>im.transform(size, method, data)</b>
+<span>&#8658; image</span></p><p><b>im.transform(size, method, data, filter)</b>
+<span>&#8658; image</span></p><p>Creates a new image with the given size, and the same mode as
+the original, and copies data to the new image using the given
+transform.</p><p>In the current version of PIL, the <i>method</i> argument can be
+<b>EXTENT</b> (cut out a rectangular subregion), <b>AFFINE</b> (affine
+transform), <b>QUAD</b> (map a quadrilateral to a rectangle),
+<b>MESH</b> (map a number of source quadrilaterals in one operation),
+or <b>PERSPECTIVE</b>.  The various methods are described below.</p><p>The filter argument defines how to filter pixels from the source
+image. In the current version, it can be <b>NEAREST</b> (use nearest
+neighbour), <b>BILINEAR</b> (linear interpolation in a 2x2
+environment), or <b>BICUBIC</b> (cubic spline interpolation in a 4x4
+environment). If omitted, or if the image has mode &#8220;1&#8221; or &#8220;P&#8221;, it is
+set to <b>NEAREST</b>.</p><p><b>im.transform(size, EXTENT, data)</b>
+<span>&#8658; image</span></p><p><b>im.transform(size, EXTENT, data, filter)</b>
+<span>&#8658; image</span></p><p>Extracts a subregion from the image.</p><p><i>Data</i> is a 4-tuple (<i>x0, y0, x1, y1</i>) which specifies
+two points in the input image&#8217;s coordinate system. The resulting
+image will contain data sampled from between these two points, such
+that (<i>x0, y0</i>) in the input image will end up at (0,0) in the
+output image, and (<i>x1, y1</i>) at <i>size</i>.</p><p>This method can be used to crop, stretch, shrink, or mirror an
+arbitrary rectangle in the current image. It is slightly slower than
+<b>crop</b>, but about as fast as a corresponding <b>resize</b>
+operation.</p><p><b>im.transform(size, AFFINE, data)</b>
+<span>&#8658; image</span></p><p><b>im.transform(size, AFFINE, data, filter)</b>
+<span>&#8658; image</span></p><p>Applies an affine transform to the image, and places the result
+in a new image with the given size.</p><p><i>Data</i> is a 6-tuple (<i>a, b, c, d, e, f</i>) which contain
+the first two rows from an affine transform matrix. For each pixel
+(<i>x, y</i>) in the output image, the new value is taken from a
+position (a <i>x</i> + b <i>y</i> + c, d <i>x</i> + e <i>y</i> + f)
+in the input image, rounded to nearest pixel.</p><p>This function can be used to scale, translate, rotate, and shear
+the original image.</p><p><b>im.transform(size, QUAD, data)</b>
+<span>&#8658; image</span></p><p><b>im.transform(size, QUAD, data, filter)</b>
+<span>&#8658; image</span></p><p>Maps a quadrilateral (a region defined by four corners) from the
+image to a rectangle with the given size.</p><p><i>Data</i> is an 8-tuple (<i>x0, y0, x1, y1, x2, y2, y3,
+y3</i>) which contain the upper left, lower left, lower right, and
+upper right corner of the source quadrilateral.</p><p><b>im.transform(size, MESH, data) image</b>
+<span>&#8658; image</span></p><p><b>im.transform(size, MESH, data, filter) image</b>
+<span>&#8658; image</span></p><p>Similar to <b>QUAD</b>, but data is a list of target
+rectangles and corresponding source quadrilaterals.</p><p><b>im.transform(size, PERSPECTIVE, data) image</b>
+<span>&#8658; image</span></p><p><b>im.transform(size, PERSPECTIVE, data, filter) image</b>
+<span>&#8658; image</span></p><p>Applies a perspective transform to the image, and places the result in a new image with the given size.
+</p><p>Data is a 8-tuple (<i>a, b, c, d, e, f, g, h</i>) which contains the 
+coefficients for a perspective transform. For each pixel (<i>x, y</i>)
+in the output image, the new value is taken from a position 
+(a <i>x</i> + b <i>y</i> + c)/(g <i>x</i> + h <i>y</i> + 1), (d <i>x</i> + e <i>y</i> + f)/(g <i>x</i> + h <i>y</i> + 1) 
+in the input image, rounded to nearest pixel.</p><p>This function can be used to change the 2D perspective of the 
+original image.</p></div><p>[<a href="/imagingbook/image.htm#tag-Image.Image.transform">read this entry in context</a>]</p><div class="yui-g"></div> <!-- yui-g --></div> <!-- content --> </div> <!-- yui-b --> </div> <!-- yui-main --> <div class="yui-b"> <div id='menu'> </div> <!-- menu --> </div> <!-- yui-b --> </div> <!-- bd --> <div id="ft"> <!-- footer --> <p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;"></a>
+this page was rendered by a <a href="http://www.djangoproject.com/">django</a> application in 0.00s 2012-04-04 16:39:38.018630.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p> </div> <!-- ft --> </div> <!-- doc --> <script src="/media/js/effbot-min.js" type="text/javascript"> </script> </body> </html>

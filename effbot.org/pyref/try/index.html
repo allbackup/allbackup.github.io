@@ -1,0 +1,32 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>The try&nbsp;statement</title> <script type="text/javascript">effbot_page_id=1699;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> <!--
+<p style='color: #8f8f8f; background: #fff5bf; padding: 5px 10px;'> <b>2008-07-15:</b> Selected articles
+
+now have experimental "comment" links in the left column and at the bottom.
+You're welcome to use them for commenting and voting on articles.
+For a bit more on this, see <a
+href="http://effbot.slinkset.com/links/Welcome_to_discuss_effbot_org">this
+page</a>. /F
+</p>
+--> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <h1 class="maintitle">The try&nbsp;statement</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p>The <strong>try</strong> statement specifies exception handlers and/or cleanup code for a group of statements:</p><p>Syntax (simplified):</p><blockquote><p><strong>try:</strong> <br />
+  &#160;&#160;&#160;&#160;<em><a href="syntax-suite">suite</a></em> <br />
+  [<strong>except</strong> [<em><a href="syntax-expression">expression</a></em> [<strong>,</strong> <em><a href="syntax-target">target</a></em>]] <strong>:</strong> <br />
+  &#160;&#160;&#160;&#160;<em><a href="syntax-suite">suite</a></em> ]&#8230; <br />
+  [<strong>else:</strong> <br />
+  &#160;&#160;&#160;&#160;<em><a href="syntax-suite">suite</a></em> ] <br />
+  [<strong>finally:</strong> <br />
+  &#160;&#160;&#160;&#160;<em><a href="syntax-suite">suite</a></em> ]</p></blockquote><p /><p>Changed in version 2.5: In previous versions of Python,
+try&#8230;except&#8230;finally did not work. try&#8230;except had to be nested in
+try&#8230;finally.</p><p>The <a href="except">except</a> clause(s) specify one or more exception handlers. When
+no exception occurs in the <a href="try">try</a> clause, no exception handler is
+executed. When an exception occurs in the <a href="try">try</a> suite, a search for an
+exception handler is started. This search inspects the <a href="except">except</a> clauses
+in turn until one is found that matches the exception. An
+expression-less <a href="except">except</a> clause, if present, must be last; it matches
+any exception. For an <a href="except">except</a> clause with an expression, that
+expression is evaluated, and the clause matches the exception if the
+resulting object is <q>compatible</q> with the exception. An object is
+compatible with an exception if it is the class or a base class of the
+exception object, a <a href="type-tuple">tuple</a> containing an item compatible
+with the exception,

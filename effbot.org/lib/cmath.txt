@@ -1,0 +1,133 @@
+
+@@module cmath
+
+<h1>cmath&#8212;Mathematical functions for complex numbers</h1>
+
+<p>This module is always available. It provides access to mathematical
+functions for complex numbers. The functions are:
+
+@@function acos(x)
+
+<p>Return the arc cosine of {@var x}. There are two branch cuts: One
+extends right from 1 along the real axis to &#8734;, continuous from below.
+The other extends left from -1 along the real axis to -&#8734;, continuous
+from above.
+
+@@function acosh(x)
+
+<p>Return the hyperbolic arc cosine of {@var x}. There is one branch
+cut, extending left from 1 along the real axis to -&#8734;, continuous from
+above.
+
+@@function asin(x)
+
+<p>Return the arc sine of {@var x}. This has the same branch cuts as
+{@link acos}.
+
+@@function asinh(x)
+
+<p>Return the hyperbolic arc sine of {@var x}. There are two branch
+cuts, extending left from &#177;{@code 1j} to &#177;-&#8734;{@code j}, both continuous
+from above. These branch cuts should be considered a bug to be corrected
+in a future release. The correct branch cuts should extend along the
+imaginary axis, one from {@code 1j} up to &#8734;{@code j} and continuous from
+the right, and one from -{@code 1j} down to -&#8734;{@code j} and continuous
+from the left.
+
+@@function atan(x)
+
+<p>Return the arc tangent of {@var x}. There are two branch cuts: One
+extends from {@code 1j} along the imaginary axis to &#8734;{@code j},
+continuous from the left. The other extends from -{@code 1j} along the
+imaginary axis to -&#8734;{@code j}, continuous from the left. (This should
+probably be changed so the upper cut becomes continuous from the other
+side.)
+
+@@function atanh(x)
+
+<p>Return the hyperbolic arc tangent of {@var x}. There are two branch
+cuts: One extends from 1 along the real axis to &#8734;, continuous from
+above. The other extends from -1 along the real axis to -&#8734;, continuous
+from above. (This should probably be changed so the right cut becomes
+continuous from the other side.)
+
+@@function cos(x)
+
+<p>Return the cosine of {@var x}.
+
+@@function cosh(x)
+
+<p>Return the hyperbolic cosine of {@var x}.
+
+@@function exp(x)
+
+<p>Return the exponential value {@code e**}{@var x}.
+
+@@function log(x[, base])
+
+<p>Returns the logarithm of {@var x} to the given {@var base}. If the
+{@var base} is not specified, returns the natural logarithm of {@var x}.
+There is one branch cut, from 0 along the negative real axis to -&#8734;,
+continuous from above.
+<blockquote>
+@since Changed in version 2.4: base
+argument added. <br />
+</blockquote>
+
+@@function log10(x)
+
+<p>Return the base-10 logarithm of {@var x}. This has the same branch
+cut as {@link log}.
+
+@@function sin(x)
+
+<p>Return the sine of {@var x}.
+
+@@function sinh(x)
+
+<p>Return the hyperbolic sine of {@var x}.
+
+@@function sqrt(x)
+
+<p>Return the square root of {@var x}. This has the same branch cut as
+{@link log}.
+
+@@function tan(x)
+
+<p>Return the tangent of {@var x}.
+
+@@function tanh(x)
+
+<p>Return the hyperbolic tangent of {@var x}.
+
+@@text 
+
+<p>The module also defines two mathematical constants:
+
+@@variable pi
+
+<p>The mathematical constant {@em pi}, as a real.
+
+@@variable e
+
+<p>The mathematical constant {@em e}, as a real.
+
+@@text 
+
+<p>Note that the selection of functions is similar, but not identical,
+to that in module {@link math}. The reason for having two modules is
+that some users aren't interested in complex numbers, and perhaps don't
+even know what they are. They would rather have {@code math.sqrt(-1)}
+raise an exception than return a complex number. Also note that the
+functions defined in {@link cmath} always return a complex number, even
+if the answer can be expressed as a real number (in which case the
+complex number has an imaginary part of zero).
+
+<p>A note on branch cuts: They are curves along which the given function
+fails to be continuous. They are a necessary feature of many complex
+functions. It is assumed that if you need to compute with complex
+functions, you will understand about branch cuts. Consult almost any
+(not too elementary) book on complex variables for enlightenment. For
+information of the proper choice of branch cuts for numerical purposes,
+a good reference should be the following:
+

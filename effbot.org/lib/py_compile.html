@@ -1,0 +1,66 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>py_compile</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-py_compile.html'>original</a> :::
+<a href='py_compile.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>py_compile&#8212;Compile Python source files</h1>
+
+<p>The <code>py_compile</code> module
+provides a function to generate a byte-code file from a source
+file, and another function used when the module source file is
+invoked as a script.</p>
+
+<p>Though not often needed, this function can be useful when
+installing modules for shared use, especially if some of the users
+may not have permission to write the byte-code cache files in the
+directory containing the source code.</p>
+</div>
+<dl><dt class="exception" id="PyCompileError"><b>exception PyCompileError</b> <tt class="nav"><a class="nav" href="py_compile.PyCompileError" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="exception">
+<p>Exception raised when an error occurs while attempting to
+compile the file.</p>
+</dd>
+<dt class="function" id="compile"><b>compile(file[, cfile[, dfile[, doraise]]])</b> <tt class="nav"><a class="nav" href="py_compile.compile" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Compile a source file to byte-code and write out the byte-code
+cache file. The source code is loaded from the file name <var>
+file</var>. The byte-code is written to <var>cfile</var>, which
+defaults to <var>file</var> <code>+</code> <code>'c'</code>
+(<code>'o'</code> if optimization is enabled in the current
+interpreter). If <var>dfile</var> is specified, it is used as the
+name of the source file in error messages instead of <var>
+file</var>. If <var>doraise</var> = True, a PyCompileError is
+raised when an error is encountered while compiling <var>
+file</var>. If <var>doraise</var> = False (the default), an error
+string is written to sys.stderr, but no exception is raised.</p>
+</dd>
+<dt class="function" id="main"><b>main([args])</b> <tt class="nav"><a class="nav" href="py_compile.main" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Compile several source files. The files named in <var>args</var>
+(or on the command line, if <var>args</var> is not specified) are
+compiled and the resulting bytecode is cached in the normal manner.
+This function does not search a directory structure to locate
+source files; it only compiles files named explicitly.</p>
+</dd>
+</dl><div class="text">
+<p>When this module is run as a script, the <a class="link" href="#main"><code>main</code></a> is used to compile all the files named on
+the command line. <span class="mark">@see</span> <code>Module compileall</code> Utilities to compile
+all Python source files in a directory tree.</p>
+</div>
+</div></body></html>

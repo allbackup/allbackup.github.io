@@ -1,0 +1,50 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>Why doesn't Python have a "with" statement like some other&nbsp;languages?</title></head><body data-page-id="944"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><p class="note" style="text-align: center"><strong>
+This is an old copy of the Python FAQ.  The information here may be
+outdated.
+</strong></p><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">Why doesn't Python have a "with" statement like some other&nbsp;languages?</h1></div><div class="yui-ge"><div class="yui-u first"><p>Starting with Python 2.5, Python does in fact have a <a href="/pyref/with.htm"><strong>with</strong></a>
+statement, which is used to control execution of code in a specific
+context:</p><pre><code>with manager() as ctx:
+    ... do something with ctx ...
+</code></pre><p>Here, the object returned by the call to manager will be called before
+and after the <a href="/pyref/with.htm"><strong>with</strong></a>-body has been executed, no matter what
+happens inside the statement.  This is primarily used for resource
+management.  For example, the following statement guarantees that the
+file is closed after the file has been processed:</p><pre><code>with open(filename) as f:
+    process(f.read())
+</code></pre><p>However, this article is about the kind of <b>with</b>-statement
+that&#8217;s available in Object Pascal and several other languages, where
+it is basically used to add the attributes of a given object to the
+current scope.  In pseudo-Python, it could look something like:</p><pre><code>with-object obj:
+    attrib1 = value
+    attrib2 = value
+</code></pre><p>where <em>attrib1</em> and <em>attrib2</em> would then refer to object attributes,
+rather than a local variable with the same name.</p><p>Unfortunately, there&#8217;s no obvious way to implement such construct for
+Python, since it would be ambiguous.</p><p>Some languages, such as Object Pascal, Delphi, and C++, use static
+types. So it is possible to know, in an unambiguous way, what member
+is being assigned in a &#8220;with&#8221; clause.  This is the main point &#8212; the
+compiler <em>always</em> knows the scope of every variable at compile time.</p><p>Python uses dynamic types. It is impossible to know in advance which
+attribute will be referenced at runtime.  Member attributes may be
+added or removed from objects on the fly.  This would make it
+impossible to know, from a simple reading, what attribute is being
+referenced &#8212; a local one, a global one, or a member attribute.</p><p>For instance, take the following incomplete snippet:</p><pre><code>def foo(a):
+   with-object a:
+      print x
+</code></pre><p>The snippet assumes that &#8220;a&#8221; must have a member attribute called
+&#8220;x&#8221;.  However, there is nothing in Python that guarantees that. What
+should happen if &#8220;a&#8221; is, let us say, an integer?  And if I have a
+global variable named &#8220;x&#8221;, will it end up being used inside the with
+block?  As you see, the dynamic nature of Python makes such choices
+much harder.</p><p>The primary benefit of &#8220;with-object&#8221; and similar language features
+(reduction of code volume) can, however, easily be achieved in Python
+by assignment. Instead of:</p><pre class="python">function(args).dict[key][index].a = 21
+function(args).dict[key][index].b = 42
+function(args).dict[key][index].c = 63</pre><p>write this:</p><pre class="python">ref = function(args).dict[key][index]
+ref.a = 21
+ref.b = 42
+ref.c = 63</pre><p>This also has the side-effect of increasing execution speed because
+name bindings are resolved at run-time in Python, and the second
+version only needs to perform the resolution once.  If the referenced
+object does not have <em>a</em>, <em>b</em> and <em>c</em> attributes, of course, the end
+result is still a run-time <a href="/pyref/AttributeError.htm"><strong>AttributeError</strong></a> exception.</p><p>CATEGORY: general</p><p>CATEGORY: design</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to pyfaq index page.">::: pyfaq :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

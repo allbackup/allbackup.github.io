@@ -1,0 +1,247 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>types</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-types.html'>original</a> :::
+<a href='types.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>types&#8212;Names for built-in types</h1>
+
+<p>This module defines names for some object types that are used by
+the standard Python interpreter, but not for the types defined by
+various extension modules. Also, it does not include some of the
+types that arise during processing such the <code>
+listiterator</code> type. It is safe to use "<code>from types
+import *</code>" -- the module does not export any names besides
+the ones listed here. New names exported by future versions of this
+module will all end in "<code>Type</code>".</p>
+
+<p>Typical use is for functions that do different things depending
+on their argument types, like the following:</p>
+
+<pre>
+from types import *
+def delete(mylist, item):
+    if type(item) is IntType:
+       del mylist[item]
+    else:
+       mylist.remove(item)
+</pre>
+
+<p>Starting in Python 2.2, built-in factory functions such as <code>int</code> and <code>str</code> are also names for the corresponding types.
+This is now the preferred way to access the type instead of using
+the <code>types</code> module.
+Accordingly, the example above should be written as follows:</p>
+
+<pre>
+def delete(mylist, item):
+    if isinstance(item, int):
+       del mylist[item]
+    else:
+       mylist.remove(item)
+</pre>
+
+<p>The module defines the following names:</p>
+</div>
+<dl><dt class="variable" id="NoneType"><b>NoneType</b> <tt class="nav"><a class="nav" href="types.NoneType" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>The type of <code>None</code>.</p>
+</dd>
+<dt class="variable" id="TypeType"><b>TypeType</b> <tt class="nav"><a class="nav" href="types.TypeType" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>The type of type objects (such as returned by <code>type</code>).</p>
+</dd>
+<dt class="variable" id="BooleanType"><b>BooleanType</b> <tt class="nav"><a class="nav" href="types.BooleanType" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>The type of the <code>bool</code> values
+<code>True</code> and <code>False</code>;
+this is an alias of the built-in <code>
+bool</code> function.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.3.<br />
+</blockquote>
+</dd>
+<dt class="variable" id="IntType"><b>IntType</b> <tt class="nav"><a class="nav" href="types.IntType" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>The type of integers (e.g. <code>1</code>).</p>
+</dd>
+<dt class="variable" id="LongType"><b>LongType</b> <tt class="nav"><a class="nav" href="types.LongType" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>The type of long integers (e.g. <code>1L</code>).</p>
+</dd>
+<dt class="variable" id="FloatType"><b>FloatType</b> <tt class="nav"><a class="nav" href="types.FloatType" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>The type of floating point numbers (e.g. <code>1.0</code>).</p>
+</dd>
+<dt class="variable" id="ComplexType"><b>ComplexType</b> <tt class="nav"><a class="nav" href="types.ComplexType" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>The type of complex numbers (e.g. <code>1.0j</code>). This is
+not defined if Python was built without complex number support.</p>
+</dd>
+<dt class="variable" id="StringType"><b>StringType</b> <tt class="nav"><a class="nav" href="types.StringType" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>The type of character strings (e.g. <code>'Spam'</code>).</p>
+</dd>
+<dt class="variable" id="UnicodeType"><b>UnicodeType</b> <tt class="nav"><a class="nav" href="types.UnicodeType" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>The type of Unicode character strings (e.g. <code>
+u'Spam'</code>). This is not defined if Python was built without
+Unicode support.</p>
+</dd>
+<dt class="variable" id="TupleType"><b>TupleType</b> <tt class="nav"><a class="nav" href="types.TupleType" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>The type of tuples (e.g. <code>(1, 2, 3, 'Spam')</code>).</p>
+</dd>
+<dt class="variable" id="ListType"><b>ListType</b> <tt class="nav"><a class="nav" href="types.ListType" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>The type of lists (e.g. <code>[0, 1, 2, 3]</code>).</p>
+</dd>
+<dt class="variable" id="DictType"><b>DictType</b> <tt class="nav"><a class="nav" href="types.DictType" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>The type of dictionaries (e.g. <code>{'Bacon': 1, 'Ham':
+0</code>}).</p>
+</dd>
+<dt class="variable" id="DictionaryType"><b>DictionaryType</b> <tt class="nav"><a class="nav" href="types.DictionaryType" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>An alternate name for <code>DictType</code>.</p>
+</dd>
+<dt class="variable" id="FunctionType"><b>FunctionType</b> <tt class="nav"><a class="nav" href="types.FunctionType" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>The type of user-defined functions and lambdas.</p>
+</dd>
+<dt class="variable" id="LambdaType"><b>LambdaType</b> <tt class="nav"><a class="nav" href="types.LambdaType" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>An alternate name for <code>FunctionType</code>.</p>
+</dd>
+<dt class="variable" id="GeneratorType"><b>GeneratorType</b> <tt class="nav"><a class="nav" href="types.GeneratorType" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>The type of generator-iterator objects, produced by calling a
+generator function.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.2.<br />
+</blockquote>
+</dd>
+<dt class="variable" id="CodeType"><b>CodeType</b> <tt class="nav"><a class="nav" href="types.CodeType" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>The type for code objects such as returned by <code>compile</code>.</p>
+</dd>
+<dt class="variable" id="ClassType"><b>ClassType</b> <tt class="nav"><a class="nav" href="types.ClassType" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>The type of user-defined classes.</p>
+</dd>
+<dt class="variable" id="InstanceType"><b>InstanceType</b> <tt class="nav"><a class="nav" href="types.InstanceType" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>The type of instances of user-defined classes.</p>
+</dd>
+<dt class="variable" id="MethodType"><b>MethodType</b> <tt class="nav"><a class="nav" href="types.MethodType" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>The type of methods of user-defined class instances.</p>
+</dd>
+<dt class="variable" id="UnboundMethodType"><b>UnboundMethodType</b> <tt class="nav"><a class="nav" href="types.UnboundMethodType" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>An alternate name for <code>MethodType</code>.</p>
+</dd>
+<dt class="variable" id="BuiltinFunctionType"><b>BuiltinFunctionType</b> <tt class="nav"><a class="nav" href="types.BuiltinFunctionType" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>The type of built-in functions like <code>len</code> or <code>
+sys.exit</code>.</p>
+</dd>
+<dt class="variable" id="BuiltinMethodType"><b>BuiltinMethodType</b> <tt class="nav"><a class="nav" href="types.BuiltinMethodType" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>An alternate name for <code>BuiltinFunction</code>.</p>
+</dd>
+<dt class="variable" id="ModuleType"><b>ModuleType</b> <tt class="nav"><a class="nav" href="types.ModuleType" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>The type of modules.</p>
+</dd>
+<dt class="variable" id="FileType"><b>FileType</b> <tt class="nav"><a class="nav" href="types.FileType" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>The type of open file objects such as <code>
+sys.stdout</code>.</p>
+</dd>
+<dt class="variable" id="XRangeType"><b>XRangeType</b> <tt class="nav"><a class="nav" href="types.XRangeType" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>The type of range objects returned by <code>xrange</code>.</p>
+</dd>
+<dt class="variable" id="SliceType"><b>SliceType</b> <tt class="nav"><a class="nav" href="types.SliceType" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>The type of objects returned by <code>slice</code>.</p>
+</dd>
+<dt class="variable" id="EllipsisType"><b>EllipsisType</b> <tt class="nav"><a class="nav" href="types.EllipsisType" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>The type of <code>Ellipsis</code>.</p>
+</dd>
+<dt class="variable" id="TracebackType"><b>TracebackType</b> <tt class="nav"><a class="nav" href="types.TracebackType" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>The type of traceback objects such as found in <code>
+sys.exc_traceback</code>.</p>
+</dd>
+<dt class="variable" id="FrameType"><b>FrameType</b> <tt class="nav"><a class="nav" href="types.FrameType" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>The type of frame objects such as found in <code>
+tb.tb_frame</code> if <code>tb</code> is a traceback object.</p>
+</dd>
+<dt class="variable" id="BufferType"><b>BufferType</b> <tt class="nav"><a class="nav" href="types.BufferType" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>The type of buffer objects created by the <code>buffer</code> function.</p>
+</dd>
+<dt class="variable" id="StringTypes"><b>StringTypes</b> <tt class="nav"><a class="nav" href="types.StringTypes" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>A sequence containing <code>StringType</code> and <code>
+UnicodeType</code> used to facilitate easier checking for any
+string object. Using this is more portable than using a sequence of
+the two string types constructed elsewhere since it only contains
+<code>UnicodeType</code> if it has been built in the running
+version of Python. For example: <code>isinstance(s,
+types.StringTypes)</code>.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.2.<br />
+</blockquote>
+</dd>
+</dl></div></body></html>

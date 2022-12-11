@@ -1,0 +1,117 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>fm</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-fm.html'>original</a> :::
+<a href='fm.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>fm&#8212;Font Manager interface</h1>
+
+<p>Availability: IRIX.</p>
+
+<p>This module provides access to the IRIS <em>Font Manager</em>
+library. It is available only on Silicon Graphics machines. See
+also: <em>4Sight User's Guide</em>, section 1, chapter 5:
+&#8220;Using the IRIS Font Manager.&#8221;</p>
+
+<p>This is not yet a full interface to the IRIS Font Manager. Among
+the unsupported features are: matrix operations; cache operations;
+character operations (use string operations instead); some details
+of font info; individual glyph metrics; and printer matching.</p>
+
+<p>It supports the following operations:</p>
+</div>
+<dl><dt class="function" id="init"><b>init()</b> <tt class="nav"><a class="nav" href="fm.init" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Initialization function. Calls <code>c:fminit</code>. It is normally not necessary to
+call this function, since it is called automatically the first time
+the <code>fm</code> module is imported.</p>
+</dd>
+<dt class="function" id="findfont"><b>findfont(fontname)</b> <tt class="nav"><a class="nav" href="fm.findfont" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return a font handle object. Calls <code>
+fmfindfont(</code><var>fontname</var>).</p>
+</dd>
+<dt class="function" id="enumerate"><b>enumerate()</b> <tt class="nav"><a class="nav" href="fm.enumerate" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Returns a list of available font names. This is an interface to
+<code>c:fmenumerate</code>.</p>
+</dd>
+<dt class="function" id="prstr"><b>prstr(string)</b> <tt class="nav"><a class="nav" href="fm.prstr" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Render a string using the current font (see the <a class="link" href="#setfont"><code>setfont</code></a> font handle method below). Calls
+<code>fmprstr(</code><var>string</var>).</p>
+</dd>
+<dt class="function" id="setpath"><b>setpath(string)</b> <tt class="nav"><a class="nav" href="fm.setpath" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Sets the font search path. Calls <code>
+fmsetpath(</code><var>string</var>). (XXX Does not work!?!)</p>
+</dd>
+<dt class="function" id="fontpath"><b>fontpath()</b> <tt class="nav"><a class="nav" href="fm.fontpath" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Returns the current font search path.</p>
+</dd>
+</dl><div class="text">
+<p>Font handle objects support the following operations:</p>
+</div>
+<dl><dt class="function" id="scalefont"><b>scalefont(factor)</b> <tt class="nav"><a class="nav" href="fm.scalefont" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Returns a handle for a scaled version of this font. Calls <code>
+fmscalefont(</code><var>fh</var>, <var>factor</var>).</p>
+</dd>
+<dt class="function" id="setfont"><b>setfont()</b> <tt class="nav"><a class="nav" href="fm.setfont" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Makes this font the current font. Note: the effect is undone
+silently when the font handle object is deleted. Calls <code>
+fmsetfont(</code><var>fh</var>).</p>
+</dd>
+<dt class="function" id="getfontname"><b>getfontname()</b> <tt class="nav"><a class="nav" href="fm.getfontname" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Returns this font's name. Calls <code>
+fmgetfontname(</code><var>fh</var>).</p>
+</dd>
+<dt class="function" id="getcomment"><b>getcomment()</b> <tt class="nav"><a class="nav" href="fm.getcomment" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Returns the comment string associated with this font. Raises an
+exception if there is none. Calls <code>
+fmgetcomment(</code><var>fh</var>).</p>
+</dd>
+<dt class="function" id="getfontinfo"><b>getfontinfo()</b> <tt class="nav"><a class="nav" href="fm.getfontinfo" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Returns a tuple giving some pertinent data about this font. This
+is an interface to <code>fmgetfontinfo()</code>. The returned tuple
+contains the following numbers: <code>
+(</code><var>printermatched</var>, <var>fixed_width</var>, <var>
+xorig</var>, <var>yorig</var>, <var>xsize</var>, <var>ysize</var>,
+<var>height</var>, <var>nglyphs</var><code>)</code>.</p>
+</dd>
+<dt class="function" id="getstrwidth"><b>getstrwidth(string)</b> <tt class="nav"><a class="nav" href="fm.getstrwidth" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Returns the width, in pixels, of <var>string</var> when drawn in
+this font. Calls <code>fmgetstrwidth(</code><var>fh</var>, <var>
+string</var>).</p>
+</dd>
+</dl></div></body></html>

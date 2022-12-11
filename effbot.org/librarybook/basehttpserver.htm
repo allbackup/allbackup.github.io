@@ -1,0 +1,60 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>The BaseHTTPServer&nbsp;module</title></head><body data-page-id="473"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">The BaseHTTPServer&nbsp;module</h1></div><div class="yui-ge"><div class="yui-u first"><p>This is a basic framework for HTTP servers, built on top of the
+<b><a href="socketserver.htm">SocketServer</a></b> framework.</p><p>The following example generates a random message each time you
+reload the page. The <b>path</b> variable contains the current
+URL, which you can use to generate different contents for different
+URLs (as it stands, the script returns an error page for anything
+but the root path).</p><div class="example">
+<b style="example">Example: Using the
+BaseHTTPServer module</b>
+<pre>
+# File: <a href="basehttpserver/basehttpserver-example-1.py">basehttpserver-example-1.py</a>
+
+import BaseHTTPServer
+import cgi, random, sys
+
+MESSAGES = [
+    "That's as maybe, it's still a frog.",
+    "Albatross! Albatross! Albatross!",
+    "It's Wolfgang Amadeus Mozart",
+    "A pink form from Reading.",
+    "Hello people, and welcome to 'It's a Tree'"
+    "I simply stare at the brick and it goes to sleep.",
+]
+
+class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
+
+    def do_GET(self):
+        if self.path != "/":
+            self.send_error(404, "File not found")
+            return
+        self.send_response(200)
+        self.send_header("Content-type", "text/html")
+        self.end_headers()
+        try:
+            # <i>redirect stdout to client</i>
+            stdout = sys.stdout
+            sys.stdout = self.wfile
+            self.makepage()
+        finally:
+            sys.stdout = stdout # <i>restore</i>
+        
+    def makepage(self):
+        # <i>generate a random message</i>
+        tagline = random.choice(MESSAGES)
+        print "&lt;html&gt;"
+        print "&lt;body&gt;"
+        print "&lt;p&gt;Today's quote: "
+        print "&lt;i&gt;%s&lt;/i&gt;" % cgi.escape(tagline)
+        print "&lt;/body&gt;"
+        print "&lt;/html&gt;"
+
+PORT = 8000
+
+httpd = BaseHTTPServer.HTTPServer(("", PORT), Handler)
+print "serving at port", PORT
+httpd.serve_forever()
+</pre></div><p>See the <b><a href="simplehttpserver.htm">SimpleHTTPServer</a></b>
+and <b><a href="cgihttpserver.htm">CGIHTTPServer</a></b>
+modules for more extensive HTTP frameworks.</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to librarybook index page.">::: librarybook :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

@@ -1,0 +1,76 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>The StringIO&nbsp;module</title></head><body data-page-id="668"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">The StringIO&nbsp;module</h1></div><div class="yui-ge"><div class="yui-u first"><p>This module implements an in-memory file object. This object can
+be used as input or output to most functions that expect a standard
+file object.</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><div class="example wide">
+<b style="example">Example: Using the StringIO
+module to read from a static file</b>
+<pre class="wide">
+# File: <a href="stringio/stringio-example-1.py">stringio-example-1.py</a>
+
+import StringIO
+
+MESSAGE = "That man is depriving a village somewhere of a computer scientist."
+
+file = StringIO.StringIO(MESSAGE)
+
+print file.read()
+
+</pre><pre class="computeroutput wide" moreinfo="NONE">
+$ python stringio-example-1.py
+That man is depriving a village somewhere of a computer scientist.
+</pre></div></div><div class="yui-ge"><div class="yui-u first"><p>The StringIO class implements memory file versions of all
+methods available for built-in file objects, plus a
+<b>getvalue</b> method that returns the internal string
+value.</p><div class="example">
+<b style="example">Example: Using the StringIO
+module to write to a memory file</b>
+<pre>
+# File: <a href="stringio/stringio-example-2.py">stringio-example-2.py</a>
+
+import StringIO
+
+file = StringIO.StringIO()
+file.write("This man is no ordinary man. ")
+file.write("This is Mr. F. G. Superman.")
+
+print file.getvalue()
+
+</pre><pre class="computeroutput" moreinfo="NONE">
+$ python stringio-example-2.py
+This man is no ordinary man. This is Mr. F. G. Superman.
+</pre></div><p><b>StringIO</b> can be used to capture redirected output from
+the Python interpreter:</p><div class="example">
+<b style="example">Example: Using the StringIO
+module to capture output</b>
+<pre>
+# File: <a href="stringio/stringio-example-3.py">stringio-example-3.py</a>
+
+import StringIO
+import string, sys
+
+stdout = sys.stdout
+
+sys.stdout = file = StringIO.StringIO()
+
+print """
+According to Gbaya folktales, trickery and guile
+are the best ways to defeat the python, king of
+snakes, which was hatched from a dragon at the
+world's start. -- National Geographic, May 1997
+"""
+
+sys.stdout = stdout
+
+print string.upper(file.getvalue())
+
+</pre><pre class="computeroutput" moreinfo="NONE">
+$ python stringio-example-3.py
+ACCORDING TO GBAYA FOLKTALES, TRICKERY AND GUILE
+ARE THE BEST WAYS TO DEFEAT THE PYTHON, KING OF
+SNAKES, WHICH WAS HATCHED FROM A DRAGON AT THE
+WORLD'S START. -- NATIONAL GEOGRAPHIC, MAY 1997
+</pre></div><p>It&#8217;s often good idea to wrap the code that generates output in a
+try-finally statement, and restore the original sys.stdout in the finally
+clause.  In this way, stdout will be restored even if the output operation
+fails.</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to librarybook index page.">::: librarybook :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

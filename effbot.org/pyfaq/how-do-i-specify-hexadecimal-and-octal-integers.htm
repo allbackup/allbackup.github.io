@@ -1,0 +1,18 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>How do I specify hexadecimal and octal&nbsp;integers?</title></head><body data-page-id="820"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><p class="note" style="text-align: center"><strong>
+This is an old copy of the Python FAQ.  The information here may be
+outdated.
+</strong></p><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">How do I specify hexadecimal and octal&nbsp;integers?</h1></div><div class="yui-ge"><div class="yui-u first"><p>To specify an octal digit, precede the octal value with a zero. For example, to set the variable &#8220;a&#8221; to the octal value &#8220;10&#8221; (8 in decimal), type:</p><pre class="python">&gt;&gt;&gt; a = 010
+&gt;&gt;&gt; a
+8</pre><p>Hexadecimal is just as easy. Simply precede the hexadecimal number with a zero, and then a lower or uppercase &#8220;x&#8221;. Hexadecimal digits can be specified in lower or uppercase. For example, in the Python interpreter:</p><pre class="python">&gt;&gt;&gt; a = 0xa5
+&gt;&gt;&gt; a
+165
+&gt;&gt;&gt; b = 0XB2
+&gt;&gt;&gt; b
+178</pre><p>If you have the integer value in a string, you can use <a href="/pyref/int.htm"><strong>int</strong></a> with the base set to zero to convert using the above rules:</p><pre class="python">&gt;&gt;&gt; int(<span class="pystring">"10"</span>, 0)
+10
+&gt;&gt;&gt; int(<span class="pystring">"010"</span>, 0)
+8
+&gt;&gt;&gt; int(<span class="pystring">"0x10"</span>, 0)
+16</pre><p>CATEGORY: programming</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to pyfaq index page.">::: pyfaq :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

@@ -1,0 +1,36 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>The statvfs&nbsp;module</title></head><body data-page-id="666"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">The statvfs&nbsp;module</h1></div><div class="yui-ge"><div class="yui-u first"><p>This module contains a number of constants and test functions
+that can be used with the optional <b>os.statvfs</b> function,
+which returns information about a file system.</p><div class="example">
+<b style="example">Example: Using the statvfs
+module</b>
+<pre>
+# File: <a href="statvfs/statvfs-example-1.py">statvfs-example-1.py</a>
+
+import statvfs
+import os
+
+st = os.statvfs(".")
+
+print "preferred block size", "=&gt;", st[statvfs.F_BSIZE]
+print "fundamental block size", "=&gt;", st[statvfs.F_FRSIZE]
+print "total blocks", "=&gt;", st[statvfs.F_BLOCKS]
+print "total free blocks", "=&gt;", st[statvfs.F_BFREE]
+print "available blocks", "=&gt;", st[statvfs.F_BAVAIL]
+print "total file nodes", "=&gt;", st[statvfs.F_FILES]
+print "total free nodes", "=&gt;", st[statvfs.F_FFREE]
+print "available nodes", "=&gt;", st[statvfs.F_FAVAIL]
+print "max file name length", "=&gt;", st[statvfs.F_NAMEMAX]
+
+</pre><pre class="computeroutput" moreinfo="NONE">
+preferred block size =&gt; 8192
+fundamental block size =&gt; 1024
+total blocks =&gt; 749443
+total free blocks =&gt; 110442
+available blocks =&gt; 35497
+total file nodes =&gt; 92158
+total free nodes =&gt; 68164
+available nodes =&gt; 68164
+max file name length =&gt; 255
+</pre></div></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to librarybook index page.">::: librarybook :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

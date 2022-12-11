@@ -1,0 +1,72 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>uu</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-uu.html'>original</a> :::
+<a href='uu.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>uu&#8212;Encode and decode uuencode files</h1>
+
+<p>This module encodes and decodes files in uuencode format,
+allowing arbitrary binary data to be transferred over ASCII-only
+connections. Wherever a file argument is expected, the methods
+accept a file-like object. For backwards compatibility, a string
+containing a pathname is also accepted, and the corresponding file
+will be opened for reading and writing; the pathname <code>
+'-'</code> is understood to mean the standard input or output.
+However, this interface is deprecated; it's better for the caller
+to open the file itself, and be sure that, when required, the mode
+is <code>'rb'</code> or <code>'wb'</code> on Windows.</p>
+
+<p>This code was contributed by Lance Ellinghouse, and modified by
+Jack Jansen.</p>
+
+<p>The <code>uu</code> module defines the
+following functions:</p>
+</div>
+<dl><dt class="function" id="encode"><b>encode(in_file, out_file[, name[, mode]])</b> <tt class="nav"><a class="nav" href="uu.encode" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Uuencode file <var>in_file</var> into file <var>out_file</var>.
+The uuencoded file will have the header specifying <var>name</var>
+and <var>mode</var> as the defaults for the results of decoding the
+file. The default defaults are taken from <var>in_file</var>, or
+<code>'-'</code> and <code>0666</code> respectively.</p>
+</dd>
+<dt class="function" id="decode"><b>decode(in_file[, out_file[, mode[, quiet]]])</b> <tt class="nav"><a class="nav" href="uu.decode" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>This call decodes uuencoded file <var>in_file</var> placing the
+result on file <var>out_file</var>. If <var>out_file</var> is a
+pathname, <var>mode</var> is used to set the permission bits if the
+file must be created. Defaults for <var>out_file</var> and <var>
+mode</var> are taken from the uuencode header. However, if the file
+specified in the header already exists, a <code>uu.Error</code> is raised.</p>
+
+<p><a class="link" href="#decode"><code>decode</code></a> may print a
+warning to standard error if the input was produced by an incorrect
+uuencoder and Python could recover from that error. Setting <var>
+quiet</var> to a true value silences this warning.</p>
+</dd>
+<dt class="exception" id="Error"><b>exception Error()</b> <tt class="nav"><a class="nav" href="uu.Error" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="exception">
+<p>Subclass of <code>
+exceptions.Exception</code>, this can be raised by <code>uu.decode</code> under various situations, such
+as described above, but also including a badly formatted header, or
+truncated input file.</p>
+</dd>
+</dl><div class="text"><span class="mark">@see</span> <code>Module binascii</code> Support module containing
+ASCII-to-binary and binary-to-ASCII conversions.</div>
+</div></body></html>

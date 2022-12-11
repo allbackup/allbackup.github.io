@@ -1,0 +1,158 @@
+
+@@module base64
+
+<h1>base64&#8212;RFC 3548: Base16, Base32, Base64 Data Encodings</h1>
+
+<p>This module provides data encoding and decoding as specified in
+{@link http://www.faqs.org/rfcs/rfc3548.html RFC 3548}. This standard
+defines the Base16, Base32, and Base64 algorithms for encoding and
+decoding arbitrary binary strings into text strings that can be safely
+sent by email, used as parts of URLs, or included as part of an HTTP
+POST request. The encoding algorithm is not the same as the uuencode
+program.
+
+<p>There are two interfaces provided by this module. The modern
+interface supports encoding and decoding string objects using all three
+alphabets. The legacy interface provides for encoding and decoding to
+and from file-like objects as well as strings, but only using the Base64
+standard alphabet.
+
+<p>The modern interface provides:
+
+@@function b64encode(s[, altchars])
+
+<p>Encode a string use Base64.
+
+<p>{@var s} is the string to encode. Optional {@var altchars} must be a
+string of at least length 2 (additional characters are ignored) which
+specifies an alternative alphabet for the {@code +} and {@code /}
+characters. This allows an application to e.g. generate URL or
+filesystem safe Base64 strings. The default is {@link None}, for which
+the standard Base64 alphabet is used.
+
+<p>The encoded string is returned.
+
+@@function b64decode(s[, altchars])
+
+<p>Decode a Base64 encoded string.
+
+<p>{@var s} is the string to decode. Optional {@var altchars} must be a
+string of at least length 2 (additional characters are ignored) which
+specifies the alternative alphabet used instead of the {@code +} and
+{@code /} characters.
+
+<p>The decoded string is returned. A {@link exceptions.TypeError} is
+raised if {@var s} were incorrectly padded or if there are non-alphabet
+characters present in the string.
+
+@@function standard_b64encode(s)
+
+<p>Encode string {@var s} using the standard Base64 alphabet.
+
+@@function standard_b64decode(s)
+
+<p>Decode string {@var s} using the standard Base64 alphabet.
+
+@@function urlsafe_b64encode(s)
+
+<p>Encode string {@var s} using a URL-safe alphabet, which substitutes
+{@code -} instead of {@code +} and {@code _} instead of {@code /} in the
+standard Base64 alphabet.
+
+@@function urlsafe_b64decode(s)
+
+<p>Decode string {@var s} using a URL-safe alphabet, which substitutes
+{@code -} instead of {@code +} and {@code _} instead of {@code /} in the
+standard Base64 alphabet.
+
+@@function b32encode(s)
+
+<p>Encode a string using Base32. {@var s} is the string to encode. The
+encoded string is returned.
+
+@@function b32decode(s[, casefold[, map01]])
+
+<p>Decode a Base32 encoded string.
+
+<p>{@var s} is the string to decode. Optional {@var casefold} is a flag
+specifying whether a lowercase alphabet is acceptable as input. For
+security purposes, the default is {@code False}.
+
+<p>{@link http://www.faqs.org/rfcs/rfc3548.html RFC 3548} allows for
+optional mapping of the digit 0 (zero) to the letter O (oh), and for
+optional mapping of the digit 1 (one) to either the letter I (eye) or
+letter L (el). The optional argument {@var map01} when not {@link None},
+specifies which letter the digit 1 should be mapped to (when map01 is
+not {@link None}, the digit 0 is always mapped to the letter O). For
+security purposes the default is {@link None}, so that 0 and 1 are not
+allowed in the input.
+
+<p>The decoded string is returned. A {@link exceptions.TypeError} is
+raised if {@var s} were incorrectly padded or if there are non-alphabet
+characters present in the string.
+
+@@function b16encode(s)
+
+<p>Encode a string using Base16.
+
+<p>{@var s} is the string to encode. The encoded string is returned.
+
+@@function b16decode(s[, casefold])
+
+<p>Decode a Base16 encoded string.
+
+<p>{@var s} is the string to decode. Optional {@var casefold} is a flag
+specifying whether a lowercase alphabet is acceptable as input. For
+security purposes, the default is {@code False}.
+
+<p>The decoded string is returned. A {@link exceptions.TypeError} is
+raised if {@var s} were incorrectly padded or if there are non-alphabet
+characters present in the string.
+
+@@text 
+
+<p>The legacy interface:
+
+@@function decode(input, output)
+
+<p>Decode the contents of the {@var input} file and write the resulting
+binary data to the {@var output} file. {@var input} and {@var output}
+must either be file objects or objects that mimic the file object
+interface. {@var input} will be read until {@var input}.read() returns
+an empty string.
+
+@@function decodestring(s)
+
+<p>Decode the string {@var s}, which must contain one or more lines of
+base64 encoded data, and return a string containing the resulting binary
+data.
+
+@@function encode(input, output)
+
+<p>Encode the contents of the {@var input} file and write the resulting
+base64 encoded data to the {@var output} file. {@var input} and {@var
+output} must either be file objects or objects that mimic the file
+object interface. {@var input} will be read until {@var input}.read()
+returns an empty string. {@link encode} returns the encoded data plus a
+trailing newline character ({@code '\n'}).
+
+@@function encodestring(s)
+
+<p>Encode the string {@var s}, which can contain arbitrary binary data,
+and return a string containing one or more lines of base64-encoded data.
+{@link encodestring} returns a string containing one or more lines of
+base64-encoded data always including an extra trailing newline ({@code
+'\n'}).
+
+@@text 
+
+@see 
+{@link binascii Module binascii}
+
+Support module containing ASCII-to-binary and binary-to-ASCII
+conversions.
+@see 
+{@link http://www.faqs.org/rfcs/rfc1521.html RFC 1521, MIME (Multipurpose Internet Mail Extensions) Part One: Mechanisms for Specifying and Describing the Format of Internet Message Bodies}
+
+Section 5.2, &#8220;Base64 Content-Transfer-Encoding,&#8221; provides
+the definition of the base64 encoding.

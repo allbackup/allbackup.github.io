@@ -1,0 +1,81 @@
+
+@@module whrandom
+
+<h1>whrandom&#8212;Pseudo-random number generator</h1>
+@@error unexpected div versionnote
+
+
+<p class='note'><b>Note:</b> This module was an implementation detail of
+the {@link random} module in releases of Python prior to 2.1. It is no
+longer used. Please do not use this module directly; use {@link random}
+instead.
+
+<p>This module implements a Wichmann-Hill pseudo-random number generator
+class that is also named {@link whrandom}. Instances of the {@link
+whrandom} class conform to the Random Number Generator interface
+described in the docs for the {@link random} module. They also offer the
+following method, specific to the Wichmann-Hill algorithm:
+
+@@method seed([x, y, z])
+
+<p>Initializes the random number generator from the integers {@var x},
+{@var y} and {@var z}. When the module is first imported, the random
+number is initialized using values derived from the current time. If
+{@var x}, {@var y}, and {@var z} are either omitted or {@code 0}, the
+seed will be computed from the current system time. If one or two of the
+parameters are {@code 0}, but not all three, the zero values are
+replaced by ones. This causes some apparently different seeds to be
+equal, with the corresponding result on the pseudo-random series
+produced by the generator.
+
+@@text 
+
+<p>Other supported methods include:
+
+@@function choice(seq)
+
+<p>Chooses a random element from the non-empty sequence {@var seq} and
+returns it.
+
+@@function randint(a, b)
+
+<p>Returns a random integer {@var N} such that {@var a}&lt={@var
+N}&lt={@var b}.
+
+@@function random()
+
+<p>Returns the next random floating point number in the range [0.0 ...
+1.0).
+
+@@function seed(x, y, z)
+
+<p>Initializes the random number generator from the integers {@var x},
+{@var y} and {@var z}. When the module is first imported, the random
+number is initialized using values derived from the current time.
+
+@@function uniform(a, b)
+
+<p>Returns a random real number {@var N} such that {@var a}&lt={@var
+N}&lt{@var b}.
+
+@@text 
+
+<p>When imported, the {@link whrandom} module also creates an instance
+of the {@link whrandom} class, and makes the methods of that instance
+available at the module level. Therefore one can write either {@code N =
+whrandom.random()} or:
+
+<pre>
+generator = whrandom.whrandom()
+N = generator.random()
+</pre>
+
+
+<p>Note that using separate instances of the generator leads to
+independent sequences of pseudo-random numbers.
+
+@see 
+{@link random Module random}
+
+Generators for various random distributions and documentation for the
+Random Number Generator interface.

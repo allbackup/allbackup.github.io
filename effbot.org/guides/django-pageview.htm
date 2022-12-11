@@ -1,0 +1,32 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>The Django PageView&nbsp;Application</title> <script type="text/javascript">effbot_page_id=43;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> <!--
+<p style='color: #8f8f8f; background: #fff5bf; padding: 5px 10px;'> <b>2008-07-15:</b> Selected articles
+
+now have experimental "comment" links in the left column and at the bottom.
+You're welcome to use them for commenting and voting on articles.
+For a bit more on this, see <a
+href="http://effbot.slinkset.com/links/Welcome_to_discuss_effbot_org">this
+page</a>. /F
+</p>
+--> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <h1 class="maintitle">The Django PageView&nbsp;Application</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p class="info">March 2006 | Fredrik Lundh</p><p class="note">This is a work in progress.</p><div style="float: right; padding-left: 5px; ">
+<a href="http://www.djangoproject.com/"><img alt="Powered by Django." border="0" src="http://media.djangoproject.com/img/badges/djangopowered126x54.gif" title="Powered by Django." /></a></div><p>The <b>pageview</b> mini application is a fast and efficient
+dynamic front-end renderer, which can reformat HTML and XHTML pages
+from external sources on the fly.  This can be useful when you want
+to:
+
+<ul><li>publish information from an existing content management system
+</li><li>republish pages from an external source
+</li><li>use a standard wiki to maintain the site, behind the scenes
+</li><li>allow users to choose between different templates, depending on
+preferences or user agent.
+</li><li>experiment with different styles, without having to generate multiple
+copies of an entire site.
+</li></ul></p><p>The application uses <b>tidy</b> to clean up the source material as
+needed, and
+<a href="celementtree.htm"><b>cElementTree</b></a>
+to pull out relevant XHTML fragments from it.  Django&#8217;s
+<a href="http://www.djangoproject.com/documentation/templates/">template
+engine</a> is then used to render output pages,
+and Django&#8217;s
+<a href="http://www.djangoproject.com/documentation/ca

@@ -1,0 +1,12 @@
+# File: mailcap-example-2.py
+
+import mailcap
+
+caps = mailcap.getcaps()
+
+command, info = mailcap.findmatch(
+    caps, "image/jpeg", "view", "samples/sample.jpg"
+    )
+
+print command
+

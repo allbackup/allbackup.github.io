@@ -1,0 +1,82 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>The Tkinter Spinbox&nbsp;Widget</title> <script type="text/javascript">effbot_page_id=1962;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> <!--
+<p style='color: #8f8f8f; background: #fff5bf; padding: 5px 10px;'> <b>2008-07-15:</b> Selected articles
+ (including this one) 
+now have experimental "comment" links in the left column and at the bottom.
+You're welcome to use them for commenting and voting on articles.
+For a bit more on this, see <a
+href="http://effbot.slinkset.com/links/Welcome_to_discuss_effbot_org">this
+page</a>. /F
+</p>
+--> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <p><a href="scrollbar.htm">back</a> <a href="text.htm">next</a></p> <h1 class="maintitle">The Tkinter Spinbox&nbsp;Widget</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p>(new in Tk 8.4) The <b>Spinbox</b> widget is a variant of the
+standard Tkinter Entry widget, which can be used to select from a
+fixed number of values.</p><h2>When to use the Spinbox Widget</h2><p>The <b>Spinbox</b> widget can be used instead of an ordinary
+Entry, in cases where the user only has a limited number of ordered
+values to choose from.</p><p>Note that the spinbox widget is only available Python 2.3 and
+later, when linked against Tk 8.4 or later. Also note that several
+Tk spinbox methods appears to be missing from the Tkinter bindings
+in Python 2.3.</p><h2 id="patterns">Patterns&#160;<a class="nav" href="#patterns" title="bookmark!">#</a></h2><p>The spinbox behaves pretty much like an ordinary Entry widget.
+The main difference is that you can specify what values to allow,
+either as a range, or using a tuple.</p><pre class="python">
+<span class="pykeyword">from</span> Tkinter <span class="pykeyword">import</span> *
+
+master = Tk()
+
+w = Spinbox(master, from_=0, to=10)
+w.pack()
+
+mainloop()</pre><p>You can specify a set of values instead of a range:
+
+<pre class="python">
+w = Spinbox(values=(1, 2, 4, 8))
+w.pack()</pre><h2 id="reference">Reference&#160;<a class="nav" href="#reference" title="bookmark!">#</a></h2><div class="zone:include"><dl><dt><b>Spinbox(master=None, **options)</b> (class) [<a href="#Tkinter.Spinbox-class">#</a>]</dt><dd>
+<p>A spinbox widget.</p><dl><dt><i>master</i></dt><dd>
+Parent widget.</dd>
+<dt><i>**options</i></dt><dd>
+Widget options.  See the description of
+   the config method for a list of available options.</dd>
+</dl><br />
+</dd>
+<dt><a id="Tkinter.Spinbox.bbox-method" name="Tkinter.Spinbox.bbox-method"><b>bbox(index)</b></a> [<a href="#Tkinter.Spinbox.bbox-method">#</a>]</dt><dd>
+<p>Returns the bounding box of a given character.</p></dd>
+<dt><a id="Tkinter.Spinbox.config-method" name="Tkinter.Spinbox.config-method"><b>config(**options)</b></a> [<a href="#Tkinter.Spinbox.config-method">#</a>]</dt><dd>
+<p>Modifies one or more widget options.  If no options are given,
+the method returns a dictionary containing all current option
+values.</p><dl><dt><i>**options</i></dt><dd>
+Widget options.</dd>
+<dt><i>activebackground=</i></dt><dd>
+Default is system specific.
+   (activeBackground/Background)</dd>
+<dt><i>background=</i></dt><dd>
+Default is system specific.
+    (background/Background)</dd>
+<dt><i>bd=</i></dt><dd>
+Same as <b>borderwidth</b>.
+</dd>
+<dt><i>bg=</i></dt><dd>
+Same as <b>background</b>.
+</dd>
+<dt><i>borderwidth=</i></dt><dd>
+Widget border width.  The default is
+    system specific, but is usually a few pixels.
+    (borderWidth/BorderWidth)</dd>
+<dt><i>buttonbackground=</i></dt><dd>
+Button background color.  Default
+    is system specific.
+    (Button.background/Background)</dd>
+<dt><i>buttoncursor=</i></dt><dd>
+Cursor to use when the mouse pointer is
+    moved over the button part of this widget.  No default value.
+    (Button.cursor/Cursor)</dd>
+<dt><i>buttondownrelief=</i></dt><dd>
+The border style to use for the up
+    button.  Default is RAISED.
+    (Button.relief/Relief)</dd>
+<dt><i>buttonuprelief=</i></dt><dd>
+The border style to use for the down
+    button.  Default is RAISED.
+    (Button.relief/Relief)</dd>
+<dt><i>command=</i></dt><dd>
+A function or method that should be called
+    when a button is pressed.  N

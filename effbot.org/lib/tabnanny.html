@@ -1,0 +1,68 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>tabnanny</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-tabnanny.html'>original</a> :::
+<a href='tabnanny.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>tabnanny&#8212;Detection of ambiguous indentation</h1>
+
+<p>For the time being this module is intended to be called as a
+script. However it is possible to import it into an IDE and use the
+function <a class="link" href="#check"><code>check</code></a> described
+below.</p>
+
+<p class="warning"><b>Warning:</b> The API provided by this module
+is likely to change in future releases; such changes may not be
+backward compatible.</p>
+</div>
+<dl><dt class="function" id="check"><b>check(file_or_dir)</b> <tt class="nav"><a class="nav" href="tabnanny.check" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>If <var>file_or_dir</var> is a directory and not a symbolic
+link, then recursively descend the directory tree named by <var>
+file_or_dir</var>, checking all .py files along the way. If <var>
+file_or_dir</var> is an ordinary Python source file, it is checked
+for whitespace related problems. The diagnostic messages are
+written to standard output using the print statement.</p>
+</dd>
+<dt class="variable" id="verbose"><b>verbose</b> <tt class="nav"><a class="nav" href="tabnanny.verbose" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Flag indicating whether to print verbose messages. This is
+incremented by the <code>-v</code> option if called as a
+script.</p>
+</dd>
+<dt class="variable" id="filename_only"><b>filename_only</b> <tt class="nav"><a class="nav" href="tabnanny.filename_only" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Flag indicating whether to print only the filenames of files
+containing whitespace related problems. This is set to true by the
+<code>-q</code> option if called as a script.</p>
+</dd>
+<dt class="exception" id="NannyNag"><b>exception NannyNag</b> <tt class="nav"><a class="nav" href="tabnanny.NannyNag" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="exception">
+<p>Raised by <a class="link" href="#tokeneater"><code>tokeneater</code></a>
+if detecting an ambiguous indent. Captured and handled in <a class="link" href="#check"><code>check</code></a>.</p>
+</dd>
+<dt class="function" id="tokeneater"><b>tokeneater(type, token, start, end, line)</b> <tt class="nav"><a class="nav" href="tabnanny.tokeneater" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>This function is used by <a class="link" href="#check"><code>
+check</code></a> as a callback parameter to the function <code>tokenize.tokenize</code>.</p>
+</dd>
+</dl><div class="text"><span class="mark">@see</span> <code>Module tokenize</code> Lexical scanner for Python
+source code.</div>
+</div></body></html>

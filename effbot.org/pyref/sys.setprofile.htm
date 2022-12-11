@@ -1,0 +1,14 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>sys.setprofile</title> <script type="text/javascript">effbot_page_id=1677;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <h1 class="maintitle">sys.setprofile</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p><strong>setprofile</strong>(profilefunc)</p><p>Set the system&#8217;s profile function, which allows you to implement a
+Python source code profiler in Python. See chapter <a href="profile.html#profile">10</a> for more
+information on the Python profiler. The system&#8217;s profile function is
+called similarly to the system&#8217;s trace function (see <a href="sys.settrace.htm"><strong>sys.settrace</strong></a>),
+but it isn&#8217;t called for each executed line of code (only on call and
+return, but the return event is reported even when an exception has
+been set). The function is thread-specific, but there is no way for
+the profiler to know about context switches between threads, so it
+does not make sense to use this in the presence of multiple
+threads. Also, its return value is not used, so it can simply return
+<a href="None.htm"><strong>None</strong></a>.</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div> <!-- yui-g --></div> <!-- content --> </div> <!-- yui-b --> </div> <!-- yui-main --> <div class="yui-b"> <div id='menu'> <ul> <li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li> <li><b><a href="." title="Go to pyref index page.">::: pyref :::</a></b></li> </ul> </div> <!-- menu --> </div> <!-- yui-b --> </div> <!-- bd --> <div id="ft"> <!-- footer --> <p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;"></a>
+this page was rendered by a <a href="http://www.djangoproject.com/">django</a> application in 0.01s 2010-12-16 16:12:49.152869.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p> </div> <!-- ft --> </div> <!-- doc --> <script src="/media/js/effbot-min.js" type="text/javascript"> </script> </body> </html>

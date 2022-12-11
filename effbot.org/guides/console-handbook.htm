@@ -1,0 +1,75 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>The Console&nbsp;Module</title> <script type="text/javascript">effbot_page_id=29;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> <!--
+<p style='color: #8f8f8f; background: #fff5bf; padding: 5px 10px;'> <b>2008-07-15:</b> Selected articles
+
+now have experimental "comment" links in the left column and at the bottom.
+You're welcome to use them for commenting and voting on articles.
+For a bit more on this, see <a
+href="http://effbot.slinkset.com/links/Welcome_to_discuss_effbot_org">this
+page</a>. /F
+</p>
+--> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <h1 class="maintitle">The Console&nbsp;Module</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p class="info">Updated December 2, 2000 | Fredrik Lundh</p><p>The <i>Console</i> module provides a simple console interface,
+which provides cursor-addressable text output, plus support for
+keyboard and mouse input.</p><p>The <i>Console</i> module is currently only available for Windows
+95, 98, NT, and 2000.  It probably works under Windows XP, but it
+hasn&#8217;t been tested on that platform.</p><p>Software (including precompiled binaries) and documentation can be
+downloaded from <a href="http://effbot.org/downloads">
+http://effbot.org/downloads</a></p><h1>Concepts</h1><h2>Screen</h2><p>The console screen consists of a 2-dimensional grid containing
+character cells. All characters cells have the same size.</p><p>Each character cell has a unique coordinate (<i>column, row</i>).
+The coordinate origin (0, 0) is in the upper left corner, as usual.</p><p>You can use negative coordinates as well. They work pretty much
+like negative sequence indexes in Python; for example, column -1 is
+the rightmost column on the console.</p><p>The <b><a href="#console-rectangle-method">rectangle</a></b>
+and <b><a href="#console-save-method">save</a></b> methods
+require you to specify character rectangles. A rectangle is a tuple
+containing two coordinate pairs. The second pair of coordinates
+specify the cell just to the right and below the last cell in the
+rectangle. In other words, the rectangle (0, 0, 20, 10) is twenty
+characters wide and ten characters high.</p><p>Note that the second coordinate must be equal to or larger than
+the first coordinate. Also, the current implementation doesn&#8217;t
+support negative coordinates in rectangles.</p><h2>Cursor</h2><p>The console driver keeps track of the current cursor position.
+However, only three methods actually use this position: <b><a href="#console-write-method">write</a></b>, <b><a href="#console-page-method">page</a></b>, and of course <b><a href="#console-pos-method">pos</a></b>.</p><p>The <b><a href="#console-cursor-method">cursor</a></b> method
+allows you to switch the cursor on and off.</p><h2>Styles</h2><p>Several methods take <b>style</b> arguments. The style is an
+integer value that combines a foreground and a background color.
+The console driver supports 16 colors in total:</p><pre>
+0 = black (#000000)
+1 = blue (#0000a8)
+2 = dark green (#00a800)
+3 = n/a (#00a8a8)
+4 = red (#a80000)
+5 = magenta (#a800a8)
+6 = brown (#a8a800)
+7 = light grey (#a8a8a8)
+8 = dark grey (#545454)
+9 = n/a (#5454fc)
+10 = green (#54fc54)
+11 = cyan (#54fcfc)
+12 = n/a (#fc5454)
+13 = n/a (#fc54fc)
+14 = yellow (#fcfc54)
+15 = white (#fcfcfc)
+</pre><p>To calculate the style, combine the colour for the foreground
+and background as follows:</p><pre class="python">
+style = foreground + background*16</pre><p>The default style is light grey on black background.</p><p><b>TBD: add names for remaining colors (see the HTML 3.2
+specification?)</b></p><h1>The Console Class</h1><p>To create a <b>Console</b> instance, import the <b>
+Console</b> module and call the <b><a href="#console-getconsole-method">getconsole</a></b> factory
+function.</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><div class="example wide">
+<b>Example: Example: Using the Console module</b>
+<pre class="python wide">
+<span class="pykeyword">import</span> Console
+
+c = Console.getconsole()
+
+c.title(<span class="pystring">"Console Example"</span>)
+
+c.text(0, 0, <span class="pystring">"here's some white text on white background"</span>, 0x1f)
+c.text(10, 5, <span class="pystring">"line five, column ten"</span>)</pre></div></div><div class="yui-ge"><div class="yui-u first"><h2>Console Methods</h2><p>Instances returned by <b><a href="#console-getconsole-method">
+getconsole</a></b> have the following methods:</p><h3>Basic Graphic Methods</h3><div class="method" name="text"><h3>text</h3><p><b>text(column, line, string, style)</b>
+</p><blockquote><p>Write <b>string</b> to the screen at the given position, using
+the given <b>style</b>. This method does not move the cursor. If
+the style is omitted, it defaults to white text on black
+background.</p></blockquote></div><div class="method" name="rectangle"><h3>rectangle</h3><p><b>rectangle(rect, style, character)</b>
+</p><blockquote><p>Blanks the given rectangle. The <b>rect</b> argument should be
+a 4-tuple. If the <b>character</b> argument is omitted, it
+defaults to space. If the <b>style</b> argument is omitted, it
+defaults to black.</p></blockquote></div><div class="method" name="scroll"><h3>s

@@ -1,0 +1,83 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>robotparser</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-robotparser.html'>original</a> :::
+<a href='robotparser.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>robotparser&#8212;Parser for robots.txt</h1>
+
+<p>This module provides a single class, <a class="link" href="#RobotFileParser"><code>RobotFileParser</code></a>, which answers
+questions about whether or not a particular user agent can fetch a
+URL on the Web site that published the robots.txt file. For more
+details on the structure of robots.txt files, see <a class="link" href="http://www.robotstxt.org/wc/norobots.html">
+http://www.robotstxt.org/wc/norobots.html</a>.</p>
+</div>
+<dl><dt class="class" id="RobotFileParser"><b>class RobotFileParser()</b> <tt class="nav"><a class="nav" href="robotparser.RobotFileParser" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>This class provides a set of methods to read, parse and answer
+questions about a single robots.txt file.</p>
+</dd>
+<dt class="attribute" id="set_url"><b>set_url( url)</b> <tt class="nav"><a class="nav" href="robotparser.set_url" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>Sets the URL referring to a robots.txt file.</p>
+</dd>
+<dt class="attribute" id="read"><b>read( )</b> <tt class="nav"><a class="nav" href="robotparser.read" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>Reads the robots.txt URL and feeds it to the parser.</p>
+</dd>
+<dt class="attribute" id="parse"><b>parse( lines)</b> <tt class="nav"><a class="nav" href="robotparser.parse" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>Parses the lines argument.</p>
+</dd>
+<dt class="attribute" id="can_fetch"><b>can_fetch( useragent, url)</b> <tt class="nav"><a class="nav" href="robotparser.can_fetch" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>Returns <code>True</code> if the <var>
+useragent</var> is allowed to fetch the <var>url</var> according to
+the rules contained in the parsed robots.txt file.</p>
+</dd>
+<dt class="attribute" id="mtime"><b>mtime( )</b> <tt class="nav"><a class="nav" href="robotparser.mtime" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>Returns the time the <code>robots.txt</code> file was last
+fetched. This is useful for long-running web spiders that need to
+check for new <code>robots.txt</code> files periodically.</p>
+</dd>
+<dt class="attribute" id="modified"><b>modified( )</b> <tt class="nav"><a class="nav" href="robotparser.modified" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>Sets the time the <code>robots.txt</code> file was last fetched
+to the current time.</p>
+</dd>
+</dl><div class="text">
+<p>The following example demonstrates basic use of the
+RobotFileParser class.</p>
+
+<pre>
+&gt;&gt;&gt; import robotparser
+&gt;&gt;&gt; rp = robotparser.RobotFileParser()
+&gt;&gt;&gt; rp.set_url("http://www.musi-cal.com/robots.txt")
+&gt;&gt;&gt; rp.read()
+&gt;&gt;&gt; rp.can_fetch("*", "http://www.musi-cal.com/cgi-bin/search?city=San+Francisco")
+False
+&gt;&gt;&gt; rp.can_fetch("*", "http://www.musi-cal.com/")
+True
+</pre>
+</div>
+</div></body></html>

@@ -1,0 +1,108 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>The import&nbsp;statement</title><script type="text/javascript">effbot_page_id=1332;</script></head><body><div id="doc2" class="yui-t2"><div id="hd"><!-- header --></div><!-- hd --><div id="bd"><!-- body --><p class="note" style="text-align: center"><strong>
+
+We're back after a server migration that caused effbot.org to fall
+over a bit harder than expected.  Expect some glitches.
+
+</strong></p><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">The import&nbsp;statement</h1></div><!-- yui-g --><body><p>Import modules.</p>
+
+<p>Syntax (simplified):</p>
+
+<blockquote>
+  <p><strong>import</strong> <em><a href="syntax-module">module</a></em> [<strong>as</strong> <em><a href="syntax-identifier">name</a></em>] [<strong>,</strong> <em><a href="syntax-module">module</a></em> [<strong>as</strong> <em><a href="syntax-identifier">name</a></em>]]&#8230;</p>
+  
+  <p><strong>from</strong> <em><a href="syntax-module">module</a></em> <strong>import</strong> <em><a href="syntax-identifier">identifier</a></em> [<strong>as</strong> <em><a href="syntax-identifier">name</a></em>] [<strong>,</strong> <em><a href="syntax-identifier">identifier</a></em> [<strong>as</strong> <em><a href="syntax-identifier">name</a></em>]]&#8230;</p>
+  
+  <p><strong>from</strong> <em><a href="syntax-module">module</a></em> <strong>import *</strong></p>
+</blockquote>
+
+<p>import_stmt ::= &#8220;import&#8221; <a href="import.html#tok-module"> module</a> <a href="notation.html#tok-name">&#8220;as&#8221; [name</a>] ( &#8220;,&#8221; <a href="import.html#tok-module">module</a> <a href="notation.html#tok-name">&#8220;as&#8221; [name</a>] )*
+<code>| "from" [module][1] "import" [ identifier][3] ["as" [name][2]]</code>
+<code>( "," [identifier][3] ["as" [name][2]] )\*</code>
+<code>| "from" [module][1] "import" "(" [ identifier][3] ["as" [name][2]]</code>
+<code>&amp;#160;( "," [identifier][3] ["as" [name][2]] )\* [","] ")"</code>
+<code>| "from" [module][1] "import" "\*"</code>
+module ::= (<a href="identifiers.html#tok-identifier">identifier</a> &#8220;.&#8221;)* <a href="identifiers.html#tok-identifier"> identifier</a></p>
+
+<p>Import statements are executed in two steps: (1) find a module, and
+initialize it if necessary; (2) define a name or names in the local
+namespace (of the scope where the import statement occurs). The first
+form (without from) repeats these steps for each identifier in the
+list. The form with from performs step (1) once, and then performs
+step (2) repeatedly.</p>
+
+<p>In this context, to <q>initialize</q> a built-in or extension module
+means to call an initialization function that the module must provide
+for the purpose (in the reference implementation, the function&#8217;s name
+is obtained by prepending string &#8220;init&#8221; to the module&#8217;s name); to
+<q>initialize</q> a Python-coded module means to execute the module&#8217;s
+body.</p>
+
+<p>The system maintains a table of modules that have been or are being
+initialized, indexed by module name. This table is accessible as
+<a href="sys.modules.htm"><strong>sys.modules</strong></a>. When a module name is found in this table, step (1) is
+finished. If not, a search for a module definition is started. When a
+module is found, it is loaded. Details of the module searching and
+loading process are implementation and platform specific. It generally
+involves searching for a built-in module with the given name and
+then searching a list of locations given as <a href="sys.path.htm"><strong>sys.path</strong></a>.</p>
+
+<p>If a built-in module is found, its built-in initialization code is
+executed and step (1) is finished. If no matching file is found,
+ImportError is raised.  If a file is found, it is parsed, yielding an
+executable code block. If a syntax error occurs, <a href="SyntaxError.htm"><strong>SyntaxError</strong></a> is
+raised. Otherwise, an empty module of the given name is created and
+inserted in the module table, and then the code block is executed in
+the context of this module. Exceptions during this execution terminate
+step (1).</p>
+
+<p>When step (1) finishes without raising an exception, step (2) can
+begin.</p>
+
+<p>The first form of import statement binds the module name in the local
+namespace to the module object, and then goes on to import the next
+identifier, if any. If the module name is followed by <a href="as.htm"><strong>as</strong></a>, the name
+following as is used as the local name for the module.</p>
+
+<p>The <a href="from.htm"><strong>from</strong></a> form does not bind the module name: it goes through the list
+of identifiers, looks each one of them up in the module found in step
+(1), and binds the name in the local namespace to the object thus
+found. As with the first form of import, an alternate local name can
+be supplied by specifying &#8220;<a href="as.htm"><strong>as</strong></a> localname&#8221;. If a name is not found,
+<a href="ImportError.htm"><strong>ImportError</strong></a> is raised. If the list of identifiers is replaced by a
+star (*), all public names defined in the module are bound in the
+local namespace of the <strong>import</strong> statement.</p>
+
+<p>The <em>public names</em> defined by a module are determined by checking the
+module&#8217;s namespace for a variable named <a href="__all__.htm"><strong>__all__</strong></a>; if defined, it
+must be a sequence of strings which are names defined or imported by
+that module. The names given in <a href="__all__.htm"><strong>__all__</strong></a> are all considered
+public and are required to exist. If <a href="__all__.htm"><strong>__all__</strong></a> is not defined, the
+set of public names includes all names found in the module&#8217;s namespace
+which do not begin with an underscore character (&#8220;_&#8221;). <a href="__all__.htm"><strong>__all__</strong></a>
+should contain the entire public API. It is intended to avoid
+accidentally exporting items that are not part of the API (such as
+library modules which were imported and used within the module).</p>
+
+<p>The <a href="from.htm"><strong>from</strong></a> form with &#8220;*&#8221; may only occur in a module scope. If the wild
+card form of <strong>import</strong> &#8212; &#8220;import *&#8221; &#8212; is used in a function and the
+function contains or is a nested block with free variables, the
+compiler will raise a <a href="SyntaxError.htm"><strong>SyntaxError</strong></a>.</p>
+
+<p><strong>Hierarchical module names:</strong> When the module names contains one or
+more dots, the module search path is carried out differently. The
+sequence of identifiers up to the last dot is used to find a
+&#8220;package&#8221;; the final identifier is then searched inside the
+package. A package is generally a subdirectory of a directory on
+<code>sys.path</code> that has a file __init__.py. <a href="http://www.python.org/doc/essays/packages.html">XXX Can&#8217;t be bothered to
+spell this out right now; see the URL [
+http://www.python.org/doc/essays/packages.html</a> for more details,
+also about how the module search works from inside a package.]</p>
+
+<p>The built-in function <a href="__import__.htm"><strong>__import__</strong></a> is provided to support
+applications that determine which modules need to be loaded
+dynamically; refer to <a href="../lib/built-in-funcs.html">Built-in Functions</a> in the <em><a href="../lib/lib.html" title="Python Library Reference">Python Library
+Reference</a></em> for additional information.</p>
+
+<hr /></body><div class="yui-g"></div><!-- yui-g --></div><!-- content --></div><!-- yui-b --></div><!-- yui-main --><div class="yui-b"><div id='menu'></div><!-- menu --></div><!-- yui-b --></div><!-- bd --><div id="ft"><!-- footer --></div><!-- ft --></div><!-- doc --><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

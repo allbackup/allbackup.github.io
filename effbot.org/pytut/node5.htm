@@ -1,0 +1,504 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>An Informal Introduction to&nbsp;Python</title> <script type="text/javascript">effbot_page_id=1912;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <h1 class="maintitle">An Informal Introduction to&nbsp;Python</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p>COMMENT: <a href="http://docs.python.org/tut/node5.html">Original Source</a></p><p>In the following examples, the &#8220;&gt;&gt;&gt;&#8221; and &#8220;&#8230;&#8221; prompts you see at the
+start of a line are printed by the interpreter - you do not have to
+type those! To repeat the example, type in everything you see after
+the prompt. The &#8220;&#8230;&#8221;  prompt on a line by itself in an example means
+you must type a blank line; this is used to end a multi-line command.</p><p>Any line not starting with a prompt is the output of the interpreter.</p><p>Many of the examples in this manual, even those entered at the
+interactive prompt, include comments. Comments in Python start with
+the hash (also knows as pound) character, &#8220;#&#8221;. Once started, comments
+extend to the end of the line. A comment may appear at the start of a
+line or following whitespace or code, but not within a string
+literal. A hash character within a string literal is just a hash
+character.</p><p>Some examples:</p><pre class="python"><span class="pycomment"># this is the first comment</span>
+SPAM = 1                 <span class="pycomment"># and this is the second comment</span>
+                         <span class="pycomment"># ... and now a third!</span>
+STRING = <span class="pystring">"# This is not a comment."</span></pre><h2 id="using-python-as-a-calculator">Using Python as a Calculator&#160;<a class="nav" href="#using-python-as-a-calculator" title="bookmark!">#</a></h2><p>Let&#8217;s try some simple Python commands. Start the interpreter and wait
+for the primary prompt, &#8220;&gt;&gt;&gt; &#8220;.</p><h3 id="numbers">Numbers&#160;<a class="nav" href="#numbers" title="bookmark!">#</a></h3><p>The interpreter acts as a simple calculator: you type in expressions,
+and it echoes back the resulting value.  Python&#8217;s expression syntax is
+straightforward: the operators <code>+</code>, <code>-</code>, <code>*</code> and <code>/</code> work just like in
+most other programming languages (for example, C or Java), and
+parentheses can be used for grouping. For example:</p><pre class="python">&gt;&gt;&gt; 2+2
+4
+&gt;&gt;&gt; <span class="pycomment"># This is a comment</span>
+... 2+2
+4
+&gt;&gt;&gt; 2+2  <span class="pycomment"># and a comment on the same line as code</span>
+4
+&gt;&gt;&gt; (50-5*6)/4
+5
+&gt;&gt;&gt; <span class="pycomment"># Integer division rounds down</span>
+... 7/3
+2
+&gt;&gt;&gt; 7/-3
+-3</pre><p>The equal sign (&#8220;=&#8221;) is used to assign a value to a variable.  In this
+case, the value isn&#8217;t echoed back, but you can type in the name of a
+variable to see its value:</p><pre class="python">&gt;&gt;&gt; width = 20
+&gt;&gt;&gt; width
+20
+&gt;&gt;&gt; height = 5*9
+&gt;&gt;&gt; width * height
+900</pre><p>A value can be assigned to several variables simultaneously:</p><pre class="python">&gt;&gt;&gt; x = y = z = 0  <span class="pycomment"># Zero is assigned to x, y and z</span>
+&gt;&gt;&gt; x
+0
+&gt;&gt;&gt; y
+0
+&gt;&gt;&gt; z
+0</pre><p>There is full support for floating point; operators with mixed type
+operands convert the integer operand to floating point:</p><pre class="python">&gt;&gt;&gt; 3 * 3.75 / 1.5
+7.5
+&gt;&gt;&gt; 7.0 / 2
+3.5</pre><p>The interpreter prints up to seventeen significant digits when it
+prints a floating point number, which can cause surprises when you
+print out decimal values that cannot be exactly represented by the
+internal binary representation.  For example, the decimal value 0.1
+ends up with more decimals than one would expect:</p><pre class="python">&gt;&gt;&gt; 1.0 / 10.0
+0.10000000000000001</pre><p>For more background, see <a href="node16.html">Appendix B</a>, <em>Floating Point
+Arithmetic: Issues and Limitations</em>.</p><p>Complex numbers are a somewhat advanced mathematical concept, and
+Python supports them.  Imaginary numbers are written with a suffix of
+&#8220;j&#8221; or &#8220;J&#8221;. Complex numbers with a nonzero real component are written
+as &#8220;(real+imagj)&#8221;, or can be created with the &#8220;complex(real, imag)&#8221;
+function.</p><pre class="python">&gt;&gt;&gt; 1j * 1J
+(-1+0j)
+&gt;&gt;&gt; 1j * complex(0,1)
+(-1+0j)
+&gt;&gt;&gt; 3+1j*3
+(3+3j)
+&gt;&gt;&gt; (3+1j)*3
+(9+3j)
+&gt;&gt;&gt; (1+2j)/(1+1j)
+(1.5+0.5j)</pre><p>Complex numbers are always represented as two floating point numbers,
+the real and imaginary part. To extract these parts from a complex
+number z, use <code>z.real</code> and <code>z.imag</code>.</p><pre class="python">&gt;&gt;&gt; a=1.5+0.5j
+&gt;&gt;&gt; a.real
+1.5
+&gt;&gt;&gt; a.imag
+0.5</pre><p>The conversion functions to floating point and integer (<a href="/pyref/float.htm"><strong>float</strong></a>, <a href="/pyref/int.htm"><strong>int</strong></a> and <a href="/pyref/long.htm"><strong>long</strong></a>) don&#8217;t work for complex
+numbers &#8212; there is no one correct way to convert a complex number to
+a real number. Use <code>abs(z)</code> to get its magnitude (as a float) or
+<code>z.real</code> to get its real part.</p><pre class="python">&gt;&gt;&gt; a=3.0+4.0j
+&gt;&gt;&gt; float(a)
+Traceback (most recent call last):
+  File <span class="pystring">"&lt;stdin&gt;"</span>, line 1, <span class="pykeyword">in</span> ?
+TypeError: can't convert complex to float; use abs(z)
+&gt;&gt;&gt; a.real
+3.0
+&gt;&gt;&gt; a.imag
+4.0
+&gt;&gt;&gt; abs(a)  <span class="pycomment"># sqrt(a.real**2 + a.imag**2)</span>
+5.0
+&gt;&gt;&gt;</pre><p>In interactive mode, the last printed expression is automatically
+assigned to the variable <code>_</code>, behind the scenes.  This makes it easy
+to reuse the last result when you want to continue a calculation, for
+example:</p><pre class="python">&gt;&gt;&gt; tax = 12.5 / 100
+&gt;&gt;&gt; price = 100.50
+&gt;&gt;&gt; price * tax
+12.5625
+&gt;&gt;&gt; price + _
+113.0625
+&gt;&gt;&gt; round(_, 2)
+113.06
+&gt;&gt;&gt;</pre><p>This interpreter-specific variable should be treated as read-only by
+the user.  If you assign to it, you will create an independent local
+variable with the same name, which masks the built-in variable with
+its magic behavior.</p><h3 id="strings">Strings&#160;<a class="nav" href="#strings" title="bookmark!">#</a></h3><p>Besides numbers, Python can also manipulate strings, which can be
+expressed in several ways.  They can be enclosed in single quotes or
+double quotes:</p><pre class="python">&gt;&gt;&gt; <span class="pystring">'spam eggs'</span>
+<span class="pystring">'spam eggs'</span>
+&gt;&gt;&gt; <span class="pystring">'doesn\'t'</span>
+<span class="pystring">"doesn't"</span>
+&gt;&gt;&gt; <span class="pystring">"doesn't"</span>
+<span class="pystring">"doesn't"</span>
+&gt;&gt;&gt; <span class="pystring">'"Yes," he said.'</span>
+<span class="pystring">'"Yes," he said.'</span>
+&gt;&gt;&gt; <span class="pystring">"\"Yes,\" he said."</span>
+<span class="pystring">'"Yes," he said.'</span>
+&gt;&gt;&gt; <span class="pystring">'"Isn\'t," she said.'</span>
+<span class="pystring">'"Isn\'t," she said.'</span></pre><p>String literals can span multiple lines in several ways. Continuation
+lines can be used, with a backslash as the last character on the line
+indicating that the next line is a logical continuation of the line:</p><pre class="python">hello = <span class="pystring">"This is a rather long string containing\n\</span>
+several lines of text just as you would do in C.\n\
+    Note that whitespace at the beginning of the line is\
+ significant."
+
+<span class="pykeyword">print</span> hello</pre><p>Note that newlines still need to be embedded in the string using <code>\n</code>;
+the newline following the trailing backslash is discarded. This
+example would print the following:</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><pre class="wide wide"><code>This is a rather long string containing
+several lines of text just as you would do in C.
+    Note that whitespace at the beginning of the line is significant.
+</code></pre></div><div class="yui-ge"><div class="yui-u first"><p>If we make the string literal a <q>raw</q> string, however, the <code>\n</code>
+sequences are not converted to newlines, but the backslash at the end
+of the line, and the newline character in the source, are both
+included in the string as data. Thus, the example:</p><pre class="python">hello = <span class="pystring">r"This is a rather long string containing\n\</span>
+several lines of text much as you would do in C."
+
+<span class="pykeyword">print</span> hello</pre><p>would print:</p><pre><code>This is a rather long string containing\n\
+several lines of text much as you would do in C.
+</code></pre><p>Or, strings can be surrounded in a pair of matching triple-quotes:
+<code>"""</code> or <code>'</code>&#8217;<code>'</code>. End of lines do not need to be escaped when using
+triple-quotes, but they will be included in the string.</p><pre class="python"><span class="pykeyword">print</span> <span class="pystring">"""</span>
+Usage: thingy [OPTIONS] 
+     -h                        Display this usage message
+     -H hostname               Hostname to connect to
+"""</pre><p>produces the following output:</p><pre><code>Usage: thingy [OPTIONS] 
+     -h                        Display this usage message
+     -H hostname               Hostname to connect to
+</code></pre><p>The interpreter prints the result of string operations in the same way
+as they are typed for input: inside quotes, and with quotes and other
+funny characters escaped by backslashes, to show the precise value.
+The string is enclosed in double quotes if the string contains a
+single quote and no double quotes, else it&#8217;s enclosed in single
+quotes. (The print statement, described later, can be used to write
+strings without quotes or escapes.)</p><p>Strings can be concatenated (glued together) with the <code>+</code> operator,
+and repeated with <code>*</code>:</p><pre class="python">&gt;&gt;&gt; word = <span class="pystring">'Help'</span> + <span class="pystring">'A'</span>
+&gt;&gt;&gt; word
+<span class="pystring">'HelpA'</span>
+&gt;&gt;&gt; <span class="pystring">'&lt;'</span> + word*5 + <span class="pystring">'&gt;'</span>
+<span class="pystring">'&lt;HelpAHelpAHelpAHelpAHelpA&gt;'</span></pre><p>Two string literals next to each other are automatically concatenated;
+the first line above could also have been written &#8220;word = &#8216;Help&#8217; &#8216;A&#8217;&#8221;;
+this only works with two literals, not with arbitrary string
+expressions:</p><pre><code>&gt;&gt;&gt; 'str' 'ing'                   #  &lt;-  This is ok
+'string'
+&gt;&gt;&gt; 'str'.strip() + 'ing'   #  &lt;-  This is ok
+'string'
+&gt;&gt;&gt; 'str'.strip() 'ing'     #  &lt;-  This is invalid
+  File "&lt;stdin&gt;", line 1, in ?
+    'str'.strip() 'ing'
+                      ^
+SyntaxError: invalid syntax
+</code></pre><p>Strings can be subscripted (indexed); like in C, the first character
+of a string has subscript (index) 0. There is no separate character
+type; a character is simply a string of size one.  Like in the
+programming language Icon, substrings can be specified with the <em>slice
+notation</em>: two indices separated by a colon.</p><pre class="python">&gt;&gt;&gt; word[4]
+<span class="pystring">'A'</span>
+&gt;&gt;&gt; word[0:2]
+<span class="pystring">'He'</span>
+&gt;&gt;&gt; word[2:4]
+<span class="pystring">'lp'</span></pre><p>Slice indices have useful defaults; an omitted first index defaults to
+zero, an omitted second index defaults to the size of the string being
+sliced.</p><pre class="python">&gt;&gt;&gt; word[:2]    <span class="pycomment"># The first two characters</span>
+<span class="pystring">'He'</span>
+&gt;&gt;&gt; word[2:]    <span class="pycomment"># Everything except the first two characters</span>
+<span class="pystring">'lpA'</span>
+&gt;&gt;&gt; word[:]     <span class="pycomment"># The entire string</span>
+<span class="pystring">'HelpA'</span></pre><p>Unlike a C string, Python strings cannot be changed. Assigning to an
+indexed position in the string results in an error:</p><pre class="python">&gt;&gt;&gt; word[0] = <span class="pystring">'x'</span>
+Traceback (most recent call last):
+  File <span class="pystring">"&lt;stdin&gt;"</span>, line 1, <span class="pykeyword">in</span> ?
+TypeError: object doesn't support item assignment
+&gt;&gt;&gt; word[:1] = <span class="pystring">'Splat'</span>
+Traceback (most recent call last):
+  File <span class="pystring">"&lt;stdin&gt;"</span>, line 1, <span class="pykeyword">in</span> ?
+TypeError: object doesn't support slice assignment</pre><p>However, creating a new string with the combined content is easy and
+efficient:</p><pre class="python">&gt;&gt;&gt; <span class="pystring">'x'</span> + word[1:]
+<span class="pystring">'xelpA'</span>
+&gt;&gt;&gt; <span class="pystring">'Splat'</span> + word[4]
+<span class="pystring">'SplatA'</span></pre><p>Here&#8217;s a useful invariant of slice operations: <code>s[:i] + s[i:]</code> equals
+<code>s</code>.</p><pre class="python">&gt;&gt;&gt; word[:2] + word[2:]
+<span class="pystring">'HelpA'</span>
+&gt;&gt;&gt; word[:3] + word[3:]
+<span class="pystring">'HelpA'</span></pre><p>Degenerate slice indices are handled gracefully: an index that is too
+large is replaced by the string size, an upper bound smaller than the
+lower bound returns an empty string.</p><pre class="python">&gt;&gt;&gt; word[1:100]
+<span class="pystring">'elpA'</span>
+&gt;&gt;&gt; word[10:]
+<span class="pystring">''</span>
+&gt;&gt;&gt; word[2:1]
+<span class="pystring">''</span></pre><p>Indices may be negative numbers, to start counting from the right. For
+example:</p><pre class="python">&gt;&gt;&gt; word[-1]     <span class="pycomment"># The last character</span>
+<span class="pystring">'A'</span>
+&gt;&gt;&gt; word[-2]     <span class="pycomment"># The last-but-one character</span>
+<span class="pystring">'p'</span>
+&gt;&gt;&gt; word[-2:]    <span class="pycomment"># The last two characters</span>
+<span class="pystring">'pA'</span>
+&gt;&gt;&gt; word[:-2]    <span class="pycomment"># Everything except the last two characters</span>
+<span class="pystring">'Hel'</span></pre><p>But note that -0 is really the same as 0, so it does not count from
+the right!</p><pre class="python">&gt;&gt;&gt; word[-0]     <span class="pycomment"># (since -0 equals 0)</span>
+<span class="pystring">'H'</span></pre><p>Out-of-range negative slice indices are truncated, but don&#8217;t try this
+for single-element (non-slice) indices:</p><pre class="python">&gt;&gt;&gt; word[-100:]
+<span class="pystring">'HelpA'</span>
+&gt;&gt;&gt; word[-10]    <span class="pycomment"># error</span>
+Traceback (most recent call last):
+  File <span class="pystring">"&lt;stdin&gt;"</span>, line 1, <span class="pykeyword">in</span> ?
+IndexError: string index out of range</pre><p>The best way to remember how slices work is to think of the indices as
+pointing <em>between</em> characters, with the left edge of the first
+character numbered 0. Then the right edge of the last character of a
+string of n characters has index n, for example:</p><pre><code> +---+---+---+---+---+ 
+ | H | e | l | p | A |
+ +---+---+---+---+---+ 
+ 0   1   2   3   4   5 
+-5  -4  -3  -2  -1
+</code></pre><p>The first row of numbers gives the position of the indices 0&#8230;5 in
+the string; the second row gives the corresponding negative
+indices. The slice from i to j consists of all characters between the
+edges labeled i and j, respectively.</p><p>For non-negative indices, the length of a slice is the difference of
+the indices, if both are within bounds. For example, the length of
+<code>word[1:3]</code> is 2.</p><p>The built-in function <a href="/pyref/len.htm"><strong>len</strong></a> returns the length of a string:</p><pre class="python">&gt;&gt;&gt; len(<span class="pystring">'Hello'</span>)
+5
+&gt;&gt;&gt; len(<span class="pystring">'Supercalifragilisticexpialidocious'</span>)
+34</pre><p>See Also:</p><p><em><a href="http://docs.python.org/lib/typesseq.html">Sequence Types</a></em>
+    Strings, and the Unicode strings described in the next section,
+    are examples of <em>sequence types</em>, and support the common
+    operations supported by such types.</p><p><em><a href="http://docs.python.org/lib/string-methods.html">String Methods</a></em>
+    Both strings and Unicode strings support a large number of methods
+    for basic transformations and searching.</p><p><em><a href="http://docs.python.org/lib/typesseq-strings.html">String Formatting Operations</a></em>
+    The formatting operations invoked when strings and Unicode strings
+    are the left operand of the <code>%</code> operator are described in more
+    detail here.</p><h3 id="unicode-strings">Unicode Strings&#160;<a class="nav" href="#unicode-strings" title="bookmark!">#</a></h3><p>The standard string type stores bytes, which often makes it hard to
+work with non-ASCII text.  To address this, Python provides a second
+string type, the Unicode string, which can be used to store and
+manipulate Unicode data (see <a href="http://www.unicode.org">http://www.unicode.org</a>).</p><p>Instead of bytes, the Unicode string stores characters from the
+Unicode character set, which contains distinct codes for all
+characters in every script used in modern and ancient texts.  This
+allows you to mix texts written in different alphabets freely, without
+having to keep track of what encoding (or code page) each part belongs
+to.</p><p>Creating Unicode strings in Python is just as simple as creating
+normal strings:</p><pre class="python">&gt;&gt;&gt; <span class="pystring">u'Hello World !'</span>
+<span class="pystring">u'Hello World !'</span></pre><p>The small &#8220;u&#8221; in front of the quote indicates that an Unicode string
+is supposed to be created. If you want to include special characters
+in the string, you can do so by using the Python <em>Unicode-Escape</em>
+encoding. The following example shows how:</p><pre class="python">&gt;&gt;&gt; <span class="pystring">u'Hello\u0020World !'</span>
+<span class="pystring">u'Hello World !'</span></pre><p>The escape sequence <code>\u0020</code> indicates to insert the Unicode character
+with the ordinal value 0x0020 (the space character) at the given
+position.  Most standard escapes can also be used, such as <code>\n</code>,
+<code>\x20</code>, etc.</p><p>For non-ASCII characters, Python uses the <code>coding</code> directive to map
+from source code characters to Unicode characters.  For example, if
+the file is marked as iso-8859-1, a byte with the value 177 will be
+interpreted as a plus/minus sign (&#177;).</p><p>For experts, there is also a raw mode just like the one for normal
+strings. You have to prefix the opening quote with &#8216;ur&#8217; to have Python
+use the <em>Raw-Unicode-Escape</em> encoding.  It will only apply the above
+<code>\uXXXX</code> conversion if there is an uneven number of backslashes in
+front of the small &#8216;u&#8217;.</p><pre class="python">&gt;&gt;&gt; <span class="pystring">ur'Hello\u0020World !'</span>
+<span class="pystring">u'Hello World !'</span>
+&gt;&gt;&gt; <span class="pystring">ur'Hello\\u0020World !'</span>
+<span class="pystring">u'Hello\\\\u0020World !'</span></pre><p>The raw mode is most useful when you have to enter lots of
+backslashes, as can be necessary in regular expressions.</p><p>Apart from these standard encodings, Python provides a whole set of
+other ways of creating Unicode strings on the basis of a known
+encoding.</p><p>The built-in function <a href="/pyref/unicode.htm"><strong>unicode</strong></a> provides access to all
+registered Unicode codecs (COders and DECoders). Some of the more well
+known encodings which these codecs can convert are <em>Latin-1</em>, <em>ASCII</em>,
+<em>UTF-8</em>, and <em>UTF-16</em>. The latter two are variable-length encodings
+that store each Unicode character in one or more bytes. The default
+encoding is normally set to ASCII, which passes through characters in
+the range 0 to 127 and rejects any other characters with an
+error. When a Unicode string is printed, written to a file, or
+converted with str(), conversion takes place using this default
+encoding.</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><pre class="python wide wide">&gt;&gt;&gt; <span class="pystring">u"abc"</span>
+<span class="pystring">u'abc'</span>
+&gt;&gt;&gt; str(<span class="pystring">u"abc"</span>)
+<span class="pystring">'abc'</span>
+&gt;&gt;&gt; <span class="pystring">u"&#228;&#246;&#252;"</span>
+<span class="pystring">u'\xe4\xf6\xfc'</span>
+&gt;&gt;&gt; str(<span class="pystring">u"&#228;&#246;&#252;"</span>)
+Traceback (most recent call last):
+  File <span class="pystring">"&lt;stdin&gt;"</span>, line 1, <span class="pykeyword">in</span> ?
+UnicodeEncodeError: <span class="pystring">'ascii'</span> codec can't encode characters <span class="pykeyword">in</span> position 0-2: ordinal <span class="pykeyword">not</span> <span class="pykeyword">in</span> range(128)</pre></div><div class="yui-ge"><div class="yui-u first"><p>To convert a Unicode string into an 8-bit string using a specific
+encoding, Unicode objects provide an encode() method that takes one
+argument, the name of the encoding. Lowercase names for encodings are
+preferred.</p><pre class="python">&gt;&gt;&gt; <span class="pystring">u"&#228;&#246;&#252;"</span>.encode(<span class="pystring">'utf-8'</span>)
+<span class="pystring">'\xc3\xa4\xc3\xb6\xc3\xbc'</span></pre><p>If you have data in a specific encoding and want to produce a
+corresponding Unicode string from it, you can use the unicode()
+function with the encoding name as the second argument.</p><pre class="python">&gt;&gt;&gt; unicode(<span class="pystring">'\xc3\xa4\xc3\xb6\xc3\xbc'</span>, <span class="pystring">'utf-8'</span>)
+<span class="pystring">u'\xe4\xf6\xfc'</span></pre><h3 id="lists">Lists&#160;<a class="nav" href="#lists" title="bookmark!">#</a></h3><p>Python knows a number of <em>compound</em> data types, used to group together
+other values. The most versatile is the <em>list</em>, which can be written
+as a list of comma-separated values (items) between square
+brackets. List items need not all have the same type.</p><pre class="python">&gt;&gt;&gt; a = [<span class="pystring">'spam'</span>, <span class="pystring">'eggs'</span>, 100, 1234]
+&gt;&gt;&gt; a
+[<span class="pystring">'spam'</span>, <span class="pystring">'eggs'</span>, 100, 1234]</pre><p>Like string indices, list indices start at 0, and lists can be sliced,
+concatenated and so on:</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><pre class="python wide wide">&gt;&gt;&gt; a[0]
+<span class="pystring">'spam'</span>
+&gt;&gt;&gt; a[3]
+1234
+&gt;&gt;&gt; a[-2]
+100
+&gt;&gt;&gt; a[1:-1]
+[<span class="pystring">'eggs'</span>, 100]
+&gt;&gt;&gt; a[:]          <span class="pycomment"># Copies the list</span>
+[<span class="pystring">'spam'</span>, <span class="pystring">'eggs'</span>, 100, 1234]
+&gt;&gt;&gt; a[:2] + [<span class="pystring">'bacon'</span>, 2*2]
+[<span class="pystring">'spam'</span>, <span class="pystring">'eggs'</span>, <span class="pystring">'bacon'</span>, 4]
+&gt;&gt;&gt; 3*a[:3] + [<span class="pystring">'Boo!'</span>]
+[<span class="pystring">'spam'</span>, <span class="pystring">'eggs'</span>, 100, <span class="pystring">'spam'</span>, <span class="pystring">'eggs'</span>, 100, <span class="pystring">'spam'</span>, <span class="pystring">'eggs'</span>, 100, <span class="pystring">'Boo!'</span>]</pre></div><div class="yui-ge"><div class="yui-u first"><p>Unlike strings, which are <em>immutable</em>, it is possible to replace
+individual elements of a list:</p><pre class="python">&gt;&gt;&gt; a
+[<span class="pystring">'spam'</span>, <span class="pystring">'eggs'</span>, 100, 1234]
+&gt;&gt;&gt; a[2] = a[2] + 23
+&gt;&gt;&gt; a
+[<span class="pystring">'spam'</span>, <span class="pystring">'eggs'</span>, 123, 1234]</pre><p>Assignment to slices is also possible, and this can even change the
+size of the list:</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><pre class="python wide wide">&gt;&gt;&gt; <span class="pycomment"># Replace some items:</span>
+... a[0:2] = [1, 12]
+&gt;&gt;&gt; a
+[1, 12, 123, 1234]
+&gt;&gt;&gt; <span class="pycomment"># Remove some:</span>
+... a[0:2] = []
+&gt;&gt;&gt; a
+[123, 1234]
+&gt;&gt;&gt; <span class="pycomment"># Insert some:</span>
+... a[1:1] = [<span class="pystring">'bletch'</span>, <span class="pystring">'xyzzy'</span>]
+&gt;&gt;&gt; a
+[123, <span class="pystring">'bletch'</span>, <span class="pystring">'xyzzy'</span>, 1234]
+&gt;&gt;&gt; a[:0] = a     <span class="pycomment"># Insert (a copy of) itself at the beginning</span>
+&gt;&gt;&gt; a
+[123, <span class="pystring">'bletch'</span>, <span class="pystring">'xyzzy'</span>, 1234, 123, <span class="pystring">'bletch'</span>, <span class="pystring">'xyzzy'</span>, 1234]
+&gt;&gt;&gt; a[:] = []     <span class="pycomment"># Clear the list: replace all items with an empty list</span>
+&gt;&gt;&gt; a
+[]</pre></div><div class="yui-ge"><div class="yui-u first"><p>The built-in function <a href="/pyref/len.htm"><strong>len</strong></a> also works for lists:</p><pre class="python">&gt;&gt;&gt; len(a)
+8</pre><p>Lists can be nested:</p><pre class="python">&gt;&gt;&gt; q = [2, 3]
+&gt;&gt;&gt; p = [1, q, 4]
+&gt;&gt;&gt; len(p)
+3
+&gt;&gt;&gt; p[1]
+[2, 3]
+&gt;&gt;&gt; p[1][0]
+2
+&gt;&gt;&gt; p[1].append(<span class="pystring">'xtra'</span>)     <span class="pycomment"># See section 5.1</span>
+&gt;&gt;&gt; p
+[1, [2, 3, <span class="pystring">'xtra'</span>], 4]
+&gt;&gt;&gt; q
+[2, 3, <span class="pystring">'xtra'</span>]</pre><p>Note that in the last example, <code>p[1]</code> and <code>q</code> really refer to the same
+object! We&#8217;ll come back to <em>object semantics</em> later.</p><h2 id="first-steps-towards-programming">First Steps Towards Programming&#160;<a class="nav" href="#first-steps-towards-programming" title="bookmark!">#</a></h2><p>Of course, we can use Python for more complicated tasks than adding
+two and two together. For instance, the following code prints the
+first few numbers from the mathematical <em>Fibonacci</em> series:</p><pre><code>&gt;&gt;&gt; # Fibonacci series:
+... # the sum of two elements defines the next
+... a, b = 0, 1
+&gt;&gt;&gt; while b &lt; 10:
+...       print b
+...       a, b = b, a+b
+... 
+1
+1
+2
+3
+5
+8
+</code></pre><p>This example introduces several new features.</p><h4>Multiple Assignment</h4><p>The first line contains a <em>multiple assignment</em> statement: the
+variables <code>a</code> and <code>b</code> simultaneously get the new values 0 and 1. On
+the last line this is used again, demonstrating that the expressions
+on the right-hand side of the &#8220;=&#8221; sign are all evaluated first before
+any of the assignments take place. The right-hand side expressions are
+evaluated from the left to the right.</p><h4>Loops</h4><p>The <a href="/pyref/while.htm"><strong>while</strong></a> loop executes as long as the condition (here: `b &lt;
+10`) remains true.  Python supports several comparison operators,
+including <code>&lt;</code> (less than), <code>&gt;</code> (greater than), <code>==</code> (equal to), <code>&lt;=</code>
+(less than or equal to), <code>&gt;=</code> (greater than or equal to) and <code>!=</code> (not
+equal to).  You don&#8217;t have to use an operator; any non-zero numeric
+value is true, and zero is false. The condition can also be a string
+or list value, in fact any sequence; anything with a non-zero length
+is true, and empty sequences are false.</p><h4>Grouping Statements through Indentation</h4><p>The <em>body</em> of the loop is <em>indented</em>: indentation is Python&#8217;s way of
+grouping statements.  You can indent using tabs or spaces, as long as
+all statements that belong to the same group uses the same
+indentation.  In the interpreter, you usually have to type the tabs or
+spaces yourself, but most text editors have an auto-indent facility
+that can do this for you.  Also, when a compound statement is entered
+interactively, it must be followed by a blank line to indicate
+completion (since the parser cannot guess when you have typed the last
+line).</p><h4>The <code>print</code> statement</h4><p>The <a href="/pyref/print.htm"><strong>print</strong></a> statement writes the value of the expression(s) it
+is given. It differs from just writing the expression you want to
+write (as we did earlier in the calculator examples) in the way it
+handles multiple expressions and strings. Strings are printed without
+quotes, and a space is inserted between items, so you can format
+things nicely, like this:</p><pre class="python">&gt;&gt;&gt; i = 256*256
+&gt;&gt;&gt; <span class="pykeyword">print</span> <span class="pystring">'The value of i is'</span>, i
+The value of i <span class="pykeyword">is</span> 65536</pre><p>A trailing comma avoids the newline after the output:</p><pre><code>&gt;&gt;&gt; a, b = 0, 1
+&gt;&gt;&gt; while b &lt; 1000:
+...     print b,
+...     a, b = b, a+b
+... 
+1 1 2 3 5 8 13 21 34 55 89 144 233 377 610 987
+</code></pre><p>Note that the interpreter inserts a newline before it prints the next
+prompt if the last line was not completed.</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><div class='comment'>
+<p><b>Comment:</b></p>
+<p>
+Mmm. ASCII art.</p>
+<p>Posted by <b class='author'><a href='http://pytut.infogami.com/node5.html/_comments/04017'>infogami</a></b></p>
+</div>
+
+<div class='comment'>
+<p><b>Comment:</b></p>
+<p>
+I suggest using // for floor, not /:
+
+It is legal.  It is informative.  / will shortly be deprecated.  Why learn what will shortly be wrong and have to unlearn it?
+
+You could make a short comment that / can also be used in the current version 2.4, bit I would probably save much of a comment on that for a more substantial intro to arithmetic than this Informal Intro.</p>
+<p>Posted by <b class='author'><a href='http://pytut.infogami.com/node5.html/_comments/3ojr'>infogami</a></b></p>
+</div>
+
+<div class='comment'>
+<p><b>Comment:</b></p>
+<p>
+consider adding \*\* (exponent, ex. 4\*\*2=16) to the Numbers section
+</p>
+<p>Posted by <b class='author'><a href='http://pytut.infogami.com/node5.html/_comments/3qa4'>infogami</a></b></p>
+</div>
+
+<div class='comment'>
+<p><b>Comment:</b></p>
+<p>
+In the Strings section, i suggest you put 'print' before each command (in the first interactive session), so the reader can see the true effects.</p>
+<p>Posted by <b class='author'><a href='http://pytut.infogami.com/node5.html/_comments/3qa6'>infogami</a></b></p>
+</div>
+
+<div class='comment'>
+<p><b>Comment:</b></p>
+<p>
+The multi-line string using triple quotes does not show the Python prompt. It may confuse readers.</p>
+<p>Posted by <b class='author'><a href='http://pytut.infogami.com/node5.html/_comments/44br'>infogami</a></b></p>
+</div>
+
+<div class='comment'>
+<p><b>Comment:</b></p>
+<p>
+Given the amount of Unicode questions we see over at comp.lang.python, it definitely needs to be discussed in the tutorial.  The description can be somewhat simplified, though; I've done some incremental changes lately, and plan to rewrite the encoding parts next.</p>
+<p>Posted by <b class='author'><a href='http://pytut.infogami.com/node5.html/_comments/44jp/_comments/44rr'>infogami</a></b></p>
+</div>
+
+<div class='comment'>
+<p><b>Comment:</b></p>
+<p>
+Do we need Unicode here? I suggest it should be removed (or moved to an appendix).</p>
+<p>Posted by <b class='author'><a href='http://pytut.infogami.com/node5.html/_comments/44jp'>infogami</a></b></p>
+</div>
+
+<div class='comment'>
+<p><b>Comment:</b></p>
+<p>
+While 'integer division rounds down' is indeed true, what I have found most people want to
+know at this point is how not to get integer division when they don't want it.
+
+    &gt;&gt;&gt; 15.0/2
+    7.5
+    &gt;&gt;&gt;
+
+And what they _really, really, really_ need to know is that floating point numbers are not
+the fixed point decimal numbers they look precisely like, and they should not use them for
+money.  Here is where an important note on floating point is needed.
+</p>
+<p>Posted by <b class='author'><a href='http://pytut.infogami.com/node5.html/_comments/4f8h'>infogami</a></b></p>
+</div>
+
+<div class='comment'>
+<p><b>Comment:</b></p>
+<p>
+ooops, that got away before I was done.  An appendix on floating point, while useful is not 
+what is needed here, because it does not forcefully make the point that floating point is not
+money, and they should use the Decimal data type for that.</p>
+<p>Posted by <b class='author'><a href='http://pytut.infogami.com/node5.html/_comments/4f8r'>infogami</a></b></p>
+</div>
+
+<div class='comment'>
+<p><b>Comment:</b></p>
+<p>
+In the example for "len()", please avoid the horribly long word -- I know it is cool, but it'd be better if the reader can actually count the number of letters in the string herself and correlate it with the value returned by len().
+
+%%%%%%%
+The built-in function len() returns the length of a string:
+
+&gt;&gt;&gt; s = 'supercalifragilisticexpialidocious'
+&gt;&gt;&gt; len(s)
+34
+%%%%%%%
+</p>
+<p>Posted by <b class='author'><a href='http://pytut.infogami.com/node5.html/_comments/4vm8'>infogami</a></b></p>
+</div>
+</div> <!-- yui-g --></div> <!-- content --> </div> <!-- yui-b --> </div> <!-- yui-main --> <div class="yui-b"> <div id='menu'> <ul> <li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li> <li><b><a href="." title="Go to pytut index page.">::: pytut :::</a></b></li> </ul> <ul><li><b>::: contents</b></li></ul> <ul><li><ul><li><a href="#using-python-as-a-calculator">Using Python as a Calculator</a></li><li><ul><li><a href="#numbers">Numbers</a></li><li><a href="#strings">Strings</a></li><li><a href="#unicode-strings">Unicode Strings</a></li><li><a href="#lists">Lists</a></li></ul></li><li><a href="#first-steps-towards-programming">First Steps Towards Programming</a></li></ul></li></ul> </div> <!-- menu --> </div> <!-- yui-b --> </div> <!-- bd --> <div id="ft"> <!-- footer --> <p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;"></a>
+this page was rendered by a <a href="http://www.djangoproject.com/">django</a> application in 0.12s 2010-11-12 02:28:44.836864.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p> </div> <!-- ft --> </div> <!-- doc --> <script src="/media/js/effbot-min.js" type="text/javascript"> </script> </body> </html>

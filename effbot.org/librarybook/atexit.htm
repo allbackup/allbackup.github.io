@@ -1,0 +1,27 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>The atexit&nbsp;module</title></head><body data-page-id="470"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">The atexit&nbsp;module</h1></div><div class="yui-ge"><div class="yui-u first"><p>(2.0 and newer) This module allows you to register one or more
+functions that are called when the interpreter is terminated.</p><p>To register a function, simply call the <b>register</b>
+function. You can also add one or more extra arguments, which are
+passed as arguments to the exit function.</p><div class="example">
+<b style="example">Example: Using the atexit
+module</b>
+<pre>
+# File: <a href="atexit/atexit-example-1.py">atexit-example-1.py</a>
+
+import atexit
+
+def exit(*args):
+    print "exit", args
+
+# register three exit handlers
+atexit.register(exit)
+atexit.register(exit, 1)
+atexit.register(exit, "hello", "world")
+
+</pre><pre class="computeroutput" moreinfo="NONE">
+$ python atexit-example-1.py
+exit ('hello', 'world')
+exit (1,)
+exit ()
+</pre></div><p>This module is a straightforward wrapper for the <a href="sys.htm"><b>sys.exitfunc</b></a> hook.</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to librarybook index page.">::: librarybook :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

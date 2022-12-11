@@ -1,0 +1,100 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>Django</title> <script type="text/javascript">effbot_page_id=39;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <h1 class="maintitle">Django</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p>&#8220;<i>Django is a high-level Python Web framework that encourages rapid development and clean, pragmatic design.</i>&#8221;
+
+</p><p><a href="http://www.djangoproject.com/">http://www.djangoproject.com/</a>
+</p><p>On this site:</p><dl><dt><a href="#installing">Installing Django on Windows</a>
+</dt><dt><a href="django-pageview.htm"><cite>The Django PageView Application</cite></a>
+</dt><dt><a href="django-multihost.htm"><cite>Serving Multiple Hosts from a Single Django Instance</cite></a>
+</dt></dl><h3 id="installing">Installing Django on Windows in less than 5 minutes&#160;<a class="nav" href="#installing" title="bookmark!">#</a></h3><p> Assuming you have Python 2.4, <a href="exemaker.htm">exemaker</a>,
+and <a href="http://subversion.tigris.org/servlets/ProjectDocumentList?folderID=91">the <b>svn</b> Subversion command-line client</a>.</p><p> In a command line window, do:
+
+<pre>
+cd C:\Python24\Lib\site-packages
+svn co http://code.djangoproject.com/svn/django/trunk/django
+
+cd django\bin
+exemaker django-admin.py
+</pre></p><p> Install pysqlite 2 (for sqlite 3) from
+<a href="http://www.initd.org/tracker/pysqlite">http://www.initd.org/tracker/pysqlite</a>.  The latest stable version should work fine (currently <a href="http://initd.org/pub/software/pysqlite/releases/2.0/2.0.5/pysqlite-2.0.5.win32-py2.4.exe">2.0.5</a>).
+
+</p><p> Create a work directory, and use <b>django-admin</b> to create a project directory in there.
+
+<pre>
+mkdir c:\mytest
+cd c:\mytest
+django-admin startproject myproject
+</pre></p><p> Edit the DATABASE_ENGINE and DATABASE_NAME entries in the
+<b>settings.py</b> file:
+
+<pre>
+cd myproject
+notepad settings.py
+</pre></p><p> Set the variables to:
+
+<pre>
+DATABASE_ENGINE = 'sqlite3'
+DATABASE_NAME = 'mydata.db'
+</pre></p><p> (If you want, you can tweak other parameters at the same time.  See
+comments in the file for details.)
+
+</p><p> Start the server:
+
+<pre>
+python manage.py runserver
+</pre></p><p> Click <a href="http://localhost:8000">here</a> to check that the
+server is running.
+
+</p><p> That&#8217;s it!
+
+</p><p>  The next step is to read the
+<a href="http://www.djangoproject.com/documentation/tutorial1/#creating-models">Django tutorial</a>.  Get to work! 
+
+</p><p>(to set up a deployment stack, with apache and a real database server,
+some more work is needed.  <a href="http://www.thinkhole.org/wp/2006/04/03/django-on-windows-howto/">this article</a> shows you how to do that.)</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><div class='comment' timestamp='1162266398.85'>
+ <p><b>Comment:</b></p>
+ <p>I have installed all of the applications required to run Django on windows, and I cannot get Django to work properly.
+
+site-packages dir does not work in DOS. I needed to change it to: sitepack in order to read the directory.
+
+python 2.4
+django
+pysqlite
+subversion
+
+when I try to run the django-admin I get an error in DOS:
+
+Traceback (most recent call last):
+File "C:\PYTHON24\LIB\SITEPACK\DJANGO\BIN\django-admin.py" ,  line 5, in ?
+from django.core import management
+ImportError: No module named django.core
+
+Can anyone assist me with this in what is going on here? I assume the windows django is not stable yet.
+
+Thanks for any advice, help, or tips, really want to get django rolling!
+</p>
+ <p>Posted by <b class='author'>Jason w3</b> <span class='mark'>(2006-10-31)</span></p>
+
+<p><i>(Please don't post support questions to this site; this is not a
+discussion forum.  To get help with Django, use a real support forum.)</i>
+<p><i>Im afraid I have no idea what Python distribution you're using that requires you to install things under "SITEPACK" and uses uppercase for all
+directory names; the real Python 2.4 distributions for Windows from python.org
+definitely have a site-packages directory.  And Django works perfectly fine
+if you use a python.org distribution.  I suggest double-checking your
+installation; if you still cannot get things
+to work with a proper Python install, ask on the Django forums (see the
+sidebar on <a href="http://www.djangoproject.com/community">this page</a>
+for links) /F</i></p>
+
+</div>
+
+
+<div class='comment' target-id='None' timestamp='1171933167.52'>
+ <p><b>Comment:</b></p>
+ <p>Exemaker just says it cannot find Python. Do I have to do it in a special folder? Some instructions are missing in this article. :(</p>
+ <p>Posted by <b class='author'>Sonja the noob</b> <span class='mark'>(2007-02-20)</span></p>
+<p><i>Is <b>python</b> itself in the path?  If not, you'll either have to tweak the exemaker.py script (see the table under "Details" on the exemaker page),
+or fix the system's path (see the Python FAQ for details) /F</i></p>
+</div>
+</div> <!-- yui-g --></div> <!-- content --> </div> <!-- yui-b --> </div> <!-- yui-main --> <div class="yui-b"> <div id='menu'> <ul> <li><b><a href="/">::: effbot.org</a></b></li> <li><b><a href=".">::: zone :::</a></b></li> </ul> </div> <!-- menu --> </div> <!-- yui-b --> </div> <!-- bd --> <div id="ft"> <!-- footer --> <p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15_grey.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;"></a>
+this page was rendered by a <a href="http://www.djangoproject.com/">django</a> application in 0.05s 2007-10-09 19:28:39.782008.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p> </div> <!-- ft --> </div> <!-- doc --> <script src="/media/js/effbot-min.js" type="text/javascript"> </script> </body> </html>

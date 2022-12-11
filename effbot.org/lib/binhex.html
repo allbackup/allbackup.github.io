@@ -1,0 +1,72 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>binhex</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-binhex.html'>original</a> :::
+<a href='binhex.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>binhex&#8212;Encode and decode binhex4 files</h1>
+
+<div class="toc"><dl><dt>On this page:</dt><dd><a href="#notes">Notes</a></dd></dl></div><p>This module encodes and decodes files in binhex4 format, a
+format allowing representation of Macintosh files in ASCII. On the
+Macintosh, both forks of a file and the finder information are
+encoded (or decoded), on other platforms only the data fork is
+handled.</p>
+
+<p>The <a class="link" href="#binhex"><code>binhex</code></a> module defines
+the following functions:</p>
+</div>
+<dl><dt class="function" id="binhex"><b>binhex(input, output)</b> <tt class="nav"><a class="nav" href="binhex.binhex" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Convert a binary file with filename <var>input</var> to binhex
+file <var>output</var>. The <var>output</var> parameter can either
+be a filename or a file-like object (any object supporting a <code>write</code> and <code>close</code> method).</p>
+</dd>
+<dt class="function" id="hexbin"><b>hexbin(input[, output])</b> <tt class="nav"><a class="nav" href="binhex.hexbin" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Decode a binhex file <var>input</var>. <var>input</var> may be a
+filename or a file-like object supporting <code>read</code> and <code>
+close</code> methods. The resulting file is written to a file named
+<var>output</var>, unless the argument is omitted in which case the
+output filename is read from the binhex file.</p>
+</dd>
+</dl><div class="text">
+<p>The following exception is also defined:</p>
+</div>
+<dl><dt class="exception" id="Error"><b>exception Error</b> <tt class="nav"><a class="nav" href="binhex.Error" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="exception">
+<p>Exception raised when something can't be encoded using the
+binhex format (for example, a filename is too long to fit in the
+filename field), or when input is not properly encoded binhex
+data.</p>
+</dd>
+</dl><div class="text"><span class="mark">@see</span> <code>Module binascii</code> Support module containing
+ASCII-to-binary and binary-to-ASCII conversions. 
+
+<h2 id="notes">Notes <a class="nav" href="#notes">#</a></h2>
+
+<p>There is an alternative, more powerful interface to the coder
+and decoder, see the source for details.</p>
+
+<p>If you code or decode textfiles on non-Macintosh platforms they
+will still use the Macintosh newline convention (carriage-return as
+end of line).</p>
+
+<p>As of this writing, <a class="link" href="#hexbin"><code>
+hexbin</code></a> appears to not work in all cases.</p>
+</div>
+</div></body></html>

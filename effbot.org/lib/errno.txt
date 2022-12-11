@@ -1,0 +1,513 @@
+
+@@module errno
+
+<h1>errno&#8212;Standard errno system symbols</h1>
+
+<p>This module makes available standard {@code errno} system symbols.
+The value of each symbol is the corresponding integer value. The names
+and descriptions are borrowed from linux/include/errno.h, which should
+be pretty all-inclusive.
+
+@@variable errorcode
+
+<p>Dictionary providing a mapping from the errno value to the string
+name in the underlying system. For instance, {@code
+errno.errorcode[errno.EPERM]} maps to {@code 'EPERM'}.
+
+@@text 
+
+<p>To translate a numeric error code to an error message, use {@link
+os.strerror}.
+
+<p>Of the following list, symbols that are not used on the current
+platform are not defined by the module. The specific list of defined
+symbols is available as {@code errno.errorcode.keys()}. Symbols
+available can include:
+
+@@variable EPERM
+
+<p>Operation not permitted
+
+@@variable ENOENT
+
+<p>No such file or directory
+
+@@variable ESRCH
+
+<p>No such process
+
+@@variable EINTR
+
+<p>Interrupted system call
+
+@@variable EIO
+
+<p>I/O error
+
+@@variable ENXIO
+
+<p>No such device or address
+
+@@variable E2BIG
+
+<p>Arg list too long
+
+@@variable ENOEXEC
+
+<p>Exec format error
+
+@@variable EBADF
+
+<p>Bad file number
+
+@@variable ECHILD
+
+<p>No child processes
+
+@@variable EAGAIN
+
+<p>Try again
+
+@@variable ENOMEM
+
+<p>Out of memory
+
+@@variable EACCES
+
+<p>Permission denied
+
+@@variable EFAULT
+
+<p>Bad address
+
+@@variable ENOTBLK
+
+<p>Block device required
+
+@@variable EBUSY
+
+<p>Device or resource busy
+
+@@variable EEXIST
+
+<p>File exists
+
+@@variable EXDEV
+
+<p>Cross-device link
+
+@@variable ENODEV
+
+<p>No such device
+
+@@variable ENOTDIR
+
+<p>Not a directory
+
+@@variable EISDIR
+
+<p>Is a directory
+
+@@variable EINVAL
+
+<p>Invalid argument
+
+@@variable ENFILE
+
+<p>File table overflow
+
+@@variable EMFILE
+
+<p>Too many open files
+
+@@variable ENOTTY
+
+<p>Not a typewriter
+
+@@variable ETXTBSY
+
+<p>Text file busy
+
+@@variable EFBIG
+
+<p>File too large
+
+@@variable ENOSPC
+
+<p>No space left on device
+
+@@variable ESPIPE
+
+<p>Illegal seek
+
+@@variable EROFS
+
+<p>Read-only file system
+
+@@variable EMLINK
+
+<p>Too many links
+
+@@variable EPIPE
+
+<p>Broken pipe
+
+@@variable EDOM
+
+<p>Math argument out of domain of func
+
+@@variable ERANGE
+
+<p>Math result not representable
+
+@@variable EDEADLK
+
+<p>Resource deadlock would occur
+
+@@variable ENAMETOOLONG
+
+<p>File name too long
+
+@@variable ENOLCK
+
+<p>No record locks available
+
+@@variable ENOSYS
+
+<p>Function not implemented
+
+@@variable ENOTEMPTY
+
+<p>Directory not empty
+
+@@variable ELOOP
+
+<p>Too many symbolic links encountered
+
+@@variable EWOULDBLOCK
+
+<p>Operation would block
+
+@@variable ENOMSG
+
+<p>No message of desired type
+
+@@variable EIDRM
+
+<p>Identifier removed
+
+@@variable ECHRNG
+
+<p>Channel number out of range
+
+@@variable EL2NSYNC
+
+<p>Level 2 not synchronized
+
+@@variable EL3HLT
+
+<p>Level 3 halted
+
+@@variable EL3RST
+
+<p>Level 3 reset
+
+@@variable ELNRNG
+
+<p>Link number out of range
+
+@@variable EUNATCH
+
+<p>Protocol driver not attached
+
+@@variable ENOCSI
+
+<p>No CSI structure available
+
+@@variable EL2HLT
+
+<p>Level 2 halted
+
+@@variable EBADE
+
+<p>Invalid exchange
+
+@@variable EBADR
+
+<p>Invalid request descriptor
+
+@@variable EXFULL
+
+<p>Exchange full
+
+@@variable ENOANO
+
+<p>No anode
+
+@@variable EBADRQC
+
+<p>Invalid request code
+
+@@variable EBADSLT
+
+<p>Invalid slot
+
+@@variable EDEADLOCK
+
+<p>File locking deadlock error
+
+@@variable EBFONT
+
+<p>Bad font file format
+
+@@variable ENOSTR
+
+<p>Device not a stream
+
+@@variable ENODATA
+
+<p>No data available
+
+@@variable ETIME
+
+<p>Timer expired
+
+@@variable ENOSR
+
+<p>Out of streams resources
+
+@@variable ENONET
+
+<p>Machine is not on the network
+
+@@variable ENOPKG
+
+<p>Package not installed
+
+@@variable EREMOTE
+
+<p>Object is remote
+
+@@variable ENOLINK
+
+<p>Link has been severed
+
+@@variable EADV
+
+<p>Advertise error
+
+@@variable ESRMNT
+
+<p>Srmount error
+
+@@variable ECOMM
+
+<p>Communication error on send
+
+@@variable EPROTO
+
+<p>Protocol error
+
+@@variable EMULTIHOP
+
+<p>Multihop attempted
+
+@@variable EDOTDOT
+
+<p>RFS specific error
+
+@@variable EBADMSG
+
+<p>Not a data message
+
+@@variable EOVERFLOW
+
+<p>Value too large for defined data type
+
+@@variable ENOTUNIQ
+
+<p>Name not unique on network
+
+@@variable EBADFD
+
+<p>File descriptor in bad state
+
+@@variable EREMCHG
+
+<p>Remote address changed
+
+@@variable ELIBACC
+
+<p>Can not access a needed shared library
+
+@@variable ELIBBAD
+
+<p>Accessing a corrupted shared library
+
+@@variable ELIBSCN
+
+<p>.lib section in a.out corrupted
+
+@@variable ELIBMAX
+
+<p>Attempting to link in too many shared libraries
+
+@@variable ELIBEXEC
+
+<p>Cannot exec a shared library directly
+
+@@variable EILSEQ
+
+<p>Illegal byte sequence
+
+@@variable ERESTART
+
+<p>Interrupted system call should be restarted
+
+@@variable ESTRPIPE
+
+<p>Streams pipe error
+
+@@variable EUSERS
+
+<p>Too many users
+
+@@variable ENOTSOCK
+
+<p>Socket operation on non-socket
+
+@@variable EDESTADDRREQ
+
+<p>Destination address required
+
+@@variable EMSGSIZE
+
+<p>Message too long
+
+@@variable EPROTOTYPE
+
+<p>Protocol wrong type for socket
+
+@@variable ENOPROTOOPT
+
+<p>Protocol not available
+
+@@variable EPROTONOSUPPORT
+
+<p>Protocol not supported
+
+@@variable ESOCKTNOSUPPORT
+
+<p>Socket type not supported
+
+@@variable EOPNOTSUPP
+
+<p>Operation not supported on transport endpoint
+
+@@variable EPFNOSUPPORT
+
+<p>Protocol family not supported
+
+@@variable EAFNOSUPPORT
+
+<p>Address family not supported by protocol
+
+@@variable EADDRINUSE
+
+<p>Address already in use
+
+@@variable EADDRNOTAVAIL
+
+<p>Cannot assign requested address
+
+@@variable ENETDOWN
+
+<p>Network is down
+
+@@variable ENETUNREACH
+
+<p>Network is unreachable
+
+@@variable ENETRESET
+
+<p>Network dropped connection because of reset
+
+@@variable ECONNABORTED
+
+<p>Software caused connection abort
+
+@@variable ECONNRESET
+
+<p>Connection reset by peer
+
+@@variable ENOBUFS
+
+<p>No buffer space available
+
+@@variable EISCONN
+
+<p>Transport endpoint is already connected
+
+@@variable ENOTCONN
+
+<p>Transport endpoint is not connected
+
+@@variable ESHUTDOWN
+
+<p>Cannot send after transport endpoint shutdown
+
+@@variable ETOOMANYREFS
+
+<p>Too many references: cannot splice
+
+@@variable ETIMEDOUT
+
+<p>Connection timed out
+
+@@variable ECONNREFUSED
+
+<p>Connection refused
+
+@@variable EHOSTDOWN
+
+<p>Host is down
+
+@@variable EHOSTUNREACH
+
+<p>No route to host
+
+@@variable EALREADY
+
+<p>Operation already in progress
+
+@@variable EINPROGRESS
+
+<p>Operation now in progress
+
+@@variable ESTALE
+
+<p>Stale NFS file handle
+
+@@variable EUCLEAN
+
+<p>Structure needs cleaning
+
+@@variable ENOTNAM
+
+<p>Not a XENIX named type file
+
+@@variable ENAVAIL
+
+<p>No XENIX semaphores available
+
+@@variable EISNAM
+
+<p>Is a named type file
+
+@@variable EREMOTEIO
+
+<p>Remote I/O error
+
+@@variable EDQUOT
+
+<p>Quota exceeded

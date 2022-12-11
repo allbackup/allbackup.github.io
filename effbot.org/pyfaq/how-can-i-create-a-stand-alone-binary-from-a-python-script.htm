@@ -1,0 +1,26 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>How can I create a stand-alone binary from a Python&nbsp;script?</title></head><body data-page-id="758"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><p class="note" style="text-align: center"><strong>
+This is an old copy of the Python FAQ.  The information here may be
+outdated.
+</strong></p><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">How can I create a stand-alone binary from a Python&nbsp;script?</h1></div><div class="yui-ge"><div class="yui-u first"><p>You don&#8217;t need the ability to compile Python to C code if all you want
+is a stand-alone program that users can download and run without
+having to install the Python distribution first.  There are a number
+of tools that determine the set of modules required by a program and
+bind these modules together with a Python binary to produce a single
+executable.</p><p>One is to use the freeze tool, which is included in the Python source
+tree as <s><a href="http://svn.python.org/view/python/trunk/Tools/freeze"><strong>Tools/freeze</strong></a></s> (dead link).  It converts Python byte code to C
+arrays; a C compiler you can embed all your modules into a new
+program, which is then linked with the standard Python modules.</p><p>It works by scanning your source recursively for <a href="/pyref/import.htm"><strong>import</strong></a>
+statements (in both forms) and looking for the modules in the standard
+Python path as well as in the source directory (for built-in modules).
+It then turns the bytecode for modules written in Python into C code
+(array initializers that can be turned into code objects using the
+<a href="/pyref/marshal.htm"><strong>marshal</strong></a> module) and creates a custom-made config file that
+only contains those built-in modules which are actually used in the
+program. It then compiles the generated C code and links it with the
+rest of the Python interpreter to form a self-contained binary which
+acts exactly like your script.</p><p>Obviously, freeze requires a C compiler. There are several other
+utilities which don&#8217;t. The first is Gordon McMillan&#8217;s installer at</p><blockquote><p><s><a href="http://pyinstaller.python-hosting.com/">http://pyinstaller.python-hosting.com/</a></s> (dead link)
+  <s><a href="http://davidf.sjsoft.com/mirrors/mcmillan-inc/installer_dnld.html">http://davidf.sjsoft.com/mirrors/mcmillan-inc/installer_dnld.html</a></s> (dead link)</p></blockquote><p>which works on Windows, Linux and at least some forms of Unix.</p><p>Another is Thomas Heller&#8217;s py2exe (Windows only) at</p><blockquote><p><a href="http://www.py2exe.org">http://www.py2exe.org</a></p></blockquote><p>Other tools include Fredrik Lundh&#8217;s <a href="http://www.effbot.org/zone/squeeze.htm">Squeeze</a> and Anthony
+Tuininga&#8217;s <a href="http://starship.python.net/crew/atuining/cx_Freeze/index.html">cx_Freeze</a>.</p><p>CATEGORY: programming</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to pyfaq index page.">::: pyfaq :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

@@ -1,0 +1,243 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>pprint</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-pprint.html'>original</a> :::
+<a href='pprint.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>pprint&#8212;Data pretty printer</h1>
+
+<div class="toc"><dl><dt>On this page:</dt><dd><a href="#prettyprinter-objects">PrettyPrinter Objects</a></dd></dl></div><p>The <a class="link" href="#pprint"><code>pprint</code></a> module
+provides a capability to &#8220;pretty-print&#8221; arbitrary
+Python data structures in a form which can be used as input to the
+interpreter. If the formatted structures include objects which are
+not fundamental Python types, the representation may not be
+loadable. This may be the case if objects such as files, sockets,
+classes, or instances are included, as well as many other builtin
+objects which are not representable as Python constants.</p>
+
+<p>The formatted representation keeps objects on a single line if
+it can, and breaks them onto multiple lines if they don't fit
+within the allowed width. Construct <a class="link" href="#PrettyPrinter"><code>PrettyPrinter</code></a> objects explicitly if
+you need to adjust the width constraint.</p>
+
+<p>The <a class="link" href="#pprint"><code>pprint</code></a> module defines
+one class:</p>
+</div>
+<dl><dt class="class" id="PrettyPrinter"><b>class PrettyPrinter(...)</b> <tt class="nav"><a class="nav" href="pprint.PrettyPrinter" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>Construct a <a class="link" href="#PrettyPrinter"><code>
+PrettyPrinter</code></a> instance. This constructor understands several
+keyword parameters. An output stream may be set using the <var>
+stream</var> keyword; the only method used on the stream object is
+the file protocol's <code>write</code>
+method. If not specified, the <a class="link" href="#PrettyPrinter"><code>PrettyPrinter</code></a> adopts <code>
+sys.stdout</code>. Three additional parameters may be used to
+control the formatted representation. The keywords are <var>
+indent</var>, <var>depth</var>, and <var>width</var>. The amount of
+indentation added for each recursive level is specified by <var>
+indent</var>; the default is one. Other values can cause output to
+look a little odd, but can make nesting easier to spot. The number
+of levels which may be printed is controlled by <var>depth</var>;
+if the data structure being printed is too deep, the next contained
+level is replaced by "<code>...</code>". By default, there is no
+constraint on the depth of the objects being formatted. The desired
+output width is constrained using the <var>width</var> parameter;
+the default is eighty characters. If a structure cannot be
+formatted within the constrained width, a best effort will be
+made.</p>
+
+<pre>
+&gt;&gt;&gt; import pprint, sys
+&gt;&gt;&gt; stuff = sys.path[:]
+&gt;&gt;&gt; stuff.insert(0, stuff[:])
+&gt;&gt;&gt; pp = pprint.PrettyPrinter(indent=4)
+&gt;&gt;&gt; pp.pprint(stuff)
+[   [   '',
+        '/usr/local/lib/python1.5',
+        '/usr/local/lib/python1.5/test',
+        '/usr/local/lib/python1.5/sunos5',
+        '/usr/local/lib/python1.5/sharedmodules',
+        '/usr/local/lib/python1.5/tkinter'],
+    '',
+    '/usr/local/lib/python1.5',
+    '/usr/local/lib/python1.5/test',
+    '/usr/local/lib/python1.5/sunos5',
+    '/usr/local/lib/python1.5/sharedmodules',
+    '/usr/local/lib/python1.5/tkinter']
+&gt;&gt;&gt;
+&gt;&gt;&gt; import parser
+&gt;&gt;&gt; tup = parser.ast2tuple(
+...     parser.suite(open('pprint.py').read()))[1][1][1]
+&gt;&gt;&gt; pp = pprint.PrettyPrinter(depth=6)
+&gt;&gt;&gt; pp.pprint(tup)
+(266, (267, (307, (287, (288, (...))))))
+</pre>
+</dd>
+</dl><div class="text">
+<p>The <a class="link" href="#PrettyPrinter"><code>PrettyPrinter</code></a>
+class supports several derivative functions:</p>
+</div>
+<dl><dt class="function" id="pformat"><b>pformat(object[, indent[, width[, depth]]])</b> <tt class="nav"><a class="nav" href="pprint.pformat" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return the formatted representation of <var>object</var> as a
+string. <var>indent</var>, <var>width</var> and <var>depth</var>
+will be passed to the <a class="link" href="#PrettyPrinter"><code>
+PrettyPrinter</code></a> constructor as formatting parameters.</p>
+
+<blockquote><span class="mark">@since</span> Changed in version
+2.4: The parameters indent, width and depth were added.<br />
+</blockquote>
+</dd>
+<dt class="function" id="pprint"><b>pprint(object[, stream[, indent[, width[,
+depth]]]])</b> <tt class="nav"><a class="nav" href="pprint.pprint" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Prints the formatted representation of <var>object</var> on
+<var>stream</var>, followed by a newline. If <var>stream</var> is
+omitted, <code>sys.stdout</code> is used. This may be used in the
+interactive interpreter instead of a <code>print</code> statement for inspecting values. <var>
+indent</var>, <var>width</var> and <var>depth</var> will be passed
+to the <a class="link" href="#PrettyPrinter"><code>PrettyPrinter</code></a>
+constructor as formatting parameters.</p>
+
+<pre>
+&gt;&gt;&gt; stuff = sys.path[:]
+&gt;&gt;&gt; stuff.insert(0, stuff)
+&gt;&gt;&gt; pprint.pprint(stuff)
+[&lt;Recursion on list with id=869440&gt;,
+ '',
+ '/usr/local/lib/python1.5',
+ '/usr/local/lib/python1.5/test',
+ '/usr/local/lib/python1.5/sunos5',
+ '/usr/local/lib/python1.5/sharedmodules',
+ '/usr/local/lib/python1.5/tkinter']
+</pre>
+
+<blockquote><span class="mark">@since</span> Changed in version
+2.4: The parameters indent, width and depth were added.<br />
+</blockquote>
+</dd>
+<dt class="function" id="isreadable"><b>isreadable(object)</b> <tt class="nav"><a class="nav" href="pprint.isreadable" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Determine if the formatted representation of <var>object</var>
+is &#8220;readable,&#8221; or can be used to reconstruct the value
+using <code>eval</code>. This always
+returns false for recursive objects.</p>
+
+<pre>
+&gt;&gt;&gt; pprint.isreadable(stuff)
+False
+</pre>
+</dd>
+<dt class="function" id="isrecursive"><b>isrecursive(object)</b> <tt class="nav"><a class="nav" href="pprint.isrecursive" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Determine if <var>object</var> requires a recursive
+representation.</p>
+</dd>
+</dl><div class="text">
+<p>One more support function is also defined:</p>
+</div>
+<dl><dt class="function" id="saferepr"><b>saferepr(object)</b> <tt class="nav"><a class="nav" href="pprint.saferepr" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return a string representation of <var>object</var>, protected
+against recursive data structures. If the representation of <var>
+object</var> exposes a recursive entry, the recursive reference
+will be represented as "<code>&amp;ltRecursion on</code> <var>
+typename</var> with id=<var>number</var>&gt;". The representation
+is not otherwise formatted.</p>
+</dd>
+</dl><div class="text">
+<pre>
+&gt;&gt;&gt; pprint.saferepr(stuff)
+"[&lt;Recursion on list with id=682968&gt;, '', '/usr/local/lib/python1.5', '/usr/loca
+l/lib/python1.5/test', '/usr/local/lib/python1.5/sunos5', '/usr/local/lib/python
+1.5/sharedmodules', '/usr/local/lib/python1.5/tkinter']"
+</pre>
+
+<h2 id="prettyprinter-objects">PrettyPrinter Objects <a class="nav" href="#prettyprinter-objects">#</a></h2>
+
+<p><a class="link" href="#PrettyPrinter"><code>PrettyPrinter</code></a>
+instances have the following methods:</p>
+</div>
+<dl><dt class="method" id="PrettyPrinter.pformat"><b>pformat(object)</b> <tt class="nav"><a class="nav" href="pprint.PrettyPrinter.pformat" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return the formatted representation of <var>object</var>. This
+takes into Account the options passed to the <a class="link" href="#PrettyPrinter"><code>PrettyPrinter</code></a> constructor.</p>
+</dd>
+<dt class="method" id="PrettyPrinter.pprint"><b>pprint(object)</b> <tt class="nav"><a class="nav" href="pprint.PrettyPrinter.pprint" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Print the formatted representation of <var>object</var> on the
+configured stream, followed by a newline.</p>
+</dd>
+</dl><div class="text">
+<p>The following methods provide the implementations for the
+corresponding functions of the same names. Using these methods on
+an instance is slightly more efficient since new <a class="link" href="#PrettyPrinter"><code>PrettyPrinter</code></a> objects don't need to
+be created.</p>
+</div>
+<dl><dt class="method" id="PrettyPrinter.isreadable"><b>isreadable(object)</b> <tt class="nav"><a class="nav" href="pprint.PrettyPrinter.isreadable" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Determine if the formatted representation of the object is
+&#8220;readable,&#8221; or can be used to reconstruct the value
+using <code>eval</code>. Note that this
+returns false for recursive objects. If the <var>depth</var>
+parameter of the <a class="link" href="#PrettyPrinter"><code>
+PrettyPrinter</code></a> is set and the object is deeper than allowed,
+this returns false.</p>
+</dd>
+<dt class="method" id="PrettyPrinter.isrecursive"><b>isrecursive(object)</b> <tt class="nav"><a class="nav" href="pprint.PrettyPrinter.isrecursive" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Determine if the object requires a recursive representation.</p>
+</dd>
+</dl><div class="text">
+<p>This method is provided as a hook to allow subclasses to modify
+the way objects are converted to strings. The default
+implementation uses the internals of the <a class="link" href="#saferepr"><code>saferepr</code></a> implementation.</p>
+</div>
+<dl><dt class="method" id="PrettyPrinter.format"><b>format(object, context, maxlevels,
+level)</b> <tt class="nav"><a class="nav" href="pprint.PrettyPrinter.format" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Returns three values: the formatted version of <var>object</var>
+as a string, a flag indicating whether the result is readable, and
+a flag indicating whether recursion was detected. The first
+argument is the object to be presented. The second is a dictionary
+which contains the <code>id</code> of objects
+that are part of the current presentation context (direct and
+indirect containers for <var>object</var> that are affecting the
+presentation) as the keys; if an object needs to be presented which
+is already represented in <var>context</var>, the third return
+value should be true. Recursive calls to the <code>format</code> method should add additional entries
+for containers to this dictionary. The fourth argument, <var>
+maxlevels</var>, gives the requested limit to recursion; this will
+be <code>0</code> if there is no requested limit. This argument
+should be passed unmodified to recursive calls. The fourth
+argument, <var>level</var> gives the current level; recursive calls
+should be passed a value less than that of the current call.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.3.<br />
+</blockquote>
+</dd>
+</dl></div></body></html>

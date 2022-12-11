@@ -1,0 +1,31 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>Compiling Python&nbsp;Code</title> <script type="text/javascript">effbot_page_id=212;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> <!--
+<p style='color: #8f8f8f; background: #fff5bf; padding: 5px 10px;'> <b>2008-07-15:</b> Selected articles
+ (including this one) 
+now have experimental "comment" links in the left column and at the bottom.
+You're welcome to use them for commenting and voting on articles.
+For a bit more on this, see <a
+href="http://effbot.slinkset.com/links/Welcome_to_discuss_effbot_org">this
+page</a>. /F
+</p>
+--> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <h1 class="maintitle">Compiling Python&nbsp;Code</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p class="info">July 12, 2003 | Fredrik Lundh</p><p>Python source code is automatically compiled into Python byte code
+by the CPython interpreter.  Compiled code is usually stored in PYC (or
+PYO) files, and is regenerated when the source is updated, or when
+otherwise necessary.</p><p>To distribute a program to people who already have Python installed,
+you can ship either the PY files or the PYC files.  In recent versions,
+you can also create a ZIP archive containing PY or PYC files, and use
+a small &#8220;bootstrap script&#8221; to add that ZIP archive to the path.</p><p>To &#8220;compile&#8221; a Python program into an executable, use a bundling
+tool, such as
+<a href="http://www.mcmillan-inc.com/install1.html">Gordon McMillan&#8217;s installer</a> (<a href="http://paulbaranowski.org/modules.php?name=News&amp;file=article&amp;sid=76">alternative download</a>) (cross-platform),
+<a href="http://www.py2exe.org">Thomas Heller&#8217;s py2exe</a> (Windows),
+<a href="http://starship.python.net/crew/atuining/cx_Freeze/">Anthony Tuininga&#8217;s cx_Freeze</a> (cross-platform),
+or Bob Ippolito&#8217;s
+<a href="http://undefined.org/python/">py2app</a> (Mac).  These tools
+puts your modules and data files in some kind of archive file, and creates
+an executable that automatically sets things up so that modules are
+imported from that archive.  Some tools can embed the archive in the
+executable itself.</p><p>If all you need is to wrap up a couple of Python scripts and
+modules into a single file, <a href="squeeze.htm">Squeeze</a> might be what
+you need.  For Windows, my <a href="exemaker.htm">ExeMaker</a> tool can also
+be quite useful (on its own, or in combination with squeeze).</p><h3 id="compiling-python-modules">Compiling Python modules to byte c

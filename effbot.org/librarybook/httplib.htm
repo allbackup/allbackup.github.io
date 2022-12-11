@@ -1,0 +1,96 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>The httplib&nbsp;module</title></head><body data-page-id="556"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">The httplib&nbsp;module</h1></div><div class="yui-ge"><div class="yui-u first"><p>This module provides an HTTP client interface.</p><div class="example">
+<b style="example">Example: Using the httplib module</b>
+<pre>
+# File: <a href="httplib/httplib-example-1.py">httplib-example-1.py</a>
+
+import httplib
+
+USER_AGENT = "httplib-example-1.py"
+
+class Error:
+    # <i>indicates an HTTP error</i>
+    def __init__(self, url, errcode, errmsg, headers):
+        self.url = url
+        self.errcode = errcode
+        self.errmsg = errmsg
+        self.headers = headers
+    def __repr__(self):
+        return (
+            "&lt;Error for %s: %s %s&gt;" %
+            (self.url, self.errcode, self.errmsg)
+            )
+
+class Server:
+
+    def __init__(self, host):
+        self.host = host
+
+    def fetch(self, path):
+        http = httplib.HTTP(self.host)
+
+        # <i>write header</i>
+        http.putrequest("GET", path)
+        http.putheader("User-Agent", USER_AGENT)
+        http.putheader("Host", self.host)
+        http.putheader("Accept", "*/*")
+        http.endheaders()
+
+        # <i>get response</i>
+        errcode, errmsg, headers = http.getreply()
+
+        if errcode != 200:
+            raise Error(errcode, errmsg, headers)
+
+        file = http.getfile()
+        return file.read()
+
+if __name__ == "__main__":
+
+    server = Server("www.pythonware.com")
+    print server.fetch("/index.htm")
+</pre></div><p>Note that the HTTP client provided by this module blocks while
+waiting for the server to respond. For an asynchronous solution,
+which among other things allows you to issue multiple requests in
+parallel, see the examples for the
+<b><a href="asyncore.htm">asyncore</a></b>
+module.</p><h3 style="sect2">Posting data to an HTTP server</h3><p>The <b>httplib</b> module also allows you to send other HTTP
+commands, such as <b>POST</b>.</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><div class="example wide">
+<b style="example">Example: Using the httplib module to post data</b>
+<pre class="wide">
+# File: <a href="httplib/httplib-example-2.py">httplib-example-2.py</a>
+
+import httplib
+
+USER_AGENT = "httplib-example-2.py"
+
+def post(host, path, data, type=None):
+
+    http = httplib.HTTP(host)
+
+    # <i>write header</i>
+    http.putrequest("PUT", path)
+    http.putheader("User-Agent", USER_AGENT)
+    http.putheader("Host", host)
+    if type:
+        http.putheader("Content-Type", type)
+    http.putheader("Content-Length", str(len(data)))
+    http.endheaders()
+
+    # <i>write body</i>
+    http.send(data)
+
+    # <i>get response</i>
+    errcode, errmsg, headers = http.getreply()
+
+    if errcode != 200:
+        raise Error(errcode, errmsg, headers)
+
+    file = http.getfile()
+    return file.read()
+
+if __name__ == "__main__":
+
+    post("www.spam.egg", "/bacon.htm", "a piece of data", "text/plain")
+</pre></div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to librarybook index page.">::: librarybook :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

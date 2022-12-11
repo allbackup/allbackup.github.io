@@ -1,0 +1,113 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>posix</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-posix.html'>original</a> :::
+<a href='posix.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>posix&#8212;The most common POSIX system calls</h1>
+
+<div class="toc"><dl><dt>On this page:</dt><dd><a href="#large-file-support">Large File Support</a></dd><dd><a href="#module-contents">Module Contents</a></dd></dl></div><p>Availability: Unix.</p>
+
+<p>This module provides access to operating system functionality
+that is standardized by the C Standard and the POSIX standard (a
+thinly disguised Unix interface).</p>
+
+<p>Do not import this module directly. Instead, import the module
+<code>os</code>, which provides a <em>
+portable</em> version of this interface. On Unix, the <code>os</code> module provides a superset of
+the <code>posix</code> interface. On
+non-Unix operating systems the <code>
+posix</code> module is not available, but a subset is always available
+through the <code>os</code> interface. Once
+<code>os</code> is imported, there is <em>
+no</em> performance penalty in using it instead of <code>posix</code>. In addition, <code>os</code> provides some additional functionality, such
+as automatically calling <code>
+putenv</code> when an entry in <code>os.environ</code> is changed.</p>
+
+<p>The descriptions below are very terse; refer to the
+corresponding Unix manual (or POSIX documentation) entry for more
+information. Arguments called <var>path</var> refer to a pathname
+given as a string.</p>
+
+<p>Errors are reported as exceptions; the usual exceptions are
+given for type errors, while errors reported by the system calls
+raise <code>error</code> (a synonym for
+the standard exception <code>exceptions.OSError</code>), described
+below.</p>
+
+<h2 id="large-file-support">Large File Support <a class="nav" href="#large-file-support">#</a></h2>
+
+<p>Several operating systems (including AIX, HPUX, Irix and
+Solaris) provide support for files that are larger than 2 Gb from a
+C programming model where <code>
+c:int</code> and <code>c:long</code> are
+32-bit values. This is typically accomplished by defining the
+relevant size and offset types as 64-bit values. Such files are
+sometimes referred to as large files.</p>
+
+<p>Large file support is enabled in Python when the size of an <code>c:off_t</code> is larger than a <code>c:long</code> and the <code>long</code> type is available and is at least as
+large as an <code>c:off_t</code>. Python
+longs are then used to represent file sizes, offsets and other
+values that can exceed the range of a Python int. It may be
+necessary to configure and compile Python with certain compiler
+flags to enable this mode. For example, it is enabled by default
+with recent versions of Irix, but with Solaris 2.6 and 2.7 you need
+to do something like:</p>
+
+<pre>
+CFLAGS="`getconf LFS_CFLAGS`" OPT="-g -O2 $CFLAGS" \
+        ./configure
+</pre>
+
+<p>On large-file-capable Linux systems, this might work:</p>
+
+<pre>
+CFLAGS='-D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64' OPT="-g -O2 $CFLAGS" \
+        ./configure
+</pre>
+
+<h2 id="module-contents">Module Contents <a class="nav" href="#module-contents">#</a></h2>
+
+<p>Module <code>posix</code> defines the
+following data item:</p>
+</div>
+<dl><dt class="variable" id="environ"><b>environ</b> <tt class="nav"><a class="nav" href="posix.environ" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>A dictionary representing the string environment at the time the
+interpreter was started. For example, <code>environ['HOME']</code>
+is the pathname of your home directory, equivalent to <code>
+getenv("HOME")</code> in C.</p>
+
+<p>Modifying this dictionary does not affect the string environment
+passed on by <code>execv</code>, <code>popen</code> or <code>system</code>; if you need to change the
+environment, pass <code>environ</code> to <code>execve</code> or add variable assignments and
+export statements to the command string for <code>system</code> or <code>
+popen</code>.</p>
+
+<p class="note"><b>Note:</b> The <code>
+os</code> module provides an alternate implementation of <code>
+environ</code> which updates the environment on modification. Note
+also that updating <code>os.environ</code> will render this
+dictionary obsolete. Use of the <code>
+os</code> module version of this is recommended over direct access to
+the <code>posix</code> module.</p>
+</dd>
+</dl><div class="text">
+<p>Additional contents of this module should only be accessed via
+the <code>os</code> module; refer to the
+documentation for that module for further information.</p>
+</div>
+</div></body></html>

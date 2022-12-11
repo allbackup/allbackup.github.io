@@ -1,0 +1,199 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>turtle</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-turtle.html'>original</a> :::
+<a href='turtle.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>turtle&#8212;Turtle graphics for Tk</h1>
+
+<div class="toc"><dl><dt>On this page:</dt><dd><a href="#pen-and-rawpen-objects">Pen and RawPen Objects</a></dd></dl></div><p>Availability: Tk.</p>
+
+<p>The <code>turtle</code> module
+provides turtle graphics primitives, in both an object-oriented and
+procedure-oriented ways. Because it uses <code>Tkinter</code> for the underlying graphics, it
+needs a version of python installed with Tk support.</p>
+
+<p>The procedural interface uses a pen and a canvas which are
+automagically created when any of the functions are called.</p>
+
+<p>The <code>turtle</code> module defines
+the following functions:</p>
+</div>
+<dl><dt class="function" id="degrees"><b>degrees()</b> <tt class="nav"><a class="nav" href="turtle.degrees" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Set angle measurement units to degrees.</p>
+</dd>
+<dt class="function" id="radians"><b>radians()</b> <tt class="nav"><a class="nav" href="turtle.radians" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Set angle measurement units to radians.</p>
+</dd>
+<dt class="function" id="reset"><b>reset()</b> <tt class="nav"><a class="nav" href="turtle.reset" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Clear the screen, re-center the pen, and set variables to the
+default values.</p>
+</dd>
+<dt class="function" id="clear"><b>clear()</b> <tt class="nav"><a class="nav" href="turtle.clear" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Clear the screen.</p>
+</dd>
+<dt class="function" id="tracer"><b>tracer(flag)</b> <tt class="nav"><a class="nav" href="turtle.tracer" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Set tracing on/off (according to whether flag is true or not).
+Tracing means line are drawn more slowly, with an animation of an
+arrow along the line.</p>
+</dd>
+<dt class="function" id="forward"><b>forward(distance)</b> <tt class="nav"><a class="nav" href="turtle.forward" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Go forward <var>distance</var> steps.</p>
+</dd>
+<dt class="function" id="backward"><b>backward(distance)</b> <tt class="nav"><a class="nav" href="turtle.backward" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Go backward <var>distance</var> steps.</p>
+</dd>
+<dt class="function" id="left"><b>left(angle)</b> <tt class="nav"><a class="nav" href="turtle.left" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Turn left <var>angle</var> units. Units are by default degrees,
+but can be set via the <a class="link" href="#degrees"><code>
+degrees</code></a> and <a class="link" href="#radians"><code>radians</code></a>
+functions.</p>
+</dd>
+<dt class="function" id="right"><b>right(angle)</b> <tt class="nav"><a class="nav" href="turtle.right" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Turn right <var>angle</var> units. Units are by default degrees,
+but can be set via the <a class="link" href="#degrees"><code>
+degrees</code></a> and <a class="link" href="#radians"><code>radians</code></a>
+functions.</p>
+</dd>
+<dt class="function" id="up"><b>up()</b> <tt class="nav"><a class="nav" href="turtle.up" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Move the pen up -- stop drawing.</p>
+</dd>
+<dt class="function" id="down"><b>down()</b> <tt class="nav"><a class="nav" href="turtle.down" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Move the pen down -- draw when moving.</p>
+</dd>
+<dt class="function" id="width"><b>width(width)</b> <tt class="nav"><a class="nav" href="turtle.width" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Set the line width to <var>width</var>.</p>
+</dd>
+<dt class="function" id="color"><b>color(r, g, b)</b> <tt class="nav"><a class="nav" href="turtle.color" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Set the pen color. In the first form, the color is specified as
+a Tk color specification as a string. The second form specifies the
+color as a tuple of the RGB values, each in the range [0..1]. For
+the third form, the color is specified giving the RGB values as
+three separate parameters (each in the range [0..1]).</p>
+</dd>
+<dt class="function" id="write"><b>write(text[, move])</b> <tt class="nav"><a class="nav" href="turtle.write" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Write <var>text</var> at the current pen position. If <var>
+move</var> is true, the pen is moved to the bottom-right corner of
+the text. By default, <var>move</var> is false.</p>
+</dd>
+<dt class="function" id="fill"><b>fill(flag)</b> <tt class="nav"><a class="nav" href="turtle.fill" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>The complete specifications are rather complex, but the
+recommended usage is: call <code>fill(1)</code> before drawing a
+path you want to fill, and call <code>fill(0)</code> when you
+finish to draw the path.</p>
+</dd>
+<dt class="function" id="circle"><b>circle(radius[, extent])</b> <tt class="nav"><a class="nav" href="turtle.circle" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Draw a circle with radius <var>radius</var> whose center-point
+is <var>radius</var> units left of the turtle. <var>extent</var>
+determines which part of a circle is drawn: if not given it
+defaults to a full circle.</p>
+
+<p>If <var>extent</var> is not a full circle, one endpoint of the
+arc is the current pen position. The arc is drawn in a counter
+clockwise direction if <var>radius</var> is positive, otherwise in
+a clockwise direction. In the process, the direction of the turtle
+is changed by the amount of the <var>extent</var>.</p>
+</dd>
+<dt class="function" id="goto"><b>goto((x, y))</b> <tt class="nav"><a class="nav" href="turtle.goto" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Go to co-ordinates <var>x</var>, <var>y</var>. The co-ordinates
+may be specified either as two separate arguments or as a
+2-tuple.</p>
+</dd>
+</dl><div class="text">
+<p>This module also does <code>from math import *</code>, so see
+the documentation for the <code>math</code>
+module for additional constants and functions useful for turtle
+graphics.</p>
+</div>
+<dl><dt class="function" id="demo"><b>demo()</b> <tt class="nav"><a class="nav" href="turtle.demo" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Exercise the module a bit.</p>
+</dd>
+<dt class="exception" id="Error"><b>exception Error</b> <tt class="nav"><a class="nav" href="turtle.Error" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="exception">
+<p>Exception raised on any error caught by this module.</p>
+</dd>
+</dl><div class="text">
+<p>For examples, see the code of the <a class="link" href="#demo"><code>demo</code></a> function.</p>
+
+<p>This module defines the following classes:</p>
+</div>
+<dl><dt class="class" id="Pen"><b>class Pen()</b> <tt class="nav"><a class="nav" href="turtle.Pen" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>Define a pen. All above functions can be called as a methods on
+the given pen. The constructor automatically creates a canvas do be
+drawn on.</p>
+</dd>
+<dt class="class" id="RawPen"><b>class RawPen(canvas)</b> <tt class="nav"><a class="nav" href="turtle.RawPen" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>Define a pen which draws on a canvas <var>canvas</var>. This is
+useful if you want to use the module to create graphics in a
+&#8220;real&#8221; program.</p>
+</dd>
+</dl><div class="text">
+<h2 id="pen-and-rawpen-objects">Pen and RawPen Objects <a class="nav" href="#pen-and-rawpen-objects">#</a></h2>
+
+<p><a class="link" href="#Pen"><code>Pen</code></a> and <a class="link" href="#RawPen"><code>RawPen</code></a> objects have all the global functions
+described above, except for <a class="link" href="#demo"><code>
+demo</code></a> as methods, which manipulate the given pen.</p>
+
+<p>The only method which is more powerful as a method is <a class="link" href="#degrees"><code>degrees</code></a>.</p>
+</div>
+<dl><dt class="method" id="RawPen.degrees"><b>degrees([fullcircle])</b> <tt class="nav"><a class="nav" href="turtle.RawPen.degrees" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p><var>fullcircle</var> is by default 360. This can cause the pen
+to have any angular units whatever: give <var>fullcircle</var> 2*
+for radians, or 400 for gradians.</p>
+</dd>
+</dl></div></body></html>

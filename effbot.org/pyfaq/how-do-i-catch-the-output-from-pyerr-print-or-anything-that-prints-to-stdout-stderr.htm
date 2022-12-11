@@ -1,0 +1,22 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>How do I catch the output from PyErr_Print() (or anything that prints to&nbsp;stdout/stderr)?</title></head><body data-page-id="777"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><p class="note" style="text-align: center"><strong>
+This is an old copy of the Python FAQ.  The information here may be
+outdated.
+</strong></p><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">How do I catch the output from PyErr_Print() (or anything that prints to&nbsp;stdout/stderr)?</h1></div><div class="yui-ge"><div class="yui-u first"><p>In Python code, define an object with a <b>write</b> method that takes a single string argument.  Assign this object to <a href="/pyref/sys.stdout.htm"><strong>sys.stdout</strong></a> and <a href="/pyref/sys.stderr.htm"><strong>sys.stderr</strong></a>.  Then, the output will go wherever your <b>write</b> method sends it.</p><p>The easiest way to do this is to use the <a href="/pyref/StringIO.htm"><strong>StringIO</strong></a> class in the standard library.</p><p>Sample code and use for catching stdout:</p><pre><code>&gt;&gt;&gt; class StdoutCatcher:
+...     def __init__(self):
+...         self.data = ''
+...     def write(self, stuff):
+...         self.data = self.data + stuff
+...  
+&gt;&gt;&gt; import sys
+&gt;&gt;&gt; old_stdout = sys.stdout
+&gt;&gt;&gt; sys.stdout = StdoutCatcher()
+&gt;&gt;&gt; print 'hello',
+&gt;&gt;&gt; print 'world!'
+&gt;&gt;&gt; sys.stderr.write(sys.stdout.data)
+hello world!
+&gt;&gt;&gt; sys.stdout = old_stdout # restore
+&gt;&gt;&gt; print 'hello!'
+hello!
+</code></pre><p>If you want to use a C type instead, the type must provide both a <b>write</b> method and a writable <b>softspace</b> integer attribute to work properly with <a href="/pyref/print.htm"><strong>print</strong></a>.</p><p>CATEGORY: extending</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to pyfaq index page.">::: pyfaq :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

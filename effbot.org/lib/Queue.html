@@ -1,0 +1,126 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>Queue</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-Queue.html'>original</a> :::
+<a href='Queue.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>Queue&#8212;A synchronized queue class</h1>
+
+<div class="toc"><dl><dt>On this page:</dt><dd><a href="#queue-objects">Queue Objects</a></dd></dl></div><p>The <a class="link" href="#Queue"><code>Queue</code></a> module
+implements a multi-producer, multi-consumer FIFO queue. It is
+especially useful in threads programming when information must be
+exchanged safely between multiple threads. The <a class="link" href="#Queue"><code>Queue</code></a> class in this module implements all the
+required locking semantics. It depends on the availability of
+thread support in Python.</p>
+
+<p>The <a class="link" href="#Queue"><code>Queue</code></a> module defines
+the following class and exception:</p>
+</div>
+<dl><dt class="class" id="Queue"><b>class Queue(maxsize)</b> <tt class="nav"><a class="nav" href="Queue.Queue" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>Constructor for the class. <var>maxsize</var> is an integer that
+sets the upperbound limit on the number of items that can be placed
+in the queue. Insertion will block once this size has been reached,
+until queue items are consumed. If <var>maxsize</var> is less than
+or equal to zero, the queue size is infinite.</p>
+</dd>
+<dt class="exception" id="Empty"><b>exception Empty</b> <tt class="nav"><a class="nav" href="Queue.Empty" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="exception">
+<p>Exception raised when non-blocking <code>get</code> (or <code>
+get_nowait</code>) is called on a <a class="link" href="#Queue"><code>
+Queue</code></a> object which is empty.</p>
+</dd>
+<dt class="exception" id="Full"><b>exception Full</b> <tt class="nav"><a class="nav" href="Queue.Full" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="exception">
+<p>Exception raised when non-blocking <code>put</code> (or <code>
+put_nowait</code>) is called on a <a class="link" href="#Queue"><code>
+Queue</code></a> object which is full.</p>
+</dd>
+</dl><div class="text">
+<h2 id="queue-objects">Queue Objects <a class="nav" href="#queue-objects">#</a></h2>
+
+<p>Class <a class="link" href="#Queue"><code>Queue</code></a> implements
+queue objects and has the methods described below. This class can
+be derived from in order to implement other queue organizations
+(e.g. stack) but the inheritable interface is not described here.
+See the source code for details. The public methods are:</p>
+</div>
+<dl><dt class="method" id="Queue.qsize"><b>qsize()</b> <tt class="nav"><a class="nav" href="Queue.Queue.qsize" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return the approximate size of the queue. Because of
+multithreading semantics, this number is not reliable.</p>
+</dd>
+<dt class="method" id="Queue.empty"><b>empty()</b> <tt class="nav"><a class="nav" href="Queue.Queue.empty" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return <code>True</code> if the queue is
+empty, <code>False</code> otherwise. Because of multithreading
+semantics, this is not reliable.</p>
+</dd>
+<dt class="method" id="Queue.full"><b>full()</b> <tt class="nav"><a class="nav" href="Queue.Queue.full" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return <code>True</code> if the queue is
+full, <code>False</code> otherwise. Because of multithreading
+semantics, this is not reliable.</p>
+</dd>
+<dt class="method" id="Queue.put"><b>put(item[, block[, timeout]])</b> <tt class="nav"><a class="nav" href="Queue.Queue.put" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Put <var>item</var> into the queue. If optional args <var>
+block</var> is true and <var>timeout</var> is None (the default),
+block if necessary until a free slot is available. If <var>
+timeout</var> is a positive number, it blocks at most <var>
+timeout</var> seconds and raises the <a class="link" href="#Full"><code>Full</code></a> exception if no free slot was available
+within that time. Otherwise (<var>block</var> is false), put an
+item on the queue if a free slot is immediately available, else
+raise the <a class="link" href="#Full"><code>Full</code></a> exception
+(<var>timeout</var> is ignored in that case).</p>
+
+<blockquote><span class="mark">@since</span> New in version 2.3:
+the timeout parameter.<br />
+</blockquote>
+</dd>
+<dt class="method" id="Queue.put_nowait"><b>put_nowait(item)</b> <tt class="nav"><a class="nav" href="Queue.Queue.put_nowait" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Equivalent to <code>put(</code><var>item</var>, False).</p>
+</dd>
+<dt class="method" id="Queue.get"><b>get([block[, timeout]])</b> <tt class="nav"><a class="nav" href="Queue.Queue.get" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Remove and return an item from the queue. If optional args <var>
+block</var> is true and <var>timeout</var> is None (the default),
+block if necessary until an item is available. If <var>
+timeout</var> is a positive number, it blocks at most <var>
+timeout</var> seconds and raises the <a class="link" href="#Empty"><code>Empty</code></a> exception if no item was available
+within that time. Otherwise (<var>block</var> is false), return an
+item if one is immediately available, else raise the <a class="link" href="#Empty"><code>Empty</code></a> exception
+(<var>timeout</var> is ignored in that case).</p>
+
+<blockquote><span class="mark">@since</span> New in version 2.3:
+the timeout parameter.<br />
+</blockquote>
+</dd>
+<dt class="method" id="Queue.get_nowait"><b>get_nowait()</b> <tt class="nav"><a class="nav" href="Queue.Queue.get_nowait" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Equivalent to <code>get(False)</code>.</p>
+</dd>
+</dl></div></body></html>

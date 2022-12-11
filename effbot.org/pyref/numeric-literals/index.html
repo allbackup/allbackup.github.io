@@ -1,0 +1,26 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>Numeric&nbsp;literals</title> <script type="text/javascript">effbot_page_id=1485;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> <!--
+<p style='color: #8f8f8f; background: #fff5bf; padding: 5px 10px;'> <b>2008-07-15:</b> Selected articles
+
+now have experimental "comment" links in the left column and at the bottom.
+You're welcome to use them for commenting and voting on articles.
+For a bit more on this, see <a
+href="http://effbot.slinkset.com/links/Welcome_to_discuss_effbot_org">this
+page</a>. /F
+</p>
+--> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <h1 class="maintitle">Numeric&nbsp;literals</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p>There are four types of numeric literals: plain integers, long
+integers, floating point numbers, and imaginary numbers.</p><p>There are no complex literals; complex numbers can be formed by
+adding a real number and an imaginary number.</p><p>Note that numeric literals do not include a sign; a phrase like <code>-1</code>
+is actually an expression composed of the unary operator <code>-</code> and the
+literal <code>1</code>.</p><h2 id="integer-literals">Integer literals&#160;<a class="nav" href="#integer-literals" title="bookmark!">#</a></h2><p>Integer and long integer literals are described by the following
+lexical definitions:</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><pre class="wide wide"><code>longinteger ::= [ integer][1] ("l" | "L")
+integer ::= [decimalinteger][2] | [ octinteger][3] | [hexinteger][4]
+decimalinteger ::= [ nonzerodigit][5] [digit][6]\* | "0"
+octinteger ::= "0" [ octdigit][7]+
+hexinteger ::= "0" ("x" | "X") [hexdigit][8]+
+nonzerodigit ::= "1"..."9"
+octdigit ::= "0"..."7"
+hexdigit ::= [ digit][6] | "a"..."f" | "A"..."F"
+</code></pre></div><div class="yui-ge"><div class="yui-u first"><p>Although both lower case &#8220;l&#8221; and upper case &#8220;L&#8221; are allowed as suffix
+for long integers, it is strongly recommended to always use &#8220;L&#8221

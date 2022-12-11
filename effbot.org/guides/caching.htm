@@ -1,0 +1,35 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>Caching</title> <script type="text/javascript">effbot_page_id=18;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> <!--
+<p style='color: #8f8f8f; background: #fff5bf; padding: 5px 10px;'> <b>2008-07-15:</b> Selected articles
+
+now have experimental "comment" links in the left column and at the bottom.
+You're welcome to use them for commenting and voting on articles.
+For a bit more on this, see <a
+href="http://effbot.slinkset.com/links/Welcome_to_discuss_effbot_org">this
+page</a>. /F
+</p>
+--> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <h1 class="maintitle">Caching</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p class="info">August 2006 | Fredrik Lundh</p><p class="note"><b>Note:</b>
+This article is a stub.  A more detailed analysis of different simple
+cache implementations will be published later.  See the notes below for
+a rough summary.
+</p><p>The following is a simple cache implementation, which is suitable
+for relatively small caches (up to a few hundred items), and where
+it&#8217;s relatively costly to create or reload objects after a cache miss
+(e.g. a few milliseconds or more per object).
+
+<div class="example">
+<b>Simple cache implementation</b>
+<pre class="python">
+<span class="pykeyword">class</span> <span class="pyclass">Cache</span>:
+
+    <span class="pykeyword">def</span> <span class="pyfunction">__init__</span>(self, maxsize=100):
+        self.cache = {}
+        self.order = [] <span class="pycomment"># least recently used first</span>
+        self.maxsize = maxsize
+
+    <span class="pykeyword">def</span> <span class="pyfunction">get</span>(self, key):
+        item = self.cache[key] <span class="pycomment"># KeyError if not present</span>
+        self.order.remove(key)
+        self.order.append(key)
+        <span class="py

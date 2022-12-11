@@ -1,0 +1,27 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>Class&nbsp;definitions</title><script type="text/javascript">effbot_page_id=1228;</script></head><body><div id="doc2" class="yui-t2"><div id="hd"><!-- header --></div><!-- hd --><div id="bd"><!-- body --><p class="note" style="text-align: center"><strong>
+
+We're back after a server migration that caused effbot.org to fall
+over a bit harder than expected.  Expect some glitches.
+
+</strong></p><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">Class&nbsp;definitions</h1></div><!-- yui-g --><body><p>A class definition defines a <a href="type-class">class object</a>.</p>
+<p>Syntax:</p>
+<blockquote>
+<p><strong>class</strong> <em><a href="syntax-identifier">name</a></em> <strong>(object):</strong> <br />
+  &#160;&#160;&#160;&#160;<em><a href="syntax-suite">suite</a></em></p>
+</blockquote>
+<p>or</p>
+<blockquote>
+<p><strong>class</strong> <em><a href="syntax-identifier">name</a></em> <strong>(</strong> <em><a href="syntax-expression">inheritance expression list</a></em> <strong>):</strong> <br />
+  &#160;&#160;&#160;&#160;<em><a href="syntax-suite">suite</a></em></p>
+</blockquote>
+<p>or</p>
+<blockquote>
+<p><strong>class</strong> <em><a href="syntax-identifier">name</a></em> <strong>:</strong> <br />
+  &#160;&#160;&#160;&#160;<em><a href="syntax-suite">suite</a></em></p>
+</blockquote>
+<p>A class definition is an executable statement. It first evaluates the inheritance list, if present. Each item in the inheritance list (an ordinary expression list) should evaluate to a class object or class type which allows subclassing.</p>
+<p>The <strong>class</strong> definition then sets up a new execution frame (see <a href="naming-and-binding.htm"><strong>naming-and-binding</strong></a>), using a newly created local namespace and the original global namespace, and uses that to execute the statements in the suite.  (Usually, the suite contains only function definitions.)</p>
+<p>When the suite finishes execution, the execution frame is discarded but its local namespace is saved. A class object is then created using the inheritance list for the base classes and the saved local namespace for the attribute dictionary.  Finally, the class name is bound to this class object in the original local namespace.</p>
+<p><strong>Programmer&#8217;s note:</strong> Variables defined in the class definition are class variables; they are shared by all instances. To define instance variables, they must be given a value in the <a href="__init__.htm"><strong>__init__</strong></a> method or in another method. Both class and instance variables are accessible through the notation <code>self.name</code>, and an instance variable hides a class variable with the same name when accessed in this way. Class variables with immutable values can be used as defaults for instance variables. For new-style classes, <a href="descriptors.htm"><strong>descriptors</strong></a> can be used to create instance variables with different implementation details.</p></body><div class="yui-g"></div><!-- yui-g --></div><!-- content --></div><!-- yui-b --></div><!-- yui-main --><div class="yui-b"><div id='menu'></div><!-- menu --></div><!-- yui-b --></div><!-- bd --><div id="ft"><!-- footer --></div><!-- ft --></div><!-- doc --><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

@@ -1,0 +1,255 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>aifc</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-aifc.html'>original</a> :::
+<a href='aifc.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>aifc&#8212;Read and write AIFF and AIFC files</h1>
+
+<p>This module provides support for reading and writing AIFF and
+AIFF-C files. AIFF is Audio Interchange File Format, a format for
+storing digital audio samples in a file. AIFF-C is a newer version
+of the format that includes the ability to compress the audio
+data.</p>
+
+<p>Caveat: Some operations may only work under IRIX; these will
+raise <code>
+exceptions.ImportError</code> when attempting to import the <code>cl</code> module, which is only available
+on IRIX.</p>
+
+<p>Audio files have a number of parameters that describe the audio
+data. The sampling rate or frame rate is the number of times per
+second the sound is sampled. The number of channels indicate if the
+audio is mono, stereo, or quadro. Each frame consists of one sample
+per channel. The sample size is the size in bytes of each sample.
+Thus a frame consists of <var>nchannels</var>*<var>samplesize</var>
+bytes, and a second's worth of audio consists of <var>
+nchannels</var>*<var>samplesize</var>*<var>framerate</var>
+bytes.</p>
+
+<p>For example, CD quality audio has a sample size of two bytes (16
+bits), uses two channels (stereo) and has a frame rate of 44,100
+frames/second. This gives a frame size of 4 bytes (2*2), and a
+second's worth occupies 2*2*44100 bytes (176,400 bytes).</p>
+
+<p>Module <a class="link" href="#aifc"><code>aifc</code></a> defines the
+following function:</p>
+</div>
+<dl><dt class="function" id="open"><b>open(file[, mode])</b> <tt class="nav"><a class="nav" href="aifc.open" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Open an AIFF or AIFF-C file and return an object instance with
+methods that are described below. The argument <var>file</var> is
+either a string naming a file or a file object. <var>mode</var>
+must be <code>'r'</code> or <code>'rb'</code> when the file must be
+opened for reading, or <code>'w'</code> or <code>'wb'</code> when
+the file must be opened for writing. If omitted, <var>
+file</var>.mode is used if it exists, otherwise <code>'rb'</code>
+is used. When used for writing, the file object should be seekable,
+unless you know ahead of time how many samples you are going to
+write in total and use <a class="link" href="#writeframesraw"><code>
+writeframesraw</code></a> and <a class="link" href="#setnframes"><code>
+setnframes</code></a>.</p>
+</dd>
+</dl><div class="text">
+<p>Objects returned by <a class="link" href="#open"><code>open</code></a>
+when a file is opened for reading have the following methods:</p>
+</div>
+<dl><dt class="method" id="getnchannels"><b>getnchannels()</b> <tt class="nav"><a class="nav" href="aifc.getnchannels" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return the number of audio channels (1 for mono, 2 for
+stereo).</p>
+</dd>
+<dt class="method" id="getsampwidth"><b>getsampwidth()</b> <tt class="nav"><a class="nav" href="aifc.getsampwidth" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return the size in bytes of individual samples.</p>
+</dd>
+<dt class="method" id="getframerate"><b>getframerate()</b> <tt class="nav"><a class="nav" href="aifc.getframerate" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return the sampling rate (number of audio frames per
+second).</p>
+</dd>
+<dt class="method" id="getnframes"><b>getnframes()</b> <tt class="nav"><a class="nav" href="aifc.getnframes" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return the number of audio frames in the file.</p>
+</dd>
+<dt class="method" id="getcomptype"><b>getcomptype()</b> <tt class="nav"><a class="nav" href="aifc.getcomptype" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return a four-character string describing the type of
+compression used in the audio file. For AIFF files, the returned
+value is <code>'NONE'</code>.</p>
+</dd>
+<dt class="method" id="getcompname"><b>getcompname()</b> <tt class="nav"><a class="nav" href="aifc.getcompname" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return a human-readable description of the type of compression
+used in the audio file. For AIFF files, the returned value is
+<code>'not compressed'</code>.</p>
+</dd>
+<dt class="method" id="getparams"><b>getparams()</b> <tt class="nav"><a class="nav" href="aifc.getparams" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return a tuple consisting of all of the above values in the
+above order.</p>
+</dd>
+<dt class="method" id="getmarkers"><b>getmarkers()</b> <tt class="nav"><a class="nav" href="aifc.getmarkers" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return a list of markers in the audio file. A marker consists of
+a tuple of three elements. The first is the mark ID (an integer),
+the second is the mark position in frames from the beginning of the
+data (an integer), the third is the name of the mark (a
+string).</p>
+</dd>
+<dt class="method" id="getmark"><b>getmark(id)</b> <tt class="nav"><a class="nav" href="aifc.getmark" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return the tuple as described in <a class="link" href="#getmarkers"><code>getmarkers</code></a> for the mark with the given
+<var>id</var>.</p>
+</dd>
+<dt class="method" id="readframes"><b>readframes(nframes)</b> <tt class="nav"><a class="nav" href="aifc.readframes" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Read and return the next <var>nframes</var> frames from the
+audio file. The returned data is a string containing for each frame
+the uncompressed samples of all channels.</p>
+</dd>
+<dt class="method" id="rewind"><b>rewind()</b> <tt class="nav"><a class="nav" href="aifc.rewind" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Rewind the read pointer. The next <a class="link" href="#readframes"><code>readframes</code></a> will start from the
+beginning.</p>
+</dd>
+<dt class="method" id="setpos"><b>setpos(pos)</b> <tt class="nav"><a class="nav" href="aifc.setpos" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Seek to the specified frame number.</p>
+</dd>
+<dt class="method" id="tell"><b>tell()</b> <tt class="nav"><a class="nav" href="aifc.tell" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return the current frame number.</p>
+</dd>
+<dt class="method" id="close"><b>close()</b> <tt class="nav"><a class="nav" href="aifc.close" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Close the AIFF file. After calling this method, the object can
+no longer be used.</p>
+</dd>
+</dl><div class="text">
+<p>Objects returned by <a class="link" href="#open"><code>open</code></a>
+when a file is opened for writing have all the above methods,
+except for <a class="link" href="#readframes"><code>readframes</code></a>
+and <a class="link" href="#setpos"><code>setpos</code></a>. In addition the
+following methods exist. The <code>
+get*</code> methods can only be called after the corresponding <code>set*</code> methods have been called.
+Before the first <a class="link" href="#writeframes"><code>
+writeframes</code></a> or <a class="link" href="#writeframesraw"><code>
+writeframesraw</code></a>, all parameters except for the number of frames
+must be filled in.</p>
+</div>
+<dl><dt class="method" id="aiff"><b>aiff()</b> <tt class="nav"><a class="nav" href="aifc.aiff" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Create an AIFF file. The default is that an AIFF-C file is
+created, unless the name of the file ends in <code>'.aiff'</code>
+in which case the default is an AIFF file.</p>
+</dd>
+<dt class="method" id="aifc"><b>aifc()</b> <tt class="nav"><a class="nav" href="aifc.aifc" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Create an AIFF-C file. The default is that an AIFF-C file is
+created, unless the name of the file ends in <code>'.aiff'</code>
+in which case the default is an AIFF file.</p>
+</dd>
+<dt class="method" id="setnchannels"><b>setnchannels(nchannels)</b> <tt class="nav"><a class="nav" href="aifc.setnchannels" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Specify the number of channels in the audio file.</p>
+</dd>
+<dt class="method" id="setsampwidth"><b>setsampwidth(width)</b> <tt class="nav"><a class="nav" href="aifc.setsampwidth" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Specify the size in bytes of audio samples.</p>
+</dd>
+<dt class="method" id="setframerate"><b>setframerate(rate)</b> <tt class="nav"><a class="nav" href="aifc.setframerate" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Specify the sampling frequency in frames per second.</p>
+</dd>
+<dt class="method" id="setnframes"><b>setnframes(nframes)</b> <tt class="nav"><a class="nav" href="aifc.setnframes" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Specify the number of frames that are to be written to the audio
+file. If this parameter is not set, or not set correctly, the file
+needs to support seeking.</p>
+</dd>
+<dt class="method" id="setcomptype"><b>setcomptype(type, name)</b> <tt class="nav"><a class="nav" href="aifc.setcomptype" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Specify the compression type. If not specified, the audio data
+will not be compressed. In AIFF files, compression is not possible.
+The name parameter should be a human-readable description of the
+compression type, the type parameter should be a four-character
+string. Currently the following compression types are supported:
+NONE, ULAW, ALAW, G722.</p>
+</dd>
+<dt class="method" id="setparams"><b>setparams(nchannels, sampwidth, framerate,
+comptype, compname)</b> <tt class="nav"><a class="nav" href="aifc.setparams" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Set all the above parameters at once. The argument is a tuple
+consisting of the various parameters. This means that it is
+possible to use the result of a <a class="link" href="#getparams"><code>getparams</code></a> call as argument to <a class="link" href="#setparams"><code>setparams</code></a>.</p>
+</dd>
+<dt class="method" id="setmark"><b>setmark(id, pos, name)</b> <tt class="nav"><a class="nav" href="aifc.setmark" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Add a mark with the given id (larger than 0), and the given name
+at the given position. This method can be called at any time before
+<a class="link" href="#close"><code>close</code></a>.</p>
+</dd>
+<dt class="method"><b>tell()</b> <tt class="nav"><a class="nav" href="aifc.tell" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return the current write position in the output file. Useful in
+combination with <a class="link" href="#setmark"><code>
+setmark</code></a>.</p>
+</dd>
+<dt class="method" id="writeframes"><b>writeframes(data)</b> <tt class="nav"><a class="nav" href="aifc.writeframes" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Write data to the output file. This method can only be called
+after the audio file parameters have been set.</p>
+</dd>
+<dt class="method" id="writeframesraw"><b>writeframesraw(data)</b> <tt class="nav"><a class="nav" href="aifc.writeframesraw" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Like <a class="link" href="#writeframes"><code>writeframes</code></a>,
+except that the header of the audio file is not updated.</p>
+</dd>
+<dt class="method"><b>close()</b> <tt class="nav"><a class="nav" href="aifc.close" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Close the AIFF file. The header of the file is updated to
+reflect the actual size of the audio data. After calling this
+method, the object can no longer be used.</p>
+</dd>
+</dl></div></body></html>

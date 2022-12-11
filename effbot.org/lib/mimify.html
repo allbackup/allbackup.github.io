@@ -1,0 +1,120 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>mimify</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-mimify.html'>original</a> :::
+<a href='mimify.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>mimify&#8212;MIME processing of mail messages</h1>
+</div>
+<div class="error">
+<p>The <a class="link" href="#mimify"><code>mimify</code></a> module defines
+two functions to convert mail messages to and from MIME format. The
+mail message can be either a simple message or a so-called
+multipart message. Each part is treated separately. Mimifying (a
+part of) a message entails encoding the message as quoted-printable
+if it contains any characters that cannot be represented using
+7-bit ASCII. Unmimifying (a part of) a message entails undoing the
+quoted-printable encoding. Mimify and unmimify are especially
+useful when a message has to be edited before being sent. Typical
+use would be:</p>
+
+<pre>
+unmimify message
+edit message
+mimify message
+send message
+</pre>
+
+<p>The modules defines the following user-callable functions and
+user-settable variables:</p>
+</div>
+<dl><dt class="function" id="mimify"><b>mimify(infile, outfile)</b> <tt class="nav"><a class="nav" href="mimify.mimify" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Copy the message in <var>infile</var> to <var>outfile</var>,
+converting parts to quoted-printable and adding MIME mail headers
+when necessary. <var>infile</var> and <var>outfile</var> can be
+file objects (actually, any object that has a <code>readline</code> method (for <var>infile</var>) or
+a <code>write</code> method (for <var>
+outfile</var>)) or strings naming the files. If <var>infile</var>
+and <var>outfile</var> are both strings, they may have the same
+value.</p>
+</dd>
+<dt class="function" id="unmimify"><b>unmimify(infile, outfile[, decode_base64])</b> <tt class="nav"><a class="nav" href="mimify.unmimify" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Copy the message in <var>infile</var> to <var>outfile</var>,
+decoding all quoted-printable parts. <var>infile</var> and <var>
+outfile</var> can be file objects (actually, any object that has a
+<code>readline</code> method (for <var>
+infile</var>) or a <code>write</code>
+method (for <var>outfile</var>)) or strings naming the files. If
+<var>infile</var> and <var>outfile</var> are both strings, they may
+have the same value. If the <var>decode_base64</var> argument is
+provided and tests true, any parts that are coded in the base64
+encoding are decoded as well.</p>
+</dd>
+<dt class="function" id="mime_decode_header"><b>mime_decode_header(line)</b> <tt class="nav"><a class="nav" href="mimify.mime_decode_header" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return a decoded version of the encoded header line in <var>
+line</var>. This only supports the ISO 8859-1 charset
+(Latin-1).</p>
+</dd>
+<dt class="function" id="mime_encode_header"><b>mime_encode_header(line)</b> <tt class="nav"><a class="nav" href="mimify.mime_encode_header" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return a MIME-encoded version of the header line in <var>
+line</var>.</p>
+</dd>
+<dt class="variable" id="MAXLEN"><b>MAXLEN</b> <tt class="nav"><a class="nav" href="mimify.MAXLEN" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>By default, a part will be encoded as quoted-printable when it
+contains any non-ASCII characters (characters with the 8th bit
+set), or if there are any lines longer than <code>MAXLEN</code>
+characters (default value 200).</p>
+</dd>
+<dt class="variable" id="CHARSET"><b>CHARSET</b> <tt class="nav"><a class="nav" href="mimify.CHARSET" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>When not specified in the mail headers, a character set must be
+filled in. The string used is stored in <code>CHARSET</code>, and
+the default value is ISO-8859-1 (also known as Latin1
+(latin-one)).</p>
+</dd>
+</dl><div class="text">
+<p>This module can also be used from the command line. Usage is as
+follows:</p>
+
+<pre>
+mimify.py -e [-l length] [infile [outfile]]
+mimify.py -d [-b] [infile [outfile]]
+</pre>
+
+<p>to encode (mimify) and decode (unmimify) respectively. <var>
+infile</var> defaults to standard input, <var>outfile</var>
+defaults to standard output. The same file can be specified for
+input and output.</p>
+
+<p>If the -l option is given when encoding, if there are any lines
+longer than the specified <var>length</var>, the containing part
+will be encoded.</p>
+
+<p>If the -b option is given when decoding, any base64 parts will
+be decoded as well. <span class="mark">@see</span> <code>Module quopri</code> Encode and decode MIME
+quoted-printable files.</p>
+</div>
+</div></body></html>

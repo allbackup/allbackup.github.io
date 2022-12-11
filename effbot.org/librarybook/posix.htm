@@ -1,0 +1,23 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>The posix&nbsp;module</title></head><body data-page-id="617"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">The posix&nbsp;module</h1></div><div class="yui-ge"><div class="yui-u first"><p>(Implementation, Unix/POSIX only). This module is an
+implementation module used by the <b><a href="os.htm">os</a></b> module on Unix and other
+POSIX systems. While everything in here can be (and should be)
+accessed via the <b>os</b> module, you may wish to explicitly
+refer to this module in situations where you want to make it clear
+that you expect POSIX behavior.</p><div class="example">
+<b style="example">Example: Using the posix
+module</b>
+<pre>
+# File: <a href="posix/posix-example-1.py">posix-example-1.py</a>
+
+import posix
+
+for file in posix.listdir("."):
+    print file, posix.stat(file)[6]
+
+</pre><pre class="computeroutput" moreinfo="NONE">
+aifc-example-1.py 314
+anydbm-example-1.py 259
+array-example-1.py 48
+</pre></div></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to librarybook index page.">::: librarybook :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

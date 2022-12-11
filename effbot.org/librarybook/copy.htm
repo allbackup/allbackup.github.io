@@ -1,0 +1,73 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>The copy&nbsp;module</title></head><body data-page-id="498"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">The copy&nbsp;module</h1></div><div class="yui-ge"><div class="yui-u first"><p>This module contains two functions which are used to copy
+objects.</p><p>
+<b>copy(object) &#8658; object</b> creates a
+<span>&#8220;shallow&#8221;</span> copy of the given object. In this context,
+shallow means that the object itself is copied, but if the object
+is a container, the members will still refer to the original member
+objects.</p><div class="example">
+<b style="example">Example: Using the copy
+module to copy objects</b>
+<pre>
+# File: <a href="copy/copy-example-1.py">copy-example-1.py</a>
+
+import copy
+
+a = [[1],[2],[3]]
+b = copy.copy(a)
+
+print "before", "=&gt;"
+print a
+print b
+
+# modify original
+a[0][0] = 0
+a[1] = None
+
+print "after", "=&gt;"
+print a
+print b
+
+</pre><pre class="computeroutput" moreinfo="NONE">
+before =&gt;
+[[1], [2], [3]]
+[[1], [2], [3]]
+after =&gt;
+[[0], None, [3]]
+[[0], [2], [3]]
+</pre></div><p>Note that you can make shallow copies of lists using the [:]
+syntax (a full slice), and make copies of dictionaries using the
+<b>copy</b> method.</p><p>In contrast, <b>deepcopy(object) &#8658; object</b> creates a
+<span>&#8220;deep&#8221;</span> copy of the given object. If the object is a
+container, all members are copied as well, recursively.</p><div class="example">
+<b style="example">Example: Using the copy
+module to copy collections</b>
+<pre>
+# File: <a href="copy/copy-example-2.py">copy-example-2.py</a>
+
+import copy
+
+a = [[1],[2],[3]]
+b = copy.deepcopy(a)
+
+print "before", "=&gt;"
+print a
+print b
+
+# modify original
+a[0][0] = 0
+a[1] = None
+
+print "after", "=&gt;"
+print a
+print b
+
+</pre><pre class="computeroutput" moreinfo="NONE">
+before =&gt;
+[[1], [2], [3]]
+[[1], [2], [3]]
+after =&gt;
+[[0], None, [3]]
+[[1], [2], [3]]
+</pre></div></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to librarybook index page.">::: librarybook :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

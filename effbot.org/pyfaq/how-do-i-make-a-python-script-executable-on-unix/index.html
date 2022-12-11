@@ -1,0 +1,13 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>How do I make a Python script executable on&nbsp;Unix?</title> <script type="text/javascript">effbot_page_id=808;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> <!--
+<p style='color: #8f8f8f; background: #fff5bf; padding: 5px 10px;'> <b>2008-07-15:</b> Selected articles
+
+now have experimental "comment" links in the left column and at the bottom.
+You're welcome to use them for commenting and voting on articles.
+For a bit more on this, see <a
+href="http://effbot.slinkset.com/links/Welcome_to_discuss_effbot_org">this
+page</a>. /F
+</p>
+--> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <h1 class="maintitle">How do I make a Python script executable on&nbsp;Unix?</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p>You need to do two things: the script file&#8217;s mode must be executable and the first line must begin with #! followed by the path of the Python interpreter.</p><p>The first is done by executing &#8220;chmod +x scriptfile&#8221; or perhaps &#8220;chmod 755 scriptfile.</p><pre><code>$ chmod +x myscript.py
+</code></pre><p>The second can be done in a number of ways. The most straightforward way is to put</p><pre class="python"><span class="pycomment">#!/usr/local/bin/python</span></pre><p>as the very first line of your file, using the pathname for where the Python interpreter is installed on your platform.</p><p>If you would like the script to be independent of where the Python interpreter lives, you can use the &#8220;env&#8221; program. Al

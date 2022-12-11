@@ -1,0 +1,55 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>Slicings</title> <script type="text/javascript">effbot_page_id=1542;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <h1 class="maintitle">Slicings</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p>A slicing selects a range of items in a sequence object (e.g., a
+string, tuple or list). Slicings may be used as expressions or as
+targets in assignment or del statements. The syntax for a slicing:</p><p>Syntax:</p><blockquote><p><em><a href="syntax-primary">primary</a></em> <strong>[</strong> &#8230; <strong>]</strong></p></blockquote><p>slicing ::= [simple_slicing][1] | [ extended_slicing][2]
+simple_slicing ::= [ primary][3] &#8220;[&#8221; [short_slice][4] &#8220;]&#8221;
+extended_slicing ::= [ primary][3] &#8220;[&#8221; [slice_list][5] &#8220;]&#8221;
+slice_list ::= [ slice_item][6] (&#8220;,&#8221; [slice_item][6])* [&#8220;,&#8221;]
+slice_item ::= [ expression][7] | [proper_slice][8] | [ ellipsis][9]
+proper_slice ::= [ short_slice][4] | [long_slice][10]
+short_slice ::= [[lower_bound][11]] &#8220;:&#8221; [[upper_bound][12]]
+long_slice ::= [ short_slice][4] &#8220;:&#8221; [[stride][13]]
+lower_bound ::= [ expression][7]
+upper_bound ::= [ expression][7]
+stride ::= [ expression][7]
+ellipsis ::= &#8220;&#8230;&#8221;</p><p>There is ambiguity in the formal syntax here: anything that looks like
+an expression list also looks like a slice list, so any subscription
+can be interpreted as a slicing. Rather than further complicating the
+syntax, this is disambiguated by defining that in this case the
+interpretation as a subscription takes priority over the
+interpretation as a slicing (this is the case if the slice list
+contains no proper slice nor ellipses). Similarly, when the slice list
+has exactly one short slice and no trailing comma, the interpretation
+as a simple slicing takes priority over that as an extended slicing.</p><h3 id="simple-slicing">Simple Slicing&#160;<a class="nav" href="#simple-slicing" title="bookmark!">#</a></h3><p>The semantics for a simple slicing are as follows. The primary must
+evaluate to a sequence object. The lower and upper bound expressions,
+if present, must evaluate to plain integers; defaults are zero and the
+<code>sys.maxint</code>, respectively. If either bound is negative, the
+sequence&#8217;s length is added to it. The slicing now selects all items
+with index k such that <code>i &lt; k &lt; j</code> where i and j are the
+specified lower and upper bounds. This may be an empty sequence. It is
+not an error if i or j lie outside the range of valid indexes (such
+items don&#8217;t exist so they aren&#8217;t selected).</p><h3 id="extended-slicing">Extended Slicing&#160;<a class="nav" href="#extended-slicing" title="bookmark!">#</a></h3><p>The semantics for an extended slicing are as follows. The primary must
+evaluate to a mapping object, and it is indexed with a key that is
+constructed from the slice list, as follows: if the slice list
+contains at least one comma, the key is a tuple containing the
+conversion of the slice items; otherwise, the conversion of the
+lone slice item is the key.</p><p>The conversion of a slice item that is an
+expression is that expression. The conversion of an ellipsis slice
+item is the built-in <a href="Ellipsis.htm"><strong>Ellipsis</strong></a> object. The conversion of a proper
+slice is a slice object (see <a href="types.htm"><strong>types</strong></a>) whose start, stop and step
+attributes are the values of the expressions given as lower bound,
+upper bound and stride, respectively, substituting <a href="None.htm"><strong>None</strong></a> for
+missing expressions.</p><h2 id="slicings-as-targets">Slicings as targets&#160;<a class="nav" href="#slicings-as-targets" title="bookmark!">#</a></h2><p>Slicings can also appear as assignment targets.</p><p>The primary expression in the reference is evaluated. It should yield
+a mutable sequence object (such as a list). The assigned object should
+be a sequence object of the same type. Next, the lower and upper bound
+expressions are evaluated, insofar they are present; defaults are zero
+and the sequence&#8217;s length. The bounds should evaluate to (small)
+integers. If either bound is negative, the sequence&#8217;s length is added
+to it. The resulting bounds are clipped to lie between zero and the
+sequence&#8217;s length, inclusive. Finally, the sequence object is asked to
+replace the slice with the items of the assigned sequence. The length
+of the slice may be different from the length of the assigned
+sequence, thus changing the length of the target sequence, if the
+object allows it.</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div> <!-- yui-g --></div> <!-- content --> </div> <!-- yui-b --> </div> <!-- yui-main --> <div class="yui-b"> <div id='menu'> <ul> <li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li> <li><b><a href="." title="Go to pyref index page.">::: pyref :::</a></b></li> </ul> <ul><li><b>::: contents</b></li></ul> <ul><li><ul><li><ul><li><a href="#simple-slicing">Simple Slicing</a></li><li><a href="#extended-slicing">Extended Slicing</a></li></ul></li><li><a href="#slicings-as-targets">Slicings as targets</a></li></ul></li></ul> </div> <!-- menu --> </div> <!-- yui-b --> </div> <!-- bd --> <div id="ft"> <!-- footer --> <p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;"></a>
+this page was rendered by a <a href="http://www.djangoproject.com/">django</a> application in 0.02s 2011-06-21 20:58:39.999124.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p> </div> <!-- ft --> </div> <!-- doc --> <script src="/media/js/effbot-min.js" type="text/javascript"> </script> </body> </html>

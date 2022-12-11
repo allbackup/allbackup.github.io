@@ -1,0 +1,39 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>The binascii&nbsp;module</title></head><body data-page-id="476"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">The binascii&nbsp;module</h1></div><div class="yui-ge"><div class="yui-u first"><p>This module contains support functions for a number of encoding
+modules, including <b><a href="base64.htm">base64</a></b>,
+<b><a href="binhex.htm">binhex</a></b>, and
+<b><a href="uu.htm">uu</a></b>.</p><p>In 2.0 and newer, it also allows you to convert binary data to
+and from hexadecimal strings.</p><div class="example">
+<b style="example">Example: Using the binascii module</b>
+<pre>
+# File: <a href="binascii/binascii-example-1.py">binascii-example-1.py</a>
+
+import binascii
+
+text = "hello, mrs teal"
+
+data = binascii.b2a_base64(text)
+text = binascii.a2b_base64(data)
+print text, "&lt;=&gt;", repr(data)
+
+data = binascii.b2a_uu(text)
+text = binascii.a2b_uu(data)
+print text, "&lt;=&gt;", repr(data)
+
+data = binascii.b2a_hqx(text)
+text = binascii.a2b_hqx(data)[0]
+print text, "&lt;=&gt;", repr(data)
+
+# <i>2.0 and newer</i>
+data = binascii.b2a_hex(text)
+text = binascii.a2b_hex(data)
+print text, "&lt;=&gt;", repr(data)
+
+</pre><pre class="computeroutput" moreinfo="NONE">
+$ python binascii-example-1.py
+hello, mrs teal &lt;=&gt; 'aGVsbG8sIG1ycyB0ZWFs\012'
+hello, mrs teal &lt;=&gt; '/:&amp;5L;&amp;\\L(&amp;UR&lt;R!T96%L\012'
+hello, mrs teal &lt;=&gt; 'D\'9XE\'mX)\'ebFb"dC@&amp;X'
+hello, mrs teal &lt;=&gt; '68656c6c6f2c206d7273207465616c'
+</pre></div></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to librarybook index page.">::: librarybook :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

@@ -1,0 +1,44 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>Pyttestone&nbsp;benchmarks</title> <script type="text/javascript">effbot_page_id=246;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <h1 class="maintitle">Pyttestone&nbsp;benchmarks</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p class="info">November 4, 2002 | Fredrik Lundh</p><p>The <b>pyttestone</b> benchmark is a version of <b>pystone</b>
+running on the <a href="pytte.htm">Pytte1</a> platform.</p><p>Here&#8217;s the results for the original Python pystone benchmark, using
+CPython 2.1 on my test system (yes, it&#8217;s a really slow computer):</p><pre>
+Pystone(1.1) time for 10000 passes = 4.41178
+This machine benchmarks at 2266.66 pystones/second
+</pre><p>The first version of Pytte1 that was actually able to run the
+pyttestone test without crashing was something of a disappointment:</p><pre>
+Pyttestone(1.1) time for 10000 passes = 98.973000
+This machine benchmarks at 101.04 pyttestones/second
+</pre><p>Turned out I&#8217;d accidentally switched off GC during debugging.  Here&#8217;s
+what I got when I switched it on again:</p><pre>
+Pyttestone(1.1) time for 10000 passes = 0.922001
+This machine benchmarks at 10845.98 pyttestones/second
+</pre><p>With GC switched off, the working set grows to about 400,000
+objects in 10000 passes.  With GC switched on, the working set
+contains 29 objects after a forced GC at the end (mostly globals).
+Note that the number of <i>object allocations</i> is the same
+in both cases, so the GC shouldn&#8217;t really matter.  Given that
+we have enough memory, disabling GC should even speed things up
+a little&#8230;  Oh well, I guess the GC needs more work.</p><p>Further improvements, in order:</p><ol><li>Cache small integers:
+22222.28 pyttestones/second (with gc)</li><li>Improving the small-object allocator:
+29097.96 pyttestones/second</li><li>Cache single-character strings:
+33670.01 pyttestones/second</li><li>Aggressive inlining in runtime (compiler tricks):
+37926.66 pyttestones/second</li><li>Replace small integer cache with unboxed integers:
+49188.41 pyttestones/second</li><li>Killing background processes (MP3 player) before running the
+benchmark (sigh): 54555.43 pyttestones/second</li><li>Only allocate one string object for each string (doh!):
+<b>58038.26 pyttestones/second</b></li></ol><p>From 100 to 58000 pyttestones in a couple of hours.  Not too bad.</p><p>The next step is to finish the lazy sweep implementation.  But
+before I can do that, I have to sort out the freelist mess&#8230;</p><h3>Sidebar: Portable Pytte</h3><p>Running the benchmark on a Unix box instead, I got a rather
+interesting result:</p><pre>
+Pyttestone(1.1) time for 10000 passes = 0.000000
+This machine benchmarks at inf pyttestones/second with gc
+</pre><p>This box is indeed much faster than my test platform, but can
+it really be <i>that</i> much faster?</p><p>Turned out that there was a bug in the time type implementation
+for Unix, causing it to fall back on <b>time()</b> even if
+<b>gettimeofday()</b> succeeded.  And it shouldn&#8217;t use gettimeofday()
+at all; the original pystone test uses process time, not wall time.
+Here&#8217;s a more correct result, using the <b>clock()</b> call, and
+enough passes to get an accurate result:</p><pre>
+Pyttestone(1.1) time for 1000000 passes = 2.710000
+This machine benchmarks at 369003.69 pyttestones/second with gc
+</pre></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div> <!-- yui-g --></div> <!-- content --> </div> <!-- yui-b --> </div> <!-- yui-main --> <div class="yui-b"> <div id='menu'> <ul> <li><b><a href="/">::: effbot.org</a></b></li> <li><b><a href=".">::: zone :::</a></b></li> </ul> </div> <!-- menu --> </div> <!-- yui-b --> </div> <!-- bd --> <div id="ft"> <!-- footer --> <p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15_grey.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;"></a>
+this page was rendered by a <a href="http://www.djangoproject.com/">django</a> application in 0.03s 2007-10-17 13:54:53.686617.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p> </div> <!-- ft --> </div> <!-- doc --> <script src="/media/js/effbot-min.js" type="text/javascript"> </script> </body> </html>

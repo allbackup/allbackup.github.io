@@ -1,0 +1,150 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>repr</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-repr.html'>original</a> :::
+<a href='repr.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>repr&#8212;Alternate repr() implementation</h1>
+
+<div class="toc"><dl><dt>On this page:</dt><dd><a href="#repr-objects">Repr Objects</a></dd><dd><a href="#subclassing-repr-objects">Subclassing Repr Objects</a></dd></dl></div><p>The <a class="link" href="#repr"><code>repr</code></a> module provides a
+means for producing object representations with limits on the size
+of the resulting strings. This is used in the Python debugger and
+may be useful in other contexts as well.</p>
+
+<p>This module provides a class, an instance, and a function:</p>
+</div>
+<dl><dt class="class" id="Repr"><b>class Repr()</b> <tt class="nav"><a class="nav" href="repr.Repr" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>Class which provides formatting services useful in implementing
+functions similar to the built-in <a class="link" href="#repr"><code>
+repr</code></a>; size limits for different object types are added to avoid
+the generation of representations which are excessively long.</p>
+</dd>
+<dt class="variable" id="aRepr"><b>aRepr</b> <tt class="nav"><a class="nav" href="repr.aRepr" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>This is an instance of <a class="link" href="#Repr"><code>Repr</code></a>
+which is used to provide the <a class="link" href="#repr"><code>
+repr</code></a> function described below. Changing the attributes of this
+object will affect the size limits used by <a class="link" href="#repr"><code>repr</code></a> and the Python debugger.</p>
+</dd>
+<dt class="function" id="repr"><b>repr(obj)</b> <tt class="nav"><a class="nav" href="repr.repr" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>This is the <a class="link" href="#repr"><code>repr</code></a> method of
+<code>aRepr</code>. It returns a string similar to that returned by
+the built-in function of the same name, but with limits on most
+sizes.</p>
+</dd>
+</dl><div class="text">
+<h2 id="repr-objects">Repr Objects <a class="nav" href="#repr-objects">#</a></h2>
+
+<p><a class="link" href="#Repr"><code>Repr</code></a> instances provide
+several members which can be used to provide size limits for the
+representations of different object types, and methods which format
+specific object types.</p>
+</div>
+<dl><dt class="attribute" id="Repr.maxlevel"><b>maxlevel</b> <tt class="nav"><a class="nav" href="repr.Repr.maxlevel" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>Depth limit on the creation of recursive representations. The
+default is <code>6</code>.</p>
+</dd>
+<dt class="attribute" id="Repr.maxarray"><b>maxarray</b> <tt class="nav"><a class="nav" href="repr.Repr.maxarray" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>Limits on the number of entries represented for the named object
+type. The default is <code>4</code> for <code>maxdict</code>, <code>5</code> for <code>maxarray</code>, and <code>6</code> for the
+others.</p>
+
+<blockquote><span class="mark">@since</span> New in version 2.4:
+maxset, maxfrozenset, and set.<br />
+</blockquote>
+</dd>
+<dt class="attribute" id="Repr.maxlong"><b>maxlong</b> <tt class="nav"><a class="nav" href="repr.Repr.maxlong" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>Maximum number of characters in the representation for a long
+integer. Digits are dropped from the middle. The default is <code>
+40</code>.</p>
+</dd>
+<dt class="attribute" id="Repr.maxstring"><b>maxstring</b> <tt class="nav"><a class="nav" href="repr.Repr.maxstring" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>Limit on the number of characters in the representation of the
+string. Note that the &#8220;normal&#8221; representation of the
+string is used as the character source: if escape sequences are
+needed in the representation, these may be mangled when the
+representation is shortened. The default is <code>30</code>.</p>
+</dd>
+<dt class="attribute" id="Repr.maxother"><b>maxother</b> <tt class="nav"><a class="nav" href="repr.Repr.maxother" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>This limit is used to control the size of object types for which
+no specific formatting method is available on the <a class="link" href="#Repr"><code>Repr</code></a> object. It is applied in a similar manner
+as <code>maxstring</code>. The default
+is <code>20</code>.</p>
+</dd>
+<dt class="method" id="Repr.repr"><b>repr(obj)</b> <tt class="nav"><a class="nav" href="repr.Repr.repr" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>The equivalent to the built-in <a class="link" href="#repr"><code>
+repr</code></a> that uses the formatting imposed by the instance.</p>
+</dd>
+<dt class="method" id="Repr.repr1"><b>repr1(obj, level)</b> <tt class="nav"><a class="nav" href="repr.Repr.repr1" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Recursive implementation used by <a class="link" href="#repr"><code>repr</code></a>. This uses the type of <var>obj</var> to
+determine which formatting method to call, passing it <var>
+obj</var> and <var>level</var>. The type-specific methods should
+call <code>repr1</code> to perform
+recursive formatting, with <var>level</var> - 1 for the value of
+<var>level</var> in the recursive call.</p>
+</dd>
+</dl><div class="unknown">
+<p>Formatting methods for specific types are implemented as methods
+with a name based on the type name. In the method name, <var>
+type</var> is replaced by <code>
+string.join(string.split(type(</code><var>obj</var>).__name__,
+'_')). Dispatch to these methods is handled by <code>repr1</code>. Type-specific methods which need to
+recursively format a value should call
+"<code>self.repr1(</code><var>subobj</var>, <var>level</var> -
+1)".</p>
+</div>
+<div class="text">
+<h2 id="subclassing-repr-objects">Subclassing Repr Objects <a class="nav" href="#subclassing-repr-objects">#</a></h2>
+
+<p>The use of dynamic dispatching by <a class="link" href="#Repr.repr1"><code>Repr.repr1</code></a> allows subclasses of <a class="link" href="#Repr"><code>Repr</code></a> to add support for
+additional built-in object types or to modify the handling of types
+already supported. This example shows how special support for file
+objects could be added:</p>
+
+<pre>
+import repr
+import sys
+
+class MyRepr(repr.Repr):
+    def repr_file(self, obj, level):
+        if obj.name in ['&lt;stdin&gt;', '&lt;stdout&gt;', '&lt;stderr&gt;']:
+            return obj.name
+        else:
+            return `obj`
+
+aRepr = MyRepr()
+print aRepr.repr(sys.stdin)          # prints '&lt;stdin&gt;'
+</pre>
+</div>
+</div></body></html>

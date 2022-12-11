@@ -1,0 +1,388 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>formatter</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-formatter.html'>original</a> :::
+<a href='formatter.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>formatter&#8212;Generic output formatting</h1>
+
+<div class="toc"><dl><dt>On this page:</dt><dd><a href="#the-formatter-interface">The Formatter Interface</a></dd><dd><a href="#formatter-implementations">Formatter Implementations</a></dd><dd><a href="#the-writer-interface">The Writer Interface</a></dd><dd><a href="#writer-implementations">Writer Implementations</a></dd></dl></div><p>This module supports two interface definitions, each with
+multiple implementations. The <em>formatter</em> interface is used
+by the <code>HTMLParser</code> class
+of the <code>htmllib</code> module, and
+the <em>writer</em> interface is required by the formatter
+interface.</p>
+
+<p>Formatter objects transform an abstract flow of formatting
+events into specific output events on writer objects. Formatters
+manage several stack structures to allow various properties of a
+writer object to be changed and restored; writers need not be able
+to handle relative changes nor any sort of &#8220;change
+back&#8221; operation. Specific writer properties which may be
+controlled via formatter objects are horizontal alignment, font,
+and left margin indentations. A mechanism is provided which
+supports providing arbitrary, non-exclusive style settings to a
+writer as well. Additional interfaces facilitate formatting events
+which are not reversible, such as paragraph separation.</p>
+
+<p>Writer objects encapsulate device interfaces. Abstract devices,
+such as file formats, are supported as well as physical devices.
+The provided implementations all work with abstract devices. The
+interface makes available mechanisms for setting the properties
+which formatter objects manage and inserting data into the
+output.</p>
+
+<h2 id="the-formatter-interface">The Formatter Interface <a class="nav" href="#the-formatter-interface">#</a></h2>
+
+<p>Interfaces to create formatters are dependent on the specific
+formatter class being instantiated. The interfaces described below
+are the required interfaces which all formatters must support once
+initialized.</p>
+
+<p>One data element is defined at the module level:</p>
+</div>
+<dl><dt class="variable" id="AS_IS"><b>AS_IS</b> <tt class="nav"><a class="nav" href="formatter.AS_IS" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Value which can be used in the font specification passed to the
+<code>push_font()</code> method described below, or as the new
+value to any other <code>push_</code><var>property</var>() method.
+Pushing the <code>AS_IS</code> value allows the corresponding
+<code>pop_</code><var>property</var>() method to be called without
+having to track whether the property was changed.</p>
+</dd>
+</dl><div class="text">
+<p>The following attributes are defined for formatter instance
+objects:</p>
+</div>
+<dl><dt class="attribute" id="Formatter.writer"><b>writer</b> <tt class="nav"><a class="nav" href="formatter.Formatter.writer" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>The writer instance with which the formatter interacts.</p>
+</dd>
+<dt class="method" id="Formatter.end_paragraph"><b>end_paragraph(blanklines)</b> <tt class="nav"><a class="nav" href="formatter.Formatter.end_paragraph" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Close any open paragraphs and insert at least <var>
+blanklines</var> before the next paragraph.</p>
+</dd>
+<dt class="method" id="Formatter.add_line_break"><b>add_line_break()</b> <tt class="nav"><a class="nav" href="formatter.Formatter.add_line_break" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Add a hard line break if one does not already exist. This does
+not break the logical paragraph.</p>
+</dd>
+<dt class="method" id="Formatter.add_hor_rule"><b>add_hor_rule(*args, **kw)</b> <tt class="nav"><a class="nav" href="formatter.Formatter.add_hor_rule" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Insert a horizontal rule in the output. A hard break is inserted
+if there is data in the current paragraph, but the logical
+paragraph is not broken. The arguments and keywords are passed on
+to the writer's <code>
+send_line_break</code> method.</p>
+</dd>
+<dt class="method" id="Formatter.add_flowing_data"><b>add_flowing_data(data)</b> <tt class="nav"><a class="nav" href="formatter.Formatter.add_flowing_data" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Provide data which should be formatted with collapsed
+whitespace. Whitespace from preceding and successive calls to <code>add_flowing_data</code> is
+considered as well when the whitespace collapse is performed. The
+data which is passed to this method is expected to be word-wrapped
+by the output device. Note that any word-wrapping still must be
+performed by the writer object due to the need to rely on device
+and font information.</p>
+</dd>
+<dt class="method" id="Formatter.add_literal_data"><b>add_literal_data(data)</b> <tt class="nav"><a class="nav" href="formatter.Formatter.add_literal_data" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Provide data which should be passed to the writer unchanged.
+Whitespace, including newline and tab characters, are considered
+legal in the value of <var>data</var>.</p>
+</dd>
+<dt class="method" id="Formatter.add_label_data"><b>add_label_data(format, counter)</b> <tt class="nav"><a class="nav" href="formatter.Formatter.add_label_data" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Insert a label which should be placed to the left of the current
+left margin. This should be used for constructing bulleted or
+numbered lists. If the <var>format</var> value is a string, it is
+interpreted as a format specification for <var>counter</var>, which
+should be an integer. The result of this formatting becomes the
+value of the label; if <var>format</var> is not a string it is used
+as the label value directly. The label value is passed as the only
+argument to the writer's <code>send_label_data</code> method.
+Interpretation of non-string label values is dependent on the
+associated writer.</p>
+
+<p>Format specifications are strings which, in combination with a
+counter value, are used to compute label values. Each character in
+the format string is copied to the label value, with some
+characters recognized to indicate a transform on the counter value.
+Specifically, the character "<code>1</code>" represents the counter
+value formatter as an Arabic number, the characters
+"<code>A</code>" and "<code>a</code>" represent alphabetic
+representations of the counter value in upper and lower case,
+respectively, and "<code>I</code>" and "<code>i</code>" represent
+the counter value in Roman numerals, in upper and lower case. Note
+that the alphabetic and roman transforms require that the counter
+value be greater than zero.</p>
+</dd>
+<dt class="method" id="Formatter.flush_softspace"><b>flush_softspace()</b> <tt class="nav"><a class="nav" href="formatter.Formatter.flush_softspace" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Send any pending whitespace buffered from a previous call to <code>add_flowing_data</code> to
+the associated writer object. This should be called before any
+direct manipulation of the writer object.</p>
+</dd>
+<dt class="method" id="Formatter.push_alignment"><b>push_alignment(align)</b> <tt class="nav"><a class="nav" href="formatter.Formatter.push_alignment" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Push a new alignment setting onto the alignment stack. This may
+be <code>AS_IS</code> if no change is desired. If the alignment
+value is changed from the previous setting, the writer's <code>new_alignment</code> method is
+called with the <var>align</var> value.</p>
+</dd>
+<dt class="method" id="Formatter.pop_alignment"><b>pop_alignment()</b> <tt class="nav"><a class="nav" href="formatter.Formatter.pop_alignment" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Restore the previous alignment.</p>
+</dd>
+<dt class="method" id="Formatter.push_font"><b>push_font((size, italic, bold,
+teletype))</b> <tt class="nav"><a class="nav" href="formatter.Formatter.push_font" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Change some or all font properties of the writer object.
+Properties which are not set to <code>AS_IS</code> are set to the
+values passed in while others are maintained at their current
+settings. The writer's <code>
+new_font</code> method is called with the fully resolved font
+specification.</p>
+</dd>
+<dt class="method" id="Formatter.pop_font"><b>pop_font()</b> <tt class="nav"><a class="nav" href="formatter.Formatter.pop_font" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Restore the previous font.</p>
+</dd>
+<dt class="method" id="Formatter.push_margin"><b>push_margin(margin)</b> <tt class="nav"><a class="nav" href="formatter.Formatter.push_margin" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Increase the number of left margin indentations by one,
+associating the logical tag <var>margin</var> with the new
+indentation. The initial margin level is <code>0</code>. Changed
+values of the logical tag must be true values; false values other
+than <code>AS_IS</code> are not sufficient to change the
+margin.</p>
+</dd>
+<dt class="method" id="Formatter.pop_margin"><b>pop_margin()</b> <tt class="nav"><a class="nav" href="formatter.Formatter.pop_margin" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Restore the previous margin.</p>
+</dd>
+<dt class="method" id="Formatter.push_style"><b>push_style(*styles)</b> <tt class="nav"><a class="nav" href="formatter.Formatter.push_style" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Push any number of arbitrary style specifications. All styles
+are pushed onto the styles stack in order. A tuple representing the
+entire stack, including <code>AS_IS</code> values, is passed to the
+writer's <code>new_styles</code>
+method.</p>
+</dd>
+<dt class="method" id="Formatter.pop_style"><b>pop_style([n = 1])</b> <tt class="nav"><a class="nav" href="formatter.Formatter.pop_style" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Pop the last <var>n</var> style specifications passed to <code>push_style</code>. A tuple
+representing the revised stack, including <code>AS_IS</code>
+values, is passed to the writer's <code>new_styles</code> method.</p>
+</dd>
+<dt class="method" id="Formatter.set_spacing"><b>set_spacing(spacing)</b> <tt class="nav"><a class="nav" href="formatter.Formatter.set_spacing" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Set the spacing style for the writer.</p>
+</dd>
+<dt class="method" id="Formatter.assert_line_data"><b>assert_line_data([flag = 1])</b> <tt class="nav"><a class="nav" href="formatter.Formatter.assert_line_data" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Inform the formatter that data has been added to the current
+paragraph out-of-band. This should be used when the writer has been
+manipulated directly. The optional <var>flag</var> argument can be
+set to false if the writer manipulations produced a hard line break
+at the end of the output.</p>
+</dd>
+</dl><div class="text">
+<h2 id="formatter-implementations">Formatter Implementations <a class="nav" href="#formatter-implementations">#</a></h2>
+
+<p>Two implementations of formatter objects are provided by this
+module. Most applications may use one of these classes without
+modification or subclassing.</p>
+</div>
+<dl><dt class="class" id="NullFormatter"><b>class NullFormatter([writer])</b> <tt class="nav"><a class="nav" href="formatter.NullFormatter" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>A formatter which does nothing. If <var>writer</var> is omitted,
+a <a class="link" href="#NullWriter"><code>NullWriter</code></a> instance is
+created. No methods of the writer are called by <a class="link" href="#NullFormatter"><code>NullFormatter</code></a> instances.
+Implementations should inherit from this class if implementing a
+writer interface but don't need to inherit any implementation.</p>
+</dd>
+<dt class="class" id="AbstractFormatter"><b>class AbstractFormatter(writer)</b> <tt class="nav"><a class="nav" href="formatter.AbstractFormatter" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>The standard formatter. This implementation has demonstrated
+wide applicability to many writers, and may be used directly in
+most circumstances. It has been used to implement a full-featured
+World Wide Web browser.</p>
+</dd>
+</dl><div class="text">
+<h2 id="the-writer-interface">The Writer Interface <a class="nav" href="#the-writer-interface">#</a></h2>
+
+<p>Interfaces to create writers are dependent on the specific
+writer class being instantiated. The interfaces described below are
+the required interfaces which all writers must support once
+initialized. Note that while most applications can use the <a class="link" href="#AbstractFormatter"><code>AbstractFormatter</code></a>
+class as a formatter, the writer must typically be provided by the
+application.</p>
+</div>
+<dl><dt class="method" id="Writer.flush"><b>flush()</b> <tt class="nav"><a class="nav" href="formatter.Writer.flush" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Flush any buffered output or device control events.</p>
+</dd>
+<dt class="method" id="Writer.new_alignment"><b>new_alignment(align)</b> <tt class="nav"><a class="nav" href="formatter.Writer.new_alignment" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Set the alignment style. The <var>align</var> value can be any
+object, but by convention is a string or <code>None</code>, where <code>
+None</code> indicates that the writer's &#8220;preferred&#8221;
+alignment should be used. Conventional <var>align</var> values are
+<code>'left'</code>, <code>'center'</code>, <code>'right'</code>,
+and <code>'justify'</code>.</p>
+</dd>
+<dt class="method" id="Writer.new_font"><b>new_font(font)</b> <tt class="nav"><a class="nav" href="formatter.Writer.new_font" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Set the font style. The value of <var>font</var> will be <code>
+None</code>, indicating that the device's default font should be
+used, or a tuple of the form <code>(</code><var>size</var>, <var>
+italic</var>, <var>bold</var>, <var>teletype</var><code>)</code>.
+Size will be a string indicating the size of font that should be
+used; specific strings and their interpretation must be defined by
+the application. The <var>italic</var>, <var>bold</var>, and <var>
+teletype</var> values are Boolean values specifying which of those
+font attributes should be used.</p>
+</dd>
+<dt class="method" id="Writer.new_margin"><b>new_margin(margin, level)</b> <tt class="nav"><a class="nav" href="formatter.Writer.new_margin" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Set the margin level to the integer <var>level</var> and the
+logical tag to <var>margin</var>. Interpretation of the logical tag
+is at the writer's discretion; the only restriction on the value of
+the logical tag is that it not be a false value for non-zero values
+of <var>level</var>.</p>
+</dd>
+<dt class="method" id="Writer.new_spacing"><b>new_spacing(spacing)</b> <tt class="nav"><a class="nav" href="formatter.Writer.new_spacing" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Set the spacing style to <var>spacing</var>.</p>
+</dd>
+<dt class="method" id="Writer.new_styles"><b>new_styles(styles)</b> <tt class="nav"><a class="nav" href="formatter.Writer.new_styles" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Set additional styles. The <var>styles</var> value is a tuple of
+arbitrary values; the value <code>AS_IS</code> should be ignored.
+The <var>styles</var> tuple may be interpreted either as a set or
+as a stack depending on the requirements of the application and
+writer implementation.</p>
+</dd>
+<dt class="method" id="Writer.send_line_break"><b>send_line_break()</b> <tt class="nav"><a class="nav" href="formatter.Writer.send_line_break" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Break the current line.</p>
+</dd>
+<dt class="method" id="Writer.send_paragraph"><b>send_paragraph(blankline)</b> <tt class="nav"><a class="nav" href="formatter.Writer.send_paragraph" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Produce a paragraph separation of at least <var>blankline</var>
+blank lines, or the equivalent. The <var>blankline</var> value will
+be an integer. Note that the implementation will receive a call to
+<code>send_line_break</code>
+before this call if a line break is needed; this method should not
+include ending the last line of the paragraph. It is only
+responsible for vertical spacing between paragraphs.</p>
+</dd>
+<dt class="method" id="Writer.send_hor_rule"><b>send_hor_rule(*args, **kw)</b> <tt class="nav"><a class="nav" href="formatter.Writer.send_hor_rule" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Display a horizontal rule on the output device. The arguments to
+this method are entirely application- and writer-specific, and
+should be interpreted with care. The method implementation may
+assume that a line break has already been issued via <code>send_line_break</code>.</p>
+</dd>
+<dt class="method" id="Writer.send_flowing_data"><b>send_flowing_data(data)</b> <tt class="nav"><a class="nav" href="formatter.Writer.send_flowing_data" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Output character data which may be word-wrapped and re-flowed as
+needed. Within any sequence of calls to this method, the writer may
+assume that spans of multiple whitespace characters have been
+collapsed to single space characters.</p>
+</dd>
+<dt class="method" id="Writer.send_literal_data"><b>send_literal_data(data)</b> <tt class="nav"><a class="nav" href="formatter.Writer.send_literal_data" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Output character data which has already been formatted for
+display. Generally, this should be interpreted to mean that line
+breaks indicated by newline characters should be preserved and no
+new line breaks should be introduced. The data may contain embedded
+newline and tab characters, unlike data provided to the <code>
+send_formatted_data</code> interface.</p>
+</dd>
+<dt class="method" id="Writer.send_label_data"><b>send_label_data(data)</b> <tt class="nav"><a class="nav" href="formatter.Writer.send_label_data" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Set <var>data</var> to the left of the current left margin, if
+possible. The value of <var>data</var> is not restricted; treatment
+of non-string values is entirely application- and writer-dependent.
+This method will only be called at the beginning of a line.</p>
+</dd>
+</dl><div class="text">
+<h2 id="writer-implementations">Writer Implementations <a class="nav" href="#writer-implementations">#</a></h2>
+
+<p>Three implementations of the writer object interface are
+provided as examples by this module. Most applications will need to
+derive new writer classes from the <a class="link" href="#NullWriter"><code>NullWriter</code></a> class.</p>
+</div>
+<dl><dt class="class" id="NullWriter"><b>class NullWriter()</b> <tt class="nav"><a class="nav" href="formatter.NullWriter" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>A writer which only provides the interface definition; no
+actions are taken on any methods. This should be the base class for
+all writers which do not need to inherit any implementation
+methods.</p>
+</dd>
+<dt class="class" id="AbstractWriter"><b>class AbstractWriter()</b> <tt class="nav"><a class="nav" href="formatter.AbstractWriter" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>A writer which can be used in debugging formatters, but not much
+else. Each method simply announces itself by printing its name and
+arguments on standard output.</p>
+</dd>
+<dt class="class" id="DumbWriter"><b>class DumbWriter([file[, maxcol = 72]])</b> <tt class="nav"><a class="nav" href="formatter.DumbWriter" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>Simple writer class which writes output on the file object
+passed in as <var>file</var> or, if <var>file</var> is omitted, on
+standard output. The output is simply word-wrapped to the number of
+columns specified by <var>maxcol</var>. This class is suitable for
+reflowing a sequence of paragraphs.</p>
+</dd>
+</dl></div></body></html>

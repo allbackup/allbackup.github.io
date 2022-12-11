@@ -1,0 +1,525 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>sets</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-sets.html'>original</a> :::
+<a href='sets.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>sets&#8212;Unordered collections of unique elements</h1>
+
+<div class="toc"><dl><dt>On this page:</dt><dd><a href="#set-objects">Set Objects</a></dd><dd><a href="#example">Example</a></dd><dd><a href="#protocol-for-automatic-conversion-to-immutable">Protocol for automatic conversion to immutable</a></dd><dd><a href="#comparison-to-the-built-in-set-types">Comparison to the built-in set types</a></dd></dl></div><p>New in version 2.3.</p>
+
+<p>The <code>sets</code> module provides
+classes for constructing and manipulating unordered collections of
+unique elements. Common uses include membership testing, removing
+duplicates from a sequence, and computing standard math operations
+on sets such as intersection, union, difference, and symmetric
+difference.</p>
+
+<p>Like other collections, sets support <var>x</var> in <var>
+set</var>, <code>len(</code><var>set</var>), and <code>for</code>
+<var>x</var> in <var>set</var>. Being an unordered collection, sets
+do not record element position or order of insertion. Accordingly,
+sets do not support indexing, slicing, or other sequence-like
+behavior.</p>
+
+<p>Most set applications use the <a class="link" href="#Set"><code>
+Set</code></a> class which provides every set method except for <code>__hash__</code>. For advanced
+applications requiring a hash method, the <a class="link" href="#ImmutableSet"><code>ImmutableSet</code></a> class adds a <code>__hash__</code> method but omits
+methods which alter the contents of the set. Both <a class="link" href="#Set"><code>Set</code></a> and <a class="link" href="#ImmutableSet"><code>ImmutableSet</code></a> derive from <code>BaseSet</code>, an abstract class
+useful for determining whether something is a set: <code>
+isinstance(</code><var>obj</var>, BaseSet).</p>
+
+<p>The set classes are implemented using dictionaries. Accordingly,
+the requirements for set elements are the same as those for
+dictionary keys; namely, that the element defines both <code>__eq__</code> and <code>__hash__</code>. As a result, sets cannot contain
+mutable elements such as lists or dictionaries. However, they can
+contain immutable collections such as tuples or instances of <a class="link" href="#ImmutableSet"><code>ImmutableSet</code></a>. For
+convenience in implementing sets of sets, inner sets are
+automatically converted to immutable form, for example, <code>
+Set([Set(['dog'])])</code> is transformed to <code>
+Set([ImmutableSet(['dog'])])</code>.</p>
+</div>
+<dl><dt class="class" id="Set"><b>class Set([iterable])</b> <tt class="nav"><a class="nav" href="sets.Set" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>Constructs a new empty <a class="link" href="#Set"><code>Set</code></a>
+object. If the optional <var>iterable</var> parameter is supplied,
+updates the set with elements obtained from iteration. All of the
+elements in <var>iterable</var> should be immutable or be
+transformable to an immutable using the protocol described in
+section <code>
+immutable-transforms.html#immutable-transforms</code>.</p>
+</dd>
+<dt class="class" id="ImmutableSet"><b>class ImmutableSet([iterable])</b> <tt class="nav"><a class="nav" href="sets.ImmutableSet" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>Constructs a new empty <a class="link" href="#ImmutableSet"><code>
+ImmutableSet</code></a> object. If the optional <var>iterable</var>
+parameter is supplied, updates the set with elements obtained from
+iteration. All of the elements in <var>iterable</var> should be
+immutable or be transformable to an immutable using the protocol
+described in section <code>
+immutable-transforms.html#immutable-transforms</code>.</p>
+
+<p>Because <a class="link" href="#ImmutableSet"><code>
+ImmutableSet</code></a> objects provide a <code>__hash__</code> method, they can be used as set
+elements or as dictionary keys. <a class="link" href="#ImmutableSet"><code>ImmutableSet</code></a> objects do not have
+methods for adding or removing elements, so all of the elements
+must be known when the constructor is called.</p>
+</dd>
+</dl><div class="text">
+<h2 id="set-objects">Set Objects <a class="nav" href="#set-objects">#</a></h2>
+
+<p>Instances of <a class="link" href="#Set"><code>Set</code></a> and <a class="link" href="#ImmutableSet"><code>ImmutableSet</code></a> both provide
+the following operations:</p>
+
+<table border="1">
+<tr>
+<th>
+<p>Operation</p>
+</th>
+<th>
+<p>Equivalent</p>
+</th>
+<th>
+<p>Result</p>
+</th>
+</tr>
+
+<tr>
+<td>
+<p><code>len(</code><var>s</var>)</p>
+</td>
+<td />
+<td>
+<p>cardinality of set <var>s</var></p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><var>x</var> in <var>s</var></p>
+</td>
+<td />
+<td>
+<p>test <var>x</var> for membership in <var>s</var></p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><var>x</var> not in <var>s</var></p>
+</td>
+<td />
+<td>
+<p>test <var>x</var> for non-membership in <var>s</var></p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><var>s</var>.issubset(<var>t</var>)</p>
+</td>
+<td>
+<p><var>s</var> &lt;= <var>t</var></p>
+</td>
+<td>
+<p>test whether every element in <var>s</var> is in <var>
+t</var></p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><var>s</var>.issuperset(<var>t</var>)</p>
+</td>
+<td>
+<p><var>s</var> &gt;= <var>t</var></p>
+</td>
+<td>
+<p>test whether every element in <var>t</var> is in <var>
+s</var></p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><var>s</var>.union(<var>t</var>)</p>
+</td>
+<td>
+<p><var>s</var> | <var>t</var></p>
+</td>
+<td>
+<p>new set with elements from both <var>s</var> and <var>
+t</var></p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><var>s</var>.intersection(<var>t</var>)</p>
+</td>
+<td>
+<p><var>s</var> &amp; <var>t</var></p>
+</td>
+<td>
+<p>new set with elements common to <var>s</var> and <var>
+t</var></p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><var>s</var>.difference(<var>t</var>)</p>
+</td>
+<td>
+<p><var>s</var> - <var>t</var></p>
+</td>
+<td>
+<p>new set with elements in <var>s</var> but not in <var>
+t</var></p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><var>s</var>.symmetric_difference(<var>t</var>)</p>
+</td>
+<td>
+<p><var>s</var> ^ <var>t</var></p>
+</td>
+<td>
+<p>new set with elements in either <var>s</var> or <var>t</var> but
+not both</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><var>s</var>.copy()</p>
+</td>
+<td />
+<td>
+<p>new set with a shallow copy of <var>s</var></p>
+</td>
+</tr>
+</table>
+
+<br />
+<br />
+ 
+
+<p>Note, the non-operator versions of <code>union</code>, <code>intersection</code>, <code>difference</code>, and <code>symmetric_difference</code> will
+accept any iterable as an argument. In contrast, their operator
+based counterparts require their arguments to be sets. This
+precludes error-prone constructions like <code>Set('abc') &amp;
+'cbs'</code> in favor of the more readable <code>
+Set('abc').intersection('cbs')</code>. Changed in version 2.3.1:
+Formerly all arguments were required to be sets.</p>
+
+<p>In addition, both <a class="link" href="#Set"><code>Set</code></a> and <a class="link" href="#ImmutableSet"><code>ImmutableSet</code></a> support set
+to set comparisons. Two sets are equal if and only if every element
+of each set is contained in the other (each is a subset of the
+other). A set is less than another set if and only if the first set
+is a proper subset of the second set (is a subset, but is not
+equal). A set is greater than another set if and only if the first
+set is a proper superset of the second set (is a superset, but is
+not equal).</p>
+
+<p>The subset and equality comparisons do not generalize to a
+complete ordering function. For example, any two disjoint sets are
+not equal and are not subsets of each other, so <em>all</em> of the
+following return <code>False</code>: <var>
+a</var>&lt;<var>b</var>, <var>a</var>==<var>b</var>, or <var>
+a</var>&gt;<var>b</var>. Accordingly, sets do not implement the <code>__cmp__</code> method.</p>
+
+<p>Since sets only define partial ordering (subset relationships),
+the output of the <code>
+list.sort</code> method is undefined for lists of sets.</p>
+
+<p>The following table lists operations available in <a class="link" href="#ImmutableSet"><code>ImmutableSet</code></a> but not
+found in <a class="link" href="#Set"><code>Set</code></a>:</p>
+
+<table border="1">
+<tr>
+<th>
+<p>Operation</p>
+</th>
+<th>
+<p>Result</p>
+</th>
+</tr>
+
+<tr>
+<td>
+<p><code>hash(</code><var>s</var>)</p>
+</td>
+<td>
+<p>returns a hash value for <var>s</var></p>
+</td>
+</tr>
+</table>
+
+<br />
+<br />
+ 
+
+<p>The following table lists operations available in <a class="link" href="#Set"><code>Set</code></a> but not found in <a class="link" href="#ImmutableSet"><code>ImmutableSet</code></a>:</p>
+
+<table border="1">
+<tr>
+<th>
+<p>Operation</p>
+</th>
+<th>
+<p>Equivalent</p>
+</th>
+<th>
+<p>Result</p>
+</th>
+</tr>
+
+<tr>
+<td>
+<p><var>s</var>.update(<var>t</var>)</p>
+</td>
+<td>
+<p><var>s</var> |= <var>t</var></p>
+</td>
+<td>
+<p>return set <var>s</var> with elements added from <var>
+t</var></p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><var>s</var>.intersection_update(<var>t</var>)</p>
+</td>
+<td>
+<p><var>s</var> &amp;= <var>t</var></p>
+</td>
+<td>
+<p>return set <var>s</var> keeping only elements also found in
+<var>t</var></p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><var>s</var>.difference_update(<var>t</var>)</p>
+</td>
+<td>
+<p><var>s</var> -= <var>t</var></p>
+</td>
+<td>
+<p>return set <var>s</var> after removing elements found in <var>
+t</var></p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><var>s</var>.symmetric_difference_update(<var>t</var>)</p>
+</td>
+<td>
+<p><var>s</var> ^= <var>t</var></p>
+</td>
+<td>
+<p>return set <var>s</var> with elements from <var>s</var> or <var>
+t</var> but not both</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><var>s</var>.add(<var>x</var>)</p>
+</td>
+<td />
+<td>
+<p>add element <var>x</var> to set <var>s</var></p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><var>s</var>.remove(<var>x</var>)</p>
+</td>
+<td />
+<td>
+<p>remove <var>x</var> from set <var>s</var>; raises KeyError if
+not present</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><var>s</var>.discard(<var>x</var>)</p>
+</td>
+<td />
+<td>
+<p>removes <var>x</var> from set <var>s</var> if present</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><var>s</var>.pop()</p>
+</td>
+<td />
+<td>
+<p>remove and return an arbitrary element from <var>s</var>; raises
+KeyError if empty</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><var>s</var>.clear()</p>
+</td>
+<td />
+<td>
+<p>remove all elements from set <var>s</var></p>
+</td>
+</tr>
+</table>
+
+<br />
+<br />
+ 
+
+<p>Note, the non-operator versions of <code>update</code>, <code>intersection_update</code>, <code>difference_update</code>,
+and <code>
+symmetric_difference_update</code> will accept any iterable as an
+argument. Changed in version 2.3.1: Formerly all arguments were
+required to be sets.</p>
+
+<p>Also note, the module also includes a <code>union_update</code> method which is an alias
+for <code>update</code>. The method is
+included for backwards compatibility. Programmers should prefer the
+<code>update</code> method because it the
+one supported by the builtin <code>
+set</code> and <code>frozenset</code>
+types.</p>
+
+<h2 id="example">Example <a class="nav" href="#example">#</a></h2>
+
+<pre>
+&gt;&gt;&gt; from sets import Set
+&gt;&gt;&gt; engineers = Set(['John', 'Jane', 'Jack', 'Janice'])
+&gt;&gt;&gt; programmers = Set(['Jack', 'Sam', 'Susan', 'Janice'])
+&gt;&gt;&gt; managers = Set(['Jane', 'Jack', 'Susan', 'Zack'])
+&gt;&gt;&gt; employees = engineers | programmers | managers           # union
+&gt;&gt;&gt; engineering_management = engineers &amp; managers            # intersection
+&gt;&gt;&gt; fulltime_management = managers - engineers - programmers # difference
+&gt;&gt;&gt; engineers.add('Marvin')                                  # add element
+&gt;&gt;&gt; print engineers
+Set(['Jane', 'Marvin', 'Janice', 'John', 'Jack'])
+&gt;&gt;&gt; employees.issuperset(engineers)           # superset test
+False
+&gt;&gt;&gt; employees.union_update(engineers)         # update from another set
+&gt;&gt;&gt; employees.issuperset(engineers)
+True
+&gt;&gt;&gt; for group in [engineers, programmers, managers, employees]:
+...     group.discard('Susan')                # unconditionally remove element
+...     print group
+...
+Set(['Jane', 'Marvin', 'Janice', 'John', 'Jack'])
+Set(['Janice', 'Jack', 'Sam'])
+Set(['Jane', 'Zack', 'Jack'])
+Set(['Jack', 'Sam', 'Jane', 'Marvin', 'Janice', 'John', 'Zack'])
+</pre>
+
+<h2 id="protocol-for-automatic-conversion-to-immutable">Protocol for automatic conversion to immutable <a class="nav" href="#protocol-for-automatic-conversion-to-immutable">#</a></h2>
+
+<p>Sets can only contain immutable elements. For convenience,
+mutable <a class="link" href="#Set"><code>Set</code></a> objects are
+automatically copied to an <a class="link" href="#ImmutableSet"><code>ImmutableSet</code></a> before being added as a
+set element.</p>
+
+<p>The mechanism is to always add a hashable element, or if it is
+not hashable, the element is checked to see if it has an <code>__as_immutable__</code>
+method which returns an immutable equivalent.</p>
+
+<p>Since <a class="link" href="#Set"><code>Set</code></a> objects have a <code>__as_immutable__</code>
+method returning an instance of <a class="link" href="#ImmutableSet"><code>ImmutableSet</code></a>, it is possible to
+construct sets of sets.</p>
+
+<p>A similar mechanism is needed by the <code>__contains__</code> and <code>remove</code> methods which need to hash an element
+to check for membership in a set. Those methods check an element
+for hashability and, if not, check for a <code>
+__as_temporarily_immutable__</code> method which returns the element
+wrapped by a class that provides temporary methods for <code>__hash__</code>, <code>__eq__</code>, and <code>__ne__</code>.</p>
+
+<p>The alternate mechanism spares the need to build a separate copy
+of the original mutable object.</p>
+
+<p><a class="link" href="#Set"><code>Set</code></a> objects implement the <code>
+__as_temporarily_immutable__</code> method which returns the <a class="link" href="#Set"><code>Set</code></a> object wrapped by a new class
+<code>
+_TemporarilyImmutableSet</code>.</p>
+
+<p>The two mechanisms for adding hashability are normally invisible
+to the user; however, a conflict can arise in a multi-threaded
+environment where one thread is updating a set while another has
+temporarily wrapped it in <code>_TemporarilyImmutableSet</code>.
+In other words, sets of mutable sets are not thread-safe.</p>
+
+<h2 id="comparison-to-the-built-in-set-types">Comparison to the built-in set types <a class="nav" href="#comparison-to-the-built-in-set-types">#</a></h2>
+
+<p>The built-in <code>set</code> and <code>frozenset</code> types were
+designed based on lessons learned from the <code>sets</code> module. The key differences are:</p>
+
+<ul>
+<li>
+<p><a class="link" href="#Set"><code>Set</code></a> and <a class="link" href="#ImmutableSet"><code>ImmutableSet</code></a> were renamed to <code>set</code> and <code>frozenset</code>.</p>
+</li>
+
+<li>
+<p>There is no equivalent to <code>
+BaseSet</code>. Instead, use <code>isinstance(x, (set,
+frozenset))</code>.</p>
+</li>
+
+<li>
+<p>The hash algorithm for the built-ins performs significantly
+better (fewer collisions) for most datasets.</p>
+</li>
+
+<li>
+<p>The built-in versions have more space efficient pickles.</p>
+</li>
+
+<li>
+<p>The built-in versions do not have a <code>union_update</code> method. Instead, use the
+<code>update</code> method which is
+equivalent.</p>
+</li>
+
+<li>
+<p>The built-in versions do not have a <code>_repr(sort=True)</code> method. Instead,
+use the built-in <code>repr</code> and <code>sorted</code> functions: <code>
+repr(sorted(s))</code>.</p>
+</li>
+
+<li>
+<p>The built-in version does not have a protocol for automatic
+conversion to immutable. Many found this feature to be confusing
+and no one in the community reported having found real uses for
+it.</p>
+</li>
+</ul>
+</div>
+</div></body></html>

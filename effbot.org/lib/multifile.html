@@ -1,0 +1,206 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>multifile</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-multifile.html'>original</a> :::
+<a href='multifile.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>multifile&#8212;Support for files containing distinct
+parts</h1>
+
+<div class="toc"><dl><dt>On this page:</dt><dd><a href="#multifile-objects">MultiFile Objects</a></dd><dd><a href="#multifile-example">MultiFile Example</a></dd></dl></div><p>The <a class="link" href="#MultiFile"><code>MultiFile</code></a> object
+enables you to treat sections of a text file as file-like input
+objects, with <code>&#8221;</code> being returned by <code>readline</code> when a given
+delimiter pattern is encountered. The defaults of this class are
+designed to make it useful for parsing MIME multipart messages, but
+by subclassing it and overriding methods it can be easily adapted
+for more general use.</p>
+</div>
+<dl><dt class="class" id="MultiFile"><b>class MultiFile(fp[, seekable])</b> <tt class="nav"><a class="nav" href="multifile.MultiFile" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>Create a multi-file. You must instantiate this class with an
+input object argument for the <a class="link" href="#MultiFile"><code>MultiFile</code></a> instance to get lines from,
+such as a file object returned by <code>
+open</code>.</p>
+
+<p><a class="link" href="#MultiFile"><code>MultiFile</code></a> only ever
+looks at the input object's <code>
+readline</code>, <code>seek</code> and <code>tell</code> methods, and the latter two
+are only needed if you want random access to the individual MIME
+parts. To use <a class="link" href="#MultiFile"><code>MultiFile</code></a>
+on a non-seekable stream object, set the optional <var>
+seekable</var> argument to false; this will prevent using the input
+object's <code>seek</code> and <code>tell</code> methods.</p>
+</dd>
+</dl><div class="text">
+<p>It will be useful to know that in <a class="link" href="#MultiFile"><code>MultiFile</code></a>'s view of the world, text is
+composed of three kinds of lines: data, section-dividers, and
+end-markers. MultiFile is designed to support parsing of messages
+that may have multiple nested message parts, each with its own
+pattern for section-divider and end-marker lines. <span class="mark">@see</span> <code>Module
+email</code> Comprehensive email handling package; supersedes the
+multifile module.</p>
+
+<h2 id="multifile-objects">MultiFile Objects <a class="nav" href="#multifile-objects">#</a></h2>
+
+<p>A <a class="link" href="#MultiFile"><code>MultiFile</code></a> instance
+has the following methods:</p>
+</div>
+<dl><dt class="method" id="MultiFile.readline"><b>readline(str)</b> <tt class="nav"><a class="nav" href="multifile.MultiFile.readline" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Read a line. If the line is data (not a section-divider or
+end-marker or real EOF) return it. If the line matches the
+most-recently-stacked boundary, return <code>&#8221;</code> and set
+<code>self.last</code> to 1 or 0 according as the match is or is
+not an end-marker. If the line matches any other stacked boundary,
+raise an error. On encountering end-of-file on the underlying
+stream object, the method raises <code>
+Error</code> unless all boundaries have been popped.</p>
+</dd>
+<dt class="method" id="MultiFile.readlines"><b>readlines(str)</b> <tt class="nav"><a class="nav" href="multifile.MultiFile.readlines" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return all lines remaining in this part as a list of
+strings.</p>
+</dd>
+<dt class="method" id="MultiFile.read"><b>read()</b> <tt class="nav"><a class="nav" href="multifile.MultiFile.read" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Read all lines, up to the next section. Return them as a single
+(multiline) string. Note that this doesn't take a size
+argument!</p>
+</dd>
+<dt class="method" id="MultiFile.seek"><b>seek(pos[, whence])</b> <tt class="nav"><a class="nav" href="multifile.MultiFile.seek" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Seek. Seek indices are relative to the start of the current
+section. The <var>pos</var> and <var>whence</var> arguments are
+interpreted as for a file seek.</p>
+</dd>
+<dt class="method" id="MultiFile.tell"><b>tell()</b> <tt class="nav"><a class="nav" href="multifile.MultiFile.tell" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return the file position relative to the start of the current
+section.</p>
+</dd>
+<dt class="method" id="MultiFile.next"><b>next()</b> <tt class="nav"><a class="nav" href="multifile.MultiFile.next" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Skip lines to the next section (that is, read lines until a
+section-divider or end-marker has been consumed). Return true if
+there is such a section, false if an end-marker is seen. Re-enable
+the most-recently-pushed boundary.</p>
+</dd>
+<dt class="method" id="MultiFile.is_data"><b>is_data(str)</b> <tt class="nav"><a class="nav" href="multifile.MultiFile.is_data" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return true if <var>str</var> is data and false if it might be a
+section boundary. As written, it tests for a prefix other than
+<code>'-</code><code>-'</code> at start of line (which all MIME
+boundaries have) but it is declared so it can be overridden in
+derived classes.</p>
+
+<p>Note that this test is used intended as a fast guard for the
+real boundary tests; if it always returns false it will merely slow
+processing, not cause it to fail.</p>
+</dd>
+<dt class="method" id="MultiFile.push"><b>push(str)</b> <tt class="nav"><a class="nav" href="multifile.MultiFile.push" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Push a boundary string. When an appropriately decorated version
+of this boundary is found as an input line, it will be interpreted
+as a section-divider or end-marker. All subsequent reads will
+return the empty string to indicate end-of-file, until a call to <code>pop</code> removes the boundary a or <code>next</code> call reenables it.</p>
+
+<p>It is possible to push more than one boundary. Encountering the
+most-recently-pushed boundary will return EOF; encountering any
+other boundary will raise an error.</p>
+</dd>
+<dt class="method" id="MultiFile.pop"><b>pop()</b> <tt class="nav"><a class="nav" href="multifile.MultiFile.pop" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Pop a section boundary. This boundary will no longer be
+interpreted as EOF.</p>
+</dd>
+<dt class="method" id="MultiFile.section_divider"><b>section_divider(str)</b> <tt class="nav"><a class="nav" href="multifile.MultiFile.section_divider" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Turn a boundary into a section-divider line. By default, this
+method prepends <code>'-</code><code>-'</code> (which MIME section
+boundaries have) but it is declared so it can be overridden in
+derived classes. This method need not append LF or CR-LF, as
+comparison with the result ignores trailing whitespace.</p>
+</dd>
+<dt class="method" id="MultiFile.end_marker"><b>end_marker(str)</b> <tt class="nav"><a class="nav" href="multifile.MultiFile.end_marker" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Turn a boundary string into an end-marker line. By default, this
+method prepends <code>'-</code><code>-'</code> and appends <code>
+'-</code><code>-'</code> (like a MIME-multipart end-of-message
+marker) but it is declared so it can be overridden in derived
+classes. This method need not append LF or CR-LF, as comparison
+with the result ignores trailing whitespace.</p>
+</dd>
+</dl><div class="text">
+<p>Finally, <a class="link" href="#MultiFile"><code>MultiFile</code></a>
+instances have two public instance variables:</p>
+</div>
+<dl><dt class="attribute" id="MultiFile.level"><b>level</b> <tt class="nav"><a class="nav" href="multifile.MultiFile.level" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>Nesting depth of the current part.</p>
+</dd>
+<dt class="attribute" id="MultiFile.last"><b>last</b> <tt class="nav"><a class="nav" href="multifile.MultiFile.last" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>True if the last end-of-file was for an end-of-message
+marker.</p>
+</dd>
+</dl><div class="text">
+<h2 id="multifile-example">MultiFile Example <a class="nav" href="#multifile-example">#</a></h2>
+
+<pre>
+import mimetools
+import multifile
+import StringIO
+
+def extract_mime_part_matching(stream, mimetype):
+    """Return the first element in a multipart MIME message on stream
+    matching mimetype."""
+
+    msg = mimetools.Message(stream)
+    msgtype = msg.gettype()
+    params = msg.getplist()
+
+    data = StringIO.StringIO()
+    if msgtype[:10] == "multipart/":
+
+        file = multifile.MultiFile(stream)
+        file.push(msg.getparam("boundary"))
+        while file.next():
+            submsg = mimetools.Message(file)
+            try:
+                data = StringIO.StringIO()
+                mimetools.decode(file, data, submsg.getencoding())
+            except ValueError:
+                continue
+            if submsg.gettype() == mimetype:
+                break
+        file.pop()
+    return data.getvalue()
+</pre>
+</div>
+</div></body></html>

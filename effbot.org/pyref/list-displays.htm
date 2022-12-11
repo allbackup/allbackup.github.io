@@ -1,0 +1,27 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>List&nbsp;displays</title> <script type="text/javascript">effbot_page_id=1360;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <h1 class="maintitle">List&nbsp;displays</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p>A list display is a possibly empty series of expressions enclosed in
+square brackets:</p><p>Syntax:</p><blockquote><p><strong>[]</strong></p><p><strong>[</strong> <em><a href="syntax-expression">expression</a></em> [ <strong>,</strong> <em><a href="syntax-expression">expression</a></em>]&#8230; [<strong>,</strong>] <strong>]</strong></p><p><strong>[</strong> <em><a href="syntax-expression">expression list</a></em> [ <strong>for</strong> <em>target list</em> <strong>in</strong> <em>expression list</em> ]&#8230; [ <strong>if</strong> <em>expression</em> ]&#8230; <strong>]</strong></p></blockquote><p>(the outermost brackets are part of the syntax)</p><p /><p>A list display yields a new list object.  Its contents are specified
+by providing either a list of expressions or a <em>list comprehension</em>.</p><p>When a comma-separated list of expressions is supplied, its elements
+are evaluated from left to right and placed into the list object in
+that order.</p><p>When a list comprehension is supplied, it consists of a single
+expression followed by at least one <a href="for.htm"><strong>for</strong></a> clause and zero or more
+for or <a href="if.htm"><strong>if</strong></a> clauses.  In this case, the elements of the new list are
+those that would be produced by considering each of the <a href="for.htm"><strong>for</strong></a> or
+<a href="if.htm"><strong>if</strong></a> clauses a block, nesting from left to right, and evaluating the
+expression to produce a list element each time the innermost block is
+reached.</p><p><strong>Note:</strong> In the current versions, a list comprehension <q>leaks</q>
+the control variables of each <a href="for.htm"><strong>for</strong></a> it contains into the containing
+scope.  However, this behavior is deprecated, and will change in a
+future release.</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><div class='comment'>
+<p><b>Comment:</b></p>
+<p>
+The last syntax line is incorrect.  The first item must be a for, but the rest can be either for or if.  E.g.
+
+    [a for b in c if d in e for f in g]
+
+is syntactically correct (if not very meaningful, of course).</p>
+<p>Posted by <b class='author'><a href='http://pyref.infogami.com/list-displays/_comments/5c34'>infogami</a></b></p>
+</div>
+</div> <!-- yui-g --></div> <!-- content --> </div> <!-- yui-b --> </div> <!-- yui-main --> <div class="yui-b"> <div id='menu'> <ul> <li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li> <li><b><a href="." title="Go to pyref index page.">::: pyref :::</a></b></li> </ul> </div> <!-- menu --> </div> <!-- yui-b --> </div> <!-- bd --> <div id="ft"> <!-- footer --> <p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;"></a>
+this page was rendered by a <a href="http://www.djangoproject.com/">django</a> application in 0.01s 2011-06-21 22:21:53.649614.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p> </div> <!-- ft --> </div> <!-- doc --> <script src="/media/js/effbot-min.js" type="text/javascript"> </script> </body> </html>

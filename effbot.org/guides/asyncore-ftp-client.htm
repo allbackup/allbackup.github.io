@@ -1,0 +1,95 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>Building An Asynchronous FTP&nbsp;Client</title> <script type="text/javascript">effbot_page_id=8;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> <!--
+<p style='color: #8f8f8f; background: #fff5bf; padding: 5px 10px;'> <b>2008-07-15:</b> Selected articles
+
+now have experimental "comment" links in the left column and at the bottom.
+You're welcome to use them for commenting and voting on articles.
+For a bit more on this, see <a
+href="http://effbot.slinkset.com/links/Welcome_to_discuss_effbot_org">this
+page</a>. /F
+</p>
+--> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <h1 class="maintitle">Building An Asynchronous FTP&nbsp;Client</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p class="info">October 17, 2002 | Fredrik Lundh</p><p>This article describes how to use Python&#8217;s standard <b>asynchat</b>
+and <b>asyncore</b> modules to implement an asynchronous FTP client.
+In the first part, we&#8217;ll look at the FTP protocol itself, and how to
+use the <b>asynchat</b> library to talk to an FTP server.</p><p>Contents:</p><ul><li>Part #1: <a href="#part1">Reading Directory Listings</a></li><li>Part #2: Transferring Files</li></ul></div><div class="yui-u">&#160;</div></div><div class="yui-g"><p class="wide">The scripts and modules used in this article are available from <a href="http://svn.effbot.org/public/stuff/zone/asyncore-ftp">the
+effbot.org subversion repository</a>:
+
+<pre class="wide">
+$ svn co http://svn.effbot.python-hosting.com/stuff/zone/asyncore-ftp
+</pre><h1 id="part1">Part #1: Reading Directory Listings&#160;<a class="nav" href="#part1" title="bookmark!">#</a></h1><h2 id="the-file-transfer-protocol">The File Transfer Protocol&#160;<a class="nav" href="#the-file-transfer-protocol" title="bookmark!">#</a></h2></p></div><div class="yui-ge"><div class="yui-u first"><p>The <b>File Transfer Protocol</b> (FTP) has been around for ages;
+<a href="http://www.faqs.org/rfcs/rfc354.html">it&#8217;s even older than
+the Internet</a>.  Despite its age, FTP is still commonly used to
+download data from remote servers, and it&#8217;s by far the most common
+protocol for uploading data to servers.</p><p>Unlike <a href="asyncore-http-client.htm">HTTP</a>, the FTP is
+a &#8220;chat-style&#8221; protocol.  The client sends a command, waits for a
+response, sends another command, reads the response, etc.  A typical
+interchange might look something like (C=client, S=server):</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><pre class="wide wide">
+C: <i>connects</i>
+S: 220 FTP server ready.
+C: <b>USER mulder</b>
+S: 331 Password required for mulder
+C: <b>PASS trustno1</b>
+S: 230 User mulder logged in.
+C: <b>PASV</b>
+S: 227 Entering Passive Mode (195,100,36,198,219,28)
+C: <b>RETR sculley.zip</b>
+S: 150 Opening BINARY mode data connection for sculley.zip (271165 bytes).
+S: 226 Transfer complete.
+C: <b>PASV</b>
+S: 227 Entering Passive Mode (195,100,36,198,219,29)
+C: <b>LIST</b>
+S: 150 Opening ASCII mode data connection for directory listing.
+S: 226 Transfer complete.
+C: <b>QUIT</b>
+S: 221-You have transferred 271165 bytes in 1 files.
+S: 221-Total traffic for this session was 271859 bytes in 1 transfers.
+S: 221 Thank you for using the FTP service on server.example.com.
+</pre></div><div class="yui-ge"><div class="yui-u first"><p>The client lines all consists of a command name (e.g. <b>USER</b>)
+followed by an optional argument.  The server response lines consist
+of a 3-digit code, followed by either a space or a dash (-), followed
+by a text message.  The lines using a dash are belong to a multi-line
+response; the client should keep reading response lines until it gets
+a line without the dash.</p><p>Lines are separated by CR and LF (chr(10)+chr(13)), but some
+clients and servers use only LF (chr(10)).</p><h3>Common FTP Commands</h3><p>The above example uses the following FTP commands:</p><p><b>USER</b>.  Provide user name.  The server should respond with
+<b>230</b> if the user is accepted as is, <b>530</b> if the login
+attempt was rejected, or <b>331</b> or <b>332</b> if the client must
+provide a password (using the <b>PASS</b> command).</p><p><b>PASS</b>.  Provide password.  The server should respond with
+<b>230</b> if the user is accepted, <b>530</b> if the login failed, or
+<b>332</b> if further login information is required (the details of
+which is outside the scope of this article).</p><p><b>PASV</b>.  Tell the server to prepare a data transfer channel.
+The server will return <b>227</b> and the response message will also
+contain six integers, separated by commas.  The numbers specify an IP
+address and a port number to which the client should connect to
+transfer the data.  The client should ignore the first four digits,
+and use the server address instead.  To get the port number, multiply
+the fifth integer by 256 and add the sixth integer.</p><p><b>RETR</b>.  Initialize a data transfer from the server to the
+client, using the port number specified by the <b>PASV</b> command.
+The client should connect to the data port <i>before</i> issuing this
+command.  When the transfer is initialized, the server will return a
+<b>150</b> response and start sending data over the transfer port.
+When the transfer is completed (whether all data was sent or not), the
+server follows up with a <b>226</b> response.</p><p><b>LIST</b>.  This is similar to <b>RETR</b>, but it returns a
+directory listing for the current directory.  As with <b>RETR</b>, you
+must use <b>PASV</b> to prepare the data channel before issuing this
+command.</p><p><b>QUIT</b>.  Shutdown the connection.  The server usually returns
+a multiline summary message.  If you&#8217;re not interested in the message,
+you can just shut down the socket connection.</p><p>For more information on the FTP protocol, see Dan Bernstein&#8217;s <a href="http://cr.yp.to/ftp.html">extensive FTP protocol reference</a>,
+which is written with an emphasis on how FTP works in practice.</p><h2 id="introducing-the-asynchat-module">Introducing the asynchat Module&#160;<a class="nav" href="#introducing-the-asynchat-module" title="bookmark!">#</a></h2><p>The <b>asyncore</b> library comes with a support module for
+chat-style protocols, called <b>asynchat</b>.  This module provides a
+<b>asyncore.dispatcher</b> subclass called <b>async_chat</b>, which
+adds an input parser and output buffering to the basic dispatcher.</p><p>The input parser feeds data to the <b>collect_incoming_data</b>
+method.  When the parser sees a predefined <b>terminator string</b>,
+it calls the <b>found_terminator</b> method.  The following example
+prints incoming lines to standard output, one line at a time:</p><pre class="python">
+<span class="pykeyword">class</span> <span class="pyclass">channel</span>(asynchat.async_chat):
+
+    <span class="pykeyword">def</span> <span class="pyfunction">__init__</span>(self):
+        asynchat.async_chat.__init__(self)
+        self.buffer = <span class="pystring">""</span>
+        self.set_terminator(<span class="pystring">"\r\n"</span>)
+
+    <span class="pykeyword">def</span> <span class="pyfunction">collect_incoming_data</span>(self, data):
+        self.buffer = self.buffer + data
+
+    <span class="pykeyword">def</span> <span class="pyfunction">found_terminator</span>(

@@ -1,0 +1,81 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>The email&nbsp;Package</title></head><body data-page-id="522"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">The email&nbsp;Package</h1></div><div class="yui-ge"><div class="yui-u first"><p>(New in 2.2) Tools for manipulation of all sorts of email
+messages.</p><p>The <b>email</b> package replaces simpler modules, such as
+<a href="rfc822.htm"><b>rfc822</b></a> and
+<a href="mimetools.htm"><b>mimetools</b></a>, with a much more
+flexible message object, and associated parsers.
+
+<h2 id="parsing-messages">Parsing Messages&#160;<a class="nav" href="#parsing-messages" title="bookmark!">#</a></h2></p><p>The easiest way to parse messages is to use the
+<b>message_from_file</b> or <b>message_from_string</b>
+helpers in the <b>email</b> toplevel module.
+
+The former takes a file handle, the latter a string
+object:</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><div class="example wide">
+<b>Parsing a plain message</b>
+<pre class="wide">
+import email
+
+simple_message = """\
+From: fredrik
+Content-Type: text/plain
+
+Hello!
+"""
+
+msg = email.message_from_string(simple_message)
+# msg = email.message_from_file(open(filename))
+
+print "head", msg.items()
+print "type", repr(msg.get_content_type())
+print "body", repr(msg.get_payload())
+
+## head [('From', 'fredrik'), ('Content-Type', 'text/plain')]
+## type 'text/plain'
+## body 'Hello!\n'
+</pre></div></div><div class="yui-ge"><div class="yui-u first"><p>The message object (an instance of the email.Message class) uses
+a dictionary-style interface to access header fields.  There are also
+additional <b>get</b> methods for specific header fields, such as
+<b>content-type</b>.
+
+</p><p>In addition to the header fields, the message object also contains
+either a single payload, or for &#8220;multipart&#8221; messages, a sequence of sub-messages.  The <b>is_multipart()</b> method can be used to check if
+an instance contains a single message or a sequence; the <b>get_payload()</b>
+method fetches the actual payload.</p><p>To traverse all submessages in a multipart message, you can use the
+<b>walk()</b> method:</p><div class="example">
+<b>Parsing a multipart message</b>
+<pre>
+import email
+
+multipart_message = """\
+From: fredrik
+Content-Type: multipart/alternative; boundary="BOUNDARY"
+
+--BOUNDARY
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+
+Hello!
+
+--BOUNDARY
+Content-Type: text/html
+Content-Transfer-Encoding: quoted-printable
+
+&lt;p&gt;Hello!&lt;/p&gt;
+--BOUNDARY--
+"""
+
+msg = email.message_from_string(multipart_message)
+
+for part in msg.walk():
+    print "type", repr(part.get_content_type())
+    print "body", repr(part.get_payload())
+
+type 'multipart/alternative'
+body [&lt;email.Message.Message instance at 0x00C09D78&gt;,
+      &lt;email.Message.Message instance at 0x00C09E68&gt;]
+type 'text/plain'
+body 'Hello!\n'
+type 'text/html'
+body '&lt;p&gt;Hello!&lt;/p&gt;'
+</pre></div><h3 id="contents">Package Contents&#160;<a class="nav" href="#contents" title="bookmark!">#</a></h3><dl><dt><b>email.base64MIME</b></dt><dt><b>email.Charset</b></dt><dt><b>email.Encoders</b></dt><dt><b>email.Errors</b></dt><dt><b>email.Generator</b></dt><dt><b>email.Header</b></dt><dt><b>email.Iterators</b></dt><dt><b>email.Message</b></dt><dt><b>email.MIMEAudio</b></dt><dt><b>email.MIMEBase</b></dt><dt><b>email.MIMEImage</b></dt><dt><b>email.MIMEMessage</b></dt><dt><b>email.MIMEMultipart</b></dt><dt><b>email.MIMENonMultipart</b></dt><dt><b>email.MIMEText</b></dt><dt><b>email.Parser</b></dt><dt><b>email.quopriMIME</b></dt><dt><b>email.Utils</b></dt></dl></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to librarybook index page.">::: librarybook :::</a></b></li></ul><ul><li><b>::: contents</b></li></ul><ul><li><ul><li><a href="#parsing-messages">Parsing Messages</a></li><li><ul><li><a href="#contents">Package Contents</a></li></ul></li></ul></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

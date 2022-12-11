@@ -1,0 +1,435 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>nntplib</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-nntplib.html'>original</a> :::
+<a href='nntplib.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>nntplib&#8212;NNTP protocol client</h1>
+
+<div class="toc"><dl><dt>On this page:</dt><dd><a href="#nntp-objects">NNTP Objects</a></dd></dl></div><p>This module defines the class <a class="link" href="#NNTP"><code>
+NNTP</code></a> which implements the client side of the NNTP protocol. It
+can be used to implement a news reader or poster, or automated news
+processors. For more information on NNTP (Network News Transfer
+Protocol), see Internet <a class="link" href="http://www.faqs.org/rfcs/rfc977.html">RFC 977</a>.</p>
+
+<p>Here are two small examples of how it can be used. To list some
+statistics about a newsgroup and print the subjects of the last 10
+articles:</p>
+
+<pre>
+&gt;&gt;&gt; s = NNTP('news.cwi.nl')
+&gt;&gt;&gt; resp, count, first, last, name = s.group('comp.lang.python')
+&gt;&gt;&gt; print 'Group', name, 'has', count, 'articles, range', first, 'to', last
+Group comp.lang.python has 59 articles, range 3742 to 3803
+&gt;&gt;&gt; resp, subs = s.xhdr('subject', first + '-' + last)
+&gt;&gt;&gt; for id, sub in subs[-10:]: print id, sub
+... 
+3792 Re: Removing elements from a list while iterating...
+3793 Re: Who likes Info files?
+3794 Emacs and doc strings
+3795 a few questions about the Mac implementation
+3796 Re: executable python scripts
+3797 Re: executable python scripts
+3798 Re: a few questions about the Mac implementation 
+3799 Re: PROPOSAL: A Generic Python Object Interface for Python C Modules
+3802 Re: executable python scripts 
+3803 Re: \POSIX{} wait and SIGCHLD
+&gt;&gt;&gt; s.quit()
+'205 news.cwi.nl closing connection.  Goodbye.'
+</pre>
+
+<p>To post an article from a file (this assumes that the article
+has valid headers):</p>
+
+<pre>
+&gt;&gt;&gt; s = NNTP('news.cwi.nl')
+&gt;&gt;&gt; f = open('/tmp/article')
+&gt;&gt;&gt; s.post(f)
+'240 Article posted successfully.'
+&gt;&gt;&gt; s.quit()
+'205 news.cwi.nl closing connection.  Goodbye.'
+</pre>
+
+<p>The module itself defines the following items:</p>
+</div>
+<dl><dt class="class" id="NNTP"><b>class NNTP(host[, port [, user[, password [, readermode]
+[, usenetrc]]]])</b> <tt class="nav"><a class="nav" href="nntplib.NNTP" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>Return a new instance of the <a class="link" href="#NNTP"><code>
+NNTP</code></a> class, representing a connection to the NNTP server
+running on host <var>host</var>, listening at port <var>port</var>.
+The default <var>port</var> is 119. If the optional <var>user</var>
+and <var>password</var> are provided, or if suitable credentials
+are present in /.netrc and the optional flag <var>usenetrc</var> is
+true (the default), the "<code>AUTHINFO USER</code>" and
+"<code>AUTHINFO PASS</code>" commands are used to identify and
+authenticate the user to the server. If the optional flag <var>
+readermode</var> is true, then a "<code>mode reader</code>" command
+is sent before authentication is performed. Reader mode is
+sometimes necessary if you are connecting to an NNTP server on the
+local machine and intend to call reader-specific commands, such as
+"<code>group</code>". If you get unexpected <code>
+NNTPPermanentError</code>s, you might need to set <var>
+readermode</var>. <var>readermode</var> defaults to <code>
+None</code>. <var>usenetrc</var> defaults to <code>True</code>.</p>
+
+<blockquote><span class="mark">@since</span> Changed in version
+2.4: usenetrc argument added.<br />
+</blockquote>
+</dd>
+<dt class="class" id="NNTPError"><b>class NNTPError()</b> <tt class="nav"><a class="nav" href="nntplib.NNTPError" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>Derived from the standard exception <code>Exception</code>, this
+is the base class for all exceptions raised by the <code>
+nntplib</code> module.</p>
+</dd>
+<dt class="class" id="NNTPReplyError"><b>class NNTPReplyError()</b> <tt class="nav"><a class="nav" href="nntplib.NNTPReplyError" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>Exception raised when an unexpected reply is received from the
+server. For backwards compatibility, the exception <code>
+error_reply</code> is equivalent to this class.</p>
+</dd>
+<dt class="class" id="NNTPTemporaryError"><b>class NNTPTemporaryError()</b> <tt class="nav"><a class="nav" href="nntplib.NNTPTemporaryError" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>Exception raised when an error code in the range 400-499 is
+received. For backwards compatibility, the exception <code>
+error_temp</code> is equivalent to this class.</p>
+</dd>
+<dt class="class" id="NNTPPermanentError"><b>class NNTPPermanentError()</b> <tt class="nav"><a class="nav" href="nntplib.NNTPPermanentError" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>Exception raised when an error code in the range 500-599 is
+received. For backwards compatibility, the exception <code>
+error_perm</code> is equivalent to this class.</p>
+</dd>
+<dt class="class" id="NNTPProtocolError"><b>class NNTPProtocolError()</b> <tt class="nav"><a class="nav" href="nntplib.NNTPProtocolError" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>Exception raised when a reply is received from the server that
+does not begin with a digit in the range 1-5. For backwards
+compatibility, the exception <code>error_proto</code> is equivalent
+to this class.</p>
+</dd>
+<dt class="class" id="NNTPDataError"><b>class NNTPDataError()</b> <tt class="nav"><a class="nav" href="nntplib.NNTPDataError" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>Exception raised when there is some error in the response data.
+For backwards compatibility, the exception <code>error_data</code>
+is equivalent to this class.</p>
+</dd>
+</dl><div class="text">
+<h2 id="nntp-objects">NNTP Objects <a class="nav" href="#nntp-objects">#</a></h2>
+
+<p>NNTP instances have the following methods. The <var>
+response</var> that is returned as the first item in the return
+tuple of almost all methods is the server's response: a string
+beginning with a three-digit code. If the server's response
+indicates an error, the method raises one of the above
+exceptions.</p>
+</div>
+<dl><dt class="method" id="NNTP.getwelcome"><b>getwelcome()</b> <tt class="nav"><a class="nav" href="nntplib.NNTP.getwelcome" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return the welcome message sent by the server in reply to the
+initial connection. (This message sometimes contains disclaimers or
+help information that may be relevant to the user.)</p>
+</dd>
+<dt class="method" id="NNTP.set_debuglevel"><b>set_debuglevel(level)</b> <tt class="nav"><a class="nav" href="nntplib.NNTP.set_debuglevel" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Set the instance's debugging level. This controls the amount of
+debugging output printed. The default, <code>0</code>, produces no
+debugging output. A value of <code>1</code> produces a moderate
+amount of debugging output, generally a single line per request or
+response. A value of <code>2</code> or higher produces the maximum
+amount of debugging output, logging each line sent and received on
+the connection (including message text).</p>
+</dd>
+<dt class="method" id="NNTP.newgroups"><b>newgroups(date, time, [file])</b> <tt class="nav"><a class="nav" href="nntplib.NNTP.newgroups" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Send a "<code>NEWGROUPS</code>" command. The <var>date</var>
+argument should be a string of the form <code>
+'</code><var>yy</var><var>mm</var><var>dd</var>' indicating the
+date, and <var>time</var> should be a string of the form <code>
+'</code><var>hh</var><var>mm</var><var>ss</var>' indicating the
+time. Return a pair <code>(</code><var>response</var>, <var>
+groups</var>) where <var>groups</var> is a list of group names that
+are new since the given date and time. If the <var>file</var>
+parameter is supplied, then the output of the
+"<code>NEWGROUPS</code>" command is stored in a file. If <var>
+file</var> is a string, then the method will open a file object
+with that name, write to it then close it. If <var>file</var> is a
+file object, then it will start calling <code>write</code> on it to store the lines of the command
+output. If <var>file</var> is supplied, then the returned <var>
+list</var> is an empty list.</p>
+</dd>
+<dt class="method" id="NNTP.newnews"><b>newnews(group, date, time, [file])</b> <tt class="nav"><a class="nav" href="nntplib.NNTP.newnews" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Send a "<code>NEWNEWS</code>" command. Here, <var>group</var> is
+a group name or <code>'*'</code>, and <var>date</var> and <var>
+time</var> have the same meaning as for <code>newgroups</code>. Return a pair <code>
+(</code><var>response</var>, <var>articles</var>) where <var>
+articles</var> is a list of message ids. If the <var>file</var>
+parameter is supplied, then the output of the
+"<code>NEWNEWS</code>" command is stored in a file. If <var>
+file</var> is a string, then the method will open a file object
+with that name, write to it then close it. If <var>file</var> is a
+file object, then it will start calling <code>write</code> on it to store the lines of the command
+output. If <var>file</var> is supplied, then the returned <var>
+list</var> is an empty list.</p>
+</dd>
+<dt class="method" id="NNTP.list"><b>list([file])</b> <tt class="nav"><a class="nav" href="nntplib.NNTP.list" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Send a "<code>LIST</code>" command. Return a pair <code>
+(</code><var>response</var>, <var>list</var>) where <var>list</var>
+is a list of tuples. Each tuple has the form <code>
+(</code><var>group</var>, <var>last</var>, <var>first</var>, <var>
+flag</var>), where <var>group</var> is a group name, <var>
+last</var> and <var>first</var> are the last and first article
+numbers (as strings), and <var>flag</var> is <code>'y'</code> if
+posting is allowed, <code>'n'</code> if not, and <code>'m'</code>
+if the newsgroup is moderated. (Note the ordering: <var>last</var>,
+<var>first</var>.) If the <var>file</var> parameter is supplied,
+then the output of the "<code>LIST</code>" command is stored in a
+file. If <var>file</var> is a string, then the method will open a
+file object with that name, write to it then close it. If <var>
+file</var> is a file object, then it will start calling <code>write</code> on it to store the lines
+of the command output. If <var>file</var> is supplied, then the
+returned <var>list</var> is an empty list.</p>
+</dd>
+<dt class="method" id="NNTP.descriptions"><b>descriptions(grouppattern)</b> <tt class="nav"><a class="nav" href="nntplib.NNTP.descriptions" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Send a "<code>LIST NEWSGROUPS</code>" command, where <var>
+grouppattern</var> is a wildmat string as specified in RFC2980
+(it's essentially the same as DOS or UNIX shell wildcard strings).
+Return a pair <code>(</code><var>response</var>, <var>list</var>),
+where <var>list</var> is a list of tuples containing <code>
+(</code><var>name</var>, <var>title</var>).</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.4.<br />
+</blockquote>
+</dd>
+<dt class="method" id="NNTP.description"><b>description(group)</b> <tt class="nav"><a class="nav" href="nntplib.NNTP.description" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Get a description for a single group <var>group</var>. If more
+than one group matches (if 'group' is a real wildmat string),
+return the first match. If no group matches, return an empty
+string.</p>
+
+<p>This elides the response code from the server. If the response
+code is needed, use <code>
+descriptions</code>.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.4.<br />
+</blockquote>
+</dd>
+<dt class="method" id="NNTP.group"><b>group(name)</b> <tt class="nav"><a class="nav" href="nntplib.NNTP.group" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Send a "<code>GROUP</code>" command, where <var>name</var> is
+the group name. Return a tuple <code>(</code><var>response</var>,
+<var>count</var>, <var>first</var>, <var>last</var>, <var>
+name</var>) where <var>count</var> is the (estimated) number of
+articles in the group, <var>first</var> is the first article number
+in the group, <var>last</var> is the last article number in the
+group, and <var>name</var> is the group name. The numbers are
+returned as strings.</p>
+</dd>
+<dt class="method" id="NNTP.help"><b>help([file])</b> <tt class="nav"><a class="nav" href="nntplib.NNTP.help" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Send a "<code>HELP</code>" command. Return a pair <code>
+(</code><var>response</var>, <var>list</var>) where <var>list</var>
+is a list of help strings. If the <var>file</var> parameter is
+supplied, then the output of the "<code>HELP</code>" command is
+stored in a file. If <var>file</var> is a string, then the method
+will open a file object with that name, write to it then close it.
+If <var>file</var> is a file object, then it will start calling <code>write</code> on it to store the lines
+of the command output. If <var>file</var> is supplied, then the
+returned <var>list</var> is an empty list.</p>
+</dd>
+<dt class="method" id="NNTP.stat"><b>stat(id)</b> <tt class="nav"><a class="nav" href="nntplib.NNTP.stat" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Send a "<code>STAT</code>" command, where <var>id</var> is the
+message id (enclosed in "<code>&lt;</code>" and
+"<code>&gt;</code>") or an article number (as a string). Return a
+triple <code>(</code><var>response</var>, <var>number</var>, <var>
+id</var>) where <var>number</var> is the article number (as a
+string) and <var>id</var> is the message id (enclosed in
+"<code>&lt;</code>" and "<code>&gt;</code>").</p>
+</dd>
+<dt class="method" id="NNTP.next"><b>next()</b> <tt class="nav"><a class="nav" href="nntplib.NNTP.next" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Send a "<code>NEXT</code>" command. Return as for <code>stat</code>.</p>
+</dd>
+<dt class="method" id="NNTP.last"><b>last()</b> <tt class="nav"><a class="nav" href="nntplib.NNTP.last" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Send a "<code>LAST</code>" command. Return as for <code>stat</code>.</p>
+</dd>
+<dt class="method" id="NNTP.head"><b>head(id)</b> <tt class="nav"><a class="nav" href="nntplib.NNTP.head" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Send a "<code>HEAD</code>" command, where <var>id</var> has the
+same meaning as for <code>stat</code>.
+Return a tuple <code>(</code><var>response</var>, <var>
+number</var>, <var>id</var>, <var>list</var>) where the first three
+are the same as for <code>stat</code>, and
+<var>list</var> is a list of the article's headers (an
+uninterpreted list of lines, without trailing newlines).</p>
+</dd>
+<dt class="method" id="NNTP.body"><b>body(id,[file])</b> <tt class="nav"><a class="nav" href="nntplib.NNTP.body" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Send a "<code>BODY</code>" command, where <var>id</var> has the
+same meaning as for <code>stat</code>. If
+the <var>file</var> parameter is supplied, then the body is stored
+in a file. If <var>file</var> is a string, then the method will
+open a file object with that name, write to it then close it. If
+<var>file</var> is a file object, then it will start calling <code>write</code> on it to store the lines
+of the body. Return as for <code>
+head</code>. If <var>file</var> is supplied, then the returned <var>
+list</var> is an empty list.</p>
+</dd>
+<dt class="method" id="NNTP.article"><b>article(id)</b> <tt class="nav"><a class="nav" href="nntplib.NNTP.article" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Send an "<code>ARTICLE</code>" command, where <var>id</var> has
+the same meaning as for <code>stat</code>.
+Return as for <code>head</code>.</p>
+</dd>
+<dt class="method" id="NNTP.slave"><b>slave()</b> <tt class="nav"><a class="nav" href="nntplib.NNTP.slave" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Send a "<code>SLAVE</code>" command. Return the server's <var>
+response</var>.</p>
+</dd>
+<dt class="method" id="NNTP.xhdr"><b>xhdr(header, string, [file])</b> <tt class="nav"><a class="nav" href="nntplib.NNTP.xhdr" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Send an "<code>XHDR</code>" command. This command is not defined
+in the RFC but is a common extension. The <var>header</var>
+argument is a header keyword, e.g. <code>'subject'</code>. The
+<var>string</var> argument should have the form <code>
+'</code><var>first</var>-<var>last</var>' where <var>first</var>
+and <var>last</var> are the first and last article numbers to
+search. Return a pair <code>(</code><var>response</var>, <var>
+list</var>), where <var>list</var> is a list of pairs <code>
+(</code><var>id</var>, <var>text</var>), where <var>id</var> is an
+article number (as a string) and <var>text</var> is the text of the
+requested header for that article. If the <var>file</var> parameter
+is supplied, then the output of the "<code>XHDR</code>" command is
+stored in a file. If <var>file</var> is a string, then the method
+will open a file object with that name, write to it then close it.
+If <var>file</var> is a file object, then it will start calling <code>write</code> on it to store the lines
+of the command output. If <var>file</var> is supplied, then the
+returned <var>list</var> is an empty list.</p>
+</dd>
+<dt class="method" id="NNTP.post"><b>post(file)</b> <tt class="nav"><a class="nav" href="nntplib.NNTP.post" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Post an article using the "<code>POST</code>" command. The <var>
+file</var> argument is an open file object which is read until EOF
+using its <code>readline</code> method.
+It should be a well-formed news article, including the required
+headers. The <code>post</code> method
+automatically escapes lines beginning with "<code>.</code>".</p>
+</dd>
+<dt class="method" id="NNTP.ihave"><b>ihave(id, file)</b> <tt class="nav"><a class="nav" href="nntplib.NNTP.ihave" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Send an "<code>IHAVE</code>" command. <var>id</var> is a message
+id (enclosed in "<code>&lt;</code>" and "<code>&gt;</code>"). If
+the response is not an error, treat <var>file</var> exactly as for
+the <code>post</code> method.</p>
+</dd>
+<dt class="method" id="NNTP.date"><b>date()</b> <tt class="nav"><a class="nav" href="nntplib.NNTP.date" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return a triple <code>(</code><var>response</var>, <var>
+date</var>, <var>time</var>), containing the current date and time
+in a form suitable for the <code>
+newnews</code> and <code>newgroups</code>
+methods. This is an optional NNTP extension, and may not be
+supported by all servers.</p>
+</dd>
+<dt class="method" id="NNTP.xgtitle"><b>xgtitle(name, [file])</b> <tt class="nav"><a class="nav" href="nntplib.NNTP.xgtitle" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Process an "<code>XGTITLE</code>" command, returning a pair
+<code>(</code><var>response</var>, <var>list</var>), where <var>
+list</var> is a list of tuples containing <code>
+(</code><var>name</var>, <var>title</var>). If the <var>file</var>
+parameter is supplied, then the output of the
+"<code>XGTITLE</code>" command is stored in a file. If <var>
+file</var> is a string, then the method will open a file object
+with that name, write to it then close it. If <var>file</var> is a
+file object, then it will start calling <code>write</code> on it to store the lines of the command
+output. If <var>file</var> is supplied, then the returned <var>
+list</var> is an empty list. This is an optional NNTP extension,
+and may not be supported by all servers.</p>
+
+<p>RFC2980 says &#8220;It is suggested that this extension be
+deprecated&#8221;. Use <code>
+descriptions</code> or <code>
+description</code> instead.</p>
+</dd>
+<dt class="method" id="NNTP.xover"><b>xover(start, end, [file])</b> <tt class="nav"><a class="nav" href="nntplib.NNTP.xover" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return a pair <code>(</code><var>resp</var>, <var>list</var>).
+<var>list</var> is a list of tuples, one for each article in the
+range delimited by the <var>start</var> and <var>end</var> article
+numbers. Each tuple is of the form <code>(</code><var>article
+number</var>, <var>subject</var>, <var>poster</var>, <var>
+date</var>, <var>id</var>, <var>references</var>, <var>size</var>,
+<var>lines</var>). If the <var>file</var> parameter is supplied,
+then the output of the "<code>XOVER</code>" command is stored in a
+file. If <var>file</var> is a string, then the method will open a
+file object with that name, write to it then close it. If <var>
+file</var> is a file object, then it will start calling <code>write</code> on it to store the lines
+of the command output. If <var>file</var> is supplied, then the
+returned <var>list</var> is an empty list. This is an optional NNTP
+extension, and may not be supported by all servers.</p>
+</dd>
+<dt class="method" id="NNTP.xpath"><b>xpath(id)</b> <tt class="nav"><a class="nav" href="nntplib.NNTP.xpath" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return a pair <code>(</code><var>resp</var>, <var>path</var>),
+where <var>path</var> is the directory path to the article with
+message ID <var>id</var>. This is an optional NNTP extension, and
+may not be supported by all servers.</p>
+</dd>
+<dt class="method" id="NNTP.quit"><b>quit()</b> <tt class="nav"><a class="nav" href="nntplib.NNTP.quit" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Send a "<code>QUIT</code>" command and close the connection.
+Once this method has been called, no other methods of the NNTP
+object should be called.</p>
+</dd>
+</dl></div></body></html>

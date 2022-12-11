@@ -1,0 +1,1425 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>decimal</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-decimal.html'>original</a> :::
+<a href='decimal.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>decimal&#8212;Decimal floating point arithmetic</h1>
+
+<div class="toc"><dl><dt>On this page:</dt><dd><a href="#quick-start-tutorial">Quick-start Tutorial</a></dd><dd><a href="#decimal-objects">Decimal objects</a></dd><dd><a href="#context-objects">Context objects</a></dd><dd><a href="#signals">Signals</a></dd><dd><a href="#floating-point-notes">Floating Point Notes</a></dd><dd><a href="#working-with-threads">Working with threads</a></dd><dd><a href="#recipes">Recipes</a></dd><dd><a href="#decimal-faq">Decimal FAQ</a></dd></dl></div><p>New in version 2.4.</p>
+
+<p>The <code>decimal</code> module
+provides support for decimal floating point arithmetic. It offers
+several advantages over the <code>
+float</code> datatype:</p>
+
+<ul>
+<li>
+<p>Decimal numbers can be represented exactly. In contrast, numbers
+like <code>1.1</code> do not have an exact representation in binary
+floating point. End users typically would not expect <code>
+1.1</code> to display as <code>1.1000000000000001</code> as it does
+with binary floating point.</p>
+</li>
+
+<li>
+<p>The exactness carries over into arithmetic. In decimal floating
+point, "<code>0.1 + 0.1 + 0.1 - 0.3</code>" is exactly equal to
+zero. In binary floating point, result is <code>
+5.5511151231257827e-017</code>. While near to zero, the differences
+prevent reliable equality testing and differences can accumulate.
+For this reason, decimal would be preferred in accounting
+applications which have strict equality invariants.</p>
+</li>
+
+<li>
+<p>The decimal module incorporates a notion of significant places
+so that "<code>1.30 + 1.20</code>" is <code>2.50</code>. The
+trailing zero is kept to indicate significance. This is the
+customary presentation for monetary applications. For
+multiplication, the &#8220;schoolbook&#8221; approach uses all the
+figures in the multiplicands. For instance, &quot;<code>1.3 *
+1.2</code>" gives <code>1.56</code> while "<code>1.30 *
+1.20</code>" gives <code>1.5600</code>.</p>
+</li>
+
+<li>
+<p>Unlike hardware based binary floating point, the decimal module
+has a user settable precision (defaulting to 28 places) which can
+be as large as needed for a given problem:</p>
+
+<pre>
+&gt;&gt;&gt; getcontext().prec = 6
+&gt;&gt;&gt; Decimal(1) / Decimal(7)
+Decimal("0.142857")
+&gt;&gt;&gt; getcontext().prec = 28
+&gt;&gt;&gt; Decimal(1) / Decimal(7)
+Decimal("0.1428571428571428571428571429")
+</pre>
+</li>
+
+<li>
+<p>Both binary and decimal floating point are implemented in terms
+of published standards. While the built-in float type exposes only
+a modest portion of its capabilities, the decimal module exposes
+all required parts of the standard. When needed, the programmer has
+full control over rounding and signal handling.</p>
+</li>
+</ul>
+
+<p>The module design is centered around three concepts: the decimal
+number, the context for arithmetic, and signals.</p>
+
+<p>A decimal number is immutable. It has a sign, coefficient
+digits, and an exponent. To preserve significance, the coefficient
+digits do not truncate trailing zeroes. Decimals also include
+special values such as <code>Infinity</code>, <code>
+-Infinity</code>, and <code>NaN</code>. The standard also
+differentiates <code>-0</code> from <code>+0</code>.</p>
+
+<p>The context for arithmetic is an environment specifying
+precision, rounding rules, limits on exponents, flags indicating
+the results of operations, and trap enablers which determine
+whether signals are treated as exceptions. Rounding options include
+<code>ROUND_CEILING</code>, <code>ROUND_DOWN</code>, <code>
+ROUND_FLOOR</code>, <code>ROUND_HALF_DOWN</code>, <code>
+ROUND_HALF_EVEN</code>, <code>ROUND_HALF_UP</code>, and <code>
+ROUND_UP</code>.</p>
+
+<p>Signals are groups of exceptional conditions arising during the
+course of computation. Depending on the needs of the application,
+signals may be ignored, considered as informational, or treated as
+exceptions. The signals in the decimal module are: <code>
+Clamped</code>, <code>InvalidOperation</code>, <code>
+DivisionByZero</code>, <code>Inexact</code>, <code>Rounded</code>,
+<code>Subnormal</code>, <code>Overflow</code>, and <code>
+Underflow</code>.</p>
+
+<p>For each signal there is a flag and a trap enabler. When a
+signal is encountered, its flag incremented from zero and, then, if
+the trap enabler is set to one, an exception is raised. Flags are
+sticky, so the user needs to reset them before monitoring a
+calculation.</p>
+
+<h2 id="quick-start-tutorial">Quick-start Tutorial <a class="nav" href="#quick-start-tutorial">#</a></h2>
+
+<p>The usual start to using decimals is importing the module,
+viewing the current context with <a class="link" href="#getcontext"><code>getcontext</code></a> and, if necessary, setting
+new values for precision, rounding, or enabled traps:</p>
+
+<pre>
+&gt;&gt;&gt; from decimal import *
+&gt;&gt;&gt; getcontext()
+Context(prec=28, rounding=ROUND_HALF_EVEN, Emin=-999999999, Emax=999999999,
+        capitals=1, flags=[], traps=[Overflow, InvalidOperation,
+        DivisionByZero])
+
+&gt;&gt;&gt; getcontext().prec = 7       # Set a new precision
+</pre>
+
+<p>Decimal instances can be constructed from integers, strings or
+tuples. To create a Decimal from a <code>float</code>, first convert it to a string. This
+serves as an explicit reminder of the details of the conversion
+(including representation error). Decimal numbers include special
+values such as <code>NaN</code> which stands for &#8220;Not a
+number&#8221;, positive and negative <code>Infinity</code>, and
+<code>-0</code>.</p>
+
+<pre>
+&gt;&gt;&gt; Decimal(10)
+Decimal("10")
+&gt;&gt;&gt; Decimal("3.14")
+Decimal("3.14")
+&gt;&gt;&gt; Decimal((0, (3, 1, 4), -2))
+Decimal("3.14")
+&gt;&gt;&gt; Decimal(str(2.0 ** 0.5))
+Decimal("1.41421356237")
+&gt;&gt;&gt; Decimal("NaN")
+Decimal("NaN")
+&gt;&gt;&gt; Decimal("-Infinity")
+Decimal("-Infinity")
+</pre>
+
+<p>The significance of a new Decimal is determined solely by the
+number of digits input. Context precision and rounding only come
+into play during arithmetic operations.</p>
+
+<pre>
+&gt;&gt;&gt; getcontext().prec = 6
+&gt;&gt;&gt; Decimal('3.0')
+Decimal("3.0")
+&gt;&gt;&gt; Decimal('3.1415926535')
+Decimal("3.1415926535")
+&gt;&gt;&gt; Decimal('3.1415926535') + Decimal('2.7182818285')
+Decimal("5.85987")
+&gt;&gt;&gt; getcontext().rounding = ROUND_UP
+&gt;&gt;&gt; Decimal('3.1415926535') + Decimal('2.7182818285')
+Decimal("5.85988")
+</pre>
+
+<p>Decimals interact well with much of the rest of python. Here is
+a small decimal floating point flying circus:</p>
+
+<pre>
+    
+&gt;&gt;&gt; data = map(Decimal, '1.34 1.87 3.45 2.35 1.00 0.03 9.25'.split())
+&gt;&gt;&gt; max(data)
+Decimal("9.25")
+&gt;&gt;&gt; min(data)
+Decimal("0.03")
+&gt;&gt;&gt; sorted(data)
+[Decimal("0.03"), Decimal("1.00"), Decimal("1.34"), Decimal("1.87"),
+ Decimal("2.35"), Decimal("3.45"), Decimal("9.25")]
+&gt;&gt;&gt; sum(data)
+Decimal("19.29")
+&gt;&gt;&gt; a,b,c = data[:3]
+&gt;&gt;&gt; str(a)
+'1.34'
+&gt;&gt;&gt; float(a)
+1.3400000000000001
+&gt;&gt;&gt; round(a, 1)     # round() first converts to binary floating point
+1.3
+&gt;&gt;&gt; int(a)
+1
+&gt;&gt;&gt; a * 5
+Decimal("6.70")
+&gt;&gt;&gt; a * b
+Decimal("2.5058")
+&gt;&gt;&gt; c % a
+Decimal("0.77")
+</pre>
+
+<p>The <code>quantize</code> method
+rounds a number to a fixed exponent. This method is useful for
+monetary applications that often round results to a fixed number of
+places:</p>
+
+<pre>
+ 
+&gt;&gt;&gt; Decimal('7.325').quantize(Decimal('.01'), rounding=ROUND_DOWN)
+Decimal("7.32")
+&gt;&gt;&gt; Decimal('7.325').quantize(Decimal('1.'), rounding=ROUND_UP)
+Decimal("8")
+</pre>
+
+<p>As shown above, the <a class="link" href="#getcontext"><code>
+getcontext</code></a> function accesses the current context and allows the
+settings to be changed. This approach meets the needs of most
+applications.</p>
+
+<p>For more advanced work, it may be useful to create alternate
+contexts using the Context() constructor. To make an alternate
+active, use the <a class="link" href="#setcontext"><code>
+setcontext</code></a> function.</p>
+
+<p>In accordance with the standard, the <a class="link" href="#Decimal"><code>Decimal</code></a> module provides two ready to use
+standard contexts, <code>BasicContext</code> and <code>
+ExtendedContext</code>. The former is especially useful for
+debugging because many of the traps are enabled:</p>
+
+<pre>
+&gt;&gt;&gt; myothercontext = Context(prec=60, rounding=ROUND_HALF_DOWN)
+&gt;&gt;&gt; setcontext(myothercontext)
+&gt;&gt;&gt; Decimal(1) / Decimal(7)
+Decimal("0.142857142857142857142857142857142857142857142857142857142857")
+
+&gt;&gt;&gt; ExtendedContext
+Context(prec=9, rounding=ROUND_HALF_EVEN, Emin=-999999999, Emax=999999999,
+        capitals=1, flags=[], traps=[])
+&gt;&gt;&gt; setcontext(ExtendedContext)
+&gt;&gt;&gt; Decimal(1) / Decimal(7)
+Decimal("0.142857143")
+&gt;&gt;&gt; Decimal(42) / Decimal(0)
+Decimal("Infinity")
+
+&gt;&gt;&gt; setcontext(BasicContext)
+&gt;&gt;&gt; Decimal(42) / Decimal(0)
+Traceback (most recent call last):
+  File "&lt;pyshell#143&gt;", line 1, in -toplevel-
+    Decimal(42) / Decimal(0)
+DivisionByZero: x / 0
+</pre>
+
+<p>Contexts also have signal flags for monitoring exceptional
+conditions encountered during computations. The flags remain set
+until explicitly cleared, so it is best to clear the flags before
+each set of monitored computations by using the <code>clear_flags</code> method.</p>
+
+<pre>
+&gt;&gt;&gt; setcontext(ExtendedContext)
+&gt;&gt;&gt; getcontext().clear_flags()
+&gt;&gt;&gt; Decimal(355) / Decimal(113)
+Decimal("3.14159292")
+&gt;&gt;&gt; getcontext()
+Context(prec=9, rounding=ROUND_HALF_EVEN, Emin=-999999999, Emax=999999999,
+        capitals=1, flags=[Inexact, Rounded], traps=[])
+</pre>
+
+<p>The <var>flags</var> entry shows that the rational approximation
+to <code>Pi</code> was rounded (digits beyond the context precision
+were thrown away) and that the result is inexact (some of the
+discarded digits were non-zero).</p>
+
+<p>Individual traps are set using the dictionary in the <code>traps</code> field of a context:</p>
+
+<pre>
+&gt;&gt;&gt; Decimal(1) / Decimal(0)
+Decimal("Infinity")
+&gt;&gt;&gt; getcontext().traps[DivisionByZero] = 1
+&gt;&gt;&gt; Decimal(1) / Decimal(0)
+Traceback (most recent call last):
+  File "&lt;pyshell#112&gt;", line 1, in -toplevel-
+    Decimal(1) / Decimal(0)
+DivisionByZero: x / 0
+</pre>
+
+<p>Most programs adjust the current context only once, at the
+beginning of the program. And, in many applications, data is
+converted to <a class="link" href="#Decimal"><code>Decimal</code></a> with a
+single cast inside a loop. With context set and decimals created,
+the bulk of the program manipulates the data no differently than
+with other Python numeric types.</p>
+
+<h2 id="decimal-objects">Decimal objects <a class="nav" href="#decimal-objects">#</a></h2>
+</div>
+<dl><dt class="class" id="Decimal"><b>class Decimal([value [, context]])</b> <tt class="nav"><a class="nav" href="decimal.Decimal" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>Constructs a new <a class="link" href="#Decimal"><code>Decimal</code></a>
+object based from <var>value</var>.</p>
+
+<p><var>value</var> can be an integer, string, tuple, or another <a class="link" href="#Decimal"><code>Decimal</code></a> object. If no <var>
+value</var> is given, returns <code>Decimal("0")</code>. If <var>
+value</var> is a string, it should conform to the decimal numeric
+string syntax:</p>
+
+<pre>
+    sign           ::=  '+' | '-'
+    digit          ::=  '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9'
+    indicator      ::=  'e' | 'E'
+    digits         ::=  digit [digit]...
+    decimal-part   ::=  digits '.' [digits] | ['.'] digits
+    exponent-part  ::=  indicator [sign] digits
+    infinity       ::=  'Infinity' | 'Inf'
+    nan            ::=  'NaN' [digits] | 'sNaN' [digits]
+    numeric-value  ::=  decimal-part [exponent-part] | infinity
+    numeric-string ::=  [sign] numeric-value | [sign] nan
+</pre>
+
+<p>If <var>value</var> is a <code>
+tuple</code>, it should have three components, a sign (<code>0</code>
+for positive or <code>1</code> for negative), a <code>tuple</code> of digits, and an integer exponent. For
+example, "<code>Decimal((0, (1, 4, 1, 4), -3))</code>" returns
+<code>Decimal("1.414")</code>.</p>
+
+<p>The <var>context</var> precision does not affect how many digits
+are stored. That is determined exclusively by the number of digits
+in <var>value</var>. For example, "<code>Decimal("3.00000")</code>"
+records all five zeroes even if the context precision is only
+three.</p>
+
+<p>The purpose of the <var>context</var> argument is determining
+what to do if <var>value</var> is a malformed string. If the
+context traps <code>InvalidOperation</code>, an exception is
+raised; otherwise, the constructor returns a new Decimal with the
+value of <code>NaN</code>.</p>
+
+<p>Once constructed, <a class="link" href="#Decimal"><code>
+Decimal</code></a> objects are immutable.</p>
+</dd>
+</dl><div class="text">
+<p>Decimal floating point objects share many properties with the
+other builtin numeric types such as <code>float</code> and <code>
+int</code>. All of the usual math operations and special methods
+apply. Likewise, decimal objects can be copied, pickled, printed,
+used as dictionary keys, used as set elements, compared, sorted,
+and coerced to another type (such as <code>float</code> or <code>
+long</code>).</p>
+
+<p>In addition to the standard numeric properties, decimal floating
+point objects also have a number of specialized methods:</p>
+</div>
+<dl><dt class="method" id="Decimal.adjusted"><b>adjusted()</b> <tt class="nav"><a class="nav" href="decimal.Decimal.adjusted" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return the adjusted exponent after shifting out the
+coefficient's rightmost digits until only the lead digit remains:
+<code>Decimal("321e+5").adjusted()</code> returns seven. Used for
+determining the position of the most significant digit with respect
+to the decimal point.</p>
+</dd>
+<dt class="method" id="Decimal.as_tuple"><b>as_tuple()</b> <tt class="nav"><a class="nav" href="decimal.Decimal.as_tuple" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Returns a tuple representation of the number: "<code>(sign,
+digittuple, exponent)</code>".</p>
+</dd>
+<dt class="method" id="Decimal.compare"><b>compare(other[, context])</b> <tt class="nav"><a class="nav" href="decimal.Decimal.compare" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Compares like <code>__cmp__</code>
+but returns a decimal instance:</p>
+
+<pre>
+        a or b is a NaN ==&gt; Decimal("NaN")
+        a &lt; b           ==&gt; Decimal("-1")
+        a == b          ==&gt; Decimal("0")
+        a &gt; b           ==&gt; Decimal("1")
+</pre>
+</dd>
+<dt class="method" id="Decimal.max"><b>max(other[, context])</b> <tt class="nav"><a class="nav" href="decimal.Decimal.max" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Like "<code>max(self, other)</code>" except that the context
+rounding rule is applied before returning and that <code>NaN</code>
+values are either signalled or ignored (depending on the context
+and whether they are signaling or quiet).</p>
+</dd>
+<dt class="method" id="Decimal.min"><b>min(other[, context])</b> <tt class="nav"><a class="nav" href="decimal.Decimal.min" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Like "<code>min(self, other)</code>" except that the context
+rounding rule is applied before returning and that <code>NaN</code>
+values are either signalled or ignored (depending on the context
+and whether they are signaling or quiet).</p>
+</dd>
+<dt class="method" id="Decimal.normalize"><b>normalize([context])</b> <tt class="nav"><a class="nav" href="decimal.Decimal.normalize" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Normalize the number by stripping the rightmost trailing zeroes
+and converting any result equal to <code>Decimal("0")</code> to
+<code>Decimal("0e0")</code>. Used for producing canonical values
+for members of an equivalence class. For example, <code>
+Decimal("32.100")</code> and <code>Decimal("0.321000e+2")</code>
+both normalize to the equivalent value <code>
+Decimal("32.1")</code>.</p>
+</dd>
+<dt class="method" id="Decimal.quantize"><b>quantize(exp [, rounding[, context[,
+watchexp]]])</b> <tt class="nav"><a class="nav" href="decimal.Decimal.quantize" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Quantize makes the exponent the same as <var>exp</var>. Searches
+for a rounding method in <var>rounding</var>, then in <var>
+context</var>, and then in the current context.</p>
+
+<p>If <var>watchexp</var> is set (default), then an error is
+returned whenever the resulting exponent is greater than <code>Emax</code> or less than <code>Etiny</code>.</p>
+</dd>
+<dt class="method" id="Decimal.remainder_near"><b>remainder_near(other[, context])</b> <tt class="nav"><a class="nav" href="decimal.Decimal.remainder_near" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Computes the modulo as either a positive or negative value
+depending on which is closest to zero. For instance,
+"<code>Decimal(10).remainder_near(6)</code>" returns <code>
+Decimal("-2")</code> which is closer to zero than <code>
+Decimal("4")</code>.</p>
+
+<p>If both are equally close, the one chosen will have the same
+sign as <var>self</var>.</p>
+</dd>
+<dt class="method" id="Decimal.same_quantum"><b>same_quantum(other[, context])</b> <tt class="nav"><a class="nav" href="decimal.Decimal.same_quantum" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Test whether self and other have the same exponent or whether
+both are <code>NaN</code>.</p>
+</dd>
+<dt class="method" id="Decimal.sqrt"><b>sqrt([context])</b> <tt class="nav"><a class="nav" href="decimal.Decimal.sqrt" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return the square root to full precision.</p>
+</dd>
+<dt class="method" id="Decimal.to_eng_string"><b>to_eng_string([context])</b> <tt class="nav"><a class="nav" href="decimal.Decimal.to_eng_string" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Convert to an engineering-type string.</p>
+
+<p>Engineering notation has an exponent which is a multiple of 3,
+so there are up to 3 digits left of the decimal place. For example,
+converts <code>Decimal('123E+1')</code> to <code>
+Decimal("1.23E+3")</code></p>
+</dd>
+<dt class="method" id="Decimal.to_integral"><b>to_integral([rounding[, context]])</b> <tt class="nav"><a class="nav" href="decimal.Decimal.to_integral" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Rounds to the nearest integer without signaling <code>
+Inexact</code> or <code>Rounded</code>. If given, applies <var>
+rounding</var>; otherwise, uses the rounding method in either the
+supplied <var>context</var> or the current context.</p>
+</dd>
+</dl><div class="text">
+<h2 id="context-objects">Context objects <a class="nav" href="#context-objects">#</a></h2>
+
+<p>Contexts are environments for arithmetic operations. They govern
+precision, set rules for rounding, determine which signals are
+treated as exceptions, and limit the range for exponents.</p>
+
+<p>Each thread has its own current context which is accessed or
+changed using the <a class="link" href="#getcontext"><code>
+getcontext</code></a> and <a class="link" href="#setcontext"><code>
+setcontext</code></a> functions:</p>
+</div>
+<dl><dt class="function" id="getcontext"><b>getcontext()</b> <tt class="nav"><a class="nav" href="decimal.getcontext" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return the current context for the active thread.</p>
+</dd>
+<dt class="function" id="setcontext"><b>setcontext(c)</b> <tt class="nav"><a class="nav" href="decimal.setcontext" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Set the current context for the active thread to <var>
+c</var>.</p>
+</dd>
+</dl><div class="text">
+<p>New contexts can formed using the <a class="link" href="#Context"><code>Context</code></a> constructor described below. In
+addition, the module provides three pre-made contexts:</p>
+</div>
+<dl><dt class="class" id="BasicContext"><b>class BasicContext</b> <tt class="nav"><a class="nav" href="decimal.BasicContext" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>This is a standard context defined by the General Decimal
+Arithmetic Specification. Precision is set to nine. Rounding is set
+to <code>ROUND_HALF_UP</code>. All flags are cleared. All traps are
+enabled (treated as exceptions) except <code>Inexact</code>, <code>
+Rounded</code>, and <code>Subnormal</code>.</p>
+
+<p>Because many of the traps are enabled, this context is useful
+for debugging.</p>
+</dd>
+<dt class="class" id="ExtendedContext"><b>class ExtendedContext</b> <tt class="nav"><a class="nav" href="decimal.ExtendedContext" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>This is a standard context defined by the General Decimal
+Arithmetic Specification. Precision is set to nine. Rounding is set
+to <code>ROUND_HALF_EVEN</code>. All flags are cleared. No traps
+are enabled (so that exceptions are not raised during
+computations).</p>
+
+<p>Because the trapped are disabled, this context is useful for
+applications that prefer to have result value of <code>NaN</code>
+or <code>Infinity</code> instead of raising exceptions. This allows
+an application to complete a run in the presence of conditions that
+would otherwise halt the program.</p>
+</dd>
+<dt class="class" id="DefaultContext"><b>class DefaultContext</b> <tt class="nav"><a class="nav" href="decimal.DefaultContext" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>This context is used by the <a class="link" href="#Context"><code>
+Context</code></a> constructor as a prototype for new contexts. Changing a
+field (such a precision) has the effect of changing the default for
+new contexts creating by the <a class="link" href="#Context"><code>
+Context</code></a> constructor.</p>
+
+<p>This context is most useful in multi-threaded environments.
+Changing one of the fields before threads are started has the
+effect of setting system-wide defaults. Changing the fields after
+threads have started is not recommended as it would require thread
+synchronization to prevent race conditions.</p>
+
+<p>In single threaded environments, it is preferable to not use
+this context at all. Instead, simply create contexts explicitly as
+described below.</p>
+
+<p>The default values are precision=28, rounding=ROUND_HALF_EVEN,
+and enabled traps for Overflow, InvalidOperation, and
+DivisionByZero.</p>
+</dd>
+</dl><div class="text">
+<p>In addition to the three supplied contexts, new contexts can be
+created with the <a class="link" href="#Context"><code>Context</code></a>
+constructor.</p>
+</div>
+<dl><dt class="class" id="Context"><b>class Context(prec=None, rounding=None, traps=None,
+flags=None, Emin=None, Emax=None, capitals=1)</b> <tt class="nav"><a class="nav" href="decimal.Context" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>Creates a new context. If a field is not specified or is <code>
+None</code>, the default values are copied from the <code>
+DefaultContext</code>. If the <var>flags</var> field is not
+specified or is <code>None</code>, all flags are cleared.</p>
+
+<p>The <var>prec</var> field is a positive integer that sets the
+precision for arithmetic operations in the context.</p>
+
+<p>The <var>rounding</var> option is one of:</p>
+
+<ul>
+<li>
+<p><code>ROUND_CEILING</code> (towards <code>Infinity</code>),</p>
+</li>
+
+<li>
+<p><code>ROUND_DOWN</code> (towards zero),</p>
+</li>
+
+<li>
+<p><code>ROUND_FLOOR</code> (towards <code>-Infinity</code>),</p>
+</li>
+
+<li>
+<p><code>ROUND_HALF_DOWN</code> (to nearest with ties going towards
+zero),</p>
+</li>
+
+<li>
+<p><code>ROUND_HALF_EVEN</code> (to nearest with ties going to
+nearest even integer),</p>
+</li>
+
+<li>
+<p><code>ROUND_HALF_UP</code> (to nearest with ties going away from
+zero), or</p>
+</li>
+
+<li>
+<p><code>ROUND_UP</code> (away from zero).</p>
+</li>
+</ul>
+
+<p>The <var>traps</var> and <var>flags</var> fields list any
+signals to be set. Generally, new contexts should only set traps
+and leave the flags clear.</p>
+
+<p>The <var>Emin</var> and <var>Emax</var> fields are integers
+specifying the outer limits allowable for exponents.</p>
+
+<p>The <var>capitals</var> field is either <code>0</code> or <code>
+1</code> (the default). If set to <code>1</code>, exponents are
+printed with a capital <code>E</code>; otherwise, a lowercase
+<code>e</code> is used: <code>Decimal('6.02e+23')</code>.</p>
+</dd>
+</dl><div class="text">
+<p>The <a class="link" href="#Context"><code>Context</code></a> class
+defines several general purpose methods as well as a large number
+of methods for doing arithmetic directly in a given context.</p>
+</div>
+<dl><dt class="method" id="Context.clear_flags"><b>clear_flags()</b> <tt class="nav"><a class="nav" href="decimal.Context.clear_flags" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Resets all of the flags to <code>0</code>.</p>
+</dd>
+<dt class="method" id="Context.copy"><b>copy()</b> <tt class="nav"><a class="nav" href="decimal.Context.copy" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return a duplicate of the context.</p>
+</dd>
+<dt class="method" id="Context.create_decimal"><b>create_decimal(num)</b> <tt class="nav"><a class="nav" href="decimal.Context.create_decimal" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Creates a new Decimal instance from <var>num</var> but using
+<var>self</var> as context. Unlike the <a class="link" href="#Decimal"><code>Decimal</code></a> constructor, the context precision,
+rounding method, flags, and traps are applied to the
+conversion.</p>
+
+<p>This is useful because constants are often given to a greater
+precision than is needed by the application. Another benefit is
+that rounding immediately eliminates unintended effects from digits
+beyond the current precision. In the following example, using
+unrounded inputs means that adding zero to a sum can change the
+result:</p>
+
+<pre>
+    &gt;&gt;&gt; getcontext().prec = 3
+    &gt;&gt;&gt; Decimal("3.4445") + Decimal("1.0023")
+    Decimal("4.45")
+    &gt;&gt;&gt; Decimal("3.4445") + Decimal(0) + Decimal("1.0023")
+    Decimal("4.44")
+</pre>
+</dd>
+<dt class="method" id="Context.Etiny"><b>Etiny()</b> <tt class="nav"><a class="nav" href="decimal.Context.Etiny" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Returns a value equal to "<code>Emin - prec + 1</code>" which is
+the minimum exponent value for subnormal results. When underflow
+occurs, the exponent is set to <code>Etiny</code>.</p>
+</dd>
+<dt class="method" id="Context.Etop"><b>Etop()</b> <tt class="nav"><a class="nav" href="decimal.Context.Etop" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Returns a value equal to "<code>Emax - prec + 1</code>".</p>
+</dd>
+</dl><div class="text">
+<p>The usual approach to working with decimals is to create <a class="link" href="#Decimal"><code>Decimal</code></a> instances and then
+apply arithmetic operations which take place within the current
+context for the active thread. An alternate approach is to use
+context methods for calculating within a specific context. The
+methods are similar to those for the <a class="link" href="#Decimal"><code>Decimal</code></a> class and are only briefly
+recounted here.</p>
+</div>
+<dl><dt class="method" id="Context.abs"><b>abs(x)</b> <tt class="nav"><a class="nav" href="decimal.Context.abs" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Returns the absolute value of <var>x</var>.</p>
+</dd>
+<dt class="method" id="Context.add"><b>add(x, y)</b> <tt class="nav"><a class="nav" href="decimal.Context.add" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return the sum of <var>x</var> and <var>y</var>.</p>
+</dd>
+<dt class="method" id="Context.compare"><b>compare(x, y)</b> <tt class="nav"><a class="nav" href="decimal.Context.compare" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Compares values numerically.</p>
+
+<p>Like <code>__cmp__</code> but returns
+a decimal instance:</p>
+
+<pre>
+        a or b is a NaN ==&gt; Decimal("NaN")
+        a &lt; b           ==&gt; Decimal("-1")
+        a == b          ==&gt; Decimal("0")
+        a &gt; b           ==&gt; Decimal("1")
+</pre>
+</dd>
+<dt class="method" id="Context.divide"><b>divide(x, y)</b> <tt class="nav"><a class="nav" href="decimal.Context.divide" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return <var>x</var> divided by <var>y</var>.</p>
+</dd>
+<dt class="method" id="Context.divmod"><b>divmod(x, y)</b> <tt class="nav"><a class="nav" href="decimal.Context.divmod" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Divides two numbers and returns the integer part of the
+result.</p>
+</dd>
+<dt class="method" id="Context.max"><b>max(x, y)</b> <tt class="nav"><a class="nav" href="decimal.Context.max" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Compare two values numerically and return the maximum.</p>
+
+<p>If they are numerically equal then the left-hand operand is
+chosen as the result.</p>
+</dd>
+<dt class="method" id="Context.min"><b>min(x, y)</b> <tt class="nav"><a class="nav" href="decimal.Context.min" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Compare two values numerically and return the minimum.</p>
+
+<p>If they are numerically equal then the left-hand operand is
+chosen as the result.</p>
+</dd>
+<dt class="method" id="Context.minus"><b>minus(x)</b> <tt class="nav"><a class="nav" href="decimal.Context.minus" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Minus corresponds to the unary prefix minus operator in
+Python.</p>
+</dd>
+<dt class="method" id="Context.multiply"><b>multiply(x, y)</b> <tt class="nav"><a class="nav" href="decimal.Context.multiply" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return the product of <var>x</var> and <var>y</var>.</p>
+</dd>
+<dt class="method" id="Context.normalize"><b>normalize(x)</b> <tt class="nav"><a class="nav" href="decimal.Context.normalize" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Normalize reduces an operand to its simplest form.</p>
+
+<p>Essentially a <code>plus</code>
+operation with all trailing zeros removed from the result.</p>
+</dd>
+<dt class="method" id="Context.plus"><b>plus(x)</b> <tt class="nav"><a class="nav" href="decimal.Context.plus" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Plus corresponds to the unary prefix plus operator in Python.
+This operation applies the context precision and rounding, so it is
+<em>not</em> an identity operation.</p>
+</dd>
+<dt class="method" id="Context.power"><b>power(x, y[, modulo])</b> <tt class="nav"><a class="nav" href="decimal.Context.power" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return "<code>x ** y</code>" to the <var>modulo</var> if
+given.</p>
+
+<p>The right-hand operand must be a whole number whose integer part
+(after any exponent has been applied) has no more than 9 digits and
+whose fractional part (if any) is all zeros before any rounding.
+The operand may be positive, negative, or zero; if negative, the
+absolute value of the power is used, and the left-hand operand is
+inverted (divided into 1) before use.</p>
+
+<p>If the increased precision needed for the intermediate
+calculations exceeds the capabilities of the implementation then an
+<code>InvalidOperation</code> condition is signaled.</p>
+
+<p>If, when raising to a negative power, an underflow occurs during
+the division into 1, the operation is not halted at that point but
+continues.</p>
+</dd>
+<dt class="method" id="Context.quantize"><b>quantize(x, y)</b> <tt class="nav"><a class="nav" href="decimal.Context.quantize" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Returns a value equal to <var>x</var> after rounding and having
+the exponent of <var>y</var>.</p>
+
+<p>Unlike other operations, if the length of the coefficient after
+the quantize operation would be greater than precision, then an
+<code>InvalidOperation</code> is signaled. This guarantees that,
+unless there is an error condition, the quantized exponent is
+always equal to that of the right-hand operand.</p>
+
+<p>Also unlike other operations, quantize never signals Underflow,
+even if the result is subnormal and inexact.</p>
+</dd>
+<dt class="method" id="Context.remainder"><b>remainder(x, y)</b> <tt class="nav"><a class="nav" href="decimal.Context.remainder" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Returns the remainder from integer division.</p>
+
+<p>The sign of the result, if non-zero, is the same as that of the
+original dividend.</p>
+</dd>
+<dt class="method" id="Context.remainder_near"><b>remainder_near(x, y)</b> <tt class="nav"><a class="nav" href="decimal.Context.remainder_near" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Computed the modulo as either a positive or negative value
+depending on which is closest to zero. For instance,
+"<code>Decimal(10).remainder_near(6)</code>" returns <code>
+Decimal("-2")</code> which is closer to zero than <code>
+Decimal("4")</code>.</p>
+
+<p>If both are equally close, the one chosen will have the same
+sign as <var>self</var>.</p>
+</dd>
+<dt class="method" id="Context.same_quantum"><b>same_quantum(x, y)</b> <tt class="nav"><a class="nav" href="decimal.Context.same_quantum" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Test whether <var>x</var> and <var>y</var> have the same
+exponent or whether both are <code>NaN</code>.</p>
+</dd>
+<dt class="method" id="Context.sqrt"><b>sqrt()</b> <tt class="nav"><a class="nav" href="decimal.Context.sqrt" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return the square root to full precision.</p>
+</dd>
+<dt class="method" id="Context.subtract"><b>subtract(x, y)</b> <tt class="nav"><a class="nav" href="decimal.Context.subtract" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return the difference between <var>x</var> and <var>y</var>.</p>
+</dd>
+<dt class="method" id="Context.to_eng_string"><b>to_eng_string()</b> <tt class="nav"><a class="nav" href="decimal.Context.to_eng_string" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Convert to engineering-type string.</p>
+
+<p>Engineering notation has an exponent which is a multiple of 3,
+so there are up to 3 digits left of the decimal place. For example,
+converts <code>Decimal('123E+1')</code> to <code>
+Decimal("1.23E+3")</code></p>
+</dd>
+<dt class="method" id="Context.to_integral"><b>to_integral(x)</b> <tt class="nav"><a class="nav" href="decimal.Context.to_integral" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Rounds to the nearest integer without signaling <code>
+Inexact</code> or <code>Rounded</code>.</p>
+</dd>
+<dt class="method" id="Context.to_sci_string"><b>to_sci_string()</b> <tt class="nav"><a class="nav" href="decimal.Context.to_sci_string" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Converts a number to a string using scientific notation.</p>
+</dd>
+</dl><div class="text">
+<h2 id="signals">Signals <a class="nav" href="#signals">#</a></h2>
+
+<p>Signals represent conditions that arise during computation. Each
+corresponds to one context flag and one context trap enabler.</p>
+
+<p>The context flag is incremented whenever the condition is
+encountered. After the computation, flags may be checked for
+informational purposes (for instance, to determine whether a
+computation was exact). After checking the flags, be sure to clear
+all flags before starting the next computation.</p>
+
+<p>If the context's trap enabler is set for the signal, then the
+condition causes a Python exception to be raised. For example, if
+the <a class="link" href="#DivisionByZero"><code>DivisionByZero</code></a>
+trap is set, then a <a class="link" href="#DivisionByZero"><code>
+DivisionByZero</code></a> exception is raised upon encountering the
+condition.</p>
+</div>
+<dl><dt class="class" id="Clamped"><b>class Clamped</b> <tt class="nav"><a class="nav" href="decimal.Clamped" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>Altered an exponent to fit representation constraints.</p>
+
+<p>Typically, clamping occurs when an exponent falls outside the
+context's <code>Emin</code> and <code>Emax</code> limits. If possible, the
+exponent is reduced to fit by adding zeroes to the coefficient.</p>
+</dd>
+<dt class="class" id="DecimalException"><b>class DecimalException</b> <tt class="nav"><a class="nav" href="decimal.DecimalException" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>Base class for other signals and is a subclass of <code>
+exceptions.ArithmeticError</code>.</p>
+</dd>
+<dt class="class" id="DivisionByZero"><b>class DivisionByZero</b> <tt class="nav"><a class="nav" href="decimal.DivisionByZero" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>Signals the division of a non-infinite number by zero.</p>
+
+<p>Can occur with division, modulo division, or when raising a
+number to a negative power. If this signal is not trapped, returns
+<code>Infinity</code> or <code>-Infinity</code> with the sign
+determined by the inputs to the calculation.</p>
+</dd>
+<dt class="class" id="Inexact"><b>class Inexact</b> <tt class="nav"><a class="nav" href="decimal.Inexact" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>Indicates that rounding occurred and the result is not
+exact.</p>
+
+<p>Signals when non-zero digits were discarded during rounding. The
+rounded result is returned. The signal flag or trap is used to
+detect when results are inexact.</p>
+</dd>
+<dt class="class" id="InvalidOperation"><b>class InvalidOperation</b> <tt class="nav"><a class="nav" href="decimal.InvalidOperation" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>An invalid operation was performed.</p>
+
+<p>Indicates that an operation was requested that does not make
+sense. If not trapped, returns <code>NaN</code>. Possible causes
+include:</p>
+
+<pre>
+        Infinity - Infinity
+        0 * Infinity
+        Infinity / Infinity
+        x % 0
+        Infinity % x
+        x._rescale( non-integer )
+        sqrt(-x) and x &gt; 0
+        0 ** 0
+        x ** (non-integer)
+        x ** Infinity
+</pre>
+</dd>
+<dt class="class" id="Overflow"><b>class Overflow</b> <tt class="nav"><a class="nav" href="decimal.Overflow" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>Numerical overflow.</p>
+
+<p>Indicates the exponent is larger than <code>Emax</code> after rounding has occurred. If not
+trapped, the result depends on the rounding mode, either pulling
+inward to the largest representable finite number or rounding
+outward to <code>Infinity</code>. In either case, <a class="link" href="#Inexact"><code>Inexact</code></a> and <a class="link" href="#Rounded"><code>Rounded</code></a> are also signaled.</p>
+</dd>
+<dt class="class" id="Rounded"><b>class Rounded</b> <tt class="nav"><a class="nav" href="decimal.Rounded" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>Rounding occurred though possibly no information was lost.</p>
+
+<p>Signaled whenever rounding discards digits; even if those digits
+are zero (such as rounding <code>5.00</code> to <code>5.0</code>).
+If not trapped, returns the result unchanged. This signal is used
+to detect loss of significant digits.</p>
+</dd>
+<dt class="class" id="Subnormal"><b>class Subnormal</b> <tt class="nav"><a class="nav" href="decimal.Subnormal" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>Exponent was lower than <code>
+Emin</code> prior to rounding.</p>
+
+<p>Occurs when an operation result is subnormal (the exponent is
+too small). If not trapped, returns the result unchanged.</p>
+</dd>
+<dt class="class" id="Underflow"><b>class Underflow</b> <tt class="nav"><a class="nav" href="decimal.Underflow" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>Numerical underflow with result rounded to zero.</p>
+
+<p>Occurs when a subnormal result is pushed to zero by rounding. <a class="link" href="#Inexact"><code>Inexact</code></a> and <a class="link" href="#Subnormal"><code>Subnormal</code></a> are also signaled.</p>
+</dd>
+</dl><div class="text">
+<p>The following table summarizes the hierarchy of signals:</p>
+
+<pre>
+    
+    exceptions.ArithmeticError(exceptions.StandardError)
+        DecimalException
+            Clamped
+            DivisionByZero(DecimalException, exceptions.ZeroDivisionError)
+            Inexact
+                Overflow(Inexact, Rounded)
+                Underflow(Inexact, Rounded, Subnormal)
+            InvalidOperation
+            Rounded
+            Subnormal
+</pre>
+
+<h2 id="floating-point-notes">Floating Point Notes <a class="nav" href="#floating-point-notes">#</a></h2>
+</div>
+<div class="error">
+<h3>Mitigating round-off error with increased precision</h3>
+
+<p>The use of decimal floating point eliminates decimal
+representation error (making it possible to represent <code>
+0.1</code> exactly); however, some operations can still incur
+round-off error when non-zero digits exceed the fixed
+precision.</p>
+
+<p>The effects of round-off error can be amplified by the addition
+or subtraction of nearly offsetting quantities resulting in loss of
+significance. Knuth provides two instructive examples where rounded
+floating point arithmetic with insufficient precision causes the
+breakdown of the associative and distributive properties of
+addition:</p>
+
+<pre>
+# Examples from Seminumerical Algorithms, Section 4.2.2.
+&gt;&gt;&gt; from decimal import *
+&gt;&gt;&gt; getcontext().prec = 8
+
+&gt;&gt;&gt; u, v, w = Decimal(11111113), Decimal(-11111111), Decimal('7.51111111')
+&gt;&gt;&gt; (u + v) + w
+Decimal("9.5111111")
+&gt;&gt;&gt; u + (v + w)
+Decimal("10")
+
+&gt;&gt;&gt; u, v, w = Decimal(20000), Decimal(-6), Decimal('6.0000003')
+&gt;&gt;&gt; (u*v) + (u*w)
+Decimal("0.01")
+&gt;&gt;&gt; u * (v+w)
+Decimal("0.0060000")
+</pre>
+
+<p>The <code>decimal</code> module makes
+it possible to restore the identities by expanding the precision
+sufficiently to avoid loss of significance:</p>
+
+<pre>
+&gt;&gt;&gt; getcontext().prec = 20
+&gt;&gt;&gt; u, v, w = Decimal(11111113), Decimal(-11111111), Decimal('7.51111111')
+&gt;&gt;&gt; (u + v) + w
+Decimal("9.51111111")
+&gt;&gt;&gt; u + (v + w)
+Decimal("9.51111111")
+&gt;&gt;&gt; 
+&gt;&gt;&gt; u, v, w = Decimal(20000), Decimal(-6), Decimal('6.0000003')
+&gt;&gt;&gt; (u*v) + (u*w)
+Decimal("0.0060000")
+&gt;&gt;&gt; u * (v+w)
+Decimal("0.0060000")
+</pre>
+
+<h3>Special values</h3>
+
+<p>The number system for the <code>
+decimal</code> module provides special values including <code>
+NaN</code>, <code>sNaN</code>, <code>-Infinity</code>, <code>
+Infinity</code>, and two zeroes, <code>+0</code> and <code>
+-0</code>.</p>
+
+<p>Infinities can be constructed directly with: <code>
+Decimal('Infinity')</code>. Also, they can arise from dividing by
+zero when the <a class="link" href="#DivisionByZero"><code>
+DivisionByZero</code></a> signal is not trapped. Likewise, when the <a class="link" href="#Overflow"><code>Overflow</code></a> signal is not
+trapped, infinity can result from rounding beyond the limits of the
+largest representable number.</p>
+
+<p>The infinities are signed (affine) and can be used in arithmetic
+operations where they get treated as very large, indeterminate
+numbers. For instance, adding a constant to infinity gives another
+infinite result.</p>
+
+<p>Some operations are indeterminate and return <code>NaN</code>,
+or if the <a class="link" href="#InvalidOperation"><code>
+InvalidOperation</code></a> signal is trapped, raise an exception. For
+example, <code>0/0</code> returns <code>NaN</code> which means
+&#8220;not a number&#8221;. This variety of <code>NaN</code> is
+quiet and, once created, will flow through other computations
+always resulting in another <code>NaN</code>. This behavior can be
+useful for a series of computations that occasionally have missing
+inputs -- it allows the calculation to proceed while flagging
+specific results as invalid.</p>
+
+<p>A variant is <code>sNaN</code> which signals rather than
+remaining quiet after every operation. This is a useful return
+value when an invalid result needs to interrupt a calculation for
+special handling.</p>
+
+<p>The signed zeros can result from calculations that underflow.
+They keep the sign that would have resulted if the calculation had
+been carried out to greater precision. Since their magnitude is
+zero, both positive and negative zeros are treated as equal and
+their sign is informational.</p>
+
+<p>In addition to the two signed zeros which are distinct yet
+equal, there are various representations of zero with differing
+precisions yet equivalent in value. This takes a bit of getting
+used to. For an eye accustomed to normalized floating point
+representations, it is not immediately obvious that the following
+calculation returns a value equal to zero:</p>
+
+<pre>
+&gt;&gt;&gt; 1 / Decimal('Infinity')
+Decimal("0E-1000000026")
+</pre>
+
+<h2 id="working-with-threads">Working with threads <a class="nav" href="#working-with-threads">#</a></h2>
+
+<p>The <a class="link" href="#getcontext"><code>getcontext</code></a>
+function accesses a different <a class="link" href="#Context"><code>
+Context</code></a> object for each thread. Having separate thread contexts
+means that threads may make changes (such as <code>
+getcontext.prec=10</code>) without interfering with other
+threads.</p>
+
+<p>Likewise, the <a class="link" href="#setcontext"><code>
+setcontext</code></a> function automatically assigns its target to the
+current thread.</p>
+
+<p>If <a class="link" href="#setcontext"><code>setcontext</code></a> has not
+been called before <a class="link" href="#getcontext"><code>
+getcontext</code></a>, then <a class="link" href="#getcontext"><code>
+getcontext</code></a> will automatically create a new context for use in
+the current thread.</p>
+
+<p>The new context is copied from a prototype context called <var>
+DefaultContext</var>. To control the defaults so that each thread
+will use the same values throughout the application, directly
+modify the <var>DefaultContext</var> object. This should be done
+<em>before</em> any threads are started so that there won't be a
+race condition between threads calling <a class="link" href="#getcontext"><code>getcontext</code></a>. For example:</p>
+
+<pre>
+# Set applicationwide defaults for all threads about to be launched
+DefaultContext.prec = 12
+DefaultContext.rounding = ROUND_DOWN
+DefaultContext.traps = ExtendedContext.traps.copy()
+DefaultContext.traps[InvalidOperation] = 1
+setcontext(DefaultContext)
+
+# Afterwards, the threads can be started
+t1.start()
+t2.start()
+t3.start()
+ . . .
+</pre>
+
+<h2 id="recipes">Recipes <a class="nav" href="#recipes">#</a></h2>
+
+<p>Here are a few recipes that serve as utility functions and that
+demonstrate ways to work with the <a class="link" href="#Decimal"><code>Decimal</code></a> class:</p>
+
+<pre>
+def moneyfmt(value, places=2, curr='', sep=',', dp='.',
+             pos='', neg='-', trailneg=''):
+    """Convert Decimal to a money formatted string.
+
+    places:  required number of places after the decimal point
+    curr:    optional currency symbol before the sign (may be blank)
+    sep:     optional grouping separator (comma, period, space, or blank)
+    dp:      decimal point indicator (comma or period)
+             only specify as blank when places is zero
+    pos:     optional sign for positive numbers: '+', space or blank
+    neg:     optional sign for negative numbers: '-', '(', space or blank
+    trailneg:optional trailing minus indicator:  '-', ')', space or blank
+
+    &gt;&gt;&gt; d = Decimal('-1234567.8901')
+    &gt;&gt;&gt; moneyfmt(d, curr='$')
+    '-$1,234,567.89'
+    &gt;&gt;&gt; moneyfmt(d, places=0, sep='.', dp='', neg='', trailneg='-')
+    '1.234.568-'
+    &gt;&gt;&gt; moneyfmt(d, curr='$', neg='(', trailneg=')')
+    '($1,234,567.89)'
+    &gt;&gt;&gt; moneyfmt(Decimal(123456789), sep=' ')
+    '123 456 789.00'
+    &gt;&gt;&gt; moneyfmt(Decimal('-0.02'), neg='&lt;', trailneg='&gt;')
+    '&lt;.02&gt;'
+
+    """
+    q = Decimal((0, (1,), -places))    # 2 places --&gt; '0.01'
+    sign, digits, exp = value.quantize(q).as_tuple()
+    assert exp == -places    
+    result = []
+    digits = map(str, digits)
+    build, next = result.append, digits.pop
+    if sign:
+        build(trailneg)
+    for i in range(places):
+        if digits:
+            build(next())
+        else:
+            build('0')
+    build(dp)
+    i = 0
+    while digits:
+        build(next())
+        i += 1
+        if i == 3 and digits:
+            i = 0
+            build(sep)
+    build(curr)
+    if sign:
+        build(neg)
+    else:
+        build(pos)
+    result.reverse()
+    return ''.join(result)
+
+def pi():
+    """Compute Pi to the current precision.
+
+    &gt;&gt;&gt; print pi()
+    3.141592653589793238462643383
+    
+    """
+    getcontext().prec += 2  # extra digits for intermediate steps
+    three = Decimal(3)      # substitute "three=3.0" for regular floats
+    lasts, t, s, n, na, d, da = 0, three, 3, 1, 0, 0, 24
+    while s != lasts:
+        lasts = s
+        n, na = n+na, na+8
+        d, da = d+da, da+32
+        t = (t * n) / d
+        s += t
+    getcontext().prec -= 2
+    return +s               # unary plus applies the new precision
+
+def exp(x):
+    """Return e raised to the power of x.  Result type matches input type.
+
+    &gt;&gt;&gt; print exp(Decimal(1))
+    2.718281828459045235360287471
+    &gt;&gt;&gt; print exp(Decimal(2))
+    7.389056098930650227230427461
+    &gt;&gt;&gt; print exp(2.0)
+    7.38905609893
+    &gt;&gt;&gt; print exp(2+0j)
+    (7.38905609893+0j)
+    
+    """
+    getcontext().prec += 2
+    i, lasts, s, fact, num = 0, 0, 1, 1, 1
+    while s != lasts:
+        lasts = s    
+        i += 1
+        fact *= i
+        num *= x     
+        s += num / fact   
+    getcontext().prec -= 2        
+    return +s
+
+def cos(x):
+    """Return the cosine of x as measured in radians.
+
+    &gt;&gt;&gt; print cos(Decimal('0.5'))
+    0.8775825618903727161162815826
+    &gt;&gt;&gt; print cos(0.5)
+    0.87758256189
+    &gt;&gt;&gt; print cos(0.5+0j)
+    (0.87758256189+0j)
+    
+    """
+    getcontext().prec += 2
+    i, lasts, s, fact, num, sign = 0, 0, 1, 1, 1, 1
+    while s != lasts:
+        lasts = s    
+        i += 2
+        fact *= i * (i-1)
+        num *= x * x
+        sign *= -1
+        s += num / fact * sign 
+    getcontext().prec -= 2        
+    return +s
+
+def sin(x):
+    """Return the sine of x as measured in radians.
+
+    &gt;&gt;&gt; print sin(Decimal('0.5'))
+    0.4794255386042030002732879352
+    &gt;&gt;&gt; print sin(0.5)
+    0.479425538604
+    &gt;&gt;&gt; print sin(0.5+0j)
+    (0.479425538604+0j)
+    
+    """
+    getcontext().prec += 2
+    i, lasts, s, fact, num, sign = 1, 0, x, 1, x, 1
+    while s != lasts:
+        lasts = s    
+        i += 2
+        fact *= i * (i-1)
+        num *= x * x
+        sign *= -1
+        s += num / fact * sign 
+    getcontext().prec -= 2        
+    return +s
+</pre>
+
+<h2 id="decimal-faq">Decimal FAQ <a class="nav" href="#decimal-faq">#</a></h2>
+
+<p>Q. It is cumbersome to type <code>
+decimal.Decimal('1234.5')</code>. Is there a way to minimize typing
+when using the interactive interpreter?</p>
+
+<p>A. Some users abbreviate the constructor to just a single
+letter:</p>
+
+<pre>
+&gt;&gt;&gt; D = decimal.Decimal
+&gt;&gt;&gt; D('1.23') + D('3.45')
+Decimal("4.68")
+</pre>
+
+<p>Q. In a fixed-point application with two decimal places, some
+inputs have many places and need to be rounded. Others are not
+supposed to have excess digits and need to be validated. What
+methods should be used?</p>
+
+<p>A. The <code>quantize</code> method
+rounds to a fixed number of decimal places. If the <code>
+Inexact</code> trap is set, it is also useful for validation:</p>
+
+<pre>
+&gt;&gt;&gt; TWOPLACES = Decimal(10) ** -2       # same as Decimal('0.01')
+
+&gt;&gt;&gt; # Round to two places
+&gt;&gt;&gt; Decimal("3.214").quantize(TWOPLACES)
+Decimal("3.21")
+
+&gt;&gt;&gt; # Validate that a number does not exceed two places 
+&gt;&gt;&gt; Decimal("3.21").quantize(TWOPLACES, context=Context(traps=[Inexact]))
+Decimal("3.21")
+
+&gt;&gt;&gt; Decimal("3.214").quantize(TWOPLACES, context=Context(traps=[Inexact]))
+Traceback (most recent call last):
+   ...
+Inexact: Changed in rounding
+</pre>
+
+<p>Q. Once I have valid two place inputs, how do I maintain that
+invariant throughout an application?</p>
+
+<p>A. Some operations like addition and subtraction automatically
+preserve fixed point. Others, like multiplication and division,
+change the number of decimal places and need to be followed-up with
+a <code>quantize</code> step.</p>
+
+<p>Q. There are many ways to express the same value. The numbers
+<code>200</code>, <code>200.000</code>, <code>2E2</code>, and
+<code>.02E+4</code> all have the same value at various precisions.
+Is there a way to transform them to a single recognizable canonical
+value?</p>
+
+<p>A. The <code>normalize</code>
+method maps all equivalent values to a single representive:</p>
+
+<pre>
+&gt;&gt;&gt; values = map(Decimal, '200 200.000 2E2 .02E+4'.split())
+&gt;&gt;&gt; [v.normalize() for v in values]
+[Decimal("2E+2"), Decimal("2E+2"), Decimal("2E+2"), Decimal("2E+2")]
+</pre>
+
+<p>Q. Some decimal values always print with exponential notation.
+Is there a way to get a non-exponential representation?</p>
+
+<p>A. For some values, exponential notation is the only way to
+express the number of significant places in the coefficient. For
+example, expressing <code>5.0E+3</code> as <code>5000</code> keeps
+the value constant but cannot show the original's two-place
+significance.</p>
+
+<p>Q. Is there a way to convert a regular float to a <a class="link" href="#Decimal"><code>Decimal</code></a>?</p>
+
+<p>A. Yes, all binary floating point numbers can be exactly
+expressed as a Decimal. An exact conversion may take more precision
+than intuition would suggest, so trapping <code>Inexact</code> will
+signal a need for more precision:</p>
+
+<pre>
+def floatToDecimal(f):
+    "Convert a floating point number to a Decimal with no loss of information"
+    # Transform (exactly) a float to a mantissa (0.5 &lt;= abs(m) &lt; 1.0) and an
+    # exponent.  Double the mantissa until it is an integer.  Use the integer
+    # mantissa and exponent to compute an equivalent Decimal.  If this cannot
+    # be done exactly, then retry with more precision.
+
+    mantissa, exponent = math.frexp(f)
+    while mantissa != int(mantissa):
+        mantissa *= 2.0
+        exponent -= 1
+    mantissa = int(mantissa)
+
+    oldcontext = getcontext()
+    setcontext(Context(traps=[Inexact]))
+    try:
+        while True:
+            try:
+               return mantissa * Decimal(2) ** exponent
+            except Inexact:
+                getcontext().prec += 1
+    finally:
+        setcontext(oldcontext)
+</pre>
+
+<p>Q. Why isn't the <code>
+floatToDecimal</code> routine included in the module?</p>
+
+<p>A. There is some question about whether it is advisable to mix
+binary and decimal floating point. Also, its use requires some care
+to avoid the representation issues associated with binary floating
+point:</p>
+
+<pre>
+&gt;&gt;&gt; floatToDecimal(1.1)
+Decimal("1.100000000000000088817841970012523233890533447265625")
+</pre>
+
+<p>Q. Within a complex calculation, how can I make sure that I
+haven't gotten a spurious result because of insufficient precision
+or rounding anomalies.</p>
+
+<p>A. The decimal module makes it easy to test results. A best
+practice is to re-run calculations using greater precision and with
+various rounding modes. Widely differing results indicate
+insufficient precision, rounding mode issues, ill-conditioned
+inputs, or a numerically unstable algorithm.</p>
+
+<p>Q. I noticed that context precision is applied to the results of
+operations but not to the inputs. Is there anything to watch out
+for when mixing values of different precisions?</p>
+
+<p>A. Yes. The principle is that all values are considered to be
+exact and so is the arithmetic on those values. Only the results
+are rounded. The advantage for inputs is that &#8220;what you type
+is what you get&#8221;. A disadvantage is that the results can look
+odd if you forget that the inputs haven't been rounded:</p>
+
+<pre>
+&gt;&gt;&gt; getcontext().prec = 3
+&gt;&gt;&gt; Decimal('3.104') + D('2.104')
+Decimal("5.21")
+&gt;&gt;&gt; Decimal('3.104') + D('0.000') + D('2.104')
+Decimal("5.20")
+</pre>
+
+<p>The solution is either to increase precision or to force
+rounding of inputs using the unary plus operation:</p>
+
+<pre>
+&gt;&gt;&gt; getcontext().prec = 3
+&gt;&gt;&gt; +Decimal('1.23456789')      # unary plus triggers rounding
+Decimal("1.23")
+</pre>
+
+<p>Alternatively, inputs can be rounded upon creation using the <a class="link" href="#Context.create_decimal"><code>
+Context.create_decimal</code></a> method:</p>
+
+<pre>
+&gt;&gt;&gt; Context(prec=5, rounding=ROUND_DOWN).create_decimal('1.2345678')
+Decimal("1.2345")
+</pre>
+</div>
+</div></body></html>

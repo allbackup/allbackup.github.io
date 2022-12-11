@@ -1,0 +1,28 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>Coercion&nbsp;rules</title> <script type="text/javascript">effbot_page_id=1232;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> <!--
+<p style='color: #8f8f8f; background: #fff5bf; padding: 5px 10px;'> <b>2008-07-15:</b> Selected articles
+
+now have experimental "comment" links in the left column and at the bottom.
+You're welcome to use them for commenting and voting on articles.
+For a bit more on this, see <a
+href="http://effbot.slinkset.com/links/Welcome_to_discuss_effbot_org">this
+page</a>. /F
+</p>
+--> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <h1 class="maintitle">Coercion&nbsp;rules</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p>This section used to document the rules for coercion. As the language
+has evolved, the coercion rules have become hard to document
+precisely; documenting what one version of one particular
+implementation does is undesirable. Instead, here are some informal
+guidelines regarding coercion. In Python 3.0, coercion will not be
+supported.</p><ul><li><p>If the left operand of a % operator is a string or Unicode object,
+no coercion takes place and the string formatting operation is invoked
+instead.</p></li><li><p>It is no longer recommended to define a coercion
+operation. Mixed-mode operations on types that don&#8217;t define coercion
+pass the original arguments to the operation.</p></li><li><p>New-style classes (those derived from object) never invoke the
+__coerce__() method in response to a binary operator; the only
+time __coerce__() is invoked is when the built-in function
+coerce() is called.</p></li><li><p>For most intents and purposes, an operator that returns `
+NotImplemented` is treated the same as one that is not implemented at
+all.</p></li><li><p>Below, __op__() and __rop__() are used to signify the
+generic method names corresponding to an operator; __iop__() is
+used for the corresponding in-place operator. For example, fo

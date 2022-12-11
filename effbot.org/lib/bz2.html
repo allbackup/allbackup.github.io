@@ -1,0 +1,242 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>bz2</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-bz2.html'>original</a> :::
+<a href='bz2.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>bz2&#8212;Compression compatible with bzip2</h1>
+
+<div class="toc"><dl><dt>On this page:</dt><dd><a href="#-de-compression-of-files">(De)compression of files</a></dd><dd><a href="#sequential-de-compression">Sequential (de)compression</a></dd><dd><a href="#one-shot-de-compression">One-shot (de)compression</a></dd></dl></div><p>New in version 2.3.</p>
+
+<p>This module provides a comprehensive interface for the bz2
+compression library. It implements a complete file interface,
+one-shot (de)compression functions, and types for sequential
+(de)compression.</p>
+
+<p>Here is a resume of the features offered by the bz2 module:</p>
+
+<ul>
+<li>
+<p><a class="link" href="#BZ2File"><code>BZ2File</code></a> class implements
+a complete file interface, including <code>readline</code>, <code>readlines</code>, <code>writelines</code>, <code>seek</code>, etc;</p>
+</li>
+
+<li>
+<p><a class="link" href="#BZ2File"><code>BZ2File</code></a> class implements
+emulated <code>seek</code> support;</p>
+</li>
+
+<li>
+<p><a class="link" href="#BZ2File"><code>BZ2File</code></a> class implements
+universal newline support;</p>
+</li>
+
+<li>
+<p><a class="link" href="#BZ2File"><code>BZ2File</code></a> class offers an
+optimized line iteration using the readahead algorithm borrowed
+from file objects;</p>
+</li>
+
+<li>
+<p>Sequential (de)compression supported by <a class="link" href="#BZ2Compressor"><code>BZ2Compressor</code></a> and <a class="link" href="#BZ2Decompressor"><code>BZ2Decompressor</code></a> classes;</p>
+</li>
+
+<li>
+<p>One-shot (de)compression supported by <a class="link" href="#compress"><code>compress</code></a> and <a class="link" href="#decompress"><code>decompress</code></a> functions;</p>
+</li>
+
+<li>
+<p>Thread safety uses individual locking mechanism;</p>
+</li>
+
+<li>
+<p>Complete inline documentation;</p>
+</li>
+</ul>
+
+<h2 id="-de-compression-of-files">(De)compression of files <a class="nav" href="#-de-compression-of-files">#</a></h2>
+
+<p>Handling of compressed files is offered by the <a class="link" href="#BZ2File"><code>BZ2File</code></a> class.</p>
+</div>
+<dl><dt class="class" id="BZ2File"><b>class BZ2File(filename[, mode[, buffering[,
+compresslevel]]])</b> <tt class="nav"><a class="nav" href="bz2.BZ2File" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>Open a bz2 file. Mode can be either <code>'r'</code> or <code>
+'w'</code>, for reading (default) or writing. When opened for
+writing, the file will be created if it doesn't exist, and
+truncated otherwise. If <var>buffering</var> is given, <code>
+0</code> means unbuffered, and larger numbers specify the buffer
+size; the default is <code>0</code>. If <var>compresslevel</var> is
+given, it must be a number between <code>1</code> and <code>
+9</code>; the default is <code>9</code>. Add a "<code>U</code>" to
+mode to open the file for input with universal newline support. Any
+line ending in the input file will be seen as a "<code>\n</code>"
+in Python. Also, a file so opened gains the attribute <code>newlines</code>; the value for this
+attribute is one of <code>None</code> (no newline read yet), <code>
+'\r'</code>, <code>'\n'</code>, <code>'\r\n'</code> or a tuple
+containing all the newline types seen. Universal newlines are
+available only when reading. Instances support iteration in the
+same way as normal <code>file</code>
+instances.</p>
+</dd>
+<dt class="method" id="BZ2File.close"><b>close()</b> <tt class="nav"><a class="nav" href="bz2.BZ2File.close" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Close the file. Sets data attribute <code>closed</code> to true. A closed file cannot be used
+for further I/O operations. <code>
+close</code> may be called more than once without error.</p>
+</dd>
+<dt class="method" id="BZ2File.read"><b>read([size])</b> <tt class="nav"><a class="nav" href="bz2.BZ2File.read" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Read at most <var>size</var> uncompressed bytes, returned as a
+string. If the <var>size</var> argument is negative or omitted,
+read until EOF is reached.</p>
+</dd>
+<dt class="method" id="BZ2File.readline"><b>readline([size])</b> <tt class="nav"><a class="nav" href="bz2.BZ2File.readline" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return the next line from the file, as a string, retaining
+newline. A non-negative <var>size</var> argument limits the maximum
+number of bytes to return (an incomplete line may be returned
+then). Return an empty string at EOF.</p>
+</dd>
+<dt class="method" id="BZ2File.readlines"><b>readlines([size])</b> <tt class="nav"><a class="nav" href="bz2.BZ2File.readlines" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return a list of lines read. The optional <var>size</var>
+argument, if given, is an approximate bound on the total number of
+bytes in the lines returned.</p>
+</dd>
+<dt class="method" id="BZ2File.xreadlines"><b>xreadlines()</b> <tt class="nav"><a class="nav" href="bz2.BZ2File.xreadlines" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>For backward compatibility. <a class="link" href="#BZ2File"><code>
+BZ2File</code></a> objects now include the performance optimizations
+previously implemented in the <code>xreadlines</code> module.</p>
+
+<p>Deprecated since release 2.3. This exists only for compatibility
+with the method by this name on <code>
+file</code> objects, which is deprecated. Use <code>for line in
+file</code> instead.</p>
+</dd>
+<dt class="method" id="BZ2File.seek"><b>seek(offset[, whence])</b> <tt class="nav"><a class="nav" href="bz2.BZ2File.seek" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Move to new file position. Argument <var>offset</var> is a byte
+count. Optional argument <var>whence</var> defaults to <code>
+0</code> (offset from start of file, offset should be <code>&gt;=
+0</code>); other values are <code>1</code> (move relative to
+current position, positive or negative), and <code>2</code> (move
+relative to end of file, usually negative, although many platforms
+allow seeking beyond the end of a file).</p>
+
+<p>Note that seeking of bz2 files is emulated, and depending on the
+parameters the operation may be extremely slow.</p>
+</dd>
+<dt class="method" id="BZ2File.tell"><b>tell()</b> <tt class="nav"><a class="nav" href="bz2.BZ2File.tell" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return the current file position, an integer (may be a long
+integer).</p>
+</dd>
+<dt class="method" id="BZ2File.write"><b>write(data)</b> <tt class="nav"><a class="nav" href="bz2.BZ2File.write" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Write string <var>data</var> to file. Note that due to
+buffering, <code>close</code> may be
+needed before the file on disk reflects the data written.</p>
+</dd>
+<dt class="method" id="BZ2File.writelines"><b>writelines(sequence_of_strings)</b> <tt class="nav"><a class="nav" href="bz2.BZ2File.writelines" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Write the sequence of strings to the file. Note that newlines
+are not added. The sequence can be any iterable object producing
+strings. This is equivalent to calling write() for each string.</p>
+</dd>
+</dl><div class="text">
+<h2 id="sequential-de-compression">Sequential (de)compression <a class="nav" href="#sequential-de-compression">#</a></h2>
+
+<p>Sequential compression and decompression is done using the
+classes <a class="link" href="#BZ2Compressor"><code>BZ2Compressor</code></a>
+and <a class="link" href="#BZ2Decompressor"><code>
+BZ2Decompressor</code></a>.</p>
+</div>
+<dl><dt class="class" id="BZ2Compressor"><b>class BZ2Compressor([compresslevel])</b> <tt class="nav"><a class="nav" href="bz2.BZ2Compressor" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>Create a new compressor object. This object may be used to
+compress data sequentially. If you want to compress data in one
+shot, use the <a class="link" href="#compress"><code>compress</code></a>
+function instead. The <var>compresslevel</var> parameter, if given,
+must be a number between <code>1</code> and <code>9</code>; the
+default is <code>9</code>.</p>
+</dd>
+<dt class="method" id="BZ2Compressor.compress"><b>compress(data)</b> <tt class="nav"><a class="nav" href="bz2.BZ2Compressor.compress" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Provide more data to the compressor object. It will return
+chunks of compressed data whenever possible. When you've finished
+providing data to compress, call the <code>flush</code> method to finish the compression
+process, and return what is left in internal buffers.</p>
+</dd>
+<dt class="method" id="BZ2Compressor.flush"><b>flush()</b> <tt class="nav"><a class="nav" href="bz2.BZ2Compressor.flush" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Finish the compression process and return what is left in
+internal buffers. You must not use the compressor object after
+calling this method.</p>
+</dd>
+<dt class="class" id="BZ2Decompressor"><b>class BZ2Decompressor()</b> <tt class="nav"><a class="nav" href="bz2.BZ2Decompressor" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>Create a new decompressor object. This object may be used to
+decompress data sequentially. If you want to decompress data in one
+shot, use the <a class="link" href="#decompress"><code>decompress</code></a>
+function instead.</p>
+</dd>
+<dt class="method" id="BZ2Decompressor.decompress"><b>decompress(data)</b> <tt class="nav"><a class="nav" href="bz2.BZ2Decompressor.decompress" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Provide more data to the decompressor object. It will return
+chunks of decompressed data whenever possible. If you try to
+decompress data after the end of stream is found, <code>exceptions.EOFError</code> will be
+raised. If any data was found after the end of stream, it'll be
+ignored and saved in <code>
+unused_data</code> attribute.</p>
+</dd>
+</dl><div class="text">
+<h2 id="one-shot-de-compression">One-shot (de)compression <a class="nav" href="#one-shot-de-compression">#</a></h2>
+
+<p>One-shot compression and decompression is provided through the
+<a class="link" href="#compress"><code>compress</code></a> and <a class="link" href="#decompress"><code>decompress</code></a> functions.</p>
+</div>
+<dl><dt class="function" id="compress"><b>compress(data[, compresslevel])</b> <tt class="nav"><a class="nav" href="bz2.compress" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Compress <var>data</var> in one shot. If you want to compress
+data sequentially, use an instance of <a class="link" href="#BZ2Compressor"><code>BZ2Compressor</code></a> instead. The <var>
+compresslevel</var> parameter, if given, must be a number between
+<code>1</code> and <code>9</code>; the default is <code>
+9</code>.</p>
+</dd>
+<dt class="function" id="decompress"><b>decompress(data)</b> <tt class="nav"><a class="nav" href="bz2.decompress" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Decompress <var>data</var> in one shot. If you want to
+decompress data sequentially, use an instance of <a class="link" href="#BZ2Decompressor"><code>BZ2Decompressor</code></a> instead.</p>
+</dd>
+</dl></div></body></html>

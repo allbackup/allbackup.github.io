@@ -1,0 +1,82 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>UserString</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-UserString.html'>original</a> :::
+<a href='UserString.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>UserString&#8212;Class wrapper for string objects</h1>
+
+<p class="note"><b>Note:</b> This <a class="link" href="#UserString"><code>UserString</code></a> class from this module is
+available for backward compatibility only. If you are writing code
+that does not need to work with versions of Python earlier than
+Python 2.2, please consider subclassing directly from the built-in
+<code>str</code> type instead of using <a class="link" href="#UserString"><code>UserString</code></a> (there is no
+built-in equivalent to <a class="link" href="#MutableString"><code>
+MutableString</code></a>).</p>
+
+<p>This module defines a class that acts as a wrapper around string
+objects. It is a useful base class for your own string-like
+classes, which can inherit from them and override existing methods
+or add new ones. In this way one can add new behaviors to
+strings.</p>
+
+<p>It should be noted that these classes are highly inefficient
+compared to real string or Unicode objects; this is especially the
+case for <a class="link" href="#MutableString"><code>
+MutableString</code></a>.</p>
+
+<p>The <a class="link" href="#UserString"><code>UserString</code></a> module
+defines the following classes:</p>
+</div>
+<dl><dt class="class" id="UserString"><b>class UserString([sequence])</b> <tt class="nav"><a class="nav" href="UserString.UserString" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>Class that simulates a string or a Unicode string object. The
+instance's content is kept in a regular string or Unicode string
+object, which is accessible via the <code>data</code> attribute of <a class="link" href="#UserString"><code>UserString</code></a> instances. The instance's
+contents are initially set to a copy of <var>sequence</var>. <var>
+sequence</var> can be either a regular Python string or Unicode
+string, an instance of <a class="link" href="#UserString"><code>
+UserString</code></a> (or a subclass) or an arbitrary sequence which can
+be converted into a string using the built-in <code>str</code> function.</p>
+</dd>
+<dt class="class" id="MutableString"><b>class MutableString([sequence])</b> <tt class="nav"><a class="nav" href="UserString.MutableString" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>This class is derived from the <a class="link" href="#UserString"><code>UserString</code></a> above and redefines strings
+to be <em>mutable</em>. Mutable strings can't be used as dictionary
+keys, because dictionaries require <em>immutable</em> objects as
+keys. The main intention of this class is to serve as an
+educational example for inheritance and necessity to remove
+(override) the <code>__hash__</code>
+method in order to trap attempts to use a mutable object as
+dictionary key, which would be otherwise very error prone and hard
+to track down.</p>
+</dd>
+</dl><div class="text">
+<p>In addition to supporting the methods and operations of string
+and Unicode objects (see section <code>
+string-methods.html#string-methods</code>, &#8220;String
+Methods&#8221;), <a class="link" href="#UserString"><code>
+UserString</code></a> instances provide the following attribute:</p>
+</div>
+<dl><dt class="attribute" id="MutableString.data"><b>data</b> <tt class="nav"><a class="nav" href="UserString.MutableString.data" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>A real Python string or Unicode object used to store the content
+of the <a class="link" href="#UserString"><code>UserString</code></a>
+class.</p>
+</dd>
+</dl></div></body></html>

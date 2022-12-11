@@ -1,0 +1,802 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>Tkinter</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-Tkinter.html'>original</a> :::
+<a href='Tkinter.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>Tkinter&#8212;Python interface to Tcl/Tk</h1>
+
+<div class="toc"><dl><dt>On this page:</dt><dd><a href="#tkinter-modules">Tkinter Modules</a></dd><dd><a href="#tkinter-life-preserver">Tkinter Life Preserver</a></dd><dd><a href="#a-very-quick-look-at-tcl-tk">A (Very) Quick Look at Tcl/Tk</a></dd><dd><a href="#mapping-basic-tk-into-tkinter">Mapping Basic Tk into Tkinter</a></dd><dd><a href="#how-tk-and-tkinter-are-related">How Tk and Tkinter are Related</a></dd><dd><a href="#handy-reference">Handy Reference</a></dd></dl></div><p>The <code>Tkinter</code> module
+(&#8220;Tk interface&#8221;) is the standard Python interface to
+the Tk GUI toolkit. Both Tk and <code>Tkinter</code> are available on most Unix
+platforms, as well as on Windows and Macintosh systems. (Tk itself
+is not part of Python; it is maintained at ActiveState.) <span class="mark">@see</span> <a class="link" href="http://www.python.org/topics/tkinter/">Python Tkinter
+Resources</a> The Python Tkinter Topic Guide provides a great deal
+of information on using Tk from Python and links to other sources
+of information on Tk. <span class="mark">@see</span> <a class="link" href="http://www.pythonware.com/library/an-introduction-to-tkinter.htm">
+An Introduction to Tkinter</a> Fredrik Lundh's on-line reference
+material. <span class="mark">@see</span> <a class="link" href="http://www.nmt.edu/tcc/help/pubs/lang.html">Tkinter
+reference: a GUI for Python</a> On-line reference material. <span class="mark">@see</span> <a class="link" href="http://jtkinter.sourceforge.net">Tkinter for JPython</a> The
+Jython interface to Tkinter. <span class="mark">@see</span> <a class="link" href="http://www.amazon.com/exec/obidos/ASIN/1884777813">Python and
+Tkinter Programming</a> The book by John Grayson (ISBN
+1-884777-81-3).</p>
+
+<h2 id="tkinter-modules">Tkinter Modules <a class="nav" href="#tkinter-modules">#</a></h2>
+
+<p>Most of the time, the <code>
+Tkinter</code> module is all you really need, but a number of
+additional modules are available as well. The Tk interface is
+located in a binary module named <code>_tkinter</code>. This module contains the
+low-level interface to Tk, and should never be used directly by
+application programmers. It is usually a shared library (or DLL),
+but might in some cases be statically linked with the Python
+interpreter.</p>
+
+<p>In addition to the Tk interface module, <code>Tkinter</code> includes a number of Python
+modules. The two most important modules are the <code>Tkinter</code> module itself, and a module called
+<code>Tkconstants</code>. The former
+automatically imports the latter, so to use Tkinter, all you need
+to do is to import one module:</p>
+
+<pre>
+import Tkinter
+</pre>
+
+<p>Or, more often:</p>
+
+<pre>
+from Tkinter import *
+</pre>
+</div>
+<dl><dt class="class" id="Tk"><b>class Tk(screenName=None, baseName=None, className='Tk',
+useTk=1)</b> <tt class="nav"><a class="nav" href="Tkinter.Tk" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>The <a class="link" href="#Tk"><code>Tk</code></a> class is instantiated
+without arguments. This creates a toplevel widget of Tk which
+usually is the main window of an application. Each instance has its
+own associated Tcl interpreter.</p>
+
+<blockquote><span class="mark">@since</span> Changed in version
+2.4: The useTk parameter was added.<br />
+</blockquote>
+</dd>
+<dt class="function" id="Tcl"><b>Tcl(screenName=None, baseName=None,
+className='Tk', useTk=0)</b> <tt class="nav"><a class="nav" href="Tkinter.Tcl" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>The <a class="link" href="#Tcl"><code>Tcl</code></a> function is a
+factory function which creates an object much like that created by
+the <a class="link" href="#Tk"><code>Tk</code></a> class, except that it
+does not initialize the Tk subsystem. This is most often useful
+when driving the Tcl interpreter in an environment where one
+doesn't want to create extraneous toplevel windows, or where one
+cannot (i.e. Unix/Linux systems without an X server). An object
+created by the <a class="link" href="#Tcl"><code>Tcl</code></a> object can
+have a Toplevel window created (and the Tk subsystem initialized)
+by calling its <code>loadtk</code>
+method.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.4.<br />
+</blockquote>
+</dd>
+</dl><div class="text">
+<p>Other modules that provide Tk support include:</p>
+</div>
+<div class="unknown">
+<p>Turtle graphics in a Tk window.</p>
+</div>
+<div class="text">
+<h2 id="tkinter-life-preserver">Tkinter Life Preserver <a class="nav" href="#tkinter-life-preserver">#</a></h2>
+
+<p>This section is not designed to be an exhaustive tutorial on
+either Tk or Tkinter. Rather, it is intended as a stop gap,
+providing some introductory orientation on the system.</p>
+
+<p>Credits:</p>
+
+<ul>
+<li>
+<p>Tkinter was written by Steen Lumholt and Guido van Rossum.</p>
+</li>
+
+<li>
+<p>Tk was written by John Ousterhout while at Berkeley.</p>
+</li>
+
+<li>
+<p>This Life Preserver was written by Matt Conway at the University
+of Virginia.</p>
+</li>
+
+<li>
+<p>The html rendering, and some liberal editing, was produced from
+a FrameMaker version by Ken Manheimer.</p>
+</li>
+
+<li>
+<p>Fredrik Lundh elaborated and revised the class interface
+descriptions, to get them current with Tk 4.2.</p>
+</li>
+
+<li>
+<p>Mike Clarkson converted the documentation to LaTeX, and compiled
+the User Interface chapter of the reference manual.</p>
+</li>
+</ul>
+</div>
+<div class="error">
+<h3>How To Use This Section</h3>
+
+<p>This section is designed in two parts: the first half (roughly)
+covers background material, while the second half can be taken to
+the keyboard as a handy reference.</p>
+
+<p>When trying to answer questions of the form &#8220;how do I do
+blah&#8221;, it is often best to find out how to
+do&#8220;blah&#8221; in straight Tk, and then convert this back
+into the corresponding <code>
+Tkinter</code> call. Python programmers can often guess at the correct
+Python command by looking at the Tk documentation. This means that
+in order to use Tkinter, you will have to know a little bit about
+Tk. This document can't fulfill that role, so the best we can do is
+point you to the best documentation that exists. Here are some
+hints:</p>
+
+<ul>
+<li>
+<p>The authors strongly suggest getting a copy of the Tk man pages.
+Specifically, the man pages in the <code>mann</code> directory are
+most useful. The <code>man3</code> man pages describe the C
+interface to the Tk library and thus are not especially helpful for
+script writers.</p>
+</li>
+
+<li>
+<p>Addison-Wesley publishes a book called <em>Tcl and the Tk
+Toolkit</em> by John Ousterhout (ISBN 0-201-63337-X) which is a
+good introduction to Tcl and Tk for the novice. The book is not
+exhaustive, and for many details it defers to the man pages.</p>
+</li>
+
+<li>
+<p>Tkinter.py is a last resort for most, but can be a good place to
+go when nothing else makes sense.</p>
+</li>
+</ul>
+
+<span class="mark">@see</span> <a class="link" href="http://tcl.activestate.com/">ActiveState Tcl Home Page</a>
+The Tk/Tcl development is largely taking place at ActiveState.
+<span class="mark">@see</span> <a class="link" href="http://www.amazon.com/exec/obidos/ASIN/020163337X">Tcl and
+the Tk Toolkit</a> The book by John Ousterhout, the inventor of Tcl
+. <span class="mark">@see</span> <a class="link" href="http://www.amazon.com/exec/obidos/ASIN/0130220280">Practical
+Programming in Tcl and Tk</a> Brent Welch's encyclopedic book. 
+
+<h3>A Simple Hello World Program</h3>
+
+<pre>
+from Tkinter import *
+
+class Application(Frame):
+    def say_hi(self):
+        print "hi there, everyone!"
+
+    def createWidgets(self):
+        self.QUIT = Button(self)
+        self.QUIT["text"] = "QUIT"
+        self.QUIT["fg"]   = "red"
+        self.QUIT["command"] =  self.quit
+
+        self.QUIT.pack({"side": "left"})
+
+        self.hi_there = Button(self)
+        self.hi_there["text"] = "Hello",
+        self.hi_there["command"] = self.say_hi
+
+        self.hi_there.pack({"side": "left"})
+
+    def __init__(self, master=None):
+        Frame.__init__(self, master)
+        self.pack()
+        self.createWidgets()
+
+root = Tk()
+app = Application(master=root)
+app.mainloop()
+root.destroy()
+</pre>
+
+<h2 id="a-very-quick-look-at-tcl-tk">A (Very) Quick Look at Tcl/Tk <a class="nav" href="#a-very-quick-look-at-tcl-tk">#</a></h2>
+
+<p>The class hierarchy looks complicated, but in actual practice,
+application programmers almost always refer to the classes at the
+very bottom of the hierarchy.</p>
+
+<p>Notes:</p>
+
+<ul>
+<li>
+<p>These classes are provided for the purposes of organizing
+certain functions under one namespace. They aren't meant to be
+instantiated independently.</p>
+</li>
+
+<li>
+<p>The <a class="link" href="#Tk"><code>Tk</code></a> class is meant to be
+instantiated only once in an application. Application programmers
+need not instantiate one explicitly, the system creates one
+whenever any of the other classes are instantiated.</p>
+</li>
+
+<li>
+<p>The <code>Widget</code> class is not
+meant to be instantiated, it is meant only for subclassing to make
+&#8220;real&#8221; widgets (in C++, this is called an `abstract
+class').</p>
+</li>
+</ul>
+
+<p>To make use of this reference material, there will be times when
+you will need to know how to read short passages of Tk and how to
+identify the various parts of a Tk command. (See section <code>
+tkinter-basic-mapping.html#tkinter-basic-mapping</code> for the <code>Tkinter</code> equivalents of what's
+below.)</p>
+
+<p>Tk scripts are Tcl programs. Like all Tcl programs, Tk scripts
+are just lists of tokens separated by spaces. A Tk widget is just
+its <em>class</em>, the <em>options</em> that help configure it,
+and the <em>actions</em> that make it do useful things.</p>
+
+<p>To make a widget in Tk, the command is always of the form:</p>
+
+<pre>
+                classCommand newPathname options
+</pre>
+</div>
+<dl><dt class="variable" id="options"><b>options</b> <tt class="nav"><a class="nav" href="Tkinter.options" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>configure the widget's appearance and in some cases, its
+behavior. The options come in the form of a list of flags and
+values. Flags are proceeded by a `-', like unix shell command
+flags, and values are put in quotes if they are more than one
+word.</p>
+</dd>
+</dl><div class="text">
+<p>For example:</p>
+
+<pre>
+    button   .fred   -fg red -text "hi there"
+       ^       ^     \_____________________/
+       |       |                |
+     class    new            options
+    command  widget  (-opt val -opt val ...)
+</pre>
+
+<p>Once created, the pathname to the widget becomes a new command.
+This new <var>widget command</var> is the programmer's handle for
+getting the new widget to perform some <var>action</var>. In C,
+you'd express this as someAction(fred, someOptions), in C++, you
+would express this as fred.someAction(someOptions), and in Tk, you
+say:</p>
+
+<pre>
+    .fred someAction someOptions
+</pre>
+
+<p>Note that the object name, <code>.fred</code>, starts with a
+dot.</p>
+
+<p>As you'd expect, the legal values for <var>someAction</var> will
+depend on the widget's class: <code>.fred disable</code> works if
+fred is a button (fred gets greyed out), but does not work if fred
+is a label (disabling of labels is not supported in Tk).</p>
+
+<p>The legal values of <var>someOptions</var> is action dependent.
+Some actions, like <code>disable</code>, require no arguments,
+others, like a text-entry box's <code>delete</code> command, would
+need arguments to specify what range of text to delete.</p>
+
+<h2 id="mapping-basic-tk-into-tkinter">Mapping Basic Tk into Tkinter <a class="nav" href="#mapping-basic-tk-into-tkinter">#</a></h2>
+
+<p>Class commands in Tk correspond to class constructors in
+Tkinter.</p>
+
+<pre>
+    button .fred                =====&gt;  fred = Button()
+</pre>
+
+<p>The master of an object is implicit in the new name given to it
+at creation time. In Tkinter, masters are specified explicitly.</p>
+
+<pre>
+    button .panel.fred          =====&gt;  fred = Button(panel)
+</pre>
+
+<p>The configuration options in Tk are given in lists of hyphened
+tags followed by values. In Tkinter, options are specified as
+keyword-arguments in the instance constructor, and keyword-args for
+configure calls or as instance indices, in dictionary style, for
+established instances. See section <code>
+tkinter-setting-options.html#tkinter-setting-options</code> on setting
+options.</p>
+
+<pre>
+    button .fred -fg red        =====&gt;  fred = Button(panel, fg = "red")
+    .fred configure -fg red     =====&gt;  fred["fg"] = red
+                                OR ==&gt;  fred.config(fg = "red")
+</pre>
+
+<p>In Tk, to perform an action on a widget, use the widget name as
+a command, and follow it with an action name, possibly with
+arguments (options). In Tkinter, you call methods on the class
+instance to invoke actions on the widget. The actions (methods)
+that a given widget can perform are listed in the Tkinter.py
+module.</p>
+
+<pre>
+    .fred invoke                =====&gt;  fred.invoke()
+</pre>
+
+<p>To give a widget to the packer (geometry manager), you call pack
+with optional arguments. In Tkinter, the Pack class holds all this
+functionality, and the various forms of the pack command are
+implemented as methods. All widgets in <code>Tkinter</code> are subclassed from the Packer, and
+so inherit all the packing methods. See the <code>Tix</code> module documentation for additional
+information on the Form geometry manager.</p>
+
+<pre>
+    pack .fred -side left       =====&gt;  fred.pack(side = "left")
+</pre>
+
+<h2 id="how-tk-and-tkinter-are-related">How Tk and Tkinter are Related <a class="nav" href="#how-tk-and-tkinter-are-related">#</a></h2>
+
+<p class="note"><b>Note:</b> This was derived from a graphical
+image; the image will be used more directly in a subsequent version
+of this document.</p>
+
+<p>From the top down:</p>
+</div>
+<dl><dt class="variable" id="Xlib"><b>Xlib (C)</b> <tt class="nav"><a class="nav" href="Tkinter.Xlib" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>the Xlib library to draw graphics on the screen.</p>
+</dd>
+</dl><div class="text">
+<h2 id="handy-reference">Handy Reference <a class="nav" href="#handy-reference">#</a></h2>
+</div>
+<div class="error">
+<h3>Setting Options</h3>
+
+<p>Options control things like the color and border width of a
+widget. Options can be set in three ways:</p>
+</div>
+<dl><dt class="variable" id="Use"><b>Use the config() method to update multiple attrs
+subsequent to object creation</b> <tt class="nav"><a class="nav" href="Tkinter.Use" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>:</p>
+
+<pre>
+fred.config(fg = "red", bg = "blue")
+</pre>
+</dd>
+</dl><div class="text">
+<p>For a complete explanation of a given option and its behavior,
+see the Tk man pages for the widget in question.</p>
+
+<p>Note that the man pages list "STANDARD OPTIONS" and "WIDGET
+SPECIFIC OPTIONS" for each widget. The former is a list of options
+that are common to many widgets, the latter are the options that
+are ideosyncratic to that particular widget. The Standard Options
+are documented on the options(3) man page.</p>
+
+<p>No distinction between standard and widget-specific options is
+made in this document. Some options don't apply to some kinds of
+widgets. Whether a given widget responds to a particular option
+depends on the class of the widget; buttons have a <code>
+command</code> option, labels do not.</p>
+
+<p>The options supported by a given widget are listed in that
+widget's man page, or can be queried at runtime by calling the <code>config</code> method without
+arguments, or by calling the <code>
+keys</code> method on that widget. The return value of these calls is
+a dictionary whose key is the name of the option as a string (for
+example, <code>'relief'</code>) and whose values are 5-tuples.</p>
+
+<p>Some options, like <code>bg</code> are synonyms for common
+options with long names (<code>bg</code> is shorthand for
+"background"). Passing the <code>config()</code> method the name of
+a shorthand option will return a 2-tuple, not 5-tuple. The 2-tuple
+passed back will contain the name of the synonym and the
+&#8220;real&#8221; option (such as <code>('bg',
+'background')</code>).</p>
+
+<table border="1">
+<tr>
+<th>
+<p>Index</p>
+</th>
+<th>
+<p>Meaning</p>
+</th>
+<th>
+<p>Example</p>
+</th>
+</tr>
+
+<tr>
+<td>
+<p>0</p>
+</td>
+<td>
+<p>option name</p>
+</td>
+<td>
+<p><code>'relief'</code></p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>1</p>
+</td>
+<td>
+<p>option name for database lookup</p>
+</td>
+<td>
+<p><code>'relief'</code></p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>2</p>
+</td>
+<td>
+<p>option class for database lookup</p>
+</td>
+<td>
+<p><code>'Relief'</code></p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>3</p>
+</td>
+<td>
+<p>default value</p>
+</td>
+<td>
+<p><code>'raised'</code></p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>4</p>
+</td>
+<td>
+<p>current value</p>
+</td>
+<td>
+<p><code>'groove'</code></p>
+</td>
+</tr>
+</table>
+
+<br />
+<br />
+ 
+
+<p>Example:</p>
+
+<pre>
+&gt;&gt;&gt; print fred.config()
+{'relief' : ('relief', 'relief', 'Relief', 'raised', 'groove')}
+</pre>
+
+<p>Of course, the dictionary printed will include all the options
+available and their values. This is meant only as an example.</p>
+
+<h3>The Packer</h3>
+
+<p>The packer is one of Tk's geometry-management mechanisms.</p>
+
+<p>Geometry managers are used to specify the relative positioning
+of the positioning of widgets within their container - their mutual
+<em>master</em>. In contrast to the more cumbersome <em>placer</em>
+(which is used less commonly, and we do not cover here), the packer
+takes qualitative relationship specification - <em>above</em>, <em>
+to the left of</em>, <em>filling</em>, etc - and works everything
+out to determine the exact placement coordinates for you.</p>
+
+<p>The size of any <em>master</em> widget is determined by the size
+of the "slave widgets" inside. The packer is used to control where
+slave widgets appear inside the master into which they are packed.
+You can pack widgets into frames, and frames into other frames, in
+order to achieve the kind of layout you desire. Additionally, the
+arrangement is dynamically adjusted to accommodate incremental
+changes to the configuration, once it is packed.</p>
+
+<p>Note that widgets do not appear until they have had their
+geometry specified with a geometry manager. It's a common early
+mistake to leave out the geometry specification, and then be
+surprised when the widget is created but nothing appears. A widget
+will appear only after it has had, for example, the packer's <code>pack</code> method applied to it.</p>
+
+<p>The pack() method can be called with keyword-option/value pairs
+that control where the widget is to appear within its container,
+and how it is to behave when the main application window is
+resized. Here are some examples:</p>
+
+<pre>
+    fred.pack()                     # defaults to side = "top"
+    fred.pack(side = "left")
+    fred.pack(expand = 1)
+</pre>
+
+<h3>Packer Options</h3>
+
+<p>For more extensive information on the packer and the options
+that it can take, see the man pages and page 183 of John
+Ousterhout's book.</p>
+</div>
+<dl><dt class="variable" id="side"><b>side</b> <tt class="nav"><a class="nav" href="Tkinter.side" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Legal values are: <code>'left'</code>, <code>'right'</code>,
+<code>'top'</code>, <code>'bottom'</code>.</p>
+</dd>
+</dl><div class="text">
+<h3>Coupling Widget Variables</h3>
+
+<p>The current-value setting of some widgets (like text entry
+widgets) can be connected directly to application variables by
+using special options. These options are <code>variable</code>,
+<code>textvariable</code>, <code>onvalue</code>, <code>
+offvalue</code>, and <code>value</code>. This connection works both
+ways: if the variable changes for any reason, the widget it's
+connected to will be updated to reflect the new value.</p>
+
+<p>Unfortunately, in the current implementation of <code>Tkinter</code> it is not possible to hand over an
+arbitrary Python variable to a widget through a <code>
+variable</code> or <code>textvariable</code> option. The only kinds
+of variables for which this works are variables that are subclassed
+from a class called Variable, defined in the <code>Tkinter</code> module.</p>
+
+<p>There are many useful subclasses of Variable already defined: <code>StringVar</code>, <code>IntVar</code>, <code>DoubleVar</code>, and <code>BooleanVar</code>. To read the current value of
+such a variable, call the <code>get</code>
+method on it, and to change its value you call the <code>set</code> method. If you follow this protocol, the
+widget will always track the value of the variable, with no further
+intervention on your part.</p>
+
+<p>For example:</p>
+
+<pre>
+class App(Frame):
+    def __init__(self, master=None):
+        Frame.__init__(self, master)
+        self.pack()
+        
+        self.entrythingy = Entry()
+        self.entrythingy.pack()
+        
+        # here is the application variable
+        self.contents = StringVar()
+        # set it to some value
+        self.contents.set("this is a variable")
+        # tell the entry widget to watch this variable
+        self.entrythingy["textvariable"] = self.contents
+        
+        # and here we get a callback when the user hits return.
+        # we will have the program print out the value of the
+        # application variable when the user hits return
+        self.entrythingy.bind('&lt;Key-Return&gt;',
+                              self.print_contents)
+
+    def print_contents(self, event):
+        print "hi. contents of entry is now ----&gt;", \
+              self.contents.get()
+</pre>
+
+<h3>The Window Manager</h3>
+
+<p>In Tk, there is a utility command, <code>wm</code>, for
+interacting with the window manager. Options to the <code>wm</code>
+command allow you to control things like titles, placement, icon
+bitmaps, and the like. In <code>
+Tkinter</code>, these commands have been implemented as methods on the
+<code>Wm</code> class. Toplevel widgets are
+subclassed from the <code>Wm</code> class,
+and so can call the <code>Wm</code> methods
+directly.</p>
+
+<p>To get at the toplevel window that contains a given widget, you
+can often just refer to the widget's master. Of course if the
+widget has been packed inside of a frame, the master won't
+represent a toplevel window. To get at the toplevel window that
+contains an arbitrary widget, you can call the <code>_root</code> method. This method begins with an
+underscore to denote the fact that this function is part of the
+implementation, and not an interface to Tk functionality.</p>
+
+<p>Here are some examples of typical usage:</p>
+
+<pre>
+from Tkinter import *
+class App(Frame):
+    def __init__(self, master=None):
+        Frame.__init__(self, master)
+        self.pack()
+
+
+# create the application
+myapp = App()
+
+#
+# here are method calls to the window manager class
+#
+myapp.master.title("My Do-Nothing Application")
+myapp.master.maxsize(1000, 400)
+
+# start the program
+myapp.mainloop()
+</pre>
+
+<h3>Tk Option Data Types</h3>
+</div>
+<dl><dt class="variable" id="wrap"><b>wrap:</b> <tt class="nav"><a class="nav" href="Tkinter.wrap" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Must be one of: <code>"none"</code>, <code>"char"</code>, or
+<code>"word"</code>.</p>
+</dd>
+</dl><div class="text">
+<h3>Bindings and Events</h3>
+
+<p>The bind method from the widget command allows you to watch for
+certain events and to have a callback function trigger when that
+event type occurs. The form of the bind method is:</p>
+
+<pre>
+    def bind(self, sequence, func, add=''):
+</pre>
+
+<p>where:</p>
+</div>
+<dl><dt class="variable" id="add"><b>add</b> <tt class="nav"><a class="nav" href="Tkinter.add" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>is optional, either "" or "<code>+</code>". Passing an empty
+string denotes that this binding is to replace any other bindings
+that this event is associated with. Preceeding with a
+"<code>+</code>" means that this function is to be added to the
+list of functions bound to this event type.</p>
+</dd>
+</dl><div class="text">
+<p>For example:</p>
+
+<pre>
+    def turnRed(self, event):
+        event.widget["activeforeground"] = "red"
+
+    self.button.bind("&lt;Enter&gt;", self.turnRed)
+</pre>
+
+<p>Notice how the widget field of the event is being accessed in
+the <code>turnRed</code> callback. This
+field contains the widget that caught the X event. The following
+table lists the other event fields you can access, and how they are
+denoted in Tk, which can be useful when referring to the Tk man
+pages.</p>
+
+<pre>
+Tk      Tkinter Event Field             Tk      Tkinter Event Field 
+--      -------------------             --      -------------------
+%f      focus                           %A      char
+%h      height                          %E      send_event
+%k      keycode                         %K      keysym
+%s      state                           %N      keysym_num
+%t      time                            %T      type
+%w      width                           %W      widget
+%x      x                               %X      x_root
+%y      y                               %Y      y_root
+</pre>
+
+<h3>The index Parameter</h3>
+
+<p>A number of widgets require&#8220;index&#8221; parameters to be
+passed. These are used to point at a specific place in a Text
+widget, or to particular characters in an Entry widget, or to
+particular menu items in a Menu widget.</p>
+</div>
+<dl><dt class="variable" id="Menu"><b>Menu indexes (menu.invoke(), menu.entryconfig(),
+etc.)</b> <tt class="nav"><a class="nav" href="Tkinter.Menu" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Some options and methods for menus manipulate specific menu
+entries. Anytime a menu index is needed for an option or a
+parameter, you may pass in:</p>
+
+<ul>
+<li>
+<p>an integer which refers to the numeric position of the entry in
+the widget, counted from the top, starting with 0;</p>
+</li>
+
+<li>
+<p>the string <code>'active'</code>, which refers to the menu
+position that is currently under the cursor;</p>
+</li>
+
+<li>
+<p>the string <code>"last"</code> which refers to the last menu
+item;</p>
+</li>
+
+<li>
+<p>An integer preceded by <code>@</code>, as in <code>@6</code>,
+where the integer is interpreted as a y pixel coordinate in the
+menu's coordinate system;</p>
+</li>
+
+<li>
+<p>the string <code>"none"</code>, which indicates no menu entry at
+all, most often used with menu.activate() to deactivate all
+entries, and finally,</p>
+</li>
+
+<li>
+<p>a text string that is pattern matched against the label of the
+menu entry, as scanned from the top of the menu to the bottom. Note
+that this index type is considered after all the others, which
+means that matches for menu items labelled <code>last</code>,
+<code>active</code>, or <code>none</code> may be interpreted as the
+above literals, instead.</p>
+</li>
+</ul>
+</dd>
+</dl><div class="text">
+<h3>Images</h3>
+
+<p>Bitmap/Pixelmap images can be created through the subclasses of
+<code>Tkinter.Image</code>:</p>
+
+<ul>
+<li>
+<p><code>BitmapImage</code> can be
+used for X11 bitmap data.</p>
+</li>
+
+<li>
+<p><code>PhotoImage</code> can be
+used for GIF and PPM/PGM color bitmaps.</p>
+</li>
+</ul>
+
+<p>Either type of image is created through either the <code>
+file</code> or the <code>data</code> option (other options are
+available as well).</p>
+
+<p>The image object can then be used wherever an <code>image</code>
+option is supported by some widget (e.g. labels, buttons, menus).
+In these cases, Tk will not keep a reference to the image. When the
+last Python reference to the image object is deleted, the image
+data is deleted as well, and Tk will display an empty box wherever
+the image was used.</p>
+</div>
+</div></body></html>

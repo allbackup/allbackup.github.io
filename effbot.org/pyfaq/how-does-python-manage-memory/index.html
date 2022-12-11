@@ -1,0 +1,27 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>How does Python manage&nbsp;memory?</title> <script type="text/javascript">effbot_page_id=835;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> <!--
+<p style='color: #8f8f8f; background: #fff5bf; padding: 5px 10px;'> <b>2008-07-15:</b> Selected articles
+
+now have experimental "comment" links in the left column and at the bottom.
+You're welcome to use them for commenting and voting on articles.
+For a bit more on this, see <a
+href="http://effbot.slinkset.com/links/Welcome_to_discuss_effbot_org">this
+page</a>. /F
+</p>
+--> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <h1 class="maintitle">How does Python manage&nbsp;memory?</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p>The details of Python memory management depend on the implementation.
+The standard C implementation of Python uses reference counting to
+detect inaccessible objects, and a separate mechanism to collect
+reference cycles, periodically executing a cycle detection algorithm
+which looks for inaccessible cycles and deletes the objects involved.
+The <a href="/pyref/gc.htm"><strong>gc</strong></a> module provides functions to force garbage
+collection, obtain debugging statistics, and tune the collector&#8217;s
+parameters.</p><p>Jython relies on the Java runtime so the JVM&#8217;s garbage collector is
+used.  The same applies to IronPython, which uses the CLR garbage
+collector.  This difference can cause some subtle porting problems if
+your Python code depends on the behavior of the reference counting
+implementation.</p><p>Sometimes objects get stuck in tracebacks temporarily and hence are
+not deallocated when you might expect.  Clear the tracebacks with:</p><pre class="python"><span class="pykeyword">import</span> sys
+sys.exc_clear()
+sys.exc_traceback = sys.last_traceback = None</pre><p>Tracebacks are used for reporting errors, implementing debuggers and
+related things.  They contain a portion of the p

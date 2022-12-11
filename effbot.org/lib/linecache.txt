@@ -1,0 +1,44 @@
+
+@@module linecache
+
+<h1>linecache&#8212;Random access to text lines</h1>
+
+<p>The {@link linecache} module allows one to get any line from any
+file, while attempting to optimize internally, using a cache, the common
+case where many lines are read from a single file. This is used by the
+{@link traceback} module to retrieve source lines for inclusion in the
+formatted traceback.
+
+<p>The {@link linecache} module defines the following functions:
+
+@@function getline(filename, lineno)
+
+<p>Get line {@var lineno} from file named {@var filename}. This function
+will never throw an exception -- it will return {@code &#8221;} on
+errors (the terminating newline character will be included for lines
+that are found).
+
+<p>If a file named {@var filename} is not found, the function will look
+for it in the module search path, {@code sys.path}.
+
+@@function clearcache()
+
+<p>Clear the cache. Use this function if you no longer need lines from
+files previously read using {@link getline}.
+
+@@function checkcache([filename])
+
+<p>Check the cache for validity. Use this function if files in the cache
+may have changed on disk, and you require the updated version. If {@var
+filename} is omitted, it will check the whole cache entries.
+
+@@text 
+
+<p>Example:
+
+<pre>
+&gt;&gt;&gt; import linecache
+&gt;&gt;&gt; linecache.getline('/etc/passwd', 4)
+'sys:x:3:3:sys:/dev:/bin/sh\n'
+</pre>
+

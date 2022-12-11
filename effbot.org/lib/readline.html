@@ -1,0 +1,260 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>readline</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-readline.html'>original</a> :::
+<a href='readline.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>readline&#8212;GNU readline interface</h1>
+
+<div class="toc"><dl><dt>On this page:</dt><dd><a href="#example">Example</a></dd></dl></div><p>Availability: Unix.</p>
+
+<p>The <code>readline</code> module
+defines a number of functions used either directly or from the <code>rlcompleter</code> module to
+facilitate completion and history file read and write from the
+Python interpreter.</p>
+
+<p>The <code>readline</code> module
+defines the following functions:</p>
+</div>
+<dl><dt class="function" id="parse_and_bind"><b>parse_and_bind(string)</b> <tt class="nav"><a class="nav" href="readline.parse_and_bind" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Parse and execute single line of a readline init file.</p>
+</dd>
+<dt class="function" id="get_line_buffer"><b>get_line_buffer()</b> <tt class="nav"><a class="nav" href="readline.get_line_buffer" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return the current contents of the line buffer.</p>
+</dd>
+<dt class="function" id="insert_text"><b>insert_text(string)</b> <tt class="nav"><a class="nav" href="readline.insert_text" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Insert text into the command line.</p>
+</dd>
+<dt class="function" id="read_init_file"><b>read_init_file([filename])</b> <tt class="nav"><a class="nav" href="readline.read_init_file" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Parse a readline initialization file. The default filename is
+the last filename used.</p>
+</dd>
+<dt class="function" id="read_history_file"><b>read_history_file([filename])</b> <tt class="nav"><a class="nav" href="readline.read_history_file" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Load a readline history file. The default filename is
+~/.history.</p>
+</dd>
+<dt class="function" id="write_history_file"><b>write_history_file([filename])</b> <tt class="nav"><a class="nav" href="readline.write_history_file" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Save a readline history file. The default filename is
+~/.history.</p>
+</dd>
+<dt class="function" id="clear_history"><b>clear_history()</b> <tt class="nav"><a class="nav" href="readline.clear_history" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Clear the current history. (Note: this function is not available
+if the installed version of GNU readline doesn't support it.)</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.4.<br />
+</blockquote>
+</dd>
+<dt class="function" id="get_history_length"><b>get_history_length()</b> <tt class="nav"><a class="nav" href="readline.get_history_length" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return the desired length of the history file. Negative values
+imply unlimited history file size.</p>
+</dd>
+<dt class="function" id="set_history_length"><b>set_history_length(length)</b> <tt class="nav"><a class="nav" href="readline.set_history_length" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Set the number of lines to save in the history file. <a class="link" href="#write_history_file"><code>write_history_file</code></a>
+uses this value to truncate the history file when saving. Negative
+values imply unlimited history file size.</p>
+</dd>
+<dt class="function" id="get_current_history_length"><b>get_current_history_length()</b> <tt class="nav"><a class="nav" href="readline.get_current_history_length" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return the number of lines currently in the history. (This is
+different from <a class="link" href="#get_history_length"><code>
+get_history_length</code></a>, which returns the maximum number of lines
+that will be written to a history file.)</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.3.<br />
+</blockquote>
+</dd>
+<dt class="function" id="get_history_item"><b>get_history_item(index)</b> <tt class="nav"><a class="nav" href="readline.get_history_item" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return the current contents of history item at <var>
+index</var>.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.3.<br />
+</blockquote>
+</dd>
+<dt class="function" id="remove_history_item"><b>remove_history_item(pos)</b> <tt class="nav"><a class="nav" href="readline.remove_history_item" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Remove history item specified by its position from the
+history.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.4.<br />
+</blockquote>
+</dd>
+<dt class="function" id="replace_history_item"><b>replace_history_item(pos, line)</b> <tt class="nav"><a class="nav" href="readline.replace_history_item" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Replace history item specified by its position with the given
+line.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.4.<br />
+</blockquote>
+</dd>
+<dt class="function" id="redisplay"><b>redisplay()</b> <tt class="nav"><a class="nav" href="readline.redisplay" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Change what's displayed on the screen to reflect the current
+contents of the line buffer.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.3.<br />
+</blockquote>
+</dd>
+<dt class="function" id="set_startup_hook"><b>set_startup_hook([function])</b> <tt class="nav"><a class="nav" href="readline.set_startup_hook" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Set or remove the startup_hook function. If <var>function</var>
+is specified, it will be used as the new startup_hook function; if
+omitted or <code>None</code>, any hook
+function already installed is removed. The startup_hook function is
+called with no arguments just before readline prints the first
+prompt.</p>
+</dd>
+<dt class="function" id="set_pre_input_hook"><b>set_pre_input_hook([function])</b> <tt class="nav"><a class="nav" href="readline.set_pre_input_hook" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Set or remove the pre_input_hook function. If <var>
+function</var> is specified, it will be used as the new
+pre_input_hook function; if omitted or <code>None</code>, any hook function already installed is
+removed. The pre_input_hook function is called with no arguments
+after the first prompt has been printed and just before readline
+starts reading input characters.</p>
+</dd>
+<dt class="function" id="set_completer"><b>set_completer([function])</b> <tt class="nav"><a class="nav" href="readline.set_completer" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Set or remove the completer function. If <var>function</var> is
+specified, it will be used as the new completer function; if
+omitted or <code>None</code>, any completer
+function already installed is removed. The completer function is
+called as <var>function</var>(<var>text</var>, <var>state</var>),
+for <var>state</var> in <code>0</code>, <code>1</code>, <code>
+2</code>, ..., until it returns a non-string value. It should
+return the next possible completion starting with <var>
+text</var>.</p>
+</dd>
+<dt class="function" id="get_completer"><b>get_completer()</b> <tt class="nav"><a class="nav" href="readline.get_completer" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Get the completer function, or <code>
+None</code> if no completer function has been set.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.3.<br />
+</blockquote>
+</dd>
+<dt class="function" id="get_begidx"><b>get_begidx()</b> <tt class="nav"><a class="nav" href="readline.get_begidx" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Get the beginning index of the readline tab-completion
+scope.</p>
+</dd>
+<dt class="function" id="get_endidx"><b>get_endidx()</b> <tt class="nav"><a class="nav" href="readline.get_endidx" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Get the ending index of the readline tab-completion scope.</p>
+</dd>
+<dt class="function" id="set_completer_delims"><b>set_completer_delims(string)</b> <tt class="nav"><a class="nav" href="readline.set_completer_delims" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Set the readline word delimiters for tab-completion.</p>
+</dd>
+<dt class="function" id="get_completer_delims"><b>get_completer_delims()</b> <tt class="nav"><a class="nav" href="readline.get_completer_delims" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Get the readline word delimiters for tab-completion.</p>
+</dd>
+<dt class="function" id="add_history"><b>add_history(line)</b> <tt class="nav"><a class="nav" href="readline.add_history" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Append a line to the history buffer, as if it was the last line
+typed.</p>
+</dd>
+</dl><div class="text"><span class="mark">@see</span> <code>Module rlcompleter</code> Completion of Python
+identifiers at the interactive prompt. 
+
+<h2 id="example">Example <a class="nav" href="#example">#</a></h2>
+
+<p>The following example demonstrates how to use the <code>readline</code> module's history
+reading and writing functions to automatically load and save a
+history file named .pyhist from the user's home directory. The code
+below would normally be executed automatically during interactive
+sessions from the user's PYTHONSTARTUP file.</p>
+
+<pre>
+import os
+histfile = os.path.join(os.environ["HOME"], ".pyhist")
+try:
+    readline.read_history_file(histfile)
+except IOError:
+    pass
+import atexit
+atexit.register(readline.write_history_file, histfile)
+del os, histfile
+</pre>
+
+<p>The following example extends the <code>code.InteractiveConsole</code>
+class to support history save/restore.</p>
+
+<pre>
+import code
+import readline
+import atexit
+import os
+
+class HistoryConsole(code.InteractiveConsole):
+    def __init__(self, locals=None, filename="&lt;console&gt;",
+                 histfile=os.path.expanduser("~/.console-history")):
+        code.InteractiveConsole.__init__(self)
+        self.init_history(histfile)
+
+    def init_history(self, histfile):
+        readline.parse_and_bind("tab: complete")
+        if hasattr(readline, "read_history_file"):
+            try:
+                readline.read_history_file(histfile)
+            except IOError:
+                pass
+            atexit.register(self.save_history, histfile)
+
+    def save_history(self, histfile):
+        readline.write_history_file(histfile)
+</pre>
+</div>
+</div></body></html>

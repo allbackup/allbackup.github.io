@@ -1,0 +1,58 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>The imaplib&nbsp;module</title></head><body data-page-id="559"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">The imaplib&nbsp;module</h1></div><div class="yui-ge"><div class="yui-u first"><p>This module provides an <i>Internet Message Access Protocol</i>
+(IMAP) client implementation. This protocol lets you access mail
+folders stored on a central mail server, as if they were local.</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><div class="example wide">
+<b style="example">Example: Using the imaplib
+module</b>
+<pre class="wide">
+# File: <a href="imaplib/imaplib-example-1.py">imaplib-example-1.py</a>
+
+import imaplib
+import string, random
+import StringIO, rfc822
+
+SERVER = "imap.spam.egg"
+
+USER  = "mulder"
+PASSWORD = "trustno1"
+
+# connect to server
+server = imaplib.IMAP4(SERVER)
+
+# login
+server.login(USER, PASSWORD)
+server.select()
+
+# list items on server
+resp, items = server.search(None, "ALL")
+items = string.split(items[0])
+
+# fetch a random item
+id = random.choice(items)
+resp, data = server.fetch(id, "(RFC822)")
+text = data[0][1]
+
+file = StringIO.StringIO(text)
+
+message = rfc822.Message(file)
+
+for k, v in message.items():
+    print k, "=", v
+
+print message.fp.read()
+
+server.logout()
+
+</pre><pre class="computeroutput wide" moreinfo="NONE">
+subject = ANN: (the eff-bot guide to) The Standard Python Library
+message-id = &lt;199910120816.KAA12177@larch.spam.egg&gt;
+to = mulder@spam.egg
+date = Tue, 12 Oct 1999 10:16:19 +0200 (MET DST)
+from = &lt;effbot@spam.egg&gt;
+received = (effbot@spam.egg) by imap.algonet.se (8.8.8+Sun/8.6.12)
+id KAA12177 for effbot@spam.egg; Tue, 12 Oct 1999 10:16:19 +0200
+(MET DST)
+
+body text for test 5
+</pre></div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to librarybook index page.">::: librarybook :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

@@ -1,0 +1,81 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>mutex</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-mutex.html'>original</a> :::
+<a href='mutex.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>mutex&#8212;Mutual exclusion support</h1>
+
+<div class="toc"><dl><dt>On this page:</dt><dd><a href="#mutex-objects">Mutex Objects</a></dd></dl></div><p>The <a class="link" href="#mutex"><code>mutex</code></a> module defines a
+class that allows mutual-exclusion via acquiring and releasing
+locks. It does not require (or imply) threading or multi-tasking,
+though it could be useful for those purposes.</p>
+
+<p>The <a class="link" href="#mutex"><code>mutex</code></a> module defines
+the following class:</p>
+</div>
+<dl><dt class="class" id="mutex"><b>class mutex()</b> <tt class="nav"><a class="nav" href="mutex.mutex" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>Create a new (unlocked) mutex.</p>
+
+<p>A mutex has two pieces of state -- a &#8220;locked&#8221; bit
+and a queue. When the mutex is not locked, the queue is empty.
+Otherwise, the queue contains zero or more <code>
+(</code><var>function</var>, <var>argument</var>) pairs
+representing functions (or methods) waiting to acquire the lock.
+When the mutex is unlocked while the queue is not empty, the first
+queue entry is removed and its <var>
+function</var>(<var>argument</var>) pair called, implying it now
+has the lock.</p>
+
+<p>Of course, no multi-threading is implied - hence the funny
+interface for <code>lock</code>, where a
+function is called once the lock is acquired.</p>
+</dd>
+</dl><div class="text">
+<h2 id="mutex-objects">Mutex Objects <a class="nav" href="#mutex-objects">#</a></h2>
+
+<p><a class="link" href="#mutex"><code>mutex</code></a> objects have
+following methods:</p>
+</div>
+<dl><dt class="method" id="Mutex.test"><b>test()</b> <tt class="nav"><a class="nav" href="mutex.Mutex.test" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Check whether the mutex is locked.</p>
+</dd>
+<dt class="method" id="Mutex.testandset"><b>testandset()</b> <tt class="nav"><a class="nav" href="mutex.Mutex.testandset" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>&#8220;Atomic&#8221; test-and-set, grab the lock if it is not
+set, and return <code>True</code>,
+otherwise, return <code>False</code>.</p>
+</dd>
+<dt class="method" id="Mutex.lock"><b>lock(function, argument)</b> <tt class="nav"><a class="nav" href="mutex.Mutex.lock" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Execute <var>function</var>(<var>argument</var>), unless the
+mutex is locked. In the case it is locked, place the function and
+argument on the queue. See <code>
+unlock</code> for explanation of when <var>
+function</var>(<var>argument</var>) is executed in that case.</p>
+</dd>
+<dt class="method" id="Mutex.unlock"><b>unlock()</b> <tt class="nav"><a class="nav" href="mutex.Mutex.unlock" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Unlock the mutex if queue is empty, otherwise execute the first
+element in the queue.</p>
+</dd>
+</dl></div></body></html>

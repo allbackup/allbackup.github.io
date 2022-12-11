@@ -1,0 +1,809 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>re</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-re.html'>original</a> :::
+<a href='re.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>re&#8212;Regular expression operations</h1>
+
+<div class="toc"><dl><dt>On this page:</dt><dd><a href="#regular-expression-syntax">Regular Expression Syntax</a></dd><dd><a href="#matching-vs-searching">Matching vs Searching</a></dd><dd><a href="#module-contents">Module Contents</a></dd><dd><a href="#regular-expression-objects">Regular Expression Objects</a></dd><dd><a href="#match-objects">Match Objects</a></dd><dd><a href="#examples">Examples</a></dd></dl></div><p>This module provides regular expression matching operations
+similar to those found in Perl. Regular expression pattern strings
+may not contain null bytes, but can specify the null byte using the
+<code>\</code><var>number</var> notation. Both patterns and strings
+to be searched can be Unicode strings as well as 8-bit strings. The
+<code>re</code> module is always
+available.</p>
+
+<p>Regular expressions use the backslash character
+("<code>\</code>") to indicate special forms or to allow special
+characters to be used without invoking their special meaning. This
+collides with Python's usage of the same character for the same
+purpose in string literals; for example, to match a literal
+backslash, one might have to write <code>'\\\\'</code> as the
+pattern string, because the regular expression must be
+"<code>\\</code>", and each backslash must be expressed as
+"<code>\\</code>" inside a regular Python string literal.</p>
+
+<p>The solution is to use Python's raw string notation for regular
+expression patterns; backslashes are not handled in any special way
+in a string literal prefixed with "<code>r</code>". So <code>
+r"\n"</code> is a two-character string containing "<code>\</code>"
+and "<code>n</code>", while <code>"\n"</code> is a one-character
+string containing a newline. Usually patterns will be expressed in
+Python code using this raw string notation. <span class="mark">
+@see</span> <cite>Mastering Regular Expressions</cite> Book on
+regular expressions by Jeffrey Friedl, published by O'Reilly. The
+second edition of the book no longer covers Python at all, but the
+first edition covered writing good regular expression patterns in
+great detail.</p>
+
+<h2 id="regular-expression-syntax">Regular Expression Syntax <a class="nav" href="#regular-expression-syntax">#</a></h2>
+
+<p>A regular expression (or RE) specifies a set of strings that
+matches it; the functions in this module let you check if a
+particular string matches a given regular expression (or if a given
+regular expression matches a particular string, which comes down to
+the same thing).</p>
+
+<p>Regular expressions can be concatenated to form new regular
+expressions; if <em>A</em> and <em>B</em> are both regular
+expressions, then <em>AB</em> is also a regular expression. In
+general, if a string <em>p</em> matches <em>A</em> and another
+string <em>q</em> matches <em>B</em>, the string <em>pq</em> will
+match AB. This holds unless <em>A</em> or <em>B</em> contain low
+precedence operations; boundary conditions between <em>A</em> and
+<em>B</em>; or have numbered group references. Thus, complex
+expressions can easily be constructed from simpler primitive
+expressions like the ones described here. For details of the theory
+and implementation of regular expressions, consult the Friedl book
+referenced above, or almost any textbook about compiler
+construction.</p>
+
+<p>A brief explanation of the format of regular expressions
+follows. For further information and a gentler presentation,
+consult the Regular Expression HOWTO, accessible from <a class="link" href="http://www.python.org/doc/howto/">
+http://www.python.org/doc/howto/</a>.</p>
+
+<p>Regular expressions can contain both special and ordinary
+characters. Most ordinary characters, like "<code>A</code>",
+"<code>a</code>", or "<code>0</code>", are the simplest regular
+expressions; they simply match themselves. You can concatenate
+ordinary characters, so <code>last</code> matches the string <code>
+'last'</code>. (In the rest of this section, we'll write RE's in
+<code>this special style</code>, usually without quotes, and
+strings to be matched <code>'in single quotes'</code>.)</p>
+
+<p>Some characters, like "<code>|</code>" or "<code>(</code>", are
+special. Special characters either stand for classes of ordinary
+characters, or affect how the regular expressions around them are
+interpreted.</p>
+
+<p>The special characters are:</p>
+</div>
+<dl><dt class="variable"><b>(?(id/name)yes-pattern|no-pattern)</b> <tt class="nav"><a class="nav" href="re." title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Will try to match with <code>yes-pattern</code> if the group
+with given <var>id</var> or <var>name</var> exists, and with <code>
+no-pattern</code> if it doesn't. <code>|no-pattern</code> is
+optional and can be omitted. For example, <code>
+(&lt;)?(\w+@\w+(?:\.\w+)+)(?(1)&gt;)</code> is a poor email
+matching pattern, which will match with <code>
+'&amp;ltuser@host.com&gt;'</code> as well as <code>
+'user@host.com'</code>, but not with <code>
+'&amp;ltuser@host.com'</code>.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.4.<br />
+</blockquote>
+</dd>
+</dl><div class="text">
+<p>The special sequences consist of "<code>\</code>" and a
+character from the list below. If the ordinary character is not on
+the list, then the resulting RE will match the second character.
+For example, <code>\$</code> matches the character
+"<code>$</code>".</p>
+</div>
+<dl><dt class="variable"><b>\Z</b> <tt class="nav"><a class="nav" href="re." title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Matches only at the end of the string.</p>
+</dd>
+</dl><div class="text">
+<p>Most of the standard escapes supported by Python string literals
+are also accepted by the regular expression parser:</p>
+
+<pre>
+\a      \b      \f      \n
+\r      \t      \v      \x
+\\
+</pre>
+
+<p>Octal escapes are included in a limited form: If the first digit
+is a 0, or if there are three octal digits, it is considered an
+octal escape. Otherwise, it is a group reference. As for string
+literals, octal escapes are always at most three digits in
+length.</p>
+
+<h2 id="matching-vs-searching">Matching vs Searching <a class="nav" href="#matching-vs-searching">#</a></h2>
+
+<p>Python offers two different primitive operations based on
+regular expressions: match and search. If you are accustomed to
+Perl's semantics, the search operation is what you're looking for.
+See the <a class="link" href="#search"><code>search</code></a> function and
+corresponding method of compiled regular expression objects.</p>
+
+<p>Note that match may differ from search using a regular
+expression beginning with "<code>^</code>": "<code>^</code>"
+matches only at the start of the string, or in <code>
+MULTILINE</code> mode also immediately following a newline. The
+&#8220;match&#8221; operation succeeds only if the pattern matches
+at the start of the string regardless of mode, or at the starting
+position given by the optional <var>pos</var> argument regardless
+of whether a newline precedes it.</p>
+
+<pre>
+re.compile("a").match("ba", 1)           # succeeds
+re.compile("^a").search("ba", 1)         # fails; 'a' not at start
+re.compile("^a").search("\na", 1)        # fails; 'a' not at start
+re.compile("^a", re.M).search("\na", 1)  # succeeds
+re.compile("^a", re.M).search("ba", 1)   # fails; no preceding \n
+</pre>
+
+<h2 id="module-contents">Module Contents <a class="nav" href="#module-contents">#</a></h2>
+
+<p>The module defines several functions, constants, and an
+exception. Some of the functions are simplified versions of the
+full featured methods for compiled regular expressions. Most
+non-trivial applications always use the compiled form.</p>
+</div>
+<dl><dt class="function" id="compile"><b>compile(pattern[, flags])</b> <tt class="nav"><a class="nav" href="re.compile" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Compile a regular expression pattern into a regular expression
+object, which can be used for matching using its <a class="link" href="#match"><code>match</code></a> and <a class="link" href="#search"><code>
+search</code></a> methods, described below.</p>
+
+<p>The expression's behaviour can be modified by specifying a <var>
+flags</var> value. Values can be any of the following variables,
+combined using bitwise OR (the <code>|</code> operator).</p>
+
+<p>The sequence</p>
+
+<pre>
+prog = re.compile(pat)
+result = prog.match(str)
+</pre>
+
+<p>is equivalent to</p>
+
+<pre>
+result = re.match(pat, str)
+</pre>
+
+<p>but the version using <a class="link" href="#compile"><code>
+compile</code></a> is more efficient when the expression will be used
+several times in a single program.</p>
+</dd>
+<dt class="variable" id="IGNORECASE"><b>IGNORECASE</b> <tt class="nav"><a class="nav" href="re.IGNORECASE" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Perform case-insensitive matching; expressions like <code>
+[A-Z]</code> will match lowercase letters, too. This is not
+affected by the current locale.</p>
+</dd>
+<dt class="variable" id="LOCALE"><b>LOCALE</b> <tt class="nav"><a class="nav" href="re.LOCALE" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Make <code>\w</code>, <code>\W</code>, <code>\b</code>, <code>
+\B</code>, <code>\s</code> and <code>\S</code> dependent on the
+current locale.</p>
+</dd>
+<dt class="variable" id="MULTILINE"><b>MULTILINE</b> <tt class="nav"><a class="nav" href="re.MULTILINE" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>When specified, the pattern character "<code>^</code>" matches
+at the beginning of the string and at the beginning of each line
+(immediately following each newline); and the pattern character
+"<code>$</code>" matches at the end of the string and at the end of
+each line (immediately preceding each newline). By default,
+"<code>^</code>" matches only at the beginning of the string, and
+"<code>$</code>" only at the end of the string and immediately
+before the newline (if any) at the end of the string.</p>
+</dd>
+<dt class="variable" id="DOTALL"><b>DOTALL</b> <tt class="nav"><a class="nav" href="re.DOTALL" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Make the "<code>.</code>" special character match any character
+at all, including a newline; without this flag, "<code>.</code>"
+will match anything <em>except</em> a newline.</p>
+</dd>
+<dt class="variable" id="UNICODE"><b>UNICODE</b> <tt class="nav"><a class="nav" href="re.UNICODE" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Make <code>\w</code>, <code>\W</code>, <code>\b</code>, <code>
+\B</code>, <code>\d</code>, <code>\D</code>, <code>\s</code> and
+<code>\S</code> dependent on the Unicode character properties
+database.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.0.<br />
+</blockquote>
+</dd>
+<dt class="variable" id="VERBOSE"><b>VERBOSE</b> <tt class="nav"><a class="nav" href="re.VERBOSE" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>This flag allows you to write regular expressions that look
+nicer. Whitespace within the pattern is ignored, except when in a
+character class or preceded by an unescaped backslash, and, when a
+line contains a "<code>#</code>" neither in a character class or
+preceded by an unescaped backslash, all characters from the
+leftmost such "<code>#</code>" through the end of the line are
+ignored.</p>
+</dd>
+<dt class="function" id="search"><b>search(pattern, string[, flags])</b> <tt class="nav"><a class="nav" href="re.search" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Scan through <var>string</var> looking for a location where the
+regular expression <var>pattern</var> produces a match, and return
+a corresponding <code>
+MatchObject</code> instance. Return <code>
+None</code> if no position in the string matches the pattern; note
+that this is different from finding a zero-length match at some
+point in the string.</p>
+</dd>
+<dt class="function" id="match"><b>match(pattern, string[, flags])</b> <tt class="nav"><a class="nav" href="re.match" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>If zero or more characters at the beginning of <var>string</var>
+match the regular expression <var>pattern</var>, return a
+corresponding <code>
+MatchObject</code> instance. Return <code>
+None</code> if the string does not match the pattern; note that this
+is different from a zero-length match.</p>
+
+<p class="note"><b>Note:</b> If you want to locate a match anywhere
+in <var>string</var>, use <a class="link" href="#search"><code>
+search</code></a> instead.</p>
+</dd>
+<dt class="function" id="split"><b>split(pattern, string[, maxsplit = 0])</b> <tt class="nav"><a class="nav" href="re.split" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Split <var>string</var> by the occurrences of <var>
+pattern</var>. If capturing parentheses are used in <var>
+pattern</var>, then the text of all groups in the pattern are also
+returned as part of the resulting list. If <var>maxsplit</var> is
+nonzero, at most <var>maxsplit</var> splits occur, and the
+remainder of the string is returned as the final element of the
+list. (Incompatibility note: in the original Python 1.5 release,
+<var>maxsplit</var> was ignored. This has been fixed in later
+releases.)</p>
+
+<pre>
+&gt;&gt;&gt; re.split('\W+', 'Words, words, words.')
+['Words', 'words', 'words', '']
+&gt;&gt;&gt; re.split('(\W+)', 'Words, words, words.')
+['Words', ', ', 'words', ', ', 'words', '.', '']
+&gt;&gt;&gt; re.split('\W+', 'Words, words, words.', 1)
+['Words', 'words, words.']
+</pre>
+
+<p>This function combines and extends the functionality of the old
+<code>regsub.split</code> and <code>regsub.splitx</code>.</p>
+</dd>
+<dt class="function" id="findall"><b>findall(pattern, string[, flags])</b> <tt class="nav"><a class="nav" href="re.findall" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return a list of all non-overlapping matches of <var>
+pattern</var> in <var>string</var>. If one or more groups are
+present in the pattern, return a list of groups; this will be a
+list of tuples if the pattern has more than one group. Empty
+matches are included in the result unless they touch the beginning
+of another match. Changed in version 2.4: Added the optional flags
+argument.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+1.5.2.<br />
+</blockquote>
+</dd>
+<dt class="function" id="finditer"><b>finditer(pattern, string[, flags])</b> <tt class="nav"><a class="nav" href="re.finditer" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return an iterator over all non-overlapping matches for the RE
+<var>pattern</var> in <var>string</var>. For each match, the
+iterator returns a match object. Empty matches are included in the
+result unless they touch the beginning of another match. Changed in
+version 2.4: Added the optional flags argument.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.2.<br />
+</blockquote>
+</dd>
+<dt class="function" id="sub"><b>sub(pattern, repl, string[, count])</b> <tt class="nav"><a class="nav" href="re.sub" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return the string obtained by replacing the leftmost
+non-overlapping occurrences of <var>pattern</var> in <var>
+string</var> by the replacement <var>repl</var>. If the pattern
+isn't found, <var>string</var> is returned unchanged. <var>
+repl</var> can be a string or a function; if it is a string, any
+backslash escapes in it are processed. That is, "<code>\n</code>"
+is converted to a single newline character, "<code>\r</code>" is
+converted to a linefeed, and so forth. Unknown escapes such as
+"<code>\j</code>" are left alone. Backreferences, such as
+"<code>\6</code>", are replaced with the substring matched by group
+6 in the pattern. For example:</p>
+
+<pre>
+&gt;&gt;&gt; re.sub(r'def\s+([a-zA-Z_][a-zA-Z_0-9]*)\s*\(\s*\):',
+...        r'static PyObject*\npy_\1(void)\n{',
+...        'def myfunc():')
+'static PyObject*\npy_myfunc(void)\n{'
+</pre>
+
+<p>If <var>repl</var> is a function, it is called for every
+non-overlapping occurrence of <var>pattern</var>. The function
+takes a single match object argument, and returns the replacement
+string. For example:</p>
+
+<pre>
+&gt;&gt;&gt; def dashrepl(matchobj):
+...     if matchobj.group(0) == '-': return ' '
+...     else: return '-'
+&gt;&gt;&gt; re.sub('-{1,2}', dashrepl, 'pro----gram-files')
+'pro--gram files'
+</pre>
+
+<p>The pattern may be a string or an RE object; if you need to
+specify regular expression flags, you must use a RE object, or use
+embedded modifiers in a pattern; for example, "<code>sub("(?i)b+",
+"x", "bbbb BBBB")</code>" returns <code>'x x'</code>.</p>
+
+<p>The optional argument <var>count</var> is the maximum number of
+pattern occurrences to be replaced; <var>count</var> must be a
+non-negative integer. If omitted or zero, all occurrences will be
+replaced. Empty matches for the pattern are replaced only when not
+adjacent to a previous match, so "<code>sub('x*', '-',
+'abc')</code>" returns <code>'-a-b-c-'</code>.</p>
+
+<p>In addition to character escapes and backreferences as described
+above, "<code>\g&amp;ltname&gt;</code>" will use the substring
+matched by the group named "<code>name</code>", as defined by the
+<code>(?P&amp;ltname&gt;...)</code> syntax.
+"<code>\g&amp;ltnumber&gt;</code>" uses the corresponding group
+number; "<code>\g&amp;lt2&gt;</code>" is therefore equivalent to
+"<code>\2</code>", but isn't ambiguous in a replacement such as
+"<code>\g&amp;lt2&gt;0</code>". "<code>\20</code>" would be
+interpreted as a reference to group 20, not a reference to group 2
+followed by the literal character "<code>0</code>". The
+backreference "<code>\g&amp;lt0&gt;</code>" substitutes in the
+entire substring matched by the RE.</p>
+</dd>
+<dt class="function" id="subn"><b>subn(pattern, repl, string[, count])</b> <tt class="nav"><a class="nav" href="re.subn" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Perform the same operation as <a class="link" href="#sub"><code>
+sub</code></a>, but return a tuple <code>(</code><var>new_string</var>,
+<var>number_of_subs_made</var>).</p>
+</dd>
+<dt class="function" id="escape"><b>escape(string)</b> <tt class="nav"><a class="nav" href="re.escape" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return <var>string</var> with all non-alphanumerics backslashed;
+this is useful if you want to match an arbitrary literal string
+that may have regular expression metacharacters in it.</p>
+</dd>
+<dt class="exception" id="error"><b>exception error</b> <tt class="nav"><a class="nav" href="re.error" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="exception">
+<p>Exception raised when a string passed to one of the functions
+here is not a valid regular expression (for example, it might
+contain unmatched parentheses) or when some other error occurs
+during compilation or matching. It is never an error if a string
+contains no match for a pattern.</p>
+</dd>
+</dl><div class="text">
+<h2 id="regular-expression-objects">Regular Expression Objects <a class="nav" href="#regular-expression-objects">#</a></h2>
+
+<p>Compiled regular expression objects support the following
+methods and attributes:</p>
+</div>
+<dl><dt class="method"><b>match(string[, pos[, endpos]])</b> <tt class="nav"><a class="nav" href="re.match" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>If zero or more characters at the beginning of <var>string</var>
+match this regular expression, return a corresponding <code>MatchObject</code> instance.
+Return <code>None</code> if the string does not match the pattern;
+note that this is different from a zero-length match.</p>
+
+<p class="note"><b>Note:</b> If you want to locate a match anywhere
+in <var>string</var>, use <a class="link" href="#search"><code>
+search</code></a> instead.</p>
+
+<p>The optional second parameter <var>pos</var> gives an index in
+the string where the search is to start; it defaults to <code>
+0</code>. This is not completely equivalent to slicing the string;
+the <code>'^'</code> pattern character matches at the real
+beginning of the string and at positions just after a newline, but
+not necessarily at the index where the search is to start.</p>
+
+<p>The optional parameter <var>endpos</var> limits how far the
+string will be searched; it will be as if the string is <var>
+endpos</var> characters long, so only the characters from <var>
+pos</var> to <var>endpos</var> - 1 will be searched for a match. If
+<var>endpos</var> is less than <var>pos</var>, no match will be
+found, otherwise, if <var>rx</var> is a compiled regular expression
+object, <var>rx</var>.match(<var>string</var>, 0, 50) is equivalent
+to <var>rx</var>.match(<var>string</var>[:50], 0).</p>
+</dd>
+<dt class="method"><b>search(string[, pos[, endpos]])</b> <tt class="nav"><a class="nav" href="re.search" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Scan through <var>string</var> looking for a location where this
+regular expression produces a match, and return a corresponding <code>MatchObject</code> instance.
+Return <code>None</code> if no position in
+the string matches the pattern; note that this is different from
+finding a zero-length match at some point in the string.</p>
+
+<p>The optional <var>pos</var> and <var>endpos</var> parameters
+have the same meaning as for the <a class="link" href="#match"><code>
+match</code></a> method.</p>
+</dd>
+<dt class="method"><b>split(string[, maxsplit = 0])</b> <tt class="nav"><a class="nav" href="re.split" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Identical to the <a class="link" href="#split"><code>split</code></a>
+function, using the compiled pattern.</p>
+</dd>
+<dt class="method"><b>findall(string[, pos[, endpos]])</b> <tt class="nav"><a class="nav" href="re.findall" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Identical to the <a class="link" href="#findall"><code>findall</code></a>
+function, using the compiled pattern.</p>
+</dd>
+<dt class="method"><b>finditer(string[, pos[, endpos]])</b> <tt class="nav"><a class="nav" href="re.finditer" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Identical to the <a class="link" href="#finditer"><code>
+finditer</code></a> function, using the compiled pattern.</p>
+</dd>
+<dt class="method"><b>sub(repl, string[, count = 0])</b> <tt class="nav"><a class="nav" href="re.sub" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Identical to the <a class="link" href="#sub"><code>sub</code></a>
+function, using the compiled pattern.</p>
+</dd>
+<dt class="method"><b>subn(repl, string[, count = 0])</b> <tt class="nav"><a class="nav" href="re.subn" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Identical to the <a class="link" href="#subn"><code>subn</code></a>
+function, using the compiled pattern.</p>
+</dd>
+<dt class="attribute" id="flags"><b>flags</b> <tt class="nav"><a class="nav" href="re.flags" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>The flags argument used when the RE object was compiled, or
+<code>0</code> if no flags were provided.</p>
+</dd>
+<dt class="attribute" id="groupindex"><b>groupindex</b> <tt class="nav"><a class="nav" href="re.groupindex" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>A dictionary mapping any symbolic group names defined by <code>
+(?P&lt;</code><var>id</var>&gt;) to group numbers. The dictionary
+is empty if no symbolic groups were used in the pattern.</p>
+</dd>
+<dt class="attribute" id="pattern"><b>pattern</b> <tt class="nav"><a class="nav" href="re.pattern" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>The pattern string from which the RE object was compiled.</p>
+</dd>
+</dl><div class="text">
+<h2 id="match-objects">Match Objects <a class="nav" href="#match-objects">#</a></h2>
+
+<p><code>MatchObject</code>
+instances support the following methods and attributes:</p>
+</div>
+<dl><dt class="method" id="Match.expand"><b>expand(template)</b> <tt class="nav"><a class="nav" href="re.Match.expand" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return the string obtained by doing backslash substitution on
+the template string <var>template</var>, as done by the <a class="link" href="#sub"><code>sub</code></a> method. Escapes such as
+"<code>\n</code>" are converted to the appropriate characters, and
+numeric backreferences ("<code>\1</code>", "<code>\2</code>") and
+named backreferences ("<code>\g&amp;lt1&gt;</code>",
+"<code>\g&amp;ltname&gt;</code>") are replaced by the contents of
+the corresponding group.</p>
+</dd>
+<dt class="method" id="Match.group"><b>group([group1, ...])</b> <tt class="nav"><a class="nav" href="re.Match.group" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Returns one or more subgroups of the match. If there is a single
+argument, the result is a single string; if there are multiple
+arguments, the result is a tuple with one item per argument.
+Without arguments, <var>group1</var> defaults to zero (the whole
+match is returned). If a <var>groupN</var> argument is zero, the
+corresponding return value is the entire matching string; if it is
+in the inclusive range [1..99], it is the string matching the
+corresponding parenthesized group. If a group number is negative or
+larger than the number of groups defined in the pattern, an <code>
+exceptions.IndexError</code> exception is raised. If a group is
+contained in a part of the pattern that did not match, the
+corresponding result is <code>None</code>.
+If a group is contained in a part of the pattern that matched
+multiple times, the last match is returned.</p>
+
+<p>If the regular expression uses the <code>
+(?P&lt;</code><var>name</var>&gt;...) syntax, the <var>groupN</var>
+arguments may also be strings identifying groups by their group
+name. If a string argument is not used as a group name in the
+pattern, an <code>
+exceptions.IndexError</code> exception is raised.</p>
+
+<p>A moderately complicated example:</p>
+
+<pre>
+m = re.match(r"(?P&lt;int&gt;\d+)\.(\d*)", '3.14')
+</pre>
+
+<p>After performing this match, <code>m.group(1)</code> is <code>
+'3'</code>, as is <code>m.group('int')</code>, and <code>
+m.group(2)</code> is <code>'14'</code>.</p>
+</dd>
+<dt class="method" id="Match.groups"><b>groups([default])</b> <tt class="nav"><a class="nav" href="re.Match.groups" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return a tuple containing all the subgroups of the match, from 1
+up to however many groups are in the pattern. The <var>
+default</var> argument is used for groups that did not participate
+in the match; it defaults to <code>
+None</code>. (Incompatibility note: in the original Python 1.5
+release, if the tuple was one element long, a string would be
+returned instead. In later versions (from 1.5.1 on), a singleton
+tuple is returned in such cases.)</p>
+</dd>
+<dt class="method" id="Match.groupdict"><b>groupdict([default])</b> <tt class="nav"><a class="nav" href="re.Match.groupdict" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return a dictionary containing all the <em>named</em> subgroups
+of the match, keyed by the subgroup name. The <var>default</var>
+argument is used for groups that did not participate in the match;
+it defaults to <code>None</code>.</p>
+</dd>
+<dt class="method" id="Match.end"><b>end([group])</b> <tt class="nav"><a class="nav" href="re.Match.end" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return the indices of the start and end of the substring matched
+by <var>group</var>; <var>group</var> defaults to zero (meaning the
+whole matched substring). Return <code>-1</code> if <var>
+group</var> exists but did not contribute to the match. For a match
+object <var>m</var>, and a group <var>g</var> that did contribute
+to the match, the substring matched by group <var>g</var>
+(equivalent to <var>m</var>.group(<var>g</var>)) is</p>
+
+<pre>
+m.string[m.start(g):m.end(g)]
+</pre>
+
+<p>Note that <code>m.start(</code><var>group</var>) will equal
+<code>m.end(</code><var>group</var>) if <var>group</var> matched a
+null string. For example, after <var>m</var> = re.search('b(c?)',
+'cba'), <var>m</var>.start(0) is 1, <var>m</var>.end(0) is 2, <var>
+m</var>.start(1) and <var>m</var>.end(1) are both 2, and <var>
+m</var>.start(2) raises an <code>exceptions.IndexError</code>
+exception.</p>
+</dd>
+<dt class="method" id="Match.span"><b>span([group])</b> <tt class="nav"><a class="nav" href="re.Match.span" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>For <code>MatchObject</code>
+<var>m</var>, return the 2-tuple <code>
+(</code><var>m</var>.start(<var>group</var>), <var>
+m</var>.end(<var>group</var>)). Note that if <var>group</var> did
+not contribute to the match, this is <code>(-1, -1)</code>. Again,
+<var>group</var> defaults to zero.</p>
+</dd>
+<dt class="attribute" id="Match.pos"><b>pos</b> <tt class="nav"><a class="nav" href="re.Match.pos" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>The value of <var>pos</var> which was passed to the <a class="link" href="#search"><code>search</code></a> or <a class="link" href="#match"><code>match</code></a> method of the <code>RegexObject</code>. This is the index into the
+string at which the RE engine started looking for a match.</p>
+</dd>
+<dt class="attribute" id="Match.endpos"><b>endpos</b> <tt class="nav"><a class="nav" href="re.Match.endpos" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>The value of <var>endpos</var> which was passed to the <a class="link" href="#search"><code>search</code></a> or <a class="link" href="#match"><code>match</code></a> method of the <code>RegexObject</code>. This is the index into the
+string beyond which the RE engine will not go.</p>
+</dd>
+<dt class="attribute" id="Match.lastindex"><b>lastindex</b> <tt class="nav"><a class="nav" href="re.Match.lastindex" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>The integer index of the last matched capturing group, or <code>None</code> if no group was matched at
+all. For example, the expressions <code>(a)b</code>, <code>
+((a)(b))</code>, and <code>((ab))</code> will have <code>lastindex
+== 1</code> if applied to the string <code>'ab'</code>, while the
+expression <code>(a)(b)</code> will have <code>lastindex ==
+2</code>, if applied to the same string.</p>
+</dd>
+<dt class="attribute" id="Match.lastgroup"><b>lastgroup</b> <tt class="nav"><a class="nav" href="re.Match.lastgroup" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>The name of the last matched capturing group, or <code>
+None</code> if the group didn't have a name, or if no group was
+matched at all.</p>
+</dd>
+<dt class="attribute" id="Match.re"><b>re</b> <tt class="nav"><a class="nav" href="re.Match.re" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>The regular expression object whose <a class="link" href="#match"><code>match</code></a> or <a class="link" href="#search"><code>
+search</code></a> method produced this <code>MatchObject</code> instance.</p>
+</dd>
+<dt class="attribute" id="Match.string"><b>string</b> <tt class="nav"><a class="nav" href="re.Match.string" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>The string passed to <a class="link" href="#match"><code>match</code></a>
+or <a class="link" href="#search"><code>search</code></a>.</p>
+</dd>
+</dl><div class="text">
+<h2 id="examples">Examples <a class="nav" href="#examples">#</a></h2>
+</div>
+<div class="error">
+<p>Python does not currently have an equivalent to <code>c:scanf</code>. Regular expressions are generally
+more powerful, though also more verbose, than <code>c:scanf</code> format strings. The table below
+offers some more-or-less equivalent mappings between <code>c:scanf</code> format tokens and
+regular expressions.</p>
+
+<table border="1">
+<tr>
+<th>
+<p><code>c:scanf</code> Token</p>
+</th>
+<th>
+<p>Regular Expression</p>
+</th>
+</tr>
+
+<tr>
+<td>
+<p><code>%c</code></p>
+</td>
+<td>
+<p><code>.</code></p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>%5c</code></p>
+</td>
+<td>
+<p><code>.{5</code>}</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>%d</code></p>
+</td>
+<td>
+<p><code>[-+]?\d+</code></p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>%e</code>, <code>%E</code>, <code>%f</code>, <code>
+%g</code></p>
+</td>
+<td>
+<p><code>[-+]?(\d+(\.\d*)?|\d*\.\d+)([eE][-+]?\d+)?</code></p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>%i</code></p>
+</td>
+<td>
+<p><code>[-+]?(0[xX][\dA-Fa-f]+|0[0-7]*|\d+)</code></p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>%o</code></p>
+</td>
+<td>
+<p><code>0[0-7]*</code></p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>%s</code></p>
+</td>
+<td>
+<p><code>\S+</code></p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>%u</code></p>
+</td>
+<td>
+<p><code>\d+</code></p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>%x</code>, <code>%X</code></p>
+</td>
+<td>
+<p><code>0[xX][\dA-Fa-f]+</code></p>
+</td>
+</tr>
+</table>
+
+<br />
+<br />
+ 
+
+<p>To extract the filename and numbers from a string like</p>
+
+<pre>
+    /usr/sbin/sendmail - 0 errors, 4 warnings
+</pre>
+
+<p>you would use a <code>c:scanf</code>
+format like</p>
+
+<pre>
+    %s - %d errors, %d warnings
+</pre>
+
+<p>The equivalent regular expression would be</p>
+
+<pre>
+    (\S+) - (\d+) errors, (\d+) warnings
+</pre>
+</div>
+<div class="error">
+<p>If you create regular expressions that require the engine to
+perform a lot of recursion, you may encounter a RuntimeError
+exception with the message <code>maximum recursion limit</code>
+exceeded. For example,</p>
+
+<pre>
+&gt;&gt;&gt; import re
+&gt;&gt;&gt; s = 'Begin ' + 1000*'a very long string ' + 'end'
+&gt;&gt;&gt; re.match('Begin (\w| )*? end', s).end()
+Traceback (most recent call last):
+  File "&lt;stdin&gt;", line 1, in ?
+  File "/usr/local/lib/python2.3/sre.py", line 132, in match
+    return _compile(pattern, flags).match(string)
+RuntimeError: maximum recursion limit exceeded
+</pre>
+
+<p>You can often restructure your regular expression to avoid
+recursion.</p>
+
+<p>Starting with Python 2.3, simple uses of the <code>*?</code>
+pattern are special-cased to avoid recursion. Thus, the above
+regular expression can avoid recursion by being recast as <code>
+Begin [a-zA-Z0-9_ ]*?end</code>. As a further benefit, such regular
+expressions will run faster than their recursive equivalents.</p>
+</div>
+</div></body></html>

@@ -1,0 +1,39 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>Calls</title> <script type="text/javascript">effbot_page_id=1226;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> <!--
+<p style='color: #8f8f8f; background: #fff5bf; padding: 5px 10px;'> <b>2008-07-15:</b> Selected articles
+
+now have experimental "comment" links in the left column and at the bottom.
+You're welcome to use them for commenting and voting on articles.
+For a bit more on this, see <a
+href="http://effbot.slinkset.com/links/Welcome_to_discuss_effbot_org">this
+page</a>. /F
+</p>
+--> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <h1 class="maintitle">Calls</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p>A call calls a callable object (e.g. a function) with a possibly empty series
+of arguments:</p><p>Syntax:</p><blockquote><p><em><a href="syntax-primary">primary</a></em> <strong>(</strong> <em>argument list</em> [<strong>,</strong>] <strong>)</strong></p></blockquote><p>[primary 
+call ::= [ primary][1] &#8220;(&#8221; [[argument_list][2] [&#8220;,&#8221;]] &#8220;)&#8221;
+&#8220;(&#8221; [[argument_list][2] [&#8220;,&#8221;] | [test][3] [ genexpr_for][4] ] &#8220;)&#8221; 
+argument_list ::= [positional_arguments][5] [&#8220;,&#8221; [keyword_arguments][6]]
+<code>["," "\*" [ expression][7]]</code>
+<code>["," "\*\*" [ expression][7]]</code>
+<code>| [keyword\_arguments][6] ["," "\*" [ expression][7]]</code>
+<code>["," "\*\*" [ expression][7]]</code>
+<code>| "\*" [expression][7] ["," "\*\*" [ expression][7]]</code>
+<code>| "\*\*" [expression][7]</code>
+positional_arguments ::= [ expression][7] (&#8220;,&#8221; [expression][7])*
+keyword_arguments ::= [ keyword_item][8] (&#8220;,&#8221; [keyword_item][8])*
+keyword_item ::= [ identifier][9] &#8220;=&#8221; [expression][7]</p><p>A trailing comma may be present after the positional and keyword
+arguments but does not affect the semantics.</p><p>The primary must evaluate to a <em>callable object</em> (user-defined
+functions, built-in functions, methods of built-in objects, class
+objects, methods of class instances, and certain class instances
+themselves are callable; extensions may define additional callable
+object types). All argument expressions are evaluated before the call
+is attempted. Please refer to section [7.6][11] for the syntax of
+formal parameter lists.</p><p>If keyword arguments are present, they are first converted to
+positional arguments, as follows. First, a list of unfilled slots is
+created for the formal parameters. If there are N positional
+arguments, they are placed in the first N slots. Next, for each
+keyword argument, the identifier is used to determine the
+corresponding slot (if the identifier is the same as the first formal
+parameter name, the first slot is used, and so on). If the slot is
+already filled, a <a href="TypeError.h

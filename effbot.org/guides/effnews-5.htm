@@ -1,0 +1,37 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>In Progress: EffNews Part 5: Odds and&nbsp;Ends</title> <script type="text/javascript">effbot_page_id=63;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> <!--
+<p style='color: #8f8f8f; background: #fff5bf; padding: 5px 10px;'> <b>2008-07-15:</b> Selected articles
+
+now have experimental "comment" links in the left column and at the bottom.
+You're welcome to use them for commenting and voting on articles.
+For a bit more on this, see <a
+href="http://effbot.slinkset.com/links/Welcome_to_discuss_effbot_org">this
+page</a>. /F
+</p>
+--> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <p><a href="effnews-4.htm">back</a> <a href="effnews-6.htm">next</a></p> <h1 class="maintitle">In Progress: EffNews Part 5: Odds and&nbsp;Ends</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p class="info">July 2003 | Fredrik Lundh</p><p>This is the fifth article covering <a href="effnews.htm">the
+effnews project</a>; a simple RSS newsreader written in Python.  Other
+articles in this series are available via <a href="effnews.htm">this
+page</a>.</p><p>This article is being edited.</p><h2 id="improving-the-rss-support">Improving the RSS Support&#160;<a class="nav" href="#improving-the-rss-support" title="bookmark!">#</a></h2><h3 id="supporting-non-xml-character-entities">Supporting Non-XML Character Entities&#160;<a class="nav" href="#supporting-non-xml-character-entities" title="bookmark!">#</a></h3><p>Many RSS feeds embed non-XML character entities in the description
+and title fields. This is allowed by the original 0.9 and 0.91
+standards, but it&#8217;s unclear whether later standards really support
+this.  Not that the standards matter here; feeds of all kinds use the
+entities, so we have to deal with them anyway.</p><p>The <b>xmllib</b> parser uses an <b>entitydefs</b> dictionary to
+translate entities to character strings.  If an entity is not defined
+by this dictionary, the parser calls the <b>unknown_entityref</b>
+method.  The following addition to <a href="effnews-4.htm">our
+<b>rss_parser</b> class</a> adds all standard HTML entities to the
+entitydefs dictionary when it&#8217;s first called, and replaces all other
+entities to an empty string.</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><pre class="python wide wide">
+<span class="pykeyword">class</span> <span class="pyclass">rss_parser</span>(xmllib.XMLParser):
+
+    ...
+
+    htmlentitydefs = None
+
+    <span class="pykeyword">def</span> <span class="pyfunction">unknown_entityref</span>(self, entity):
+        <span class="pykeyword">if</span> <span class="pykeyword">not</span> self.htmlentitydefs:
+            <span class="pycomment"># lazy loading of entitydefs table</span>
+            <span class="pykeyword">import</span> htmlentitydefs
+            <span class="pycomment"># make sure we don't overwrite entities already present in</span>
+            <span class="pycomment"># the en

@@ -1,0 +1,70 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>The gzip&nbsp;module</title></head><body data-page-id="549"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">The gzip&nbsp;module</h1></div><div class="yui-ge"><div class="yui-u first"><p>This module allows you to read and write gzip-compressed files
+as if they were ordinary files.</p><div class="example">
+<b style="example">Example: Using the gzip
+module to read a compressed file</b>
+<pre>
+# File: <a href="gzip/gzip-example-1.py">gzip-example-1.py</a>
+
+import gzip
+
+file = gzip.GzipFile("samples/sample.gz")
+
+print file.read()
+
+</pre><pre class="computeroutput" moreinfo="NONE">
+Well it certainly looks as though we're in for
+a splendid afternoon's sport in this the 127th
+Upperclass Twit of the Year Show.
+</pre></div><p>The standard implementation doesn&#8217;t support the <b>seek</b>
+and <b>tell</b> methods. The following example shows how to add
+forward seeking:</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><div class="example wide">
+<b style="example">Example: Extending the gzip
+module to support seek/tell</b>
+<pre class="wide">
+# File: <a href="gzip/gzip-example-2.py">gzip-example-2.py</a>
+
+import gzip
+
+class gzipFile(gzip.GzipFile):
+    # adds seek/tell support to GzipFile
+
+    offset = 0
+
+    def read(self, size=None):
+        data = gzip.GzipFile.read(self, size)
+        self.offset = self.offset + len(data)
+        return data
+
+    def seek(self, offset, whence=0):
+        # figure out new position (we can only seek forwards)
+        if whence == 0:
+            position = offset
+        elif whence == 1:
+            position = self.offset + offset
+        else:
+            raise IOError, "Illegal argument"
+        if position &lt; self.offset:
+            raise IOError, "Cannot seek backwards"
+
+        # skip forward, in 16k blocks
+        while position &gt; self.offset:
+            if not self.read(min(position - self.offset, 16384)):
+                break
+
+    def tell(self):
+        return self.offset
+
+#
+# try it
+
+file = gzipFile("samples/sample.gz")
+file.seek(80)
+
+print file.read()
+
+</pre><pre class="computeroutput wide" moreinfo="NONE">
+this the 127th
+Upperclass Twit of the Year Show.
+</pre></div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to librarybook index page.">::: librarybook :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

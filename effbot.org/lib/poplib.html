@@ -1,0 +1,218 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>poplib</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-poplib.html'>original</a> :::
+<a href='poplib.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>poplib&#8212;POP3 protocol client</h1>
+
+<div class="toc"><dl><dt>On this page:</dt><dd><a href="#pop-objects">POP3 Objects</a></dd><dd><a href="#pop-example">POP3 Example</a></dd></dl></div><p>This module defines a class, <a class="link" href="#POP3"><code>
+POP3</code></a>, which encapsulates a connection to a POP3 server and
+implements the protocol as defined in <a class="link" href="http://www.faqs.org/rfcs/rfc1725.html">RFC 1725</a>. The <a class="link" href="#POP3"><code>POP3</code></a> class supports both the
+minimal and optional command sets. Additionally, this module
+provides a class <a class="link" href="#POP3_SSL"><code>POP3_SSL</code></a>,
+which provides support for connecting to POP3 servers that use SSL
+as an underlying protocol layer.</p>
+
+<p>Note that POP3, though widely supported, is obsolescent. The
+implementation quality of POP3 servers varies widely, and too many
+are quite poor. If your mailserver supports IMAP, you would be
+better off using the <code>
+imaplib</code>.<code>IMAP4</code> class, as
+IMAP servers tend to be better implemented.</p>
+
+<p>A single class is provided by the <code>poplib</code> module:</p>
+</div>
+<dl><dt class="class" id="POP3"><b>class POP3(host[, port])</b> <tt class="nav"><a class="nav" href="poplib.POP3" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>This class implements the actual POP3 protocol. The connection
+is created when the instance is initialized. If <var>port</var> is
+omitted, the standard POP3 port (110) is used.</p>
+</dd>
+<dt class="class" id="POP3_SSL"><b>class POP3_SSL(host[, port[, keyfile[,
+certfile]]])</b> <tt class="nav"><a class="nav" href="poplib.POP3_SSL" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>This is a subclass of <a class="link" href="#POP3"><code>POP3</code></a>
+that connects to the server over an SSL encrypted socket. If <var>
+port</var> is not specified, 995, the standard POP3-over-SSL port
+is used. <var>keyfile</var> and <var>certfile</var> are also
+optional - they can contain a PEM formatted private key and
+certificate chain file for the SSL connection.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.4.<br />
+</blockquote>
+</dd>
+</dl><div class="text">
+<p>One exception is defined as an attribute of the <code>poplib</code> module:</p>
+</div>
+<dl><dt class="exception" id="error_proto"><b>exception error_proto</b> <tt class="nav"><a class="nav" href="poplib.error_proto" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="exception">
+<p>Exception raised on any errors. The reason for the exception is
+passed to the constructor as a string.</p>
+</dd>
+</dl><div class="text"><span class="mark">@see</span> <code>Module imaplib</code> The standard Python IMAP
+module. <span class="mark">@see</span> <a class="link" href="http://www.catb.org/~esr/fetchmail/fetchmail-FAQ.html">
+Frequently Asked Questions About Fetchmail</a> The FAQ for the
+fetchmail POP/IMAP client collects information on POP3 server
+variations and RFC noncompliance that may be useful if you need to
+write an application based on the POP protocol. 
+
+<h2 id="pop-objects">POP3 Objects <a class="nav" href="#pop-objects">#</a></h2>
+
+<p>All POP3 commands are represented by methods of the same name,
+in lower-case; most return the response text sent by the
+server.</p>
+
+<p>An <a class="link" href="#POP3"><code>POP3</code></a> instance has the
+following methods:</p>
+</div>
+<dl><dt class="method" id="POP3.set_debuglevel"><b>set_debuglevel(level)</b> <tt class="nav"><a class="nav" href="poplib.POP3.set_debuglevel" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Set the instance's debugging level. This controls the amount of
+debugging output printed. The default, <code>0</code>, produces no
+debugging output. A value of <code>1</code> produces a moderate
+amount of debugging output, generally a single line per request. A
+value of <code>2</code> or higher produces the maximum amount of
+debugging output, logging each line sent and received on the
+control connection.</p>
+</dd>
+<dt class="method" id="POP3.getwelcome"><b>getwelcome()</b> <tt class="nav"><a class="nav" href="poplib.POP3.getwelcome" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Returns the greeting string sent by the POP3 server.</p>
+</dd>
+<dt class="method" id="POP3.user"><b>user(username)</b> <tt class="nav"><a class="nav" href="poplib.POP3.user" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Send user command, response should indicate that a password is
+required.</p>
+</dd>
+<dt class="method" id="POP3.pass_"><b>pass_(password)</b> <tt class="nav"><a class="nav" href="poplib.POP3.pass_" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Send password, response includes message count and mailbox size.
+Note: the mailbox on the server is locked until <code>quit</code> is called.</p>
+</dd>
+<dt class="method" id="POP3.apop"><b>apop(user, secret)</b> <tt class="nav"><a class="nav" href="poplib.POP3.apop" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Use the more secure APOP authentication to log into the POP3
+server.</p>
+</dd>
+<dt class="method" id="POP3.rpop"><b>rpop(user)</b> <tt class="nav"><a class="nav" href="poplib.POP3.rpop" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Use RPOP authentication (similar to UNIX r-commands) to log into
+POP3 server.</p>
+</dd>
+<dt class="method" id="POP3.stat"><b>stat()</b> <tt class="nav"><a class="nav" href="poplib.POP3.stat" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Get mailbox status. The result is a tuple of 2 integers: <code>
+(</code><var>message count</var>, <var>mailbox size</var>).</p>
+</dd>
+<dt class="method" id="POP3.list"><b>list([which])</b> <tt class="nav"><a class="nav" href="poplib.POP3.list" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Request message list, result is in the form <code>
+(</code><var>response</var>, ['mesg_num octets', ...], <var>
+octets</var>). If <var>which</var> is set, it is the message to
+list.</p>
+</dd>
+<dt class="method" id="POP3.retr"><b>retr(which)</b> <tt class="nav"><a class="nav" href="poplib.POP3.retr" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Retrieve whole message number <var>which</var>, and set its seen
+flag. Result is in form <code>(</code><var>response</var>, ['line',
+...], <var>octets</var>).</p>
+</dd>
+<dt class="method" id="POP3.dele"><b>dele(which)</b> <tt class="nav"><a class="nav" href="poplib.POP3.dele" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Flag message number <var>which</var> for deletion. On most
+servers deletions are not actually performed until QUIT (the major
+exception is Eudora QPOP, which deliberately violates the RFCs by
+doing pending deletes on any disconnect).</p>
+</dd>
+<dt class="method" id="POP3.rset"><b>rset()</b> <tt class="nav"><a class="nav" href="poplib.POP3.rset" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Remove any deletion marks for the mailbox.</p>
+</dd>
+<dt class="method" id="POP3.noop"><b>noop()</b> <tt class="nav"><a class="nav" href="poplib.POP3.noop" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Do nothing. Might be used as a keep-alive.</p>
+</dd>
+<dt class="method" id="POP3.quit"><b>quit()</b> <tt class="nav"><a class="nav" href="poplib.POP3.quit" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Signoff: commit changes, unlock mailbox, drop connection.</p>
+</dd>
+<dt class="method" id="POP3.top"><b>top(which, howmuch)</b> <tt class="nav"><a class="nav" href="poplib.POP3.top" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Retrieves the message header plus <var>howmuch</var> lines of
+the message after the header of message number <var>which</var>.
+Result is in form <code>(</code><var>response</var>, ['line', ...],
+<var>octets</var>).</p>
+
+<p>The POP3 TOP command this method uses, unlike the RETR command,
+doesn't set the message's seen flag; unfortunately, TOP is poorly
+specified in the RFCs and is frequently broken in off-brand
+servers. Test this method by hand against the POP3 servers you will
+use before trusting it.</p>
+</dd>
+<dt class="method" id="POP3.uidl"><b>uidl([which])</b> <tt class="nav"><a class="nav" href="poplib.POP3.uidl" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return message digest (unique id) list. If <var>which</var> is
+specified, result contains the unique id for that message in the
+form <code>'</code><var>response</var> <var>mesgnum</var> <var>
+uid</var>, otherwise result is list <code>
+(</code><var>response</var>, ['mesgnum uid', ...], <var>
+octets</var>).</p>
+</dd>
+</dl><div class="text">
+<p>Instances of <a class="link" href="#POP3_SSL"><code>POP3_SSL</code></a>
+have no additional methods. The interface of this subclass is
+identical to its parent.</p>
+
+<h2 id="pop-example">POP3 Example <a class="nav" href="#pop-example">#</a></h2>
+
+<p>Here is a minimal example (without error checking) that opens a
+mailbox and retrieves and prints all messages:</p>
+
+<pre>
+import getpass, poplib
+
+M = poplib.POP3('localhost')
+M.user(getpass.getuser())
+M.pass_(getpass.getpass())
+numMessages = len(M.list()[1])
+for i in range(numMessages):
+    for j in M.retr(i+1)[1]:
+        print j
+</pre>
+
+<p>At the end of the module, there is a test section that contains
+a more extensive example of usage.</p>
+</div>
+</div></body></html>

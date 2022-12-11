@@ -1,0 +1,82 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>dumbdbm</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-dumbdbm.html'>original</a> :::
+<a href='dumbdbm.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>dumbdbm&#8212;Portable DBM implementation</h1>
+
+<div class="toc"><dl><dt>On this page:</dt><dd><a href="#dumbdbm-objects">Dumbdbm Objects</a></dd></dl></div><p class="note"><b>Note:</b> The <code>dumbdbm</code> module is intended as a last resort
+fallback for the <code>anydbm</code>
+module when no more robust module is available. The <code>dumbdbm</code> module is not written for speed and
+is not nearly as heavily used as the other database modules.</p>
+
+<p>The <code>dumbdbm</code> module
+provides a persistent dictionary-like interface which is written
+entirely in Python. Unlike other modules such as <code>gdbm</code> and <code>
+bsddb</code>, no external library is required. As with other
+persistent mappings, the keys and values must always be
+strings.</p>
+
+<p>The module defines the following:</p>
+</div>
+<dl><dt class="exception" id="error"><b>exception error</b> <tt class="nav"><a class="nav" href="dumbdbm.error" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="exception">
+<p>Raised on dumbdbm-specific errors, such as I/O errors. <code>
+exceptions.KeyError</code> is raised for general mapping errors like
+specifying an incorrect key.</p>
+</dd>
+<dt class="function" id="open"><b>open(filename[, flag[, mode]])</b> <tt class="nav"><a class="nav" href="dumbdbm.open" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Open a dumbdbm database and return a dumbdbm object. The <var>
+filename</var> argument is the basename of the database file
+(without any specific extensions). When a dumbdbm database is
+created, files with .dat and .dir extensions are created.</p>
+
+<p>The optional <var>flag</var> argument is currently ignored; the
+database is always opened for update, and will be created if it
+does not exist.</p>
+
+<p>The optional <var>mode</var> argument is the Unix mode of the
+file, used only when the database has to be created. It defaults to
+octal <code>0666</code> (and will be modified by the prevailing
+umask).</p>
+
+<blockquote><span class="mark">@since</span> Changed in version
+2.2: The mode argument was ignored in earlier versions.<br />
+</blockquote>
+</dd>
+</dl><div class="text"><span class="mark">@see</span> <code>Module anydbm</code> Generic interface to dbm-style
+databases. <span class="mark">@see</span> <code>Module dbm</code> Similar interface to the DBM/NDBM
+library. <span class="mark">@see</span> <code>Module gdbm</code> Similar interface to the GNU GDBM
+library. <span class="mark">@see</span> <code>Module shelve</code> Persistence module which
+stores non-string data. <span class="mark">@see</span> <code>Module whichdb</code> Utility module
+used to determine the type of an existing database. 
+
+<h2 id="dumbdbm-objects">Dumbdbm Objects <a class="nav" href="#dumbdbm-objects">#</a></h2>
+
+<p>In addition to the methods provided by the <code>UserDict.DictMixin</code> class, <code>dumbdbm</code> objects provide the
+following methods.</p>
+</div>
+<dl><dt class="method" id="Dumbdbm.sync"><b>sync()</b> <tt class="nav"><a class="nav" href="dumbdbm.Dumbdbm.sync" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Synchronize the on-disk directory and data files. This method is
+called by the <code>sync</code> method of
+<code>Shelve</code> objects.</p>
+</dd>
+</dl></div></body></html>

@@ -1,0 +1,30 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>How do I get a single keypress at a&nbsp;time?</title></head><body data-page-id="803"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><p class="note" style="text-align: center"><strong>
+This is an old copy of the Python FAQ.  The information here may be
+outdated.
+</strong></p><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">How do I get a single keypress at a&nbsp;time?</h1></div><div class="yui-ge"><div class="yui-u first"><p>For Windows, see:</p><blockquote><p><a href="how-do-i-check-for-a-keypress-without-blocking.htm"><strong>how-do-i-check-for-a-keypress-without-blocking</strong></a></p></blockquote><p>For Unix variants: There are several solutions. It&#8217;s straightforward to do this using <a href="/pyref/curses.htm"><strong>curses</strong></a>, but curses is a fairly large module to learn. Here&#8217;s a solution without curses:</p><pre class="python"><span class="pykeyword">import</span> termios, fcntl, sys, os, select
+
+fd = sys.stdin.fileno()
+
+oldterm = termios.tcgetattr(fd)
+newattr = oldterm[:]
+newattr[3] = newattr[3] &amp; ~termios.ICANON &amp; ~termios.ECHO
+termios.tcsetattr(fd, termios.TCSANOW, newattr)
+
+oldflags = fcntl.fcntl(fd, fcntl.F_GETFL)
+fcntl.fcntl(fd, fcntl.F_SETFL, oldflags | os.O_NONBLOCK)
+
+<span class="pykeyword">try</span>:
+    <span class="pykeyword">while</span> 1:
+        r, w, e = select.select([fd], [], [])
+        <span class="pykeyword">if</span> r:
+            c = sys.stdin.read(1)
+            <span class="pykeyword">print</span> <span class="pystring">"Got character"</span>, repr(c)
+            <span class="pykeyword">if</span> c == <span class="pystring">"q"</span>:
+                <span class="pykeyword">break</span> <span class="pycomment"># quit</span>
+<span class="pykeyword">finally</span>:
+    termios.tcsetattr(fd, termios.TCSAFLUSH, oldterm)
+    fcntl.fcntl(fd, fcntl.F_SETFL, oldflags)</pre><p>You need the <a href="/pyref/termios.htm"><strong>termios</strong></a> and the <a href="/pyref/fcntl.htm"><strong>fcntl</strong></a> module for any of this to work, and I&#8217;ve only tried it on Linux, though it should work elsewhere. In this code, characters are read and printed one at a time, until the user presses
+&#8216;q&#8217; to quit.</p><p>termios.tcsetattr() turns off stdin&#8217;s echoing and disables canonical mode. fcntl.fnctl() is used to obtain stdin&#8217;s file descriptor flags and modify them for non-blocking mode.  The <a href="/pyref/select.htm"><strong>select</strong></a> module is then used to wait for
+incoming characters.</p><p>CATEGORY: library</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to pyfaq index page.">::: pyfaq :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

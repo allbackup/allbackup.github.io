@@ -1,0 +1,133 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>The exceptions&nbsp;module</title></head><body data-page-id="531"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">The exceptions&nbsp;module</h1></div><div class="yui-ge"><div class="yui-u first"><p>This module provides the standard exception hierarchy. It&#8217;s
+automatically imported when Python starts, and the exceptions are
+added to the <b><a href="builtin.htm">__builtin__</a></b> module. In
+other words, you usually don&#8217;t need to import this module.</p><p>This is a Python module in 1.5.2, and a built-in module in 2.0
+and later.</p><p>The following standard exceptions are defined by this
+module:</p><ul><li><p>
+<b>Exception</b> is used as a base class for all exceptions.
+It&#8217;s strongly recommended (but not yet required) that user
+exceptions are derived from this class too.</p></li><li><p>
+<b>SystemExit(Exception)</b> is raised by the
+<b>sys.exit</b> function. If it propagates to the top level
+without being caught by a <b>try-except</b> clause, the
+interpreter is terminated without a traceback message.</p></li><li><p>
+<b>StandardError(Exception)</b> is used as a base class for
+all standard exceptions (except <b>SystemExit</b>, that is).</p></li><li><p>
+<b>KeyboardInterrupt(StandardError)</b> is raised when the
+user presses Control-C (or any other interrupt key). Note that this
+may cause strange errors if you use <span>&#8220;catch all&#8221;</span>
+<b>try-except</b> statements.</p></li><li><p>
+<b>ImportError(StandardError)</b> is raised when Python fails
+to import a module.</p></li><li><p>
+<b>EnvironmentError</b> is used as a base class for exceptions
+that can be caused by the interpreter&#8217;s environment (that is,
+they&#8217;re usually not caused by bugs in the program).</p></li><li><p>
+<b>IOError(EnvironmentError)</b> is used to flag I/O-related
+errors.</p></li><li><p>
+<b>OSError(EnvironmentError)</b> is used to flag errors by the
+<b>os</b> module.</p></li><li><p>
+<b>WindowsError(OSError)</b> is used to flag Windows-specific
+errors from the <b>os</b> module.</p></li><li><p>
+<b>NameError(StandardError)</b> is raised when Python fails to
+find a global or local name.</p></li><li><p>
+<b>UnboundLocalError(NameError)</b> is raised if your program
+attempts to access a local variable before it has been assigned a
+value. This exception is only used in 2.0 and later; earlier
+versions raise a plain <b>NameError</b> exception instead.</p></li><li><p>
+<b>AttributeError(StandardError)</b> is raised when Python
+fails to find (or assign to) an instance attribute, a method, a
+module function, or any other qualified name.</p></li><li><p>
+<b>SyntaxError(StandardError)</b> is raised when the compiler
+stumbles upon a syntax error.</p></li><li><p>(2.0 and later) <b>IndentationError(SyntaxError)</b> is raised
+for syntax errors caused by bad indentation. This exception is only
+used in 2.0 and later; earlier versions raise a plain
+<b>SyntaxError</b> exception instead.</p></li><li><p>(2.0 and later) <b>TabError(IndentationError)</b> is raised by
+the interpreter when the <b>-tt</b> option is used to check for
+inconsistent indentation. This exception is only used in 2.0 and
+later; earlier versions raise a plain <b>SyntaxError</b>
+exception instead.</p></li><li><p>
+<b>TypeError(StandardError)</b> is raised when an operation
+cannot be applied to an object of the given type.</p></li><li><p>
+<b>AssertionError(StandardError)</b> is raised when an
+<b>assert</b> statement fails (if the expression is false, that
+is).</p></li><li><p>
+<b>LookupError(StandardError)</b> is used as a base class for
+exceptions raised when a sequence or dictionary type doesn&#8217;t
+contain a given index or key.</p></li><li><p>
+<b>IndexError(LookupError)</b> is raised by sequence objects
+when the given index doesn&#8217;t exist.</p></li><li><p>
+<b>KeyError(LookupError)</b> is raised by dictionary objects
+when the given key doesn&#8217;t exist.</p></li><li><p>
+<b>ArithmeticError(StandardError)</b> is used as a base class
+for math-related exceptions.</p></li><li><p>
+<b>OverflowError(ArithmeticError)</b> is raised when an
+operations overflows (for example, when an integer is too large to
+fit in the given type).</p></li><li><p>
+<b>ZeroDivisionError(ArithmeticError)</b> is raised when you
+try to divide a number by zero.</p></li><li><p>
+<b>FloatingPointError(ArithmeticError)</b> is raised when a
+floating point operation fails.</p></li><li><p>
+<b>ValueError(StandardError)</b> is raised if an argument has
+the right type, but an invalid value.</p></li><li><p>(2.0 and later) <b>UnicodeError(ValueError)</b> is raised for
+type problems related to the Unicode string type. This is only used
+in 2.0 and later.</p></li><li><p>
+<b>RuntimeError(StandardError)</b> is used for various
+run-time problems, including attempts to get outside the box when
+running in restricted mode, unexpected hardware problems, etc.</p></li><li><p>
+<b>NotImplementedError(RuntimeError)</b> can be used to flag
+functions that hasn&#8217;t been implemented yet, or methods that should
+be overridden.</p></li><li><p>
+<b>SystemError(StandardError)</b> is raised if the interpreter
+messes up, and knows about it. The exception value contains a more
+detailed description (usually something cryptic, like
+<span>&#8220;<b>eval_code2: NULL globals</b>&#8221;</span> or so). I cannot
+recall ever seeing this exception in over five years of full-time
+Python programming, but maybe that&#8217;s just me.</p></li><li><p>
+<b>MemoryError(StandardError)</b> is raised when the
+interpreter runs out of memory. Note that this only happens when
+the underlying memory allocation routines complain; you can often
+send your poor computer into a mindless swapping frenzy before that
+happens.</p></li></ul><p>You can create your own exception classes. Just inherit from the
+built-in <b>Exception</b> class (or a proper standard exception),
+and override the constructor and/or <b>__str__</b> method as
+necessary.</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><div class="example wide">
+<b style="example">Example: Using the
+exceptions module</b>
+<pre class="wide">
+# File: <a href="exceptions/exceptions-example-1.py">exceptions-example-1.py</a>
+
+# python imports this module by itself, so the following
+# line isn't really needed
+# import exceptions
+
+class HTTPError(Exception):
+    # indicates an HTTP protocol error
+    def __init__(self, url, errcode, errmsg):
+        self.url = url
+        self.errcode = errcode
+        self.errmsg = errmsg
+    def __str__(self):
+        return (
+            "&lt;HTTPError for %s: %s %s&gt;" %
+            (self.url, self.errcode, self.errmsg)
+            )
+
+try:
+    raise HTTPError("http://www.python.org/foo", 200, "Not Found")
+except HTTPError, error:
+    print "url", "=&gt;", error.url
+    print "errcode", "=&gt;", error.errcode
+    print "errmsg", "=&gt;", error.errmsg
+    raise # reraise exception
+
+</pre><pre class="computeroutput wide" moreinfo="NONE">
+$ python exceptions-example-1.py
+url =&gt; http://www.python.org/foo
+errcode =&gt; 200
+errmsg =&gt; Not Found
+Traceback (innermost last):
+  File "exceptions-example-1", line 16, in ?
+HTTPError: &lt;HTTPError for http://www.python.org/foo: 200 Not Found&gt;
+</pre></div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to librarybook index page.">::: librarybook :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

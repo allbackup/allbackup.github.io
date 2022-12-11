@@ -1,0 +1,2947 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>email</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-email.html'>original</a> :::
+<a href='email.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>email&#8212;An email and MIME handling package</h1>
+
+<div class="toc"><dl><dt>On this page:</dt><dd><a href="#representing-an-email-message">Representing an email message</a></dd><dd><a href="#parsing-email-messages">Parsing email messages</a></dd><dd><a href="#generating-mime-documents">Generating MIME documents</a></dd><dd><a href="#creating-email-and-mime-objects-from-scratch">Creating email and MIME objects from scratch</a></dd><dd><a href="#internationalized-headers">Internationalized headers</a></dd><dd><a href="#representing-character-sets">Representing character sets</a></dd><dd><a href="#encoders">Encoders</a></dd><dd><a href="#exception-and-defect-classes">Exception and Defect classes</a></dd><dd><a href="#miscellaneous-utilities">Miscellaneous utilities</a></dd><dd><a href="#iterators">Iterators</a></dd><dd><a href="#package-history">Package History</a></dd><dd><a href="#differences-from-mimelib">Differences from mimelib</a></dd><dd><a href="#examples">Examples</a></dd></dl></div><p>New in version 2.2.</p>
+
+<p>The <code>email</code> package is a
+library for managing email messages, including MIME and other <a class="link" href="http://www.faqs.org/rfcs/rfc2822.html">RFC
+2822</a>-based message documents. It subsumes most of the
+functionality in several older standard modules such as <code>rfc822</code>, <code>mimetools</code>, <code>multifile</code>, and other non-standard
+packages such as <code>mimecntl</code>.
+It is specifically <em>not</em> designed to do any sending of email
+messages to SMTP (<a class="link" href="http://www.faqs.org/rfcs/rfc2821.html">RFC 2821</a>) servers;
+that is the function of the <code>
+smtplib</code> module. The <code>email</code>
+package attempts to be as RFC-compliant as possible, supporting in
+addition to <a class="link" href="http://www.faqs.org/rfcs/rfc2822.html">RFC 2822</a>, such
+MIME-related RFCs as <a class="link" href="http://www.faqs.org/rfcs/rfc2045.html">RFC 2045</a>, <a class="link" href="http://www.faqs.org/rfcs/rfc2046.html">RFC
+2046</a>, <a class="link" href="http://www.faqs.org/rfcs/rfc2047.html">RFC 2047</a>, and <a class="link" href="http://www.faqs.org/rfcs/rfc2231.html">RFC
+2231</a>.</p>
+
+<p>The primary distinguishing feature of the <code>email</code> package is that it splits the parsing
+and generating of email messages from the internal <em>object
+model</em> representation of email. Applications using the <code>email</code> package deal primarily
+with objects; you can add sub-objects to messages, remove
+sub-objects from messages, completely re-arrange the contents, etc.
+There is a separate parser and a separate generator which handles
+the transformation from flat text to the object model, and then
+back to flat text again. There are also handy subclasses for some
+common MIME object types, and a few miscellaneous utilities that
+help with such common tasks as extracting and parsing message field
+values, creating RFC-compliant dates, etc.</p>
+
+<p>The following sections describe the functionality of the <code>email</code> package. The ordering
+follows a progression that should be common in applications: an
+email message is read as flat text from a file or other source, the
+text is parsed to produce the object structure of the email
+message, this structure is manipulated, and finally rendered back
+into flat text.</p>
+
+<p>It is perfectly feasible to create the object structure out of
+whole cloth -- i.e. completely from scratch. From there, a similar
+progression can be taken as above.</p>
+
+<p>Also included are detailed specifications of all the classes and
+modules that the <code>email</code>
+package provides, the exception classes you might encounter while
+using the <code>email</code> package, some
+auxiliary utilities, and a few examples. For users of the older <code>mimelib</code> package, or previous
+versions of the <code>email</code>
+package, a section on differences and porting is provided. <span class="mark">@see</span> <code>Module
+smtplib</code> SMTP protocol client.</p>
+
+<h2 id="representing-an-email-message">Representing an email message <a class="nav" href="#representing-an-email-message">#</a></h2>
+
+<p>The central class in the <code>
+email</code> package is the <a class="link" href="#Message"><code>
+Message</code></a> class; it is the base class for the <code>email</code> object model. <a class="link" href="#Message"><code>Message</code></a> provides the core functionality for
+setting and querying header fields, and for accessing message
+bodies.</p>
+
+<p>Conceptually, a <a class="link" href="#Message"><code>Message</code></a>
+object consists of <em>headers</em> and <em>payloads</em>. Headers
+are <a class="link" href="http://www.faqs.org/rfcs/rfc2822.html">
+RFC 2822</a> style field names and values where the field name and
+value are separated by a colon. The colon is not part of either the
+field name or the field value.</p>
+
+<p>Headers are stored and returned in case-preserving form but are
+matched case-insensitively. There may also be a single envelope
+header, also known as the <em>Unix-From</em> header or the <code>
+From_</code> header. The payload is either a string in the case of
+simple message objects or a list of <a class="link" href="#Message"><code>Message</code></a> objects for MIME container
+documents (e.g. multipart/* and message/rfc822).</p>
+
+<p><a class="link" href="#Message"><code>Message</code></a> objects provide
+a mapping style interface for accessing the message headers, and an
+explicit interface for accessing both the headers and the payload.
+It provides convenience methods for generating a flat text
+representation of the message object tree, for accessing commonly
+used header parameters, and for recursively walking over the object
+tree.</p>
+
+<p>Here are the methods of the <a class="link" href="#Message"><code>
+Message</code></a> class:</p>
+</div>
+<dl><dt class="class" id="Message"><b>class Message()</b> <tt class="nav"><a class="nav" href="email.Message" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>The constructor takes no arguments.</p>
+</dd>
+<dt class="method" id="Message.as_string"><b>as_string([unixfrom])</b> <tt class="nav"><a class="nav" href="email.Message.as_string" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return the entire message flatten as a string. When optional
+<var>unixfrom</var> is <code>True</code>,
+the envelope header is included in the returned string. <var>
+unixfrom</var> defaults to <code>
+False</code>.</p>
+
+<p>Note that this method is provided as a convenience and may not
+always format the message the way you want. For example, by default
+it mangles lines that begin with <code>From</code> . For more
+flexibility, instantiate a <a class="link" href="#Generator"><code>
+Generator</code></a> instance and use its <code>flatten</code> method directly. For example:</p>
+
+<pre>
+from cStringIO import StringIO
+from email.Generator import Generator
+fp = StringIO()
+g = Generator(fp, mangle_from_=False, maxheaderlen=60)
+g.flatten(msg)
+text = fp.getvalue()
+</pre>
+</dd>
+<dt class="method" id="Message.__str__"><b>__str__()</b> <tt class="nav"><a class="nav" href="email.Message.__str__" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Equivalent to <code>
+as_string(unixfrom=True)</code>.</p>
+</dd>
+<dt class="method" id="Message.is_multipart"><b>is_multipart()</b> <tt class="nav"><a class="nav" href="email.Message.is_multipart" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return <code>True</code> if the
+message's payload is a list of sub-<a class="link" href="#Message"><code>Message</code></a> objects, otherwise return <code>
+False</code>. When <code>
+is_multipart</code> returns False, the payload should be a string
+object.</p>
+</dd>
+<dt class="method" id="Message.set_unixfrom"><b>set_unixfrom(unixfrom)</b> <tt class="nav"><a class="nav" href="email.Message.set_unixfrom" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Set the message's envelope header to <var>unixfrom</var>, which
+should be a string.</p>
+</dd>
+<dt class="method" id="Message.get_unixfrom"><b>get_unixfrom()</b> <tt class="nav"><a class="nav" href="email.Message.get_unixfrom" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return the message's envelope header. Defaults to <code>
+None</code> if the envelope header was never set.</p>
+</dd>
+<dt class="method" id="Message.attach"><b>attach(payload)</b> <tt class="nav"><a class="nav" href="email.Message.attach" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Add the given <var>payload</var> to the current payload, which
+must be <code>None</code> or a list of <a class="link" href="#Message"><code>Message</code></a> objects before the
+call. After the call, the payload will always be a list of <a class="link" href="#Message"><code>Message</code></a> objects. If you want
+to set the payload to a scalar object (e.g. a string), use <code>set_payload</code> instead.</p>
+</dd>
+<dt class="method" id="Message.get_payload"><b>get_payload([i[, decode]])</b> <tt class="nav"><a class="nav" href="email.Message.get_payload" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return a reference the current payload, which will be a list of
+<a class="link" href="#Message"><code>Message</code></a> objects when <code>is_multipart</code> is <code>True</code>, or a string when <code>is_multipart</code> is <code>False</code>. If the payload is a list
+and you mutate the list object, you modify the message's payload in
+place.</p>
+
+<p>With optional argument <var>i</var>, <code>get_payload</code> will return the <var>
+i</var>-th element of the payload, counting from zero, if <code>is_multipart</code> is <code>True</code>. An <code>exceptions.IndexError</code> will be
+raised if <var>i</var> is less than 0 or greater than or equal to
+the number of items in the payload. If the payload is a string
+(i.e. <code>is_multipart</code> is
+<code>False</code>) and <var>i</var> is
+given, a <code>
+exceptions.TypeError</code> is raised.</p>
+
+<p>Optional <var>decode</var> is a flag indicating whether the
+payload should be decoded or not, according to the
+Content-Transfer-Encoding: header. When <code>True</code> and the message is not a multipart, the
+payload will be decoded if this header's value is
+"<code>quoted-printable</code>" or "<code>base64</code>". If some
+other encoding is used, or Content-Transfer-Encoding: header is
+missing, or if the payload has bogus base64 data, the payload is
+returned as-is (undecoded). If the message is a multipart and the
+<var>decode</var> flag is <code>
+True</code>, then <code>None</code> is
+returned. The default for <var>decode</var> is <code>
+False</code>.</p>
+</dd>
+<dt class="method" id="Message.set_payload"><b>set_payload(payload[, charset])</b> <tt class="nav"><a class="nav" href="email.Message.set_payload" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Set the entire message object's payload to <var>payload</var>.
+It is the client's responsibility to ensure the payload invariants.
+Optional <var>charset</var> sets the message's default character
+set; see <code>set_charset</code>
+for details.</p>
+
+<blockquote><span class="mark">@since</span> Changed in version
+2.2.2: charset argument added.<br />
+</blockquote>
+</dd>
+<dt class="method" id="Message.set_charset"><b>set_charset(charset)</b> <tt class="nav"><a class="nav" href="email.Message.set_charset" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Set the character set of the payload to <var>charset</var>,
+which can either be a <a class="link" href="#Charset"><code>
+Charset</code></a> instance (see <code>email.Charset</code>), a string naming a
+character set, or <code>None</code>. If it is a string, it will be
+converted to a <a class="link" href="#Charset"><code>Charset</code></a>
+instance. If <var>charset</var> is <code>None</code>, the <code>charset</code> parameter will
+be removed from the Content-Type: header. Anything else will
+generate a <code>
+exceptions.TypeError</code>.</p>
+
+<p>The message will be assumed to be of type text/* encoded with
+<code>charset.input_charset</code>. It will be converted to <code>
+charset.output_charset</code> and encoded properly, if needed, when
+generating the plain text representation of the message. MIME
+headers (MIME-Version:, Content-Type:, Content-Transfer-Encoding:)
+will be added as needed.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.2.2.<br />
+</blockquote>
+</dd>
+<dt class="method" id="Message.get_charset"><b>get_charset()</b> <tt class="nav"><a class="nav" href="email.Message.get_charset" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return the <a class="link" href="#Charset"><code>Charset</code></a>
+instance associated with the message's payload.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.2.2.<br />
+</blockquote>
+</dd>
+</dl><div class="text">
+<p>The following methods implement a mapping-like interface for
+accessing the message's <a class="link" href="http://www.faqs.org/rfcs/rfc2822.html">RFC 2822</a> headers.
+Note that there are some semantic differences between these methods
+and a normal mapping (i.e. dictionary) interface. For example, in a
+dictionary there are no duplicate keys, but here there may be
+duplicate message headers. Also, in dictionaries there is no
+guaranteed order to the keys returned by <code>keys</code>, but in a <a class="link" href="#Message"><code>Message</code></a> object, headers are always returned
+in the order they appeared in the original message, or were added
+to the message later. Any header deleted and then re-added are
+always appended to the end of the header list.</p>
+
+<p>These semantic differences are intentional and are biased toward
+maximal convenience.</p>
+
+<p>Note that in all cases, any envelope header present in the
+message is not included in the mapping interface.</p>
+</div>
+<dl><dt class="method" id="Message.__len__"><b>__len__()</b> <tt class="nav"><a class="nav" href="email.Message.__len__" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return the total number of headers, including duplicates.</p>
+</dd>
+<dt class="method" id="Message.__contains__"><b>__contains__(name)</b> <tt class="nav"><a class="nav" href="email.Message.__contains__" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return true if the message object has a field named <var>
+name</var>. Matching is done case-insensitively and <var>name</var>
+should not include the trailing colon. Used for the <code>in</code>
+operator, e.g.:</p>
+
+<pre>
+if 'message-id' in myMessage:
+    print 'Message-ID:', myMessage['message-id']
+</pre>
+</dd>
+<dt class="method" id="Message.__getitem__"><b>__getitem__(name)</b> <tt class="nav"><a class="nav" href="email.Message.__getitem__" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return the value of the named header field. <var>name</var>
+should not include the colon field separator. If the header is
+missing, <code>None</code> is returned; a
+<code>
+exceptions.KeyError</code> is never raised.</p>
+
+<p>Note that if the named field appears more than once in the
+message's headers, exactly which of those field values will be
+returned is undefined. Use the <code>
+get_all</code> method to get the values of all the extant named
+headers.</p>
+</dd>
+<dt class="method" id="Message.__setitem__"><b>__setitem__(name, val)</b> <tt class="nav"><a class="nav" href="email.Message.__setitem__" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Add a header to the message with field name <var>name</var> and
+value <var>val</var>. The field is appended to the end of the
+message's existing fields.</p>
+
+<p>Note that this does <em>not</em> overwrite or delete any
+existing header with the same name. If you want to ensure that the
+new header is the only one present in the message with field name
+<var>name</var>, delete the field first, e.g.:</p>
+
+<pre>
+del msg['subject']
+msg['subject'] = 'Python roolz!'
+</pre>
+</dd>
+<dt class="method" id="Message.__delitem__"><b>__delitem__(name)</b> <tt class="nav"><a class="nav" href="email.Message.__delitem__" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Delete all occurrences of the field with name <var>name</var>
+from the message's headers. No exception is raised if the named
+field isn't present in the headers.</p>
+</dd>
+<dt class="method" id="Message.has_key"><b>has_key(name)</b> <tt class="nav"><a class="nav" href="email.Message.has_key" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return true if the message contains a header field named <var>
+name</var>, otherwise return false.</p>
+</dd>
+<dt class="method" id="Message.keys"><b>keys()</b> <tt class="nav"><a class="nav" href="email.Message.keys" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return a list of all the message's header field names.</p>
+</dd>
+<dt class="method" id="Message.values"><b>values()</b> <tt class="nav"><a class="nav" href="email.Message.values" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return a list of all the message's field values.</p>
+</dd>
+<dt class="method" id="Message.items"><b>items()</b> <tt class="nav"><a class="nav" href="email.Message.items" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return a list of 2-tuples containing all the message's field
+headers and values.</p>
+</dd>
+<dt class="method" id="Message.get"><b>get(name[, failobj])</b> <tt class="nav"><a class="nav" href="email.Message.get" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return the value of the named header field. This is identical to
+<code>__getitem__</code> except that
+optional <var>failobj</var> is returned if the named header is
+missing (defaults to <code>
+None</code>).</p>
+</dd>
+</dl><div class="text">
+<p>Here are some additional useful methods:</p>
+</div>
+<dl><dt class="method" id="Message.get_all"><b>get_all(name[, failobj])</b> <tt class="nav"><a class="nav" href="email.Message.get_all" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return a list of all the values for the field named <var>
+name</var>. If there are no such named headers in the message,
+<var>failobj</var> is returned (defaults to <code>None</code>).</p>
+</dd>
+<dt class="method" id="Message.add_header"><b>add_header(_name, _value, **_params)</b> <tt class="nav"><a class="nav" href="email.Message.add_header" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Extended header setting. This method is similar to <code>__setitem__</code> except that
+additional header parameters can be provided as keyword arguments.
+<var>_name</var> is the header field to add and <var>_value</var>
+is the <em>primary</em> value for the header.</p>
+
+<p>For each item in the keyword argument dictionary <var>
+_params</var>, the key is taken as the parameter name, with
+underscores converted to dashes (since dashes are illegal in Python
+identifiers). Normally, the parameter will be added as <code>
+key="value"</code> unless the value is <code>None</code>, in which case only the key will be
+added.</p>
+
+<p>Here's an example:</p>
+
+<pre>
+msg.add_header('Content-Disposition', 'attachment', filename='bud.gif')
+</pre>
+
+<p>This will add a header that looks like</p>
+
+<pre>
+Content-Disposition: attachment; filename="bud.gif"
+</pre>
+</dd>
+<dt class="method" id="Message.replace_header"><b>replace_header(_name, _value)</b> <tt class="nav"><a class="nav" href="email.Message.replace_header" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Replace a header. Replace the first header found in the message
+that matches <var>_name</var>, retaining header order and field
+name case. If no matching header was found, a <code>exceptions.KeyError</code> is
+raised.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.2.2.<br />
+</blockquote>
+</dd>
+<dt class="method" id="Message.get_content_type"><b>get_content_type()</b> <tt class="nav"><a class="nav" href="email.Message.get_content_type" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return the message's content type. The returned string is
+coerced to lower case of the form maintype/subtype. If there was no
+Content-Type: header in the message the default type as given by <code>get_default_type</code> will
+be returned. Since according to <a class="link" href="http://www.faqs.org/rfcs/rfc2045.html">RFC 2045</a>, messages
+always have a default type, <code>get_content_type</code> will always
+return a value.</p>
+
+<p><a class="link" href="http://www.faqs.org/rfcs/rfc2045.html">RFC
+2045</a> defines a message's default type to be text/plain unless
+it appears inside a multipart/digest container, in which case it
+would be message/rfc822. If the Content-Type: header has an invalid
+type specification, <a class="link" href="http://www.faqs.org/rfcs/rfc2045.html">RFC 2045</a> mandates
+that the default type be text/plain.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.2.2.<br />
+</blockquote>
+</dd>
+<dt class="method" id="Message.get_content_maintype"><b>get_content_maintype()</b> <tt class="nav"><a class="nav" href="email.Message.get_content_maintype" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return the message's main content type. This is the maintype
+part of the string returned by <code>get_content_type</code>.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.2.2.<br />
+</blockquote>
+</dd>
+<dt class="method" id="Message.get_content_subtype"><b>get_content_subtype()</b> <tt class="nav"><a class="nav" href="email.Message.get_content_subtype" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return the message's sub-content type. This is the subtype part
+of the string returned by <code>get_content_type</code>.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.2.2.<br />
+</blockquote>
+</dd>
+<dt class="method" id="Message.get_default_type"><b>get_default_type()</b> <tt class="nav"><a class="nav" href="email.Message.get_default_type" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return the default content type. Most messages have a default
+content type of text/plain, except for messages that are subparts
+of multipart/digest containers. Such subparts have a default
+content type of message/rfc822.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.2.2.<br />
+</blockquote>
+</dd>
+<dt class="method" id="Message.set_default_type"><b>set_default_type(ctype)</b> <tt class="nav"><a class="nav" href="email.Message.set_default_type" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Set the default content type. <var>ctype</var> should either be
+text/plain or message/rfc822, although this is not enforced. The
+default content type is not stored in the Content-Type: header.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.2.2.<br />
+</blockquote>
+</dd>
+<dt class="method" id="Message.get_params"><b>get_params([failobj[, header[,
+unquote]]])</b> <tt class="nav"><a class="nav" href="email.Message.get_params" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return the message's Content-Type: parameters, as a list. The
+elements of the returned list are 2-tuples of key/value pairs, as
+split on the "<code>=</code>" sign. The left hand side of the
+"<code>=</code>" is the key, while the right hand side is the
+value. If there is no "<code>=</code>" sign in the parameter the
+value is the empty string, otherwise the value is as described in
+<code>get_param</code> and is unquoted
+if optional <var>unquote</var> is <code>
+True</code> (the default).</p>
+
+<p>Optional <var>failobj</var> is the object to return if there is
+no Content-Type: header. Optional <var>header</var> is the header
+to search instead of Content-Type:.</p>
+
+<blockquote><span class="mark">@since</span> Changed in version
+2.2.2: unquote argument added.<br />
+</blockquote>
+</dd>
+<dt class="method" id="Message.get_param"><b>get_param(param[, failobj[, header[,
+unquote]]])</b> <tt class="nav"><a class="nav" href="email.Message.get_param" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return the value of the Content-Type: header's parameter <var>
+param</var> as a string. If the message has no Content-Type: header
+or if there is no such parameter, then <var>failobj</var> is
+returned (defaults to <code>
+None</code>).</p>
+
+<p>Optional <var>header</var> if given, specifies the message
+header to use instead of Content-Type:.</p>
+
+<p>Parameter keys are always compared case insensitively. The
+return value can either be a string, or a 3-tuple if the parameter
+was <a class="link" href="http://www.faqs.org/rfcs/rfc2231.html">
+RFC 2231</a> encoded. When it's a 3-tuple, the elements of the
+value are of the form <code>(CHARSET, LANGUAGE, VALUE)</code>. Note
+that both <code>CHARSET</code> and <code>LANGUAGE</code> can be <code>None</code>, in which case you should
+consider <code>VALUE</code> to be encoded in the <code>
+us-ascii</code> charset. You can usually ignore <code>
+LANGUAGE</code>.</p>
+
+<p>If your application doesn't care whether the parameter was
+encoded as in <a class="link" href="http://www.faqs.org/rfcs/rfc2231.html">RFC 2231</a>, you can
+collapse the parameter value by calling <code>
+email.Utils.collapse_rfc2231_value</code>, passing in the return value
+from <code>get_param</code>. This will
+return a suitably decoded Unicode string whn the value is a tuple,
+or the original string unquoted if it isn't. For example:</p>
+
+<pre>
+rawparam = msg.get_param('foo')
+param = email.Utils.collapse_rfc2231_value(rawparam)
+</pre>
+
+<p>In any case, the parameter value (either the returned string, or
+the <code>VALUE</code> item in the 3-tuple) is always unquoted,
+unless <var>unquote</var> is set to <code>False</code>.</p>
+
+<blockquote><span class="mark">@since</span> Changed in version
+2.2.2: unquote argument added, and 3-tuple return value
+possible.<br />
+</blockquote>
+</dd>
+<dt class="method" id="Message.set_param"><b>set_param(param, value[, header[,
+requote[, charset[, language]]]])</b> <tt class="nav"><a class="nav" href="email.Message.set_param" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Set a parameter in the Content-Type: header. If the parameter
+already exists in the header, its value will be replaced with <var>
+value</var>. If the Content-Type: header as not yet been defined
+for this message, it will be set to text/plain and the new
+parameter value will be appended as per <a class="link" href="http://www.faqs.org/rfcs/rfc2045.html">RFC 2045</a>.</p>
+
+<p>Optional <var>header</var> specifies an alternative header to
+Content-Type:, and all parameters will be quoted as necessary
+unless optional <var>requote</var> is <code>False</code> (the default is <code>True</code>).</p>
+
+<p>If optional <var>charset</var> is specified, the parameter will
+be encoded according to <a class="link" href="http://www.faqs.org/rfcs/rfc2231.html">RFC 2231</a>. Optional
+<var>language</var> specifies the RFC 2231 language, defaulting to
+the empty string. Both <var>charset</var> and <var>language</var>
+should be strings.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.2.2.<br />
+</blockquote>
+</dd>
+<dt class="method" id="Message.del_param"><b>del_param(param[, header[,
+requote]])</b> <tt class="nav"><a class="nav" href="email.Message.del_param" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Remove the given parameter completely from the Content-Type:
+header. The header will be re-written in place without the
+parameter or its value. All values will be quoted as necessary
+unless <var>requote</var> is <code>False</code> (the default is <code>True</code>). Optional <var>header</var>
+specifies an alternative to Content-Type:.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.2.2.<br />
+</blockquote>
+</dd>
+<dt class="method" id="Message.set_type"><b>set_type(type[, header][, requote])</b> <tt class="nav"><a class="nav" href="email.Message.set_type" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Set the main type and subtype for the Content-Type: header.
+<var>type</var> must be a string in the form maintype/subtype,
+otherwise a <code>
+exceptions.ValueError</code> is raised.</p>
+
+<p>This method replaces the Content-Type: header, keeping all the
+parameters in place. If <var>requote</var> is <code>False</code>, this leaves the existing header's
+quoting as is, otherwise the parameters will be quoted (the
+default).</p>
+
+<p>An alternative header can be specified in the <var>header</var>
+argument. When the Content-Type: header is set a MIME-Version:
+header is also added.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.2.2.<br />
+</blockquote>
+</dd>
+<dt class="method" id="Message.get_filename"><b>get_filename([failobj])</b> <tt class="nav"><a class="nav" href="email.Message.get_filename" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return the value of the <code>filename</code> parameter of the
+Content-Disposition: header of the message, or <var>failobj</var>
+if either the header is missing, or has no <code>filename</code>
+parameter. The returned string will always be unquoted as per <code>Utils.unquote</code>.</p>
+</dd>
+<dt class="method" id="Message.get_boundary"><b>get_boundary([failobj])</b> <tt class="nav"><a class="nav" href="email.Message.get_boundary" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return the value of the <code>boundary</code> parameter of the
+Content-Type: header of the message, or <var>failobj</var> if
+either the header is missing, or has no <code>boundary</code>
+parameter. The returned string will always be unquoted as per <code>Utils.unquote</code>.</p>
+</dd>
+<dt class="method" id="Message.set_boundary"><b>set_boundary(boundary)</b> <tt class="nav"><a class="nav" href="email.Message.set_boundary" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Set the <code>boundary</code> parameter of the Content-Type:
+header to <var>boundary</var>. <code>set_boundary</code> will always quote <var>
+boundary</var> if necessary. A <a class="link" href="#HeaderParseError"><code>HeaderParseError</code></a> is raised if the
+message object has no Content-Type: header.</p>
+
+<p>Note that using this method is subtly different than deleting
+the old Content-Type: header and adding a new one with the new
+boundary via <code>add_header</code>,
+because <code>set_boundary</code>
+preserves the order of the Content-Type: header in the list of
+headers. However, it does <em>not</em> preserve any continuation
+lines which may have been present in the original Content-Type:
+header.</p>
+</dd>
+<dt class="method" id="Message.get_content_charset"><b>get_content_charset([failobj])</b> <tt class="nav"><a class="nav" href="email.Message.get_content_charset" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return the <code>charset</code> parameter of the Content-Type:
+header, coerced to lower case. If there is no Content-Type: header,
+or if that header has no <code>charset</code> parameter, <var>
+failobj</var> is returned.</p>
+
+<p>Note that this method differs from <code>get_charset</code> which returns the <a class="link" href="#Charset"><code>Charset</code></a> instance for the
+default encoding of the message body.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.2.2.<br />
+</blockquote>
+</dd>
+<dt class="method" id="Message.get_charsets"><b>get_charsets([failobj])</b> <tt class="nav"><a class="nav" href="email.Message.get_charsets" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return a list containing the character set names in the message.
+If the message is a multipart, then the list will contain one
+element for each subpart in the payload, otherwise, it will be a
+list of length 1.</p>
+
+<p>Each item in the list will be a string which is the value of the
+<code>charset</code> parameter in the Content-Type: header for the
+represented subpart. However, if the subpart has no Content-Type:
+header, no <code>charset</code> parameter, or is not of the text
+main MIME type, then that item in the returned list will be <var>
+failobj</var>.</p>
+</dd>
+<dt class="method" id="Message.walk"><b>walk()</b> <tt class="nav"><a class="nav" href="email.Message.walk" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>The <code>walk</code> method is an
+all-purpose generator which can be used to iterate over all the
+parts and subparts of a message object tree, in depth-first
+traversal order. You will typically use <code>walk</code> as the iterator in a <code>for</code>
+loop; each iteration returns the next subpart.</p>
+
+<p>Here's an example that prints the MIME type of every part of a
+multipart message structure:</p>
+
+<pre>
+&gt;&gt;&gt; for part in msg.walk():
+...     print part.get_content_type()
+multipart/report
+text/plain
+message/delivery-status
+text/plain
+text/plain
+message/rfc822
+</pre>
+</dd>
+</dl><div class="text">
+<p><a class="link" href="#Message"><code>Message</code></a> objects can also
+optionally contain two instance attributes, which can be used when
+generating the plain text of a MIME message.</p>
+</div>
+<dl><dt class="variable" id="preamble"><b>preamble</b> <tt class="nav"><a class="nav" href="email.preamble" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>The format of a MIME document allows for some text between the
+blank line following the headers, and the first multipart boundary
+string. Normally, this text is never visible in a MIME-aware mail
+reader because it falls outside the standard MIME armor. However,
+when viewing the raw text of the message, or when viewing the
+message in a non-MIME aware reader, this text can become
+visible.</p>
+
+<p>The <var>preamble</var> attribute contains this leading
+extra-armor text for MIME documents. When the <a class="link" href="#Parser"><code>Parser</code></a> discovers some text after the headers
+but before the first boundary string, it assigns this text to the
+message's <var>preamble</var> attribute. When the <a class="link" href="#Generator"><code>Generator</code></a> is writing out the plain text
+representation of a MIME message, and it finds the message has a
+<var>preamble</var> attribute, it will write this text in the area
+between the headers and the first boundary. See <code>email.Parser</code> and <code>email.Generator</code> for details.</p>
+
+<p>Note that if the message object has no preamble, the <var>
+preamble</var> attribute will be <code>
+None</code>.</p>
+</dd>
+<dt class="variable" id="epilogue"><b>epilogue</b> <tt class="nav"><a class="nav" href="email.epilogue" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>The <var>epilogue</var> attribute acts the same way as the <var>
+preamble</var> attribute, except that it contains text that appears
+between the last boundary and the end of the message.</p>
+
+<p>One note: when generating the flat text for a multipart message
+that has no <var>epilogue</var> (using the standard <a class="link" href="#Generator"><code>Generator</code></a> class), no newline is added
+after the closing boundary line. If the message object has an <var>
+epilogue</var> and its value does not start with a newline, a
+newline is printed after the closing boundary. This seems a little
+clumsy, but it makes the most practical sense. The upshot is that
+if you want to ensure that a newline get printed after your closing
+multipart boundary, set the <var>epilogue</var> to the empty
+string.</p>
+</dd>
+<dt class="variable" id="defects"><b>defects</b> <tt class="nav"><a class="nav" href="email.defects" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>The <var>defects</var> attribute contains a list of all the
+problems found when parsing this message. See <code>email.Errors</code> for a detailed
+description of the possible parsing defects.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.4.<br />
+</blockquote>
+</dd>
+</dl><div class="error">
+<h3>Deprecated methods</h3>
+
+<p>Changed in version 2.4: The <code>add_payload</code> method was removed; use the
+<code>attach</code> method instead.</p>
+
+<p>The following methods are deprecated. They are documented here
+for completeness.</p>
+</div>
+<dl><dt class="method" id="Message.get_type"><b>get_type([failobj])</b> <tt class="nav"><a class="nav" href="email.Message.get_type" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return the message's content type, as a string of the form
+maintype/subtype as taken from the Content-Type: header. The
+returned string is coerced to lowercase.</p>
+
+<p>If there is no Content-Type: header in the message, <var>
+failobj</var> is returned (defaults to <code>None</code>).</p>
+
+<p>Deprecated since release 2.2.2. Use the <code>get_content_type</code> method
+instead.</p>
+</dd>
+<dt class="method" id="Message.get_main_type"><b>get_main_type([failobj])</b> <tt class="nav"><a class="nav" href="email.Message.get_main_type" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return the message's <em>main</em> content type. This
+essentially returns the <var>maintype</var> part of the string
+returned by <code>get_type</code>, with
+the same semantics for <var>failobj</var>.</p>
+
+<p>Deprecated since release 2.2.2. Use the <code>get_content_maintype</code> method
+instead.</p>
+</dd>
+<dt class="method" id="Message.get_subtype"><b>get_subtype([failobj])</b> <tt class="nav"><a class="nav" href="email.Message.get_subtype" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return the message's sub-content type. This essentially returns
+the <var>subtype</var> part of the string returned by <code>get_type</code>, with the same
+semantics for <var>failobj</var>.</p>
+
+<p>Deprecated since release 2.2.2. Use the <code>get_content_subtype</code> method
+instead.</p>
+</dd>
+</dl><div class="text">
+<h2 id="parsing-email-messages">Parsing email messages <a class="nav" href="#parsing-email-messages">#</a></h2>
+
+<p>Message object structures can be created in one of two ways:
+they can be created from whole cloth by instantiating <a class="link" href="#Message"><code>Message</code></a> objects and stringing
+them together via <code>attach</code> and
+<code>set_payload</code> calls, or
+they can be created by parsing a flat text representation of the
+email message.</p>
+
+<p>The <code>email</code> package provides
+a standard parser that understands most email document structures,
+including MIME documents. You can pass the parser a string or a
+file object, and the parser will return to you the root <a class="link" href="#Message"><code>Message</code></a> instance of the object
+structure. For simple, non-MIME messages the payload of this root
+object will likely be a string containing the text of the message.
+For MIME messages, the root object will return <code>True</code> from its <code>is_multipart</code> method, and the subparts
+can be accessed via the <code>
+get_payload</code> and <code>walk</code>
+methods.</p>
+
+<p>There are actually two parser interfaces available for use, the
+classic <a class="link" href="#Parser"><code>Parser</code></a> API and the
+incremental <a class="link" href="#FeedParser"><code>FeedParser</code></a>
+API. The classic <a class="link" href="#Parser"><code>Parser</code></a> API
+is fine if you have the entire text of the message in memory as a
+string, or if the entire message lives in a file on the file
+system. <a class="link" href="#FeedParser"><code>FeedParser</code></a> is
+more appropriate for when you're reading the message from a stream
+which might block waiting for more input (e.g. reading an email
+message from a socket). The <a class="link" href="#FeedParser"><code>
+FeedParser</code></a> can consume and parse the message incrementally, and
+only returns the root object when you close the parser<code>footnote:56991</code>.</p>
+
+<p>Note that the parser can be extended in limited ways, and of
+course you can implement your own parser completely from scratch.
+There is no magical connection between the <code>email</code> package's bundled parser and the <a class="link" href="#Message"><code>Message</code></a> class, so your custom
+parser can create message object trees any way it finds
+necessary.</p>
+
+<h4>Footnotes</h4>
+</div>
+<dl><dt class="variable" id="..."><b>... parser12.1</b> <tt class="nav"><a class="nav" href="email...." title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>As of email package version 3.0, introduced in Python 2.4, the
+classic <a class="link" href="#Parser"><code>Parser</code></a> was
+re-implemented in terms of the <a class="link" href="#FeedParser"><code>FeedParser</code></a>, so the semantics and results
+are identical between the two parsers.</p>
+</dd>
+</dl><div class="error">
+<h3>FeedParser API</h3>
+
+<p>New in version 2.4.</p>
+
+<p>The <a class="link" href="#FeedParser"><code>FeedParser</code></a>
+provides an API that is conducive to incremental parsing of email
+messages, such as would be necessary when reading the text of an
+email message from a source that can block (e.g. a socket). The <a class="link" href="#FeedParser"><code>FeedParser</code></a> can of course be
+used to parse an email message fully contained in a string or a
+file, but the classic <a class="link" href="#Parser"><code>Parser</code></a>
+API may be more convenient for such use cases. The semantics and
+results of the two parser APIs are identical.</p>
+
+<p>The <a class="link" href="#FeedParser"><code>FeedParser</code></a>'s API
+is simple; you create an instance, feed it a bunch of text until
+there's no more to feed it, then close the parser to retrieve the
+root message object. The <a class="link" href="#FeedParser"><code>
+FeedParser</code></a> is extremely accurate when parsing
+standards-compliant messages, and it does a very good job of
+parsing non-compliant messages, providing information about how a
+message was deemed broken. It will populate a message object's
+<var>defects</var> attribute with a list of any problems it found
+in a message. See the <code>
+email.Errors</code> module for the list of defects that it can
+find.</p>
+
+<p>Here is the API for the <a class="link" href="#FeedParser"><code>
+FeedParser</code></a>:</p>
+</div>
+<dl><dt class="class" id="FeedParser"><b>class FeedParser([_factory])</b> <tt class="nav"><a class="nav" href="email.FeedParser" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>Create a <a class="link" href="#FeedParser"><code>FeedParser</code></a>
+instance. Optional <var>_factory</var> is a no-argument callable
+that will be called whenever a new message object is needed. It
+defaults to the <code>
+email.Message.Message</code> class.</p>
+</dd>
+<dt class="method" id="FeedParser.feed"><b>feed(data)</b> <tt class="nav"><a class="nav" href="email.FeedParser.feed" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Feed the <a class="link" href="#FeedParser"><code>FeedParser</code></a>
+some more data. <var>data</var> should be a string containing one
+or more lines. The lines can be partial and the <a class="link" href="#FeedParser"><code>FeedParser</code></a> will stitch such partial
+lines together properly. The lines in the string can have any of
+the common three line endings, carriage return, newline, or
+carriage return and newline (they can even be mixed).</p>
+</dd>
+<dt class="method" id="FeedParser.close"><b>close()</b> <tt class="nav"><a class="nav" href="email.FeedParser.close" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Closing a <a class="link" href="#FeedParser"><code>FeedParser</code></a>
+completes the parsing of all previously fed data, and returns the
+root message object. It is undefined what happens if you feed more
+data to a closed <a class="link" href="#FeedParser"><code>
+FeedParser</code></a>.</p>
+</dd>
+</dl><div class="text">
+<h3>Parser class API</h3>
+
+<p>The <a class="link" href="#Parser"><code>Parser</code></a> provides an
+API that can be used to parse a message when the complete contents
+of the message are available in a string or file. The <code>email.Parser</code> module also
+provides a second class, called <code>HeaderParser</code> which can be used if
+you're only interested in the headers of the message. <code>HeaderParser</code> can be much
+faster in these situations, since it does not attempt to parse the
+message body, instead setting the payload to the raw body as a
+string. <code>HeaderParser</code>
+has the same API as the <a class="link" href="#Parser"><code>
+Parser</code></a> class.</p>
+</div>
+<dl><dt class="class" id="Parser"><b>class Parser([_class[, strict]])</b> <tt class="nav"><a class="nav" href="email.Parser" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>The constructor for the <a class="link" href="#Parser"><code>
+Parser</code></a> class takes an optional argument <var>_class</var>. This
+must be a callable factory (such as a function or a class), and it
+is used whenever a sub-message object needs to be created. It
+defaults to <a class="link" href="#Message"><code>Message</code></a> (see <code>email.Message</code>). The
+factory will be called without arguments.</p>
+
+<p>The optional <var>strict</var> flag is ignored.</p>
+
+<p>Deprecated since release 2.4. Because the <a class="link" href="#Parser"><code>Parser</code></a> class is a backward compatible API
+wrapper around the new-in-Python 2.4 <a class="link" href="#FeedParser"><code>FeedParser</code></a>, <em>all</em> parsing is
+effectively non-strict. You should simply stop passing a <var>
+strict</var> flag to the <a class="link" href="#Parser"><code>
+Parser</code></a> constructor.</p>
+
+<p>Changed in version 2.4: The <var>strict</var> flag was
+deprecated.</p>
+
+<blockquote><span class="mark">@since</span> Changed in version
+2.2.2: The strict flag was added.<br />
+</blockquote>
+</dd>
+</dl><div class="text">
+<p>The other public <a class="link" href="#Parser"><code>Parser</code></a>
+methods are:</p>
+</div>
+<dl><dt class="method" id="Parser.parse"><b>parse(fp[, headersonly])</b> <tt class="nav"><a class="nav" href="email.Parser.parse" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Read all the data from the file-like object <var>fp</var>, parse
+the resulting text, and return the root message object. <var>
+fp</var> must support both the <code>readline</code> and the <code>read</code> methods on file-like objects.</p>
+
+<p>The text contained in <var>fp</var> must be formatted as a block
+of <a class="link" href="http://www.faqs.org/rfcs/rfc2822.html">RFC
+2822</a> style headers and header continuation lines, optionally
+preceded by a envelope header. The header block is terminated
+either by the end of the data or by a blank line. Following the
+header block is the body of the message (which may contain
+MIME-encoded subparts).</p>
+
+<p>Optional <var>headersonly</var> is as with the <code>parse</code> method.</p>
+
+<blockquote><span class="mark">@since</span> Changed in version
+2.2.2: The headersonly flag was added.<br />
+</blockquote>
+</dd>
+<dt class="method" id="Parser.parsestr"><b>parsestr(text[, headersonly])</b> <tt class="nav"><a class="nav" href="email.Parser.parsestr" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Similar to the <code>parse</code>
+method, except it takes a string object instead of a file-like
+object. Calling this method on a string is exactly equivalent to
+wrapping <var>text</var> in a <code>
+StringIO</code> instance first and calling <code>parse</code>.</p>
+
+<p>Optional <var>headersonly</var> is a flag specifying whether to
+stop parsing after reading the headers or not. The default is <code>False</code>, meaning it parses the
+entire contents of the file.</p>
+
+<blockquote><span class="mark">@since</span> Changed in version
+2.2.2: The headersonly flag was added.<br />
+</blockquote>
+</dd>
+</dl><div class="text">
+<p>Since creating a message object structure from a string or a
+file object is such a common task, two functions are provided as a
+convenience. They are available in the top-level <code>email</code> package namespace.</p>
+</div>
+<dl><dt class="function" id="message_from_string"><b>message_from_string(s[, _class[, strict]])</b> <tt class="nav"><a class="nav" href="email.message_from_string" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return a message object structure from a string. This is exactly
+equivalent to <code>Parser().parsestr(s)</code>. Optional <var>
+_class</var> and <var>strict</var> are interpreted as with the <a class="link" href="#Parser"><code>Parser</code></a> class constructor.</p>
+
+<blockquote><span class="mark">@since</span> Changed in version
+2.2.2: The strict flag was added.<br />
+</blockquote>
+</dd>
+<dt class="function" id="message_from_file"><b>message_from_file(fp[, _class[, strict]])</b> <tt class="nav"><a class="nav" href="email.message_from_file" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return a message object structure tree from an open file object.
+This is exactly equivalent to <code>Parser().parse(fp)</code>.
+Optional <var>_class</var> and <var>strict</var> are interpreted as
+with the <a class="link" href="#Parser"><code>Parser</code></a> class
+constructor.</p>
+
+<blockquote><span class="mark">@since</span> Changed in version
+2.2.2: The strict flag was added.<br />
+</blockquote>
+</dd>
+</dl><div class="text">
+<p>Here's an example of how you might use this at an interactive
+Python prompt:</p>
+
+<pre>
+&gt;&gt;&gt; import email
+&gt;&gt;&gt; msg = email.message_from_string(myString)
+</pre>
+
+<h3>Additional notes</h3>
+
+<p>Here are some notes on the parsing semantics:</p>
+
+<ul>
+<li>
+<p>Most non-multipart type messages are parsed as a single message
+object with a string payload. These objects will return <code>False</code> for <code>is_multipart</code>. Their <code>get_payload</code> method will return a string
+object.</p>
+</li>
+
+<li>
+<p>All multipart type messages will be parsed as a container
+message object with a list of sub-message objects for their
+payload. The outer container message will return <code>True</code> for <code>is_multipart</code> and their <code>get_payload</code> method will return the list
+of <a class="link" href="#Message"><code>Message</code></a> subparts.</p>
+</li>
+
+<li>
+<p>Most messages with a content type of message/* (e.g.
+message/delivery-status and message/rfc822) will also be parsed as
+container object containing a list payload of length 1. Their <code>is_multipart</code> method will
+return <code>True</code>. The single
+element in the list payload will be a sub-message object.</p>
+</li>
+
+<li>
+<p>Some non-standards compliant messages may not be internally
+consistent about their multipart-edness. Such messages may have a
+Content-Type: header of type multipart, but their <code>is_multipart</code> method may return <code>False</code>. If such messages were
+parsed with the <a class="link" href="#FeedParser"><code>
+FeedParser</code></a>, they will have an instance of the <code>
+MultipartInvariantViolationDefect</code> class in their <var>
+defects</var> attribute list. See <code>email.Errors</code> for details.</p>
+</li>
+</ul>
+
+<h2 id="generating-mime-documents">Generating MIME documents <a class="nav" href="#generating-mime-documents">#</a></h2>
+
+<p>One of the most common tasks is to generate the flat text of the
+email message represented by a message object structure. You will
+need to do this if you want to send your message via the <code>smtplib</code> module or the <code>nntplib</code> module, or print the
+message on the console. Taking a message object structure and
+producing a flat text document is the job of the <a class="link" href="#Generator"><code>Generator</code></a> class.</p>
+
+<p>Again, as with the <code>
+email.Parser</code> module, you aren't limited to the functionality of
+the bundled generator; you could write one from scratch yourself.
+However the bundled generator knows how to generate most email in a
+standards-compliant way, should handle MIME and non-MIME email
+messages just fine, and is designed so that the transformation from
+flat text, to a message structure via the <a class="link" href="#Parser"><code>Parser</code></a> class, and back to flat text, is
+idempotent (the input is identical to the output).</p>
+
+<p>Here are the public methods of the <a class="link" href="#Generator"><code>Generator</code></a> class:</p>
+</div>
+<dl><dt class="class" id="Generator"><b>class Generator(outfp[, mangle_from_[,
+maxheaderlen]])</b> <tt class="nav"><a class="nav" href="email.Generator" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>The constructor for the <a class="link" href="#Generator"><code>
+Generator</code></a> class takes a file-like object called <var>
+outfp</var> for an argument. <var>outfp</var> must support the <code>write</code> method and be usable as
+the output file in a Python extended print statement.</p>
+
+<p>Optional <var>mangle_from_</var> is a flag that, when <code>
+True</code>, puts a "<code>&gt;</code>" character in front of any
+line in the body that starts exactly as "<code>From</code> ", i.e.
+<code>From</code> followed by a space at the beginning of the line.
+This is the only guaranteed portable way to avoid having such lines
+be mistaken for a Unix mailbox format envelope header separator
+(see <a class="link" href="http://home.netscape.com/eng/mozilla/2.0/relnotes/demo/content-length.html">
+WHY THE CONTENT-LENGTH FORMAT IS BAD</a> for details). <var>
+mangle_from_</var> defaults to <code>
+True</code>, but you might want to set this to <code>False</code> if you are not writing Unix mailbox
+format files.</p>
+
+<p>Optional <var>maxheaderlen</var> specifies the longest length
+for a non-continued header. When a header line is longer than <var>
+maxheaderlen</var> (in characters, with tabs expanded to 8 spaces),
+the header will be split as defined in the <code>email.Header</code> class. Set to zero to
+disable header wrapping. The default is 78, as recommended (but not
+required) by <a class="link" href="http://www.faqs.org/rfcs/rfc2822.html">RFC 2822</a>.</p>
+</dd>
+</dl><div class="text">
+<p>The other public <a class="link" href="#Generator"><code>
+Generator</code></a> methods are:</p>
+</div>
+<dl><dt class="method" id="Generator.flatten"><b>flatten(msg[, unixfrom])</b> <tt class="nav"><a class="nav" href="email.Generator.flatten" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Print the textual representation of the message object structure
+rooted at <var>msg</var> to the output file specified when the <a class="link" href="#Generator"><code>Generator</code></a> instance was
+created. Subparts are visited depth-first and the resulting text
+will be properly MIME encoded.</p>
+
+<p>Optional <var>unixfrom</var> is a flag that forces the printing
+of the envelope header delimiter before the first <a class="link" href="http://www.faqs.org/rfcs/rfc2822.html">RFC 2822</a> header of
+the root message object. If the root object has no envelope header,
+a standard one is crafted. By default, this is set to <code>
+False</code> to inhibit the printing of the envelope delimiter.</p>
+
+<p>Note that for subparts, no envelope header is ever printed.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.2.2.<br />
+</blockquote>
+</dd>
+<dt class="method" id="Generator.clone"><b>clone(fp)</b> <tt class="nav"><a class="nav" href="email.Generator.clone" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return an independent clone of this <a class="link" href="#Generator"><code>Generator</code></a> instance with the exact same
+options.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.2.2.<br />
+</blockquote>
+</dd>
+<dt class="method" id="Generator.write"><b>write(s)</b> <tt class="nav"><a class="nav" href="email.Generator.write" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Write the string <var>s</var> to the underlying file object,
+i.e. <var>outfp</var> passed to <a class="link" href="#Generator"><code>Generator</code></a>'s constructor. This provides
+just enough file-like API for <a class="link" href="#Generator"><code>Generator</code></a> instances to be used in
+extended print statements.</p>
+</dd>
+</dl><div class="text">
+<p>As a convenience, see the methods <a class="link" href="#Message.as_string"><code>Message.as_string</code></a> and <code>
+str(aMessage)</code>, a.k.a. <a class="link" href="#Message.__str__"><code>Message.__str__</code></a>, which simplify the
+generation of a formatted string representation of a message
+object. For more detail, see <code>email.Message</code>.</p>
+
+<p>The <code>
+email.Generator</code> module also provides a derived class, called <a class="link" href="#DecodedGenerator"><code>DecodedGenerator</code></a>
+which is like the <a class="link" href="#Generator"><code>
+Generator</code></a> base class, except that non-text parts are
+substituted with a format string representing the part.</p>
+</div>
+<dl><dt class="class" id="DecodedGenerator"><b>class DecodedGenerator(outfp[, mangle_from_[,
+maxheaderlen[, fmt]]])</b> <tt class="nav"><a class="nav" href="email.DecodedGenerator" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>This class, derived from <a class="link" href="#Generator"><code>
+Generator</code></a> walks through all the subparts of a message. If the
+subpart is of main type text, then it prints the decoded payload of
+the subpart. Optional <var>_mangle_from_</var> and <var>
+maxheaderlen</var> are as with the <a class="link" href="#Generator"><code>Generator</code></a> base class.</p>
+
+<p>If the subpart is not of main type text, optional <var>fmt</var>
+is a format string that is used instead of the message payload.
+<var>fmt</var> is expanded with the following keywords,
+"<code>%(keyword)s</code>"format:</p>
+
+<ul>
+<li>
+<p><code>type</code> - Full MIME type of the non-text part</p>
+</li>
+
+<li>
+<p><code>maintype</code> - Main MIME type of the non-text part</p>
+</li>
+
+<li>
+<p><code>subtype</code> - Sub-MIME type of the non-text part</p>
+</li>
+
+<li>
+<p><code>filename</code> - Filename of the non-text part</p>
+</li>
+
+<li>
+<p><code>description</code> - Description associated with the
+non-text part</p>
+</li>
+
+<li>
+<p><code>encoding</code> - Content transfer encoding of the
+non-text part</p>
+</li>
+</ul>
+
+<p>The default value for <var>fmt</var> is <code>None</code>, meaning</p>
+
+<pre>
+[Non-text (%(type)s) part of message omitted, filename %(filename)s]
+</pre>
+
+<blockquote><span class="mark">@since</span> New in version
+2.2.2.<br />
+</blockquote>
+</dd>
+</dl><div class="error">
+<h3>Deprecated methods</h3>
+
+<p>The following methods are deprecated in <code>email</code> version 2. They are documented here for
+completeness.</p>
+</div>
+<dl><dt class="method" id="DecodedGenerator.__call__"><b>__call__(msg[, unixfrom])</b> <tt class="nav"><a class="nav" href="email.DecodedGenerator.__call__" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>This method is identical to the <code>flatten</code> method.</p>
+
+<p>Deprecated since release 2.2.2. Use the <code>flatten</code> method instead.</p>
+</dd>
+</dl><div class="text">
+<h2 id="creating-email-and-mime-objects-from-scratch">Creating email and MIME objects from scratch <a class="nav" href="#creating-email-and-mime-objects-from-scratch">#</a></h2>
+</div>
+<div class="error">
+<p>You can create a new object structure by creating <a class="link" href="#Message"><code>Message</code></a> instances, adding
+attachments and all the appropriate headers manually. For MIME
+messages though, the <code>email</code>
+package provides some convenient subclasses to make things easier.
+Each of these classes should be imported from a module with the
+same name as the class, from within the <code>email</code> package. E.g.:</p>
+
+<pre>
+import email.MIMEImage.MIMEImage
+</pre>
+
+<p>or</p>
+
+<pre>
+from email.MIMEText import MIMEText
+</pre>
+
+<p>Here are the classes:</p>
+</div>
+<dl><dt class="class" id="MIMEBase"><b>class MIMEBase(_maintype, _subtype, **_params)</b> <tt class="nav"><a class="nav" href="email.MIMEBase" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>This is the base class for all the MIME-specific subclasses of
+<a class="link" href="#Message"><code>Message</code></a>. Ordinarily you
+won't create instances specifically of <a class="link" href="#MIMEBase"><code>MIMEBase</code></a>, although you could. <a class="link" href="#MIMEBase"><code>MIMEBase</code></a> is provided
+primarily as a convenient base class for more specific MIME-aware
+subclasses.</p>
+
+<p><var>_maintype</var> is the Content-Type: major type (e.g. text
+or image), and <var>_subtype</var> is the Content-Type: minor type
+(e.g. plain or gif). <var>_params</var> is a parameter key/value
+dictionary and is passed directly to <a class="link" href="#Message.add_header"><code>Message.add_header</code></a>.</p>
+
+<p>The <a class="link" href="#MIMEBase"><code>MIMEBase</code></a> class
+always adds a Content-Type: header (based on <var>_maintype</var>,
+<var>_subtype</var>, and <var>_params</var>), and a MIME-Version:
+header (always set to <code>1.0</code>).</p>
+</dd>
+<dt class="class" id="MIMENonMultipart"><b>class MIMENonMultipart()</b> <tt class="nav"><a class="nav" href="email.MIMENonMultipart" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>A subclass of <a class="link" href="#MIMEBase"><code>MIMEBase</code></a>,
+this is an intermediate base class for MIME messages that are not
+multipart. The primary purpose of this class is to prevent the use
+of the <code>attach</code> method, which
+only makes sense for multipart messages. If <code>attach</code> is called, a <a class="link" href="#MultipartConversionError"><code>MultipartConversionError</code></a>
+exception is raised.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.2.2.<br />
+</blockquote>
+</dd>
+<dt class="class" id="MIMEMultipart"><b>class MIMEMultipart([subtype[, boundary[, _subparts[,
+_params]]]])</b> <tt class="nav"><a class="nav" href="email.MIMEMultipart" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>A subclass of <a class="link" href="#MIMEBase"><code>MIMEBase</code></a>,
+this is an intermediate base class for MIME messages that are
+multipart. Optional <var>_subtype</var> defaults to mixed, but can
+be used to specify the subtype of the message. A Content-Type:
+header of multipart/<var>_subtype</var> will be added to the
+message object. A MIME-Version: header will also be added.</p>
+
+<p>Optional <var>boundary</var> is the multipart boundary string.
+When <code>None</code> (the default), the
+boundary is calculated when needed.</p>
+
+<p><var>_subparts</var> is a sequence of initial subparts for the
+payload. It must be possible to convert this sequence to a list.
+You can always attach new subparts to the message by using the <a class="link" href="#Message.attach"><code>Message.attach</code></a>
+method.</p>
+
+<p>Additional parameters for the Content-Type: header are taken
+from the keyword arguments, or passed into the <var>_params</var>
+argument, which is a keyword dictionary.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.2.2.<br />
+</blockquote>
+</dd>
+<dt class="class" id="MIMEAudio"><b>class MIMEAudio(_audiodata[, _subtype[, _encoder[,
+**_params]]])</b> <tt class="nav"><a class="nav" href="email.MIMEAudio" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>A subclass of <a class="link" href="#MIMENonMultipart"><code>
+MIMENonMultipart</code></a>, the <a class="link" href="#MIMEAudio"><code>
+MIMEAudio</code></a> class is used to create MIME message objects of major
+type audio. <var>_audiodata</var> is a string containing the raw
+audio data. If this data can be decoded by the standard Python
+module <code>sndhdr</code>, then the
+subtype will be automatically included in the Content-Type: header.
+Otherwise you can explicitly specify the audio subtype via the
+<var>_subtype</var> parameter. If the minor type could not be
+guessed and <var>_subtype</var> was not given, then <code>exceptions.TypeError</code> is
+raised.</p>
+
+<p>Optional <var>_encoder</var> is a callable (i.e. function) which
+will perform the actual encoding of the audio data for transport.
+This callable takes one argument, which is the <a class="link" href="#MIMEAudio"><code>MIMEAudio</code></a> instance. It should use <code>get_payload</code> and <code>set_payload</code> to change the
+payload to encoded form. It should also add any
+Content-Transfer-Encoding: or other headers to the message object
+as necessary. The default encoding is base64. See the <code>email.Encoders</code> module
+for a list of the built-in encoders.</p>
+
+<p><var>_params</var> are passed straight through to the base class
+constructor.</p>
+</dd>
+<dt class="class" id="MIMEImage"><b>class MIMEImage(_imagedata[, _subtype[, _encoder[,
+**_params]]])</b> <tt class="nav"><a class="nav" href="email.MIMEImage" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>A subclass of <a class="link" href="#MIMENonMultipart"><code>
+MIMENonMultipart</code></a>, the <a class="link" href="#MIMEImage"><code>
+MIMEImage</code></a> class is used to create MIME message objects of major
+type image. <var>_imagedata</var> is a string containing the raw
+image data. If this data can be decoded by the standard Python
+module <code>imghdr</code>, then the
+subtype will be automatically included in the Content-Type: header.
+Otherwise you can explicitly specify the image subtype via the
+<var>_subtype</var> parameter. If the minor type could not be
+guessed and <var>_subtype</var> was not given, then <code>exceptions.TypeError</code> is
+raised.</p>
+
+<p>Optional <var>_encoder</var> is a callable (i.e. function) which
+will perform the actual encoding of the image data for transport.
+This callable takes one argument, which is the <a class="link" href="#MIMEImage"><code>MIMEImage</code></a> instance. It should use <code>get_payload</code> and <code>set_payload</code> to change the
+payload to encoded form. It should also add any
+Content-Transfer-Encoding: or other headers to the message object
+as necessary. The default encoding is base64. See the <code>email.Encoders</code> module
+for a list of the built-in encoders.</p>
+
+<p><var>_params</var> are passed straight through to the <a class="link" href="#MIMEBase"><code>MIMEBase</code></a> constructor.</p>
+</dd>
+<dt class="class" id="MIMEMessage"><b>class MIMEMessage(_msg[, _subtype])</b> <tt class="nav"><a class="nav" href="email.MIMEMessage" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>A subclass of <a class="link" href="#MIMENonMultipart"><code>
+MIMENonMultipart</code></a>, the <a class="link" href="#MIMEMessage"><code>
+MIMEMessage</code></a> class is used to create MIME objects of main type
+message. <var>_msg</var> is used as the payload, and must be an
+instance of class <a class="link" href="#Message"><code>Message</code></a>
+(or a subclass thereof), otherwise a <code>exceptions.TypeError</code> is
+raised.</p>
+
+<p>Optional <var>_subtype</var> sets the subtype of the message; it
+defaults to rfc822.</p>
+</dd>
+<dt class="class" id="MIMEText"><b>class MIMEText(_text[, _subtype[, _charset]])</b> <tt class="nav"><a class="nav" href="email.MIMEText" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>A subclass of <a class="link" href="#MIMENonMultipart"><code>
+MIMENonMultipart</code></a>, the <a class="link" href="#MIMEText"><code>
+MIMEText</code></a> class is used to create MIME objects of major type
+text. <var>_text</var> is the string for the payload. <var>
+_subtype</var> is the minor type and defaults to plain. <var>
+_charset</var> is the character set of the text and is passed as a
+parameter to the <a class="link" href="#MIMENonMultipart"><code>
+MIMENonMultipart</code></a> constructor; it defaults to <code>
+us-ascii</code>. No guessing or encoding is performed on the text
+data.</p>
+
+<blockquote><span class="mark">@since</span> Changed in version
+2.4: The previously deprecated _encoding argument has been removed.
+Encoding happens implicitly based on the _charset argument.<br />
+</blockquote>
+</dd>
+</dl><div class="text">
+<h2 id="internationalized-headers">Internationalized headers <a class="nav" href="#internationalized-headers">#</a></h2>
+
+<p><a class="link" href="http://www.faqs.org/rfcs/rfc2822.html">RFC
+2822</a> is the base standard that describes the format of email
+messages. It derives from the older <a class="link" href="http://www.faqs.org/rfcs/rfc822.html">RFC 822</a> standard
+which came into widespread use at a time when most email was
+composed of ASCII characters only. <a class="link" href="http://www.faqs.org/rfcs/rfc2822.html">RFC 2822</a> is a
+specification written assuming email contains only 7-bit ASCII
+characters.</p>
+
+<p>Of course, as email has been deployed worldwide, it has become
+internationalized, such that language specific character sets can
+now be used in email messages. The base standard still requires
+email messages to be transferred using only 7-bit ASCII characters,
+so a slew of RFCs have been written describing how to encode email
+containing non-ASCII characters into <a class="link" href="http://www.faqs.org/rfcs/rfc2822.html">RFC 2822</a>-compliant
+format. These RFCs include <a class="link" href="http://www.faqs.org/rfcs/rfc2045.html">RFC 2045</a>, <a class="link" href="http://www.faqs.org/rfcs/rfc2046.html">RFC
+2046</a>, <a class="link" href="http://www.faqs.org/rfcs/rfc2047.html">RFC 2047</a>, and <a class="link" href="http://www.faqs.org/rfcs/rfc2231.html">RFC
+2231</a>. The <code>email</code> package
+supports these standards in its <code>email.Header</code> and <code>email.Charset</code> modules.</p>
+
+<p>If you want to include non-ASCII characters in your email
+headers, say in the Subject: or To: fields, you should use the <a class="link" href="#Header"><code>Header</code></a> class and assign the
+field in the <a class="link" href="#Message"><code>Message</code></a> object
+to an instance of <a class="link" href="#Header"><code>Header</code></a>
+instead of using a string for the header value. For example:</p>
+
+<pre>
+&gt;&gt;&gt; from email.Message import Message
+&gt;&gt;&gt; from email.Header import Header
+&gt;&gt;&gt; msg = Message()
+&gt;&gt;&gt; h = Header('p\xf6stal', 'iso-8859-1')
+&gt;&gt;&gt; msg['Subject'] = h
+&gt;&gt;&gt; print msg.as_string()
+Subject: =?iso-8859-1?q?p=F6stal?=
+</pre>
+
+<p>Notice here how we wanted the Subject: field to contain a
+non-ASCII character? We did this by creating a <a class="link" href="#Header"><code>Header</code></a> instance and passing in the character
+set that the byte string was encoded in. When the subsequent <a class="link" href="#Message"><code>Message</code></a> instance was
+flattened, the Subject: field was properly <a class="link" href="http://www.faqs.org/rfcs/rfc2047.html">RFC 2047</a> encoded.
+MIME-aware mail readers would show this header using the embedded
+ISO-8859-1 character.</p>
+
+<p>New in version 2.2.2.</p>
+
+<p>Here is the <a class="link" href="#Header"><code>Header</code></a> class
+description:</p>
+</div>
+<dl><dt class="class" id="Header"><b>class Header([s[, charset[, maxlinelen[, header_name[,
+continuation_ws[, errors]]]]]])</b> <tt class="nav"><a class="nav" href="email.Header" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>Create a MIME-compliant header that can contain strings in
+different character sets.</p>
+
+<p>Optional <var>s</var> is the initial header value. If <code>
+None</code> (the default), the initial header value is not set. You
+can later append to the header with <code>append</code> method calls. <var>s</var> may be a
+byte string or a Unicode string, but see the <code>append</code> documentation for semantics.</p>
+
+<p>Optional <var>charset</var> serves two purposes: it has the same
+meaning as the <var>charset</var> argument to the <code>append</code> method. It also sets the default
+character set for all subsequent <code>append</code> calls that omit the <var>
+charset</var> argument. If <var>charset</var> is not provided in
+the constructor (the default), the <code>us-ascii</code> character
+set is used both as <var>s</var>'s initial charset and as the
+default for subsequent <code>
+append</code> calls.</p>
+
+<p>The maximum line length can be specified explicit via <var>
+maxlinelen</var>. For splitting the first line to a shorter value
+(to account for the field header which isn't included in <var>
+s</var>, e.g. Subject:) pass in the name of the field in <var>
+header_name</var>. The default <var>maxlinelen</var> is 76, and the
+default value for <var>header_name</var> is <code>None</code>, meaning it is not taken into account for
+the first line of a long, split header.</p>
+
+<p>Optional <var>continuation_ws</var> must be <a class="link" href="http://www.faqs.org/rfcs/rfc2822.html">RFC 2822</a>-compliant
+folding whitespace, and is usually either a space or a hard tab
+character. This character will be prepended to continuation
+lines.</p>
+</dd>
+</dl><div class="text">
+<p>Optional <var>errors</var> is passed straight through to the <code>append</code> method.</p>
+</div>
+<dl><dt class="method" id="Header.append"><b>append(s[, charset[, errors]])</b> <tt class="nav"><a class="nav" href="email.Header.append" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Append the string <var>s</var> to the MIME header.</p>
+
+<p>Optional <var>charset</var>, if given, should be a <a class="link" href="#Charset"><code>Charset</code></a> instance (see <code>email.Charset</code>) or the
+name of a character set, which will be converted to a <a class="link" href="#Charset"><code>Charset</code></a> instance. A value of
+<code>None</code> (the default) means that
+the <var>charset</var> given in the constructor is used.</p>
+
+<p><var>s</var> may be a byte string or a Unicode string. If it is
+a byte string (i.e. <code>isinstance(s, str)</code> is true), then
+<var>charset</var> is the encoding of that byte string, and a <code>
+exceptions.UnicodeError</code> will be raised if the string cannot be
+decoded with that character set.</p>
+
+<p>If <var>s</var> is a Unicode string, then <var>charset</var> is
+a hint specifying the character set of the characters in the
+string. In this case, when producing an <a class="link" href="http://www.faqs.org/rfcs/rfc2822.html">RFC 2822</a>-compliant
+header using <a class="link" href="http://www.faqs.org/rfcs/rfc2047.html">RFC 2047</a> rules,
+the Unicode string will be encoded using the following charsets in
+order: <code>us-ascii</code>, the <var>charset</var> hint, <code>
+utf-8</code>. The first character set to not provoke a <code>
+exceptions.UnicodeError</code> is used.</p>
+
+<p>Optional <var>errors</var> is passed through to any <code>unicode</code> or <code>ustr.encode</code> call, and defaults to
+&#8220;strict&#8221;.</p>
+</dd>
+<dt class="method" id="Header.encode"><b>encode([splitchars])</b> <tt class="nav"><a class="nav" href="email.Header.encode" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Encode a message header into an RFC-compliant format, possibly
+wrapping long lines and encapsulating non-ASCII parts in base64 or
+quoted-printable encodings. Optional <var>splitchars</var> is a
+string containing characters to split long ASCII lines on, in rough
+support of <a class="link" href="http://www.faqs.org/rfcs/rfc2822.html">RFC 2822</a>'s <em>
+highest level syntactic breaks</em>. This doesn't affect <a class="link" href="http://www.faqs.org/rfcs/rfc2047.html">RFC
+2047</a> encoded lines.</p>
+</dd>
+</dl><div class="text">
+<p>The <a class="link" href="#Header"><code>Header</code></a> class also
+provides a number of methods to support standard operators and
+built-in functions.</p>
+</div>
+<dl><dt class="method" id="Header.__str__"><b>__str__()</b> <tt class="nav"><a class="nav" href="email.Header.__str__" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>A synonym for <a class="link" href="#Header.encode"><code>
+Header.encode</code></a>. Useful for <code>str(aHeader)</code>.</p>
+</dd>
+<dt class="method" id="Header.__unicode__"><b>__unicode__()</b> <tt class="nav"><a class="nav" href="email.Header.__unicode__" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>A helper for the built-in <code>
+unicode</code> function. Returns the header as a Unicode string.</p>
+</dd>
+<dt class="method" id="Header.__eq__"><b>__eq__(other)</b> <tt class="nav"><a class="nav" href="email.Header.__eq__" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>This method allows you to compare two <a class="link" href="#Header"><code>Header</code></a> instances for equality.</p>
+</dd>
+<dt class="method" id="Header.__ne__"><b>__ne__(other)</b> <tt class="nav"><a class="nav" href="email.Header.__ne__" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>This method allows you to compare two <a class="link" href="#Header"><code>Header</code></a> instances for inequality.</p>
+</dd>
+</dl><div class="text">
+<p>The <code>email.Header</code>
+module also provides the following convenient functions.</p>
+</div>
+<dl><dt class="function" id="decode_header"><b>decode_header(header)</b> <tt class="nav"><a class="nav" href="email.decode_header" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Decode a message header value without converting the character
+set. The header value is in <var>header</var>.</p>
+
+<p>This function returns a list of <code>(decoded_string,
+charset)</code> pairs containing each of the decoded parts of the
+header. <var>charset</var> is <code>
+None</code> for non-encoded parts of the header, otherwise a lower
+case string containing the name of the character set specified in
+the encoded string.</p>
+
+<p>Here's an example:</p>
+
+<pre>
+&gt;&gt;&gt; from email.Header import decode_header
+&gt;&gt;&gt; decode_header('=?iso-8859-1?q?p=F6stal?=')
+[('p\xf6stal', 'iso-8859-1')]
+</pre>
+</dd>
+<dt class="function" id="make_header"><b>make_header(decoded_seq[, maxlinelen[,
+header_name[, continuation_ws]]])</b> <tt class="nav"><a class="nav" href="email.make_header" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Create a <a class="link" href="#Header"><code>Header</code></a> instance
+from a sequence of pairs as returned by <a class="link" href="#decode_header"><code>decode_header</code></a>.</p>
+
+<p><a class="link" href="#decode_header"><code>decode_header</code></a>
+takes a header value string and returns a sequence of pairs of the
+format <code>(decoded_string, charset)</code> where <var>
+charset</var> is the name of the character set.</p>
+
+<p>This function takes one of those sequence of pairs and returns a
+<a class="link" href="#Header"><code>Header</code></a> instance. Optional
+<var>maxlinelen</var>, <var>header_name</var>, and <var>
+continuation_ws</var> are as in the <a class="link" href="#Header"><code>Header</code></a> constructor.</p>
+</dd>
+</dl><div class="text">
+<h2 id="representing-character-sets">Representing character sets <a class="nav" href="#representing-character-sets">#</a></h2>
+
+<p>This module provides a class <a class="link" href="#Charset"><code>Charset</code></a> for representing character sets and
+character set conversions in email messages, as well as a character
+set registry and several convenience methods for manipulating this
+registry. Instances of <a class="link" href="#Charset"><code>
+Charset</code></a> are used in several other modules within the <code>email</code> package.</p>
+
+<p>New in version 2.2.2.</p>
+</div>
+<dl><dt class="class" id="Charset"><b>class Charset([input_charset])</b> <tt class="nav"><a class="nav" href="email.Charset" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>Map character sets to their email properties.</p>
+
+<p>This class provides information about the requirements imposed
+on email for a specific character set. It also provides convenience
+routines for converting between character sets, given the
+availability of the applicable codecs. Given a character set, it
+will do its best to provide information on how to use that
+character set in an email message in an RFC-compliant way.</p>
+
+<p>Certain character sets must be encoded with quoted-printable or
+base64 when used in email headers or bodies. Certain character sets
+must be converted outright, and are not allowed in email.</p>
+
+<p>Optional <var>input_charset</var> is as described below; it is
+always coerced to lower case. After being alias normalized it is
+also used as a lookup into the registry of character sets to find
+out the header encoding, body encoding, and output conversion codec
+to be used for the character set. For example, if <var>
+input_charset</var> is <code>iso-8859-1</code>, then headers and
+bodies will be encoded using quoted-printable and no output
+conversion codec is necessary. If <var>input_charset</var> is
+<code>euc-jp</code>, then headers will be encoded with base64,
+bodies will not be encoded, but output text will be converted from
+the <code>euc-jp</code> character set to the <code>
+iso-2022-jp</code> character set.</p>
+</dd>
+</dl><div class="text">
+<p><a class="link" href="#Charset"><code>Charset</code></a> instances have
+the following data attributes:</p>
+</div>
+<dl><dt class="variable" id="input_charset"><b>input_charset</b> <tt class="nav"><a class="nav" href="email.input_charset" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>The initial character set specified. Common aliases are
+converted to their <em>official</em> email names (e.g. <code>
+latin_1</code> is converted to <code>iso-8859-1</code>). Defaults
+to 7-bit <code>us-ascii</code>.</p>
+</dd>
+<dt class="variable" id="header_encoding"><b>header_encoding</b> <tt class="nav"><a class="nav" href="email.header_encoding" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>If the character set must be encoded before it can be used in an
+email header, this attribute will be set to <code>Charset.QP</code>
+(for quoted-printable), <code>Charset.BASE64</code> (for base64
+encoding), or <code>Charset.SHORTEST</code> for the shortest of QP
+or BASE64 encoding. Otherwise, it will be <code>None</code>.</p>
+</dd>
+<dt class="variable" id="body_encoding"><b>body_encoding</b> <tt class="nav"><a class="nav" href="email.body_encoding" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Same as <var>header_encoding</var>, but describes the encoding
+for the mail message's body, which indeed may be different than the
+header encoding. <code>Charset.SHORTEST</code> is not allowed for
+<var>body_encoding</var>.</p>
+</dd>
+<dt class="variable" id="output_charset"><b>output_charset</b> <tt class="nav"><a class="nav" href="email.output_charset" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Some character sets must be converted before they can be used in
+email headers or bodies. If the <var>input_charset</var> is one of
+them, this attribute will contain the name of the character set
+output will be converted to. Otherwise, it will be <code>
+None</code>.</p>
+</dd>
+<dt class="variable" id="input_codec"><b>input_codec</b> <tt class="nav"><a class="nav" href="email.input_codec" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>The name of the Python codec used to convert the <var>
+input_charset</var> to Unicode. If no conversion codec is
+necessary, this attribute will be <code>
+None</code>.</p>
+</dd>
+<dt class="variable" id="output_codec"><b>output_codec</b> <tt class="nav"><a class="nav" href="email.output_codec" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>The name of the Python codec used to convert Unicode to the
+<var>output_charset</var>. If no conversion codec is necessary,
+this attribute will have the same value as the <var>
+input_codec</var>.</p>
+</dd>
+</dl><div class="text">
+<p><a class="link" href="#Charset"><code>Charset</code></a> instances also
+have the following methods:</p>
+</div>
+<dl><dt class="method" id="Charset.get_body_encoding"><b>get_body_encoding()</b> <tt class="nav"><a class="nav" href="email.Charset.get_body_encoding" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return the content transfer encoding used for body encoding.</p>
+
+<p>This is either the string "<code>quoted-printable</code>" or
+"<code>base64</code>"depending on the encoding used, or it is a
+function, in which case you should call the function with a single
+argument, the Message object being encoded. The function should
+then set the Content-Transfer-Encoding: header itself to whatever
+is appropriate.</p>
+
+<p>Returns the string "<code>quoted-printable</code>" if <var>
+body_encoding</var> is <code>QP</code>, returns the string
+"<code>base64</code>" if <var>body_encoding</var> is <code>
+BASE64</code>, and returns the string "<code>7bit</code>"
+otherwise.</p>
+</dd>
+<dt class="method" id="Charset.convert"><b>convert(s)</b> <tt class="nav"><a class="nav" href="email.Charset.convert" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Convert the string <var>s</var> from the <var>input_codec</var>
+to the <var>output_codec</var>.</p>
+</dd>
+<dt class="method" id="Charset.to_splittable"><b>to_splittable(s)</b> <tt class="nav"><a class="nav" href="email.Charset.to_splittable" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Convert a possibly multibyte string to a safely splittable
+format. <var>s</var> is the string to split.</p>
+
+<p>Uses the <var>input_codec</var> to try and convert the string to
+Unicode, so it can be safely split on character boundaries (even
+for multibyte characters).</p>
+
+<p>Returns the string as-is if it isn't known how to convert <var>
+s</var> to Unicode with the <var>input_charset</var>.</p>
+
+<p>Characters that could not be converted to Unicode will be
+replaced with the Unicode replacement character
+"<code>U+FFFD</code>".</p>
+</dd>
+<dt class="method" id="Charset.from_splittable"><b>from_splittable(ustr[, to_output])</b> <tt class="nav"><a class="nav" href="email.Charset.from_splittable" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Convert a splittable string back into an encoded string. <var>
+ustr</var> is a Unicode string to &#8220;unsplit&#8221;.</p>
+
+<p>This method uses the proper codec to try and convert the string
+from Unicode back into an encoded format. Return the string as-is
+if it is not Unicode, or if it could not be converted from
+Unicode.</p>
+
+<p>Characters that could not be converted from Unicode will be
+replaced with an appropriate character (usually
+"<code>?</code>").</p>
+
+<p>If <var>to_output</var> is <code>
+True</code> (the default), uses <var>output_codec</var> to convert to
+an encoded format. If <var>to_output</var> is <code>False</code>, it uses <var>input_codec</var>.</p>
+</dd>
+<dt class="method" id="Charset.get_output_charset"><b>get_output_charset()</b> <tt class="nav"><a class="nav" href="email.Charset.get_output_charset" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return the output character set.</p>
+
+<p>This is the <var>output_charset</var> attribute if that is not
+<code>None</code>, otherwise it is <var>
+input_charset</var>.</p>
+</dd>
+<dt class="method" id="Charset.encoded_header_len"><b>encoded_header_len()</b> <tt class="nav"><a class="nav" href="email.Charset.encoded_header_len" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return the length of the encoded header string, properly
+calculating for quoted-printable or base64 encoding.</p>
+</dd>
+<dt class="method" id="Charset.header_encode"><b>header_encode(s[, convert])</b> <tt class="nav"><a class="nav" href="email.Charset.header_encode" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Header-encode the string <var>s</var>.</p>
+
+<p>If <var>convert</var> is <code>
+True</code>, the string will be converted from the input charset to
+the output charset automatically. This is not useful for multibyte
+character sets, which have line length issues (multibyte characters
+must be split on a character, not a byte boundary); use the
+higher-level <a class="link" href="#Header"><code>Header</code></a> class to
+deal with these issues (see <code>email.Header</code>). <var>convert</var>
+defaults to <code>False</code>.</p>
+
+<p>The type of encoding (base64 or quoted-printable) will be based
+on the <var>header_encoding</var> attribute.</p>
+</dd>
+<dt class="method" id="Charset.body_encode"><b>body_encode(s[, convert])</b> <tt class="nav"><a class="nav" href="email.Charset.body_encode" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Body-encode the string <var>s</var>.</p>
+
+<p>If <var>convert</var> is <code>
+True</code> (the default), the string will be converted from the input
+charset to output charset automatically. Unlike <code>header_encode</code>, there are no issues
+with byte boundaries and multibyte charsets in email bodies, so
+this is usually pretty safe.</p>
+
+<p>The type of encoding (base64 or quoted-printable) will be based
+on the <var>body_encoding</var> attribute.</p>
+</dd>
+</dl><div class="text">
+<p>The <a class="link" href="#Charset"><code>Charset</code></a> class also
+provides a number of methods to support standard operations and
+built-in functions.</p>
+</div>
+<dl><dt class="method" id="Charset.__str__"><b>__str__()</b> <tt class="nav"><a class="nav" href="email.Charset.__str__" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Returns <var>input_charset</var> as a string coerced to lower
+case. <code>__repr__</code> is an alias
+for <code>__str__</code>.</p>
+</dd>
+<dt class="method" id="Charset.__eq__"><b>__eq__(other)</b> <tt class="nav"><a class="nav" href="email.Charset.__eq__" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>This method allows you to compare two <a class="link" href="#Charset"><code>Charset</code></a> instances for equality.</p>
+</dd>
+<dt class="method" id="Charset.__ne__"><b>__ne__(other)</b> <tt class="nav"><a class="nav" href="email.Charset.__ne__" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>This method allows you to compare two <a class="link" href="#Charset"><code>Charset</code></a> instances for inequality.</p>
+</dd>
+</dl><div class="text">
+<p>The <code>email.Charset</code>
+module also provides the following functions for adding new entries
+to the global character set, alias, and codec registries:</p>
+</div>
+<dl><dt class="function" id="add_charset"><b>add_charset(charset[, header_enc[, body_enc[,
+output_charset]]])</b> <tt class="nav"><a class="nav" href="email.add_charset" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Add character properties to the global registry.</p>
+
+<p><var>charset</var> is the input character set, and must be the
+canonical name of a character set.</p>
+
+<p>Optional <var>header_enc</var> and <var>body_enc</var> is either
+<code>Charset.QP</code> for quoted-printable, <code>
+Charset.BASE64</code> for base64 encoding, <code>
+Charset.SHORTEST</code> for the shortest of quoted-printable or
+base64 encoding, or <code>None</code> for
+no encoding. <code>SHORTEST</code> is only valid for <var>
+header_enc</var>. The default is <code>
+None</code> for no encoding.</p>
+
+<p>Optional <var>output_charset</var> is the character set that the
+output should be in. Conversions will proceed from input charset,
+to Unicode, to the output charset when the method <a class="link" href="#Charset.convert"><code>Charset.convert</code></a> is called. The
+default is to output in the same character set as the input.</p>
+
+<p>Both <var>input_charset</var> and <var>output_charset</var> must
+have Unicode codec entries in the module's character set-to-codec
+mapping; use <a class="link" href="#add_codec"><code>add_codec</code></a> to
+add codecs the module does not know about. See the <code>codecs</code> module's documentation for more
+information.</p>
+
+<p>The global character set registry is kept in the module global
+dictionary <code>CHARSETS</code>.</p>
+</dd>
+<dt class="function" id="add_alias"><b>add_alias(alias, canonical)</b> <tt class="nav"><a class="nav" href="email.add_alias" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Add a character set alias. <var>alias</var> is the alias name,
+e.g. <code>latin-1</code>. <var>canonical</var> is the character
+set's canonical name, e.g. <code>iso-8859-1</code>.</p>
+
+<p>The global charset alias registry is kept in the module global
+dictionary <code>ALIASES</code>.</p>
+</dd>
+<dt class="function" id="add_codec"><b>add_codec(charset, codecname)</b> <tt class="nav"><a class="nav" href="email.add_codec" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Add a codec that map characters in the given character set to
+and from Unicode.</p>
+
+<p><var>charset</var> is the canonical name of a character set.
+<var>codecname</var> is the name of a Python codec, as appropriate
+for the second argument to the <code>
+unicode</code> built-in, or to the <code>
+encode</code> method of a Unicode string.</p>
+</dd>
+</dl><div class="text">
+<h2 id="encoders">Encoders <a class="nav" href="#encoders">#</a></h2>
+
+<p>When creating <a class="link" href="#Message"><code>Message</code></a>
+objects from scratch, you often need to encode the payloads for
+transport through compliant mail servers. This is especially true
+for image/* and text/* type messages containing binary data.</p>
+
+<p>The <code>email</code> package provides
+some convenient encodings in its <code>Encoders</code> module. These encoders are
+actually used by the <a class="link" href="#MIMEAudio"><code>
+MIMEAudio</code></a> and <a class="link" href="#MIMEImage"><code>
+MIMEImage</code></a> class constructors to provide default encodings. All
+encoder functions take exactly one argument, the message object to
+encode. They usually extract the payload, encode it, and reset the
+payload to this newly encoded value. They should also set the
+Content-Transfer-Encoding: header as appropriate.</p>
+
+<p>Here are the encoding functions provided:</p>
+</div>
+<dl><dt class="function" id="encode_quopri"><b>encode_quopri(msg)</b> <tt class="nav"><a class="nav" href="email.encode_quopri" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Encodes the payload into quoted-printable form and sets the
+Content-Transfer-Encoding: header to <code>
+quoted-printable</code><code>footnote:58057</code>. This is a good
+encoding to use when most of your payload is normal printable data,
+but contains a few unprintable characters.</p>
+</dd>
+<dt class="function" id="encode_base64"><b>encode_base64(msg)</b> <tt class="nav"><a class="nav" href="email.encode_base64" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Encodes the payload into base64 form and sets the
+Content-Transfer-Encoding: header to <code>base64</code>. This is a
+good encoding to use when most of your payload is unprintable data
+since it is a more compact form than quoted-printable. The drawback
+of base64 encoding is that it renders the text non-human
+readable.</p>
+</dd>
+<dt class="function" id="encode_7or8bit"><b>encode_7or8bit(msg)</b> <tt class="nav"><a class="nav" href="email.encode_7or8bit" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>This doesn't actually modify the message's payload, but it does
+set the Content-Transfer-Encoding: header to either <code>
+7bit</code> or <code>8bit</code> as appropriate, based on the
+payload data.</p>
+</dd>
+<dt class="function" id="encode_noop"><b>encode_noop(msg)</b> <tt class="nav"><a class="nav" href="email.encode_noop" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>This does nothing; it doesn't even set the
+Content-Transfer-Encoding: header.</p>
+</dd>
+</dl><div class="text">
+<h4>Footnotes</h4>
+</div>
+<dl><dt class="variable" id="...quoted"><b>...quoted-printable12.2</b> <tt class="nav"><a class="nav" href="email....quoted" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Note that encoding with <a class="link" href="#encode_quopri"><code>encode_quopri</code></a> also encodes all tabs
+and space characters in the data.</p>
+</dd>
+</dl><div class="text">
+<h2 id="exception-and-defect-classes">Exception and Defect classes <a class="nav" href="#exception-and-defect-classes">#</a></h2>
+
+<p>The following exception classes are defined in the <code>email.Errors</code> module:</p>
+</div>
+<dl><dt class="exception" id="MessageError"><b>exception MessageError()</b> <tt class="nav"><a class="nav" href="email.MessageError" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="exception">
+<p>This is the base class for all exceptions that the <code>email</code> package can raise. It is
+derived from the standard <code>exceptions.Exception</code> class and
+defines no additional methods.</p>
+</dd>
+<dt class="exception" id="MessageParseError"><b>exception MessageParseError()</b> <tt class="nav"><a class="nav" href="email.MessageParseError" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="exception">
+<p>This is the base class for exceptions thrown by the <a class="link" href="#Parser"><code>Parser</code></a> class. It is derived
+from <a class="link" href="#MessageError"><code>MessageError</code></a>.</p>
+</dd>
+<dt class="exception" id="HeaderParseError"><b>exception HeaderParseError()</b> <tt class="nav"><a class="nav" href="email.HeaderParseError" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="exception">
+<p>Raised under some error conditions when parsing the <a class="link" href="http://www.faqs.org/rfcs/rfc2822.html">RFC
+2822</a> headers of a message, this class is derived from <a class="link" href="#MessageParseError"><code>MessageParseError</code></a>.
+It can be raised from the <a class="link" href="#Parser.parse"><code>
+Parser.parse</code></a> or <a class="link" href="#Parser.parsestr"><code>
+Parser.parsestr</code></a> methods.</p>
+
+<p>Situations where it can be raised include finding an envelope
+header after the first <a class="link" href="http://www.faqs.org/rfcs/rfc2822.html">RFC 2822</a> header of
+the message, finding a continuation line before the first <a class="link" href="http://www.faqs.org/rfcs/rfc2822.html">RFC
+2822</a> header is found, or finding a line in the headers which is
+neither a header or a continuation line.</p>
+</dd>
+<dt class="exception" id="BoundaryError"><b>exception BoundaryError()</b> <tt class="nav"><a class="nav" href="email.BoundaryError" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="exception">
+<p>Raised under some error conditions when parsing the <a class="link" href="http://www.faqs.org/rfcs/rfc2822.html">RFC
+2822</a> headers of a message, this class is derived from <a class="link" href="#MessageParseError"><code>MessageParseError</code></a>.
+It can be raised from the <a class="link" href="#Parser.parse"><code>
+Parser.parse</code></a> or <a class="link" href="#Parser.parsestr"><code>
+Parser.parsestr</code></a> methods.</p>
+
+<p>Situations where it can be raised include not being able to find
+the starting or terminating boundary in a multipart/* message when
+strict parsing is used.</p>
+</dd>
+<dt class="exception" id="MultipartConversionError"><b>exception MultipartConversionError()</b> <tt class="nav"><a class="nav" href="email.MultipartConversionError" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="exception">
+<p>Raised when a payload is added to a <a class="link" href="#Message"><code>Message</code></a> object using <code>add_payload</code>, but the payload is already
+a scalar and the message's Content-Type: main type is not either
+multipart or missing. <a class="link" href="#MultipartConversionError"><code>MultipartConversionError</code></a>
+multiply inherits from <a class="link" href="#MessageError"><code>
+MessageError</code></a> and the built-in <code>exceptions.TypeError</code>.</p>
+
+<p>Since <code>
+Message.add_payload</code> is deprecated, this exception is rarely
+raised in practice. However the exception may also be raised if the
+<code>attach</code> method is called on
+an instance of a class derived from <a class="link" href="#MIMENonMultipart"><code>MIMENonMultipart</code></a> (e.g. <a class="link" href="#MIMEImage"><code>MIMEImage</code></a>).</p>
+</dd>
+</dl><div class="text">
+<p>Here's the list of the defects that the <a class="link" href="#FeedParser"><code>FeedParser</code></a> can find while parsing
+messages. Note that the defects are added to the message where the
+problem was found, so for example, if a message nested inside a
+multipart/alternative had a malformed header, that nested message
+object would have a defect, but the containing messages would
+not.</p>
+
+<p>All defect classes are subclassed from <code>
+email.Errors.MessageDefect</code>, but this class is <em>not</em> an
+exception!</p>
+
+<p>New in version 2.4: All the defect classes were added.</p>
+
+<ul>
+<li>
+<p><code>
+NoBoundaryInMultipartDefect</code> - A message claimed to be a
+multipart, but had no boundary parameter.</p>
+</li>
+
+<li>
+<p><code>
+StartBoundaryNotFoundDefect</code> - The start boundary claimed in the
+Content-Type: header was never found.</p>
+</li>
+
+<li>
+<p><code>
+FirstHeaderLineIsContinuationDefect</code> - The message had a
+continuation line as its first header line.</p>
+</li>
+
+<li>
+<p><code>
+MisplacedEnvelopeHeaderDefect</code> - A &#8220;Unix From&#8221;
+header was found in the middle of a header block.</p>
+</li>
+
+<li>
+<p><code>
+MalformedHeaderDefect</code> - A header was found that was missing a
+colon, or was otherwise malformed.</p>
+</li>
+
+<li>
+<p><code>
+MultipartInvariantViolationDefect</code> - A message claimed to be a
+multipart, but no subparts were found. Note that when a message has
+this defect, its <code>
+is_multipart</code> method may return false even though its content
+type claims to be multipart.</p>
+</li>
+</ul>
+
+<h2 id="miscellaneous-utilities">Miscellaneous utilities <a class="nav" href="#miscellaneous-utilities">#</a></h2>
+
+<p>There are several useful utilities provided in the <code>email.Utils</code> module:</p>
+</div>
+<dl><dt class="function" id="quote"><b>quote(str)</b> <tt class="nav"><a class="nav" href="email.quote" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return a new string with backslashes in <var>str</var> replaced
+by two backslashes, and double quotes replaced by backslash-double
+quote.</p>
+</dd>
+<dt class="function" id="unquote"><b>unquote(str)</b> <tt class="nav"><a class="nav" href="email.unquote" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return a new string which is an <em>unquoted</em> version of
+<var>str</var>. If <var>str</var> ends and begins with double
+quotes, they are stripped off. Likewise if <var>str</var> ends and
+begins with angle brackets, they are stripped off.</p>
+</dd>
+<dt class="function" id="parseaddr"><b>parseaddr(address)</b> <tt class="nav"><a class="nav" href="email.parseaddr" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Parse address - which should be the value of some
+address-containing field such as To: or Cc: - into its constituent
+<em>realname</em> and <em>email address</em> parts. Returns a tuple
+of that information, unless the parse fails, in which case a
+2-tuple of <code>(&#8221;, &#8221;)</code> is returned.</p>
+</dd>
+<dt class="function" id="formataddr"><b>formataddr(pair)</b> <tt class="nav"><a class="nav" href="email.formataddr" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>The inverse of <a class="link" href="#parseaddr"><code>
+parseaddr</code></a>, this takes a 2-tuple of the form <code>(realname,
+email_address)</code> and returns the string value suitable for a
+To: or Cc: header. If the first element of <var>pair</var> is
+false, then the second element is returned unmodified.</p>
+</dd>
+<dt class="function" id="getaddresses"><b>getaddresses(fieldvalues)</b> <tt class="nav"><a class="nav" href="email.getaddresses" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>This method returns a list of 2-tuples of the form returned by
+<code>parseaddr()</code>. <var>fieldvalues</var> is a sequence of
+header field values as might be returned by <a class="link" href="#Message.get_all"><code>Message.get_all</code></a>. Here's a simple
+example that gets all the recipients of a message:</p>
+
+<pre>
+from email.Utils import getaddresses
+
+tos = msg.get_all('to', [])
+ccs = msg.get_all('cc', [])
+resent_tos = msg.get_all('resent-to', [])
+resent_ccs = msg.get_all('resent-cc', [])
+all_recipients = getaddresses(tos + ccs + resent_tos + resent_ccs)
+</pre>
+</dd>
+<dt class="function" id="parsedate"><b>parsedate(date)</b> <tt class="nav"><a class="nav" href="email.parsedate" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Attempts to parse a date according to the rules in <a class="link" href="http://www.faqs.org/rfcs/rfc2822.html">RFC
+2822</a>. however, some mailers don't follow that format as
+specified, so <a class="link" href="#parsedate"><code>parsedate</code></a>
+tries to guess correctly in such cases. <var>date</var> is a string
+containing an <a class="link" href="http://www.faqs.org/rfcs/rfc2822.html">RFC 2822</a> date,
+such as <code>"Mon, 20 Nov 1995 19:12:08 -0500"</code>. If it
+succeeds in parsing the date, <a class="link" href="#parsedate"><code>parsedate</code></a> returns a 9-tuple that can be
+passed directly to <code>
+time.mktime</code>; otherwise <code>
+None</code> will be returned. Note that fields 6, 7, and 8 of the
+result tuple are not usable.</p>
+</dd>
+<dt class="function" id="parsedate_tz"><b>parsedate_tz(date)</b> <tt class="nav"><a class="nav" href="email.parsedate_tz" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Performs the same function as <a class="link" href="#parsedate"><code>parsedate</code></a>, but returns either <code>None</code> or a 10-tuple; the first 9
+elements make up a tuple that can be passed directly to <code>time.mktime</code>, and the tenth
+is the offset of the date's timezone from UTC (which is the
+official term for Greenwich Mean Time)<code>footnote:58346</code>. If the input string
+has no timezone, the last element of the tuple returned is <code>None</code>. Note that fields 6, 7, and
+8 of the result tuple are not usable.</p>
+</dd>
+<dt class="function" id="mktime_tz"><b>mktime_tz(tuple)</b> <tt class="nav"><a class="nav" href="email.mktime_tz" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Turn a 10-tuple as returned by <a class="link" href="#parsedate_tz"><code>parsedate_tz</code></a> into a UTC timestamp. It
+the timezone item in the tuple is <code>
+None</code>, assume local time. Minor deficiency: <a class="link" href="#mktime_tz"><code>mktime_tz</code></a> interprets the first 8 elements
+of <var>tuple</var> as a local time and then compensates for the
+timezone difference. This may yield a slight error around changes
+in daylight savings time, though not worth worrying about for
+common use.</p>
+</dd>
+<dt class="function" id="formatdate"><b>formatdate([timeval[, localtime][, usegmt]])</b> <tt class="nav"><a class="nav" href="email.formatdate" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Returns a date string as per <a class="link" href="http://www.faqs.org/rfcs/rfc2822.html">RFC 2822</a>,
+e.g.:</p>
+
+<pre>
+Fri, 09 Nov 2001 01:08:47 -0000
+</pre>
+
+<p>Optional <var>timeval</var> if given is a floating point time
+value as accepted by <code>
+time.gmtime</code> and <code>
+time.localtime</code>, otherwise the current time is used.</p>
+
+<p>Optional <var>localtime</var> is a flag that when <code>
+True</code>, interprets <var>timeval</var>, and returns a date
+relative to the local timezone instead of UTC, properly taking
+daylight savings time into account. The default is <code>
+False</code> meaning UTC is used.</p>
+
+<p>Optional <var>usegmt</var> is a flag that when <code>
+True</code>, outputs a date string with the timezone as an ascii
+string <code>GMT</code>, rather than a numeric <code>-0000</code>.
+This is needed for some protocols (such as HTTP). This only applies
+when <var>localtime</var> is <code>
+False</code>.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.4.<br />
+</blockquote>
+</dd>
+<dt class="function" id="make_msgid"><b>make_msgid([idstring])</b> <tt class="nav"><a class="nav" href="email.make_msgid" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Returns a string suitable for an <a class="link" href="http://www.faqs.org/rfcs/rfc2822.html">RFC 2822</a>-compliant
+Message-ID: header. Optional <var>idstring</var> if given, is a
+string used to strengthen the uniqueness of the message id.</p>
+</dd>
+<dt class="function" id="decode_rfc2231"><b>decode_rfc2231(s)</b> <tt class="nav"><a class="nav" href="email.decode_rfc2231" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Decode the string <var>s</var> according to <a class="link" href="http://www.faqs.org/rfcs/rfc2231.html">RFC 2231</a>.</p>
+</dd>
+<dt class="function" id="encode_rfc2231"><b>encode_rfc2231(s[, charset[, language]])</b> <tt class="nav"><a class="nav" href="email.encode_rfc2231" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Encode the string <var>s</var> according to <a class="link" href="http://www.faqs.org/rfcs/rfc2231.html">RFC 2231</a>. Optional
+<var>charset</var> and <var>language</var>, if given is the
+character set name and language name to use. If neither is given,
+<var>s</var> is returned as-is. If <var>charset</var> is given but
+<var>language</var> is not, the string is encoded using the empty
+string for <var>language</var>.</p>
+</dd>
+<dt class="function" id="collapse_rfc2231_value"><b>collapse_rfc2231_value(value[, errors[,
+fallback_charset]])</b> <tt class="nav"><a class="nav" href="email.collapse_rfc2231_value" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>When a header parameter is encoded in <a class="link" href="http://www.faqs.org/rfcs/rfc2231.html">RFC 2231</a> format,
+<a class="link" href="#Message.get_param"><code>Message.get_param</code></a>
+may return a 3-tuple containing the character set, language, and
+value. <a class="link" href="#collapse_rfc2231_value"><code>
+collapse_rfc2231_value</code></a> turns this into a unicode string.
+Optional <var>errors</var> is passed to the <var>errors</var>
+argument of the built-in <code>
+unicode</code> function; it defaults to <code>replace</code>. Optional
+<var>fallback_charset</var> specifies the character set to use if
+the one in the <a class="link" href="http://www.faqs.org/rfcs/rfc2231.html">RFC 2231</a> header is
+not known by Python; it defaults to <code>us-ascii</code>.</p>
+
+<p>For convenience, if the <var>value</var> passed to <a class="link" href="#collapse_rfc2231_value"><code>
+collapse_rfc2231_value</code></a> is not a tuple, it should be a string
+and it is returned unquoted.</p>
+</dd>
+<dt class="function" id="decode_params"><b>decode_params(params)</b> <tt class="nav"><a class="nav" href="email.decode_params" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Decode parameters list according to <a class="link" href="http://www.faqs.org/rfcs/rfc2231.html">RFC 2231</a>. <var>
+params</var> is a sequence of 2-tuples containing elements of the
+form <code>(content-type, string-value)</code>.</p>
+</dd>
+</dl><div class="text">
+<p>Changed in version 2.4: The <code>dump_address_pair</code> function has
+been removed; use <a class="link" href="#formataddr"><code>
+formataddr</code></a> instead..</p>
+
+<p>Changed in version 2.4: The <code>
+decode</code> function has been removed; use the <code>Header.decode_header</code> method
+instead..</p>
+
+<p>Changed in version 2.4: The <code>
+encode</code> function has been removed; use the <a class="link" href="#Header.encode"><code>Header.encode</code></a> method instead..</p>
+
+<h4>Footnotes</h4>
+</div>
+<dl><dt class="variable"><b>... Time)12.3</b> <tt class="nav"><a class="nav" href="email...." title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Note that the sign of the timezone offset is the opposite of the
+sign of the <code>time.timezone</code> variable for the same
+timezone; the latter variable follows the POSIX standard while this
+module follows <a class="link" href="http://www.faqs.org/rfcs/rfc2822.html">RFC 2822</a>.</p>
+</dd>
+</dl><div class="text">
+<h2 id="iterators">Iterators <a class="nav" href="#iterators">#</a></h2>
+
+<p>Iterating over a message object tree is fairly easy with the <a class="link" href="#Message.walk"><code>Message.walk</code></a> method. The
+<code>email.Iterators</code>
+module provides some useful higher level iterations over message
+object trees.</p>
+</div>
+<dl><dt class="function" id="body_line_iterator"><b>body_line_iterator(msg[, decode])</b> <tt class="nav"><a class="nav" href="email.body_line_iterator" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>This iterates over all the payloads in all the subparts of <var>
+msg</var>, returning the string payloads line-by-line. It skips
+over all the subpart headers, and it skips over any subpart with a
+payload that isn't a Python string. This is somewhat equivalent to
+reading the flat text representation of the message from a file
+using <code>readline</code>, skipping
+over all the intervening headers.</p>
+
+<p>Optional <var>decode</var> is passed through to <a class="link" href="#Message.get_payload"><code>Message.get_payload</code></a>.</p>
+</dd>
+<dt class="function" id="typed_subpart_iterator"><b>typed_subpart_iterator(msg[, maintype[,
+subtype]])</b> <tt class="nav"><a class="nav" href="email.typed_subpart_iterator" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>This iterates over all the subparts of <var>msg</var>, returning
+only those subparts that match the MIME type specified by <var>
+maintype</var> and <var>subtype</var>.</p>
+
+<p>Note that <var>subtype</var> is optional; if omitted, then
+subpart MIME type matching is done only with the main type. <var>
+maintype</var> is optional too; it defaults to text.</p>
+
+<p>Thus, by default <a class="link" href="#typed_subpart_iterator"><code>typed_subpart_iterator</code></a>
+returns each subpart that has a MIME type of text/*.</p>
+</dd>
+</dl><div class="text">
+<p>The following function has been added as a useful debugging
+tool. It should <em>not</em> be considered part of the supported
+public interface for the package.</p>
+</div>
+<dl><dt class="function" id="_structure"><b>_structure(msg[, fp[, level]])</b> <tt class="nav"><a class="nav" href="email._structure" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Prints an indented representation of the content types of the
+message object structure. For example:</p>
+
+<pre>
+&gt;&gt;&gt; msg = email.message_from_file(somefile)
+&gt;&gt;&gt; _structure(msg)
+multipart/mixed
+    text/plain
+    text/plain
+    multipart/digest
+        message/rfc822
+            text/plain
+        message/rfc822
+            text/plain
+        message/rfc822
+            text/plain
+        message/rfc822
+            text/plain
+        message/rfc822
+            text/plain
+    text/plain
+</pre>
+
+<p>Optional <var>fp</var> is a file-like object to print the output
+to. It must be suitable for Python's extended print statement.
+<var>level</var> is used internally.</p>
+</dd>
+</dl><div class="text">
+<h2 id="package-history">Package History <a class="nav" href="#package-history">#</a></h2>
+
+<p>Version 1 of the <code>email</code>
+package was bundled with Python releases up to Python 2.2.1.
+Version 2 was developed for the Python 2.3 release, and backported
+to Python 2.2.2. It was also available as a separate
+distutils-based package, and is compatible back to Python 2.1.</p>
+
+<p><code>email</code> version 3.0 was
+released with Python 2.4 and as a separate distutils-based package.
+It is compatible back to Python 2.3.</p>
+
+<p>Here are the differences between <code>email</code> version 3 and version 2:</p>
+
+<ul>
+<li>
+<p>The <a class="link" href="#FeedParser"><code>FeedParser</code></a> class
+was introduced, and the <a class="link" href="#Parser"><code>
+Parser</code></a> class was implemented in terms of the <a class="link" href="#FeedParser"><code>FeedParser</code></a>. All parsing there for is
+non-strict, and parsing will make a best effort never to raise an
+exception. Problems found while parsing messages are stored in the
+message's <var>defect</var> attribute.</p>
+</li>
+
+<li>
+<p>All aspects of the API which raised <code>
+exceptions.DeprecationWarning</code>s in version 2 have been removed.
+These include the <var>_encoder</var> argument to the <a class="link" href="#MIMEText"><code>MIMEText</code></a> constructor, the <code>
+Message.add_payload</code> method, the <code>Utils.dump_address_pair</code>
+function, and the functions <code>Utils.decode</code> and <code>Utils.encode</code>.</p>
+</li>
+
+<li>
+<p>New <code>
+exceptions.DeprecationWarning</code>s have been added to: <code>Generator.__call__</code>,
+<a class="link" href="#Message.get_type"><code>Message.get_type</code></a>,
+<a class="link" href="#Message.get_main_type"><code>
+Message.get_main_type</code></a>, <a class="link" href="#Message.get_subtype"><code>Message.get_subtype</code></a>, and the
+<var>strict</var> argument to the <a class="link" href="#Parser"><code>Parser</code></a> class. These are expected to be
+removed in email 3.1.</p>
+</li>
+
+<li>
+<p>Support for Pythons earlier than 2.3 has been removed.</p>
+</li>
+</ul>
+
+<p>Here are the differences between <code>email</code> version 2 and version 1:</p>
+
+<ul>
+<li>
+<p>The <code>email.Header</code>
+and <code>email.Charset</code>
+modules have been added.</p>
+</li>
+
+<li>
+<p>The pickle format for <a class="link" href="#Message"><code>
+Message</code></a> instances has changed. Since this was never (and still
+isn't) formally defined, this isn't considered a backward
+incompatibility. However if your application pickles and unpickles
+<a class="link" href="#Message"><code>Message</code></a> instances, be aware
+that in <code>email</code> version 2, <a class="link" href="#Message"><code>Message</code></a> instances now have
+private variables <var>_charset</var> and <var>
+_default_type</var>.</p>
+</li>
+
+<li>
+<p>Several methods in the <a class="link" href="#Message"><code>
+Message</code></a> class have been deprecated, or their signatures
+changed. Also, many new methods have been added. See the
+documentation for the <a class="link" href="#Message"><code>
+Message</code></a> class for details. The changes should be completely
+backward compatible.</p>
+</li>
+
+<li>
+<p>The object structure has changed in the face of message/rfc822
+content types. In <code>email</code>
+version 1, such a type would be represented by a scalar payload,
+i.e. the container message's <code>is_multipart</code> returned false, <code>get_payload</code> was not a list
+object, but a single <a class="link" href="#Message"><code>
+Message</code></a> instance.</p>
+
+<p>This structure was inconsistent with the rest of the package, so
+the object representation for message/rfc822 content types was
+changed. In <code>email</code> version 2,
+the container <em>does</em> return <code>True</code> from <code>is_multipart</code>, and <code>get_payload</code> returns a list containing a
+single <a class="link" href="#Message"><code>Message</code></a> item.</p>
+
+<p>Note that this is one place that backward compatibility could
+not be completely maintained. However, if you're already testing
+the return type of <code>
+get_payload</code>, you should be fine. You just need to make sure
+your code doesn't do a <code>
+set_payload</code> with a <a class="link" href="#Message"><code>
+Message</code></a> instance on a container with a content type of
+message/rfc822.</p>
+</li>
+
+<li>
+<p>The <a class="link" href="#Parser"><code>Parser</code></a> constructor's
+<var>strict</var> argument was added, and its <code>parse</code> and <code>parsestr</code> methods grew a <var>
+headersonly</var> argument. The <var>strict</var> flag was also
+added to functions <code>email.message_from_file</code> and
+<code>
+email.message_from_string</code>.</p>
+</li>
+
+<li>
+<p><code>
+Generator.__call__</code> is deprecated; use <a class="link" href="#Generator.flatten"><code>Generator.flatten</code></a> instead. The <a class="link" href="#Generator"><code>Generator</code></a> class has also
+grown the <code>clone</code> method.</p>
+</li>
+
+<li>
+<p>The <a class="link" href="#DecodedGenerator"><code>
+DecodedGenerator</code></a> class in the <code>email.Generator</code> module was
+added.</p>
+</li>
+
+<li>
+<p>The intermediate base classes <a class="link" href="#MIMENonMultipart"><code>MIMENonMultipart</code></a> and <a class="link" href="#MIMEMultipart"><code>MIMEMultipart</code></a> have been
+added, and interposed in the class hierarchy for most of the other
+MIME-related derived classes.</p>
+</li>
+
+<li>
+<p>The <var>_encoder</var> argument to the <a class="link" href="#MIMEText"><code>MIMEText</code></a> constructor has been deprecated.
+Encoding now happens implicitly based on the <var>_charset</var>
+argument.</p>
+</li>
+
+<li>
+<p>The following functions in the <code>email.Utils</code> module have been
+deprecated: <code>
+dump_address_pairs</code>, <code>
+decode</code>, and <code>encode</code>. The
+following functions have been added to the module: <a class="link" href="#make_msgid"><code>make_msgid</code></a>, <a class="link" href="#decode_rfc2231"><code>decode_rfc2231</code></a>, <a class="link" href="#encode_rfc2231"><code>encode_rfc2231</code></a>, and <a class="link" href="#decode_params"><code>decode_params</code></a>.</p>
+</li>
+
+<li>
+<p>The non-public function <code>
+email.Iterators._structure</code> was added.</p>
+</li>
+</ul>
+
+<h2 id="differences-from-mimelib">Differences from mimelib <a class="nav" href="#differences-from-mimelib">#</a></h2>
+
+<p>The <code>email</code> package was
+originally prototyped as a separate library called <a class="link" href="http://mimelib.sf.net/">mimelib</a>. Changes have been made
+so that method names are more consistent, and some methods or
+modules have either been added or removed. The semantics of some of
+the methods have also changed. For the most part, any functionality
+available in <code>mimelib</code> is
+still available in the <code>email</code>
+package, albeit often in a different way. Backward compatibility
+between the <code>mimelib</code> package
+and the <code>email</code> package was not
+a priority.</p>
+
+<p>Here is a brief description of the differences between the <code>mimelib</code> and the <code>email</code> packages, along with hints
+on how to port your applications.</p>
+
+<p>Of course, the most visible difference between the two packages
+is that the package name has been changed to <code>email</code>. In addition, the top-level package has
+the following differences:</p>
+
+<ul>
+<li>
+<p><code>
+messageFromString</code> has been renamed to <a class="link" href="#message_from_string"><code>message_from_string</code></a>.</p>
+</li>
+
+<li>
+<p><code>messageFromFile</code>
+has been renamed to <a class="link" href="#message_from_file"><code>
+message_from_file</code></a>.</p>
+</li>
+</ul>
+
+<p>The <a class="link" href="#Message"><code>Message</code></a> class has
+the following differences:</p>
+
+<ul>
+<li>
+<p>The method <code>asString</code> was
+renamed to <code>as_string</code>.</p>
+</li>
+
+<li>
+<p>The method <code>
+ismultipart</code> was renamed to <code>is_multipart</code>.</p>
+</li>
+
+<li>
+<p>The <code>get_payload</code>
+method has grown a <var>decode</var> optional argument.</p>
+</li>
+
+<li>
+<p>The method <code>getall</code> was
+renamed to <code>get_all</code>.</p>
+</li>
+
+<li>
+<p>The method <code>addheader</code>
+was renamed to <code>
+add_header</code>.</p>
+</li>
+
+<li>
+<p>The method <code>gettype</code> was
+renamed to <code>get_type</code>.</p>
+</li>
+
+<li>
+<p>The method <code>
+getmaintype</code> was renamed to <code>get_main_type</code>.</p>
+</li>
+
+<li>
+<p>The method <code>getsubtype</code>
+was renamed to <code>
+get_subtype</code>.</p>
+</li>
+
+<li>
+<p>The method <code>getparams</code>
+was renamed to <code>
+get_params</code>. Also, whereas <code>getparams</code> returned a list of strings, <code>get_params</code> returns a list
+of 2-tuples, effectively the key/value pairs of the parameters,
+split on the "<code>=</code>" sign.</p>
+</li>
+
+<li>
+<p>The method <code>getparam</code> was
+renamed to <code>get_param</code>.</p>
+</li>
+
+<li>
+<p>The method <code>
+getcharsets</code> was renamed to <code>get_charsets</code>.</p>
+</li>
+
+<li>
+<p>The method <code>
+getfilename</code> was renamed to <code>get_filename</code>.</p>
+</li>
+
+<li>
+<p>The method <code>
+getboundary</code> was renamed to <code>get_boundary</code>.</p>
+</li>
+
+<li>
+<p>The method <code>
+setboundary</code> was renamed to <code>set_boundary</code>.</p>
+</li>
+
+<li>
+<p>The method <code>
+getdecodedpayload</code> was removed. To get similar functionality,
+pass the value 1 to the <var>decode</var> flag of the get_payload()
+method.</p>
+</li>
+
+<li>
+<p>The method <code>
+getpayloadastext</code> was removed. Similar functionality is
+supported by the <a class="link" href="#DecodedGenerator"><code>
+DecodedGenerator</code></a> class in the <code>email.Generator</code> module.</p>
+</li>
+
+<li>
+<p>The method <code>
+getbodyastext</code> was removed. You can get similar functionality by
+creating an iterator with <a class="link" href="#typed_subpart_iterator"><code>typed_subpart_iterator</code></a> in
+the <code>email.Iterators</code>
+module.</p>
+</li>
+</ul>
+
+<p>The <a class="link" href="#Parser"><code>Parser</code></a> class has no
+differences in its public interface. It does have some additional
+smarts to recognize message/delivery-status type messages, which it
+represents as a <a class="link" href="#Message"><code>Message</code></a>
+instance containing separate <a class="link" href="#Message"><code>
+Message</code></a> subparts for each header block in the delivery status
+notification<code>footnote:58638</code>.</p>
+
+<p>The <a class="link" href="#Generator"><code>Generator</code></a> class
+has no differences in its public interface. There is a new class in
+the <code>email.Generator</code>
+module though, called <a class="link" href="#DecodedGenerator"><code>
+DecodedGenerator</code></a> which provides most of the functionality
+previously available in the <code>Message.getpayloadastext</code>
+method.</p>
+
+<p>The following modules and classes have been changed:</p>
+
+<ul>
+<li>
+<p>The <a class="link" href="#MIMEBase"><code>MIMEBase</code></a> class
+constructor arguments <var>_major</var> and <var>_minor</var> have
+changed to <var>_maintype</var> and <var>_subtype</var>
+respectively.</p>
+</li>
+
+<li>
+<p>The <code>Image</code> class/module has been renamed to <code>
+MIMEImage</code>. The <var>_minor</var> argument has been renamed
+to <var>_subtype</var>.</p>
+</li>
+
+<li>
+<p>The <code>Text</code> class/module has been renamed to <code>
+MIMEText</code>. The <var>_minor</var> argument has been renamed to
+<var>_subtype</var>.</p>
+</li>
+
+<li>
+<p>The <code>MessageRFC822</code> class/module has been renamed to
+<code>MIMEMessage</code>. Note that an earlier version of <code>mimelib</code> called this
+class/module <code>RFC822</code>, but that clashed with the Python
+standard library module <code>
+rfc822</code> on some case-insensitive file systems.</p>
+
+<p>Also, the <a class="link" href="#MIMEMessage"><code>
+MIMEMessage</code></a> class now represents any kind of MIME message with
+main type message. It takes an optional argument <var>
+_subtype</var> which is used to set the MIME subtype. <var>
+_subtype</var> defaults to rfc822.</p>
+</li>
+</ul>
+
+<p><code>mimelib</code> provided some
+utility functions in its <code>
+address</code> and <code>date</code> modules.
+All of these functions have been moved to the <code>email.Utils</code> module.</p>
+
+<p>The <code>MsgReader</code> class/module has been removed. Its
+functionality is most closely supported in the <a class="link" href="#body_line_iterator"><code>body_line_iterator</code></a> function in
+the <code>email.Iterators</code>
+module.</p>
+
+<h4>Footnotes</h4>
+</div>
+<dl><dt class="variable"><b>... notification12.4</b> <tt class="nav"><a class="nav" href="email...." title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Delivery Status Notifications (DSN) are defined in <a class="link" href="http://www.faqs.org/rfcs/rfc1894.html">RFC
+1894</a>.</p>
+</dd>
+</dl><div class="text">
+<h2 id="examples">Examples <a class="nav" href="#examples">#</a></h2>
+
+<p>Here are a few examples of how to use the <code>email</code> package to read, write, and send simple
+email messages, as well as more complex MIME messages.</p>
+
+<p>First, let's see how to create and send a simple text
+message:</p>
+
+<pre>
+# Import smtplib for the actual sending function
+import smtplib
+
+# Import the email modules we'll need
+from email.MIMEText import MIMEText
+
+# Open a plain text file for reading.  For this example, assume that
+# the text file contains only ASCII characters.
+fp = open(textfile, 'rb')
+# Create a text/plain message
+msg = MIMEText(fp.read())
+fp.close()
+
+# me == the sender's email address
+# you == the recipient's email address
+msg['Subject'] = 'The contents of %s' % textfile
+msg['From'] = me
+msg['To'] = you
+
+# Send the message via our own SMTP server, but don't include the
+# envelope header.
+s = smtplib.SMTP()
+s.connect()
+s.sendmail(me, [you], msg.as_string())
+s.close()
+</pre>
+
+<p>Here's an example of how to send a MIME message containing a
+bunch of family pictures that may be residing in a directory:</p>
+
+<pre>
+# Import smtplib for the actual sending function
+import smtplib
+
+# Here are the email pacakge modules we'll need
+from email.MIMEImage import MIMEImage
+from email.MIMEMultipart import MIMEMultipart
+
+COMMASPACE = ', '
+
+# Create the container (outer) email message.
+msg = MIMEMultipart()
+msg['Subject'] = 'Our family reunion'
+# me == the sender's email address
+# family = the list of all recipients' email addresses
+msg['From'] = me
+msg['To'] = COMMASPACE.join(family)
+msg.preamble = 'Our family reunion'
+# Guarantees the message ends in a newline
+msg.epilogue = ''
+
+# Assume we know that the image files are all in PNG format
+for file in pngfiles:
+    # Open the files in binary mode.  Let the MIMEImage class automatically
+    # guess the specific image type.
+    fp = open(file, 'rb')
+    img = MIMEImage(fp.read())
+    fp.close()
+    msg.attach(img)
+
+# Send the email via our own SMTP server.
+s = smtplib.SMTP()
+s.connect()
+s.sendmail(me, family, msg.as_string())
+s.close()
+</pre>
+
+<p>Here's an example of how to send the entire contents of a
+directory as an email message: <code>footnote:58630</code></p>
+
+<pre>
+#!/usr/bin/env python
+
+"""Send the contents of a directory as a MIME message.
+
+Usage: dirmail [options] from to [to ...]*
+
+Options:
+    -h / --help
+        Print this message and exit.
+
+    -d directory
+    --directory=directory
+        Mail the contents of the specified directory, otherwise use the
+        current directory.  Only the regular files in the directory are sent,
+        and we don't recurse to subdirectories.
+
+`from' is the email address of the sender of the message.
+
+`to' is the email address of the recipient of the message, and multiple
+recipients may be given.
+
+The email is sent by forwarding to your local SMTP server, which then does the
+normal delivery process.  Your local machine must be running an SMTP server.
+"""
+
+import sys
+import os
+import getopt
+import smtplib
+# For guessing MIME type based on file name extension
+import mimetypes
+
+from email import Encoders
+from email.Message import Message
+from email.MIMEAudio import MIMEAudio
+from email.MIMEBase import MIMEBase
+from email.MIMEMultipart import MIMEMultipart
+from email.MIMEImage import MIMEImage
+from email.MIMEText import MIMEText
+
+COMMASPACE = ', '
+
+def usage(code, msg=''):
+    print &gt;&gt; sys.stderr, __doc__
+    if msg:
+        print &gt;&gt; sys.stderr, msg
+    sys.exit(code)
+
+def main():
+    try:
+        opts, args = getopt.getopt(sys.argv[1:], 'hd:', ['help', 'directory='])
+    except getopt.error, msg:
+        usage(1, msg)
+
+    dir = os.curdir
+    for opt, arg in opts:
+        if opt in ('-h', '--help'):
+            usage(0)
+        elif opt in ('-d', '--directory'):
+            dir = arg
+
+    if len(args) &lt; 2:
+        usage(1)
+
+    sender = args[0]
+    recips = args[1:]
+
+    # Create the enclosing (outer) message
+    outer = MIMEMultipart()
+    outer['Subject'] = 'Contents of directory %s' % os.path.abspath(dir)
+    outer['To'] = COMMASPACE.join(recips)
+    outer['From'] = sender
+    outer.preamble = 'You will not see this in a MIME-aware mail reader.\n'
+    # To guarantee the message ends with a newline
+    outer.epilogue = ''
+
+    for filename in os.listdir(dir):
+        path = os.path.join(dir, filename)
+        if not os.path.isfile(path):
+            continue
+        # Guess the content type based on the file's extension.  Encoding
+        # will be ignored, although we should check for simple things like
+        # gzip'd or compressed files.
+        ctype, encoding = mimetypes.guess_type(path)
+        if ctype is None or encoding is not None:
+            # No guess could be made, or the file is encoded (compressed), so
+            # use a generic bag-of-bits type.
+            ctype = 'application/octet-stream'
+        maintype, subtype = ctype.split('/', 1)
+        if maintype == 'text':
+            fp = open(path)
+            # Note: we should handle calculating the charset
+            msg = MIMEText(fp.read(), _subtype=subtype)
+            fp.close()
+        elif maintype == 'image':
+            fp = open(path, 'rb')
+            msg = MIMEImage(fp.read(), _subtype=subtype)
+            fp.close()
+        elif maintype == 'audio':
+            fp = open(path, 'rb')
+            msg = MIMEAudio(fp.read(), _subtype=subtype)
+            fp.close()
+        else:
+            fp = open(path, 'rb')
+            msg = MIMEBase(maintype, subtype)
+            msg.set_payload(fp.read())
+            fp.close()
+            # Encode the payload using Base64
+            Encoders.encode_base64(msg)
+        # Set the filename parameter
+        msg.add_header('Content-Disposition', 'attachment', filename=filename)
+        outer.attach(msg)
+
+    # Now send the message
+    s = smtplib.SMTP()
+    s.connect()
+    s.sendmail(sender, recips, outer.as_string())
+    s.close()
+
+if __name__ == '__main__':
+    main()
+</pre>
+
+<p>And finally, here's an example of how to unpack a MIME message
+like the one above, into a directory of files:</p>
+
+<pre>
+#!/usr/bin/env python
+
+"""Unpack a MIME message into a directory of files.
+
+Usage: unpackmail [options] msgfile
+
+Options:
+    -h / --help
+        Print this message and exit.
+
+    -d directory
+    --directory=directory
+        Unpack the MIME message into the named directory, which will be
+        created if it doesn't already exist.
+
+msgfile is the path to the file containing the MIME message.
+"""
+
+import sys
+import os
+import getopt
+import errno
+import mimetypes
+import email
+
+def usage(code, msg=''):
+    print &gt;&gt; sys.stderr, __doc__
+    if msg:
+        print &gt;&gt; sys.stderr, msg
+    sys.exit(code)
+
+def main():
+    try:
+        opts, args = getopt.getopt(sys.argv[1:], 'hd:', ['help', 'directory='])
+    except getopt.error, msg:
+        usage(1, msg)
+
+    dir = os.curdir
+    for opt, arg in opts:
+        if opt in ('-h', '--help'):
+            usage(0)
+        elif opt in ('-d', '--directory'):
+            dir = arg
+
+    try:
+        msgfile = args[0]
+    except IndexError:
+        usage(1)
+
+    try:
+        os.mkdir(dir)
+    except OSError, e:
+        # Ignore directory exists error
+        if e.errno &lt;&gt; errno.EEXIST: raise
+
+    fp = open(msgfile)
+    msg = email.message_from_file(fp)
+    fp.close()
+
+    counter = 1
+    for part in msg.walk():
+        # multipart/* are just containers
+        if part.get_content_maintype() == 'multipart':
+            continue
+        # Applications should really sanitize the given filename so that an
+        # email message can't be used to overwrite important files
+        filename = part.get_filename()
+        if not filename:
+            ext = mimetypes.guess_extension(part.get_type())
+            if not ext:
+                # Use a generic bag-of-bits extension
+                ext = '.bin'
+            filename = 'part-%03d%s' % (counter, ext)
+        counter += 1
+        fp = open(os.path.join(dir, filename), 'wb')
+        fp.write(part.get_payload(decode=1))
+        fp.close()
+
+if __name__ == '__main__':
+    main()
+</pre>
+</div>
+<div class="footnote">
+<p>Thanks to Matthew Dixon Cowles for the original inspiration and
+examples.</p>
+</div>
+</div></body></html>

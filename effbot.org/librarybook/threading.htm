@@ -1,0 +1,62 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>The threading&nbsp;module</title></head><body data-page-id="687"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">The threading&nbsp;module</h1></div><div class="yui-ge"><div class="yui-u first"><p>(Optional). This is a higher-level interface for threading. It&#8217;s
+modeled after the Java thread facilities. Like the lower-level
+<b><a href="thread.htm">thread</a></b> module, it&#8217;s only available
+if your interpreter was built with thread support.</p><p>To create a new thread, subclass the <b>Thread</b> class and
+define the run method. To run such threads, create one or more
+instances of that class, and call the <b>start</b> method. Each
+instance&#8217;s <b>run</b> method will execute in its own thread.</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><div class="example wide">
+<b style="example">Example: Using the threading module</b>
+<pre class="wide">
+# File: <a href="threading/threading-example-1.py">threading-example-1.py</a>
+
+import threading
+import time, random
+
+class Counter:
+    def __init__(self):
+        self.lock = threading.Lock()
+        self.value = 0
+
+    def increment(self):
+        self.lock.acquire() # <i>critical section</i>
+        self.value = value = self.value + 1
+        self.lock.release()
+        return value
+
+counter = Counter()
+
+class Worker(threading.Thread):
+
+    def run(self):
+        for i in range(10):
+            # <i>pretend we're doing something that takes 10-100 ms</i>
+            value = counter.increment() # <i>increment global counter</i>
+            time.sleep(random.randint(10, 100) / 1000.0)
+            print self.getName(), "-- task", i, "finished", value
+
+#
+# <i>try it</i>
+
+for i in range(10):
+    Worker().start() # <i>start a worker</i>
+
+</pre><pre class="computeroutput wide" moreinfo="NONE">
+$ python threading-example-1.py
+Thread-1 -- task 0 finished 1
+Thread-3 -- task 0 finished 3
+Thread-7 -- task 0 finished 8
+Thread-1 -- task 1 finished 7
+Thread-4 -- task 0 Thread-5 -- task 0 finished 4
+finished 5
+Thread-8 -- task 0 Thread-6 -- task 0 finished 9
+finished 6
+...
+Thread-6 -- task 9 finished 98
+Thread-4 -- task 9 finished 99
+Thread-9 -- task 9 finished 100
+</pre></div></div><div class="yui-ge"><div class="yui-u first"><p>This example also uses <b>Lock</b> objects to create a
+critical section inside the global counter object. If you remove
+the calls to <b>acquire</b> and <b>release</b>, it&#8217;s pretty
+likely that the counter won&#8217;t reach 100.</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to librarybook index page.">::: librarybook :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

@@ -1,0 +1,31 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>The Tkinter Message&nbsp;Widget</title> <script type="text/javascript">effbot_page_id=1930;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <p><a href="menubutton.htm">back</a> <a href="optionmenu.htm">next</a></p> <h1 class="maintitle">The Tkinter Message&nbsp;Widget</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p>The <b>Message</b> widget is a variant of the <a href="/tag/Tkinter.Label"><b>Label</b></a>, designed to display multiline
+messages. The message widget can wrap text, and adjust its width to
+maintain a given aspect ratio.</p><h2>When to use the Message Widget</h2><p>The widget can be used to display short text messages, using a
+single font. You can often use a plain <a href="/tag/Tkinter.Label"><b>Label</b></a> instead. If you need to
+display text in multiple fonts, use a <a href="/tag/Tkinter.Text"><b>Text</b></a> widget.</p><h2 id="patterns">Patterns&#160;<a class="nav" href="#patterns" title="bookmark!">#</a></h2><p>To create a message, all you have to do is to pass in a text
+string. The widget will automatically break the lines, if
+necessary.</p><pre class="python">
+<span class="pykeyword">from</span> Tkinter <span class="pykeyword">import</span> *
+
+master = Tk()
+
+w = Message(master, text=<span class="pystring">"this is a message"</span>)
+w.pack()
+
+mainloop()</pre><p>If you don&#8217;t specify anything else, the widget attepts to format
+the text to keep a given aspect ratio. If you don&#8217;t want that
+behaviour, you can specify a width:</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><pre class="python wide wide">
+w = Message(master, text=<span class="pystring">"this is a relatively long message"</span>, width=50)
+w.pack()</pre></div><div class="yui-ge"><div class="yui-u first"><h2 id="reference">Reference&#160;<a class="nav" href="#reference" title="bookmark!">#</a></h2><div class="zone:include"><dl><dt><b>Message(master=None, **options)</b> (class) [<a href="#Tkinter.Message-class">#</a>]</dt><dd>
+<p>A multi-line text message.</p><dl><dt><i>master</i></dt><dd>
+Parent widget.</dd>
+<dt><i>**options</i></dt><dd>
+Widget options.  See the description of
+   the <a class="link" href="#message.Message.config-method"><b>config</b></a> method for a list of available
+   options.
+</dd>
+</dl><br />
+</dd>
+<dt><a id="Tkinter.Message.config-meth

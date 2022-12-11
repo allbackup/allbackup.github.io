@@ -1,0 +1,89 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>Using Regular Expressions for Lexical&nbsp;Analysis</title> <script type="text/javascript">effbot_page_id=373;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <h1 class="maintitle">Using Regular Expressions for Lexical&nbsp;Analysis</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p class="info">February 04, 2002 | Fredrik Lundh</p><p>This note discusses how to use the <b>re</b> module in Python
+2.0 and later for lexical analysis.</p><h3>A Simple RE Scanner</h3><p>A scanner reads an input string (e.g. program code) and groups the
+characters into lexical units, such as keywords and integer literals.
+Scanners are also known as lexical analysers, or tokenizers.</p><p>For example, here&#8217;s a simple expression:</p><pre>
+b = 2 + a*10
+</pre><p>In the above expression, we can identify three token types:</p><ul><li>Symbols (or identifiers).  In the example, all symbols consist of
+a single character, but we can easily accept any string starting with
+a letter or an underscore, and followed by more letters, digits, or
+underscores.</li><li>Integer literals, consisting of one or more digits.</li><li>Operators (=, +, and *).  To simplify, let&#8217;s treat any other
+non-whitespace character as an operator as well.</li></ul><p>Regular expressions provide an easy and quite powerful tool for
+writing simple scanners.  For example, you could use the
+<b>findall</b> method to split the expression into a list of
+tokens:</p><div class="example"><pre class="python">
+<span class="pycomment"># File: xml-scanner-example-1.py</span>
+
+<span class="pykeyword">import</span> re
+
+expr = <span class="pystring">"b = 2 + a*10"</span>
+
+<span class="pykeyword">print</span> re.findall(<span class="pystring">"\s*(\d+|\w+|.)"</span>, expr)</pre></div><p>Note that the pattern skips any leading whitespace.  The token
+patterns are all placed in the same group, so <b>findall</b> will
+return a straightforward list of token strings:</p><pre>
+$ <b>python xml-scanner-example-1.py</b>
+['b', '=', '2', '+', 'a', '*', '10']
+</pre><p>The next step would be to pass the token list on to a function that
+can interpret the expression (or perhaps compile it into some kind of
+executable code).</p><p>A problem here is that while <b>findall</b> returns a list of
+tokens, the program will have to inspect each token to see what it
+really is.  It could for example look at the first character; if it&#8217;s
+a digit, the token represents an integer literal.  If it&#8217;s a letter or
+an underscore, the token represents a symbol.  All other tokens are
+potential operators.</p><p>This extra check feels a bit unnecessary; after all, the regular
+expression engine knows what subpattern it picked.  One way to get
+this information is to modify the pattern so that every token
+subpattern is in its own group.</p><div class="example"><pre class="python">
+<span class="pycomment"># File: xml-scanner-example-2.py</span>
+
+<span class="pykeyword">import</span> re
+
+expr = <span class="pystring">"b = 2 + a*10"</span>
+
+<span class="pykeyword">for</span> item <span class="pykeyword">in</span> re.findall(<span class="pystring">"\s*(?:(\d+)|(\w+)|(.))"</span>, expr):
+    <span class="pykeyword">print</span> item</pre></div><p>In this case, when there are more than one group in a pattern,
+<b>findall</b> returns a tuple with empty strings for groups that
+didn&#8217;t match:</p><pre>
+$ <b>python xml-scanner-example-2.py</b>
+('', 'b', '')
+('', '', '=')
+('2', '', '')
+('', '', '+')
+('', 'a', '')
+('', '', '*')
+('10', '', '')
+</pre><p>To find the token type, all we have to do is to find the first
+non-empty item in each tuple, e.g:</p><pre class="python">
+<span class="pykeyword">if</span> item[0]:
+    <span class="pykeyword">print</span> <span class="pystring">"integer"</span>, item[0]
+<span class="pykeyword">elif</span> item[1]:
+    <span class="pykeyword">print</span> <span class="pystring">"symbol"</span>, item[1]
+<span class="pykeyword">else</span>:
+    <span class="pykeyword">print</span> <span class="pystring">"operator"</span>, item[2]</pre><p>This solution works pretty well as long as we don&#8217;t have too many
+different token types, but it quickly breaks down when the number
+increases.</p><p>There&#8217;s actually a way to get at the group index in Python 2.0 and
+later.  Whenever the regular expression engine completes a group, it
+assigns the group number to an internal register called
+<b>lastindex</b>.  After a successful match, this register is
+available as an attribute on the <b>match object</b> (the kind of
+object returned by a successful call to <b>match</b> or
+<b>search</b>).</p><p>The only problem here is that <b>findall</b> returns strings (or
+tuples), not match objects.  Oh well.  We&#8217;ll have to write our own
+scanning loop:</p><div class="example"><pre class="python">
+<span class="pycomment"># File: xml-scanner-example-3.py</span>
+
+<span class="pykeyword">import</span> re
+
+expr = <span class="pystring">"b = 2 + a*10"</span>
+
+pos = 0
+
+pattern = re.compile(<span class="pystring">"\s*(?:(\d+)|(\w+)|(.))"</span>)
+
+<span class="pykeyword">while</span> 1:
+    m = pattern.match(expr, pos)
+    <span class="pykeyword">if</span> <span class="pykeyword">not</span> m:
+        <span class="pykeyword">break</span>
+    <span class="pykeyword">print</span> m.lastindex, repr(m.group(m.lastindex))
+    pos = m.

@@ -1,0 +1,27 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>sys.hexversion</title><script type="text/javascript">effbot_page_id=1662;</script></head><body><div id="doc2" class="yui-t2"><div id="hd"><!-- header --></div><!-- hd --><div id="bd"><!-- body --><p class="note" style="text-align: center"><strong>
+
+We're back after a server migration that caused effbot.org to fall
+over a bit harder than expected.  Expect some glitches.
+
+</strong></p><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">sys.hexversion</h1></div><!-- yui-g --><body><p><strong>hexversion</strong></p>
+
+<p>The version number encoded as a single integer. This is guaranteed to
+increase with each version, including proper support for
+non-production releases. For example, to test that the Python
+interpreter is at least version 1.5.2 final, use:</p>
+
+<pre class="python"><code>if sys.hexversion &gt;= 0x010502F0:
+    # use some advanced feature
+    ...
+else:
+    # use an alternative implementation or warn the user
+    ...
+</code></pre>
+
+<p>This is called &#8220;hexversion&#8221; since it only really looks meaningful when
+viewed as a hexadecimal number, such as the result of passing it to the
+built-in <a href="hex.htm"><strong>hex</strong></a> function. The <a href="sys.version_info.htm"><strong>sys.version_info</strong></a> value may be used
+for a more human-friendly encoding of the same information. New in
+version 1.5.2.</p></body><div class="yui-g"></div><!-- yui-g --></div><!-- content --></div><!-- yui-b --></div><!-- yui-main --><div class="yui-b"><div id='menu'></div><!-- menu --></div><!-- yui-b --></div><!-- bd --><div id="ft"><!-- footer --></div><!-- ft --></div><!-- doc --><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

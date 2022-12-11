@@ -1,0 +1,112 @@
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>downloads.effbot.org ::: www.effbot.org</title>
+<link rel="stylesheet" href="/effbot2.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="/effbotprint.css" type="text/css" media="print" />
+</head>
+
+<body bgcolor="white">
+
+<script src="/effbot.js" type="text/javascript"></script>
+<script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-578832-1";
+urchinTracker();
+</script>
+
+<div id="effbot-page">
+
+<div id="effbot-nav">
+<div><a href="/"><b>effbot.org</b></a></div>
+<div style="margin-left: 5px;"><a href="/zone/"><b>zone</b></a></div>
+<div style="margin-left: 10px;"><b>downloads.effbot.org</b></div>
+
+<div style="margin-top: 10px;" class='small'>Think this article can be improved? <a href='#add-comment'>Check</a> for comments, or <a href='/comment/zone/zone-template-downloads.htm'>add your own</a>!</div>
+
+</div>
+
+<div id="effbot-body">
+
+
+<h1 class="title">downloads.effbot.org</h1>
+<p>
+[<a href="/">home</a>]
+[<a href="/zone">zone</a>]
+[<a href="http://online.effbot.org">blog</a>]
+
+</p><p>Assorted software, most of it shipped under an OSI-compatible <a href="/zone/copyright.htm">old-style Python license</a>.  If you want
+to support development, you can always <a href="http://www.amazon.co.uk/gp/registry/2QZDLLDVBENMC">buy me some refreshments</a>.
+
+<h3>Contents:</h3>
+
+
+<p>
+Contents of <b>downloads/tkinter3000-1.0-20031212.zip</b> [<a href='/downloads/tkinter3000-1.0-20031212.zip'>download</a>]:
+</p>
+<pre>
+tkinter3000-1.0-20031212/benchOscilloscope.py [2k]
+tkinter3000-1.0-20031212/demoArrowButton.py [2k]
+tkinter3000-1.0-20031212/demoButton.py [3k]
+tkinter3000-1.0-20031212/demoC.py [2k]
+tkinter3000-1.0-20031212/demoClock.py [1k]
+tkinter3000-1.0-20031212/demoImage.py [8k]
+tkinter3000-1.0-20031212/demoLissajou.py [2k]
+tkinter3000-1.0-20031212/demoMacPython.py [4k]
+tkinter3000-1.0-20031212/demoOscilloscope.py [2k]
+tkinter3000-1.0-20031212/demoRightArrow.py [1k]
+tkinter3000-1.0-20031212/demoScrolledText.py [2k]
+tkinter3000-1.0-20031212/demoSimpleCanvas.py [2k]
+tkinter3000-1.0-20031212/demoSimplePlot.py [3k]
+tkinter3000-1.0-20031212/demoSimpleRightArrow.py [1k]
+tkinter3000-1.0-20031212/demoTextLabel.py [1k]
+tkinter3000-1.0-20031212/demoUnicode.py [1k]
+tkinter3000-1.0-20031212/demoX.py [1k]
+tkinter3000-1.0-20031212/PKG-INFO [1k]
+    Metadata-Version: 1.0
+    Name: tkinter3000
+    Version: 1.0-20031212
+    Summary: Widget Construction Kit for Tkinter
+    Home-page: <a href='http://www.effbot.org/zone/wck.htm'>http://www.effbot.org/zone/wck.htm</a>
+    Author: Fredrik Lundh
+    Author-email: fredrik at pythonware.com
+<a href='tkinter3000-1.0-20031212.zip/README'>tkinter3000-1.0-20031212/README</a> [6k]
+tkinter3000-1.0-20031212/setup.py [2k]
+tkinter3000-1.0-20031212/setuplib.py [2k]
+tkinter3000-1.0-20031212/tk3/__init__.py [1k]
+tkinter3000-1.0-20031212/tk3000.h [2k]
+tkinter3000-1.0-20031212/WCK/Utils.py [16k]
+tkinter3000-1.0-20031212/WCK/wckTkinter.py [29k]
+tkinter3000-1.0-20031212/WCK/__init__.py [1k]
+tkinter3000-1.0-20031212/WCK.css [1k]
+<a href='tkinter3000-1.0-20031212.zip/WCK.html'>tkinter3000-1.0-20031212/WCK.html</a> [45k]
+tkinter3000-1.0-20031212/_tk3demo.c [5k]
+tkinter3000-1.0-20031212/_tk3draw.c [35k]
+</pre>
+
+
+
+
+
+</p>
+
+
+<hr />
+
+<div class='navigate'>
+[<a id="add-comment" href='/comment/zone/zone-template-downloads.htm'><b>add a comment!</b></a>]
+[<a href='/zone/edit/?name=zone-template-downloads'>edit</a>]
+[<a href='/zone/edit/?action=new'>new</a>]
+[<a href='http://validator.w3.org/check?uri=http://effbot.org/zone/zone-template-downloads.htm'>validate</a>]
+</div>
+
+<p class='small'>Copyright &copy; 2002-2006 by Fredrik Lundh.</p>
+
+</div> <!-- effbot-body -->
+</div> <!-- effbot-page -->
+
+</body>
+</html>

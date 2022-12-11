@@ -1,0 +1,45 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>The bisect&nbsp;module</title></head><body data-page-id="478"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">The bisect&nbsp;module</h1></div><div class="yui-ge"><div class="yui-u first"><p>This module provides functions to insert items in sorted
+sequences.</p><p>
+<b>insort(sequence, item)</b> inserts item into the sequence,
+keeping it sorted. The sequence can be any mutable sequence object
+that implements <b>__getitem__</b> and <b>insert</b>.</p><div class="example">
+<b style="example">Example: Using the bisect
+module to insert items in an ordered list</b>
+<pre>
+# File: <a href="bisect/bisect-example-1.py">bisect-example-1.py</a>
+
+import bisect
+
+list = [10, 20, 30]
+
+bisect.insort(list, 25)
+bisect.insort(list, 15)
+
+print list
+
+</pre><pre class="computeroutput" moreinfo="NONE">
+$ python bisect-example-1.py
+[10, 15, 20, 25, 30]
+</pre></div><p><b>bisect(sequence, item) &#8658; index</b> returns the index
+where the item should be inserted. The sequence is not modified.</p><div class="example">
+<b style="example">Example: Using the bisect
+module to find insertion points</b>
+<pre>
+# File: <a href="bisect/bisect-example-2.py">bisect-example-2.py</a>
+
+import bisect
+
+list = [10, 20, 30]
+
+print list
+print bisect.bisect(list, 25)
+print bisect.bisect(list, 15)
+
+</pre><pre class="computeroutput" moreinfo="NONE">
+$ python bisect-example-2.py
+[10, 20, 30]
+2
+1
+</pre></div></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to librarybook index page.">::: librarybook :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

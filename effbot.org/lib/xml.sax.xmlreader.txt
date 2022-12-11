@@ -1,0 +1,342 @@
+
+@@module xml.sax.xmlreader
+
+<h1>xml.sax.xmlreader&#8212;Interface for XML parsers</h1>
+
+<p>New in version 2.0.
+
+<p>SAX parsers implement the {@link XMLReader} interface. They are
+implemented in a Python module, which must provide a function {@link
+create_parser}. This function is invoked by {@link xml.sax.make_parser}
+with no arguments to create a new parser object.
+
+@@class XMLReader()
+
+<p>Base class which can be inherited by SAX parsers.
+
+@@class IncrementalParser()
+
+<p>In some cases, it is desirable not to parse an input source at once,
+but to feed chunks of the document as they get available. Note that the
+reader will normally not read the entire file, but read it in chunks as
+well; still {@link parse} won't return until the entire document is
+processed. So these interfaces should be used if the blocking behaviour
+of {@link parse} is not desirable.
+
+<p>When the parser is instantiated it is ready to begin accepting data
+from the feed method immediately. After parsing has been finished with a
+call to close the reset method must be called to make the parser ready
+to accept new data, either from feed or using the parse method.
+
+<p>Note that these methods must {@em not} be called during parsing, that
+is, after parse has been called and before it returns.
+
+<p>By default, the class also implements the parse method of the
+XMLReader interface using the feed, close and reset methods of the
+IncrementalParser interface as a convenience to SAX 2.0 driver writers.
+
+@@class Locator()
+
+<p>Interface for associating a SAX event with a document location. A
+locator object will return valid results only during calls to
+DocumentHandler methods; at any other time, the results are
+unpredictable. If information is not available, methods may return
+{@link None}.
+
+@@class InputSource([systemId])
+
+<p>Encapsulation of the information needed by the {@link XMLReader} to
+read entities.
+
+<p>This class may include information about the public identifier,
+system identifier, byte stream (possibly with character encoding
+information) and/or the character stream of an entity.
+
+<p>Applications will create objects of this class for use in the {@link
+XMLReader.parse} method and for returning from
+EntityResolver.resolveEntity.
+
+<p>An {@link InputSource} belongs to the application, the {@link
+XMLReader} is not allowed to modify {@link InputSource} objects passed
+to it from the application, although it may make copies and modify
+those.
+
+@@class AttributesImpl(attrs)
+
+<p>This is an implementation of the {@link attributes-objects.html
+Attributes interface} (see section {@link
+attributes-objects.html#attributes-objects}). This is a dictionary-like
+object which represents the element attributes in a {@link startElement}
+call. In addition to the most useful dictionary operations, it supports
+a number of other methods as described by the interface. Objects of this
+class should be instantiated by readers; {@var attrs} must be a
+dictionary-like object containing a mapping from attribute names to
+attribute values.
+
+@@class AttributesNSImpl(attrs, qnames)
+
+<p>Namespace-aware variant of {@link AttributesImpl}, which will be
+passed to {@link startElementNS}. It is derived from {@link
+AttributesImpl}, but understands attribute names as two-tuples of {@var
+namespaceURI} and {@var localname}. In addition, it provides a number of
+methods expecting qualified names as they appear in the original
+document. This class implements the {@link attributes-ns-objects.html
+AttributesNS interface} (see section {@link
+attributes-ns-objects.html#attributes-ns-objects}).
+
+@@text 
+
+<h2>XMLReader Objects</h2>
+
+<p>The {@link XMLReader} interface supports the following methods:
+
+@@method XMLReader.parse(source)
+
+<p>Process an input source, producing SAX events. The {@var source}
+object can be a system identifier (a string identifying the input source
+- typically a file name or an URL), a file-like object, or an {@link
+InputSource} object. When {@link parse} returns, the input is completely
+processed, and the parser object can be discarded or reset. As a
+limitation, the current implementation only accepts byte streams;
+processing of character streams is for further study.
+
+@@method XMLReader.getContentHandler()
+
+<p>Return the current {@link ContentHandler}.
+
+@@method XMLReader.setContentHandler(handler)
+
+<p>Set the current {@link ContentHandler}. If no {@link ContentHandler}
+is set, content events will be discarded.
+
+@@method XMLReader.getDTDHandler()
+
+<p>Return the current {@link DTDHandler}.
+
+@@method XMLReader.setDTDHandler(handler)
+
+<p>Set the current {@link DTDHandler}. If no {@link DTDHandler} is set,
+DTD events will be discarded.
+
+@@method XMLReader.getEntityResolver()
+
+<p>Return the current {@link EntityResolver}.
+
+@@method XMLReader.setEntityResolver(handler)
+
+<p>Set the current {@link EntityResolver}. If no {@link EntityResolver}
+is set, attempts to resolve an external entity will result in opening
+the system identifier for the entity, and fail if it is not available.
+
+@@method XMLReader.getErrorHandler()
+
+<p>Return the current {@link ErrorHandler}.
+
+@@method XMLReader.setErrorHandler(handler)
+
+<p>Set the current error handler. If no {@link ErrorHandler} is set,
+errors will be raised as exceptions, and warnings will be printed.
+
+@@method XMLReader.setLocale(locale)
+
+<p>Allow an application to set the locale for errors and warnings.
+
+<p>SAX parsers are not required to provide localization for errors and
+warnings; if they cannot support the requested locale, however, they
+must throw a SAX exception. Applications may request a locale change in
+the middle of a parse.
+
+@@method XMLReader.getFeature(featurename)
+
+<p>Return the current setting for feature {@var featurename}. If the
+feature is not recognized, {@link SAXNotRecognizedException} is raised.
+The well-known featurenames are listed in the module {@link
+xml.sax.handler}.
+
+@@method XMLReader.setFeature(featurename, value)
+
+<p>Set the {@var featurename} to {@var value}. If the feature is not
+recognized, {@link SAXNotRecognizedException} is raised. If the feature
+or its setting is not supported by the parser, {@var
+SAXNotSupportedException} is raised.
+
+@@method XMLReader.getProperty(propertyname)
+
+<p>Return the current setting for property {@var propertyname}. If the
+property is not recognized, a {@link SAXNotRecognizedException} is
+raised. The well-known propertynames are listed in the module {@link
+xml.sax.handler}.
+
+@@method XMLReader.setProperty(propertyname, value)
+
+<p>Set the {@var propertyname} to {@var value}. If the property is not
+recognized, {@link SAXNotRecognizedException} is raised. If the property
+or its setting is not supported by the parser, {@var
+SAXNotSupportedException} is raised.
+
+@@text 
+
+<h2>IncrementalParser Objects</h2>
+
+<p>Instances of {@link IncrementalParser} offer the following additional
+methods:
+
+@@method IncrementalParser.feed(data)
+
+<p>Process a chunk of {@var data}.
+
+@@method IncrementalParser.close()
+
+<p>Assume the end of the document. That will check well-formedness
+conditions that can be checked only at the end, invoke handlers, and may
+clean up resources allocated during parsing.
+
+@@method IncrementalParser.reset()
+
+<p>This method is called after close has been called to reset the parser
+so that it is ready to parse new documents. The results of calling parse
+or feed after close without calling reset are undefined.
+
+@@text 
+
+<h2>Locator Objects</h2>
+
+<p>Instances of {@link Locator} provide these methods:
+
+@@method Locator.getColumnNumber()
+
+<p>Return the column number where the current event ends.
+
+@@method Locator.getLineNumber()
+
+<p>Return the line number where the current event ends.
+
+@@method Locator.getPublicId()
+
+<p>Return the public identifier for the current event.
+
+@@method Locator.getSystemId()
+
+<p>Return the system identifier for the current event.
+
+@@text 
+
+<h2>InputSource Objects</h2>
+
+@@method InputSource.setPublicId(id)
+
+<p>Sets the public identifier of this {@link InputSource}.
+
+@@method InputSource.getPublicId()
+
+<p>Returns the public identifier of this {@link InputSource}.
+
+@@method InputSource.setSystemId(id)
+
+<p>Sets the system identifier of this {@link InputSource}.
+
+@@method InputSource.getSystemId()
+
+<p>Returns the system identifier of this {@link InputSource}.
+
+@@method InputSource.setEncoding(encoding)
+
+<p>Sets the character encoding of this {@link InputSource}.
+
+<p>The encoding must be a string acceptable for an XML encoding
+declaration (see section 4.3.3 of the XML recommendation).
+
+<p>The encoding attribute of the {@link InputSource} is ignored if the
+{@link InputSource} also contains a character stream.
+
+@@method InputSource.getEncoding()
+
+<p>Get the character encoding of this InputSource.
+
+@@method InputSource.setByteStream(bytefile)
+
+<p>Set the byte stream (a Python file-like object which does not perform
+byte-to-character conversion) for this input source.
+
+<p>The SAX parser will ignore this if there is also a character stream
+specified, but it will use a byte stream in preference to opening a URI
+connection itself.
+
+<p>If the application knows the character encoding of the byte stream,
+it should set it with the setEncoding method.
+
+@@method InputSource.getByteStream()
+
+<p>Get the byte stream for this input source.
+
+<p>The getEncoding method will return the character encoding for this
+byte stream, or None if unknown.
+
+@@method InputSource.setCharacterStream(charfile)
+
+<p>Set the character stream for this input source. (The stream must be a
+Python 1.6 Unicode-wrapped file-like that performs conversion to Unicode
+strings.)
+
+<p>If there is a character stream specified, the SAX parser will ignore
+any byte stream and will not attempt to open a URI connection to the
+system identifier.
+
+@@method InputSource.getCharacterStream()
+
+<p>Get the character stream for this input source.
+
+@@text 
+
+<h2>The Attributes Interface</h2>
+
+<p>{@link Attributes} objects implement a portion of the mapping
+protocol, including the methods {@link copy}, {@link get}, {@link
+has_key}, {@link items}, {@link keys}, and {@link values}. The following
+methods are also provided:
+
+@@method Attributes.getLength()
+
+<p>Return the number of attributes.
+
+@@method Attributes.getNames()
+
+<p>Return the names of the attributes.
+
+@@method Attributes.getType(name)
+
+<p>Returns the type of the attribute {@var name}, which is normally
+{@code 'CDATA'}.
+
+@@method Attributes.getValue(name)
+
+<p>Return the value of attribute {@var name}.
+
+@@text 
+
+<h2>The AttributesNS Interface</h2>
+
+<p>This interface is a subtype of the {@link attributes-objects.html
+Attributes interface} (see section {@link
+attributes-objects.html#attributes-objects}). All methods supported by
+that interface are also available on {@link AttributesNS} objects.
+
+<p>The following methods are also available:
+
+@@method AttributesNS.getValueByQName(name)
+
+<p>Return the value for a qualified name.
+
+@@method AttributesNS.getNameByQName(name)
+
+<p>Return the {@code (}{@var namespace}, {@var localname}) pair for a
+qualified {@var name}.
+
+@@method AttributesNS.getQNameByName(name)
+
+<p>Return the qualified name for a {@code (}{@var namespace}, {@var
+localname}) pair.
+
+@@method AttributesNS.getQNames()
+
+<p>Return the qualified names of all attributes.

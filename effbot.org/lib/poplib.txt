@@ -1,0 +1,180 @@
+
+@@module poplib
+
+<h1>poplib&#8212;POP3 protocol client</h1>
+
+<p>This module defines a class, {@link POP3}, which encapsulates a
+connection to a POP3 server and implements the protocol as defined in
+{@link http://www.faqs.org/rfcs/rfc1725.html RFC 1725}. The {@link POP3}
+class supports both the minimal and optional command sets. Additionally,
+this module provides a class {@link POP3_SSL}, which provides support
+for connecting to POP3 servers that use SSL as an underlying protocol
+layer.
+
+<p>Note that POP3, though widely supported, is obsolescent. The
+implementation quality of POP3 servers varies widely, and too many are
+quite poor. If your mailserver supports IMAP, you would be better off
+using the {@link imaplib}.{@link IMAP4} class, as IMAP servers tend to
+be better implemented.
+
+<p>A single class is provided by the {@link poplib} module:
+
+@@class POP3(host[, port])
+
+<p>This class implements the actual POP3 protocol. The connection is
+created when the instance is initialized. If {@var port} is omitted, the
+standard POP3 port (110) is used.
+
+@@class POP3_SSL(host[, port[, keyfile[, certfile]]])
+
+<p>This is a subclass of {@link POP3} that connects to the server over
+an SSL encrypted socket. If {@var port} is not specified, 995, the
+standard POP3-over-SSL port is used. {@var keyfile} and {@var certfile}
+are also optional - they can contain a PEM formatted private key and
+certificate chain file for the SSL connection.
+<blockquote>
+@since New in version 2.4. <br />
+</blockquote>
+
+@@text 
+
+<p>One exception is defined as an attribute of the {@link poplib}
+module:
+
+@@exception error_proto
+
+<p>Exception raised on any errors. The reason for the exception is
+passed to the constructor as a string.
+
+@@text 
+
+@see 
+{@link imaplib Module imaplib}
+
+The standard Python IMAP module.
+@see 
+{@link http://www.catb.org/~esr/fetchmail/fetchmail-FAQ.html Frequently Asked Questions About Fetchmail}
+
+The FAQ for the fetchmail POP/IMAP client collects information on POP3
+server variations and RFC noncompliance that may be useful if you need
+to write an application based on the POP protocol.
+
+<h2>POP3 Objects</h2>
+
+<p>All POP3 commands are represented by methods of the same name, in
+lower-case; most return the response text sent by the server.
+
+<p>An {@link POP3} instance has the following methods:
+
+@@method POP3.set_debuglevel(level)
+
+<p>Set the instance's debugging level. This controls the amount of
+debugging output printed. The default, {@code 0}, produces no debugging
+output. A value of {@code 1} produces a moderate amount of debugging
+output, generally a single line per request. A value of {@code 2} or
+higher produces the maximum amount of debugging output, logging each
+line sent and received on the control connection.
+
+@@method POP3.getwelcome()
+
+<p>Returns the greeting string sent by the POP3 server.
+
+@@method POP3.user(username)
+
+<p>Send user command, response should indicate that a password is
+required.
+
+@@method POP3.pass_(password)
+
+<p>Send password, response includes message count and mailbox size.
+Note: the mailbox on the server is locked until {@link quit} is called.
+
+@@method POP3.apop(user, secret)
+
+<p>Use the more secure APOP authentication to log into the POP3 server.
+
+@@method POP3.rpop(user)
+
+<p>Use RPOP authentication (similar to UNIX r-commands) to log into POP3
+server.
+
+@@method POP3.stat()
+
+<p>Get mailbox status. The result is a tuple of 2 integers: {@code
+(}{@var message count}, {@var mailbox size}).
+
+@@method POP3.list([which])
+
+<p>Request message list, result is in the form {@code (}{@var response},
+['mesg_num octets', ...], {@var octets}). If {@var which} is set, it is
+the message to list.
+
+@@method POP3.retr(which)
+
+<p>Retrieve whole message number {@var which}, and set its seen flag.
+Result is in form {@code (}{@var response}, ['line', ...], {@var
+octets}).
+
+@@method POP3.dele(which)
+
+<p>Flag message number {@var which} for deletion. On most servers
+deletions are not actually performed until QUIT (the major exception is
+Eudora QPOP, which deliberately violates the RFCs by doing pending
+deletes on any disconnect).
+
+@@method POP3.rset()
+
+<p>Remove any deletion marks for the mailbox.
+
+@@method POP3.noop()
+
+<p>Do nothing. Might be used as a keep-alive.
+
+@@method POP3.quit()
+
+<p>Signoff: commit changes, unlock mailbox, drop connection.
+
+@@method POP3.top(which, howmuch)
+
+<p>Retrieves the message header plus {@var howmuch} lines of the message
+after the header of message number {@var which}. Result is in form
+{@code (}{@var response}, ['line', ...], {@var octets}).
+
+<p>The POP3 TOP command this method uses, unlike the RETR command,
+doesn't set the message's seen flag; unfortunately, TOP is poorly
+specified in the RFCs and is frequently broken in off-brand servers.
+Test this method by hand against the POP3 servers you will use before
+trusting it.
+
+@@method POP3.uidl([which])
+
+<p>Return message digest (unique id) list. If {@var which} is specified,
+result contains the unique id for that message in the form {@code
+'}{@var response} {@var mesgnum} {@var uid}, otherwise result is list
+{@code (}{@var response}, ['mesgnum uid', ...], {@var octets}).
+
+@@text 
+
+<p>Instances of {@link POP3_SSL} have no additional methods. The
+interface of this subclass is identical to its parent.
+
+<h2>POP3 Example</h2>
+
+<p>Here is a minimal example (without error checking) that opens a
+mailbox and retrieves and prints all messages:
+
+<pre>
+import getpass, poplib
+
+M = poplib.POP3('localhost')
+M.user(getpass.getuser())
+M.pass_(getpass.getpass())
+numMessages = len(M.list()[1])
+for i in range(numMessages):
+    for j in M.retr(i+1)[1]:
+        print j
+</pre>
+
+
+<p>At the end of the module, there is a test section that contains a
+more extensive example of usage.

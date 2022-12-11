@@ -1,0 +1,278 @@
+
+@@module ftplib
+
+<h1>ftplib&#8212;FTP protocol client</h1>
+
+<p>This module defines the class {@link FTP} and a few related items.
+The {@link FTP} class implements the client side of the FTP protocol.
+You can use this to write Python programs that perform a variety of
+automated FTP jobs, such as mirroring other ftp servers. It is also used
+by the module {@link urllib} to handle URLs that use FTP. For more
+information on FTP (File Transfer Protocol), see Internet {@link
+http://www.faqs.org/rfcs/rfc959.html RFC 959}.
+
+<p>Here's a sample session using the {@link ftplib} module:
+
+<pre>
+&gt;&gt;&gt; from ftplib import FTP
+&gt;&gt;&gt; ftp = FTP('ftp.cwi.nl')   # connect to host, default port
+&gt;&gt;&gt; ftp.login()               # user anonymous, passwd anonymous@
+&gt;&gt;&gt; ftp.retrlines('LIST')     # list directory contents
+total 24418
+drwxrwsr-x   5 ftp-usr  pdmaint     1536 Mar 20 09:48 .
+dr-xr-srwt 105 ftp-usr  pdmaint     1536 Mar 21 14:32 ..
+-rw-r--r--   1 ftp-usr  pdmaint     5305 Mar 20 09:48 INDEX
+ .
+ .
+ .
+&gt;&gt;&gt; ftp.retrbinary('RETR README', open('README', 'wb').write)
+'226 Transfer complete.'
+&gt;&gt;&gt; ftp.quit()
+</pre>
+
+
+<p>The module defines the following items:
+
+@@class FTP([host[, user[, passwd[, acct]]]])
+
+<p>Return a new instance of the {@link FTP} class. When {@var host} is
+given, the method call {@code connect(}{@var host}) is made. When {@var
+user} is given, additionally the method call {@code login(}{@var user},
+{@var passwd}, {@var acct}) is made (where {@var passwd} and {@var acct}
+default to the empty string when not given).
+
+@@variable all_errors
+
+<p>The set of all exceptions (as a tuple) that methods of {@link FTP}
+instances may raise as a result of problems with the FTP connection (as
+opposed to programming errors made by the caller). This set includes the
+four exceptions listed below as well as {@link socket.error} and {@link
+exceptions.IOError}.
+
+@@exception error_reply
+
+<p>Exception raised when an unexpected reply is received from the
+server.
+
+@@exception error_temp
+
+<p>Exception raised when an error code in the range 400-499 is received.
+
+@@exception error_perm
+
+<p>Exception raised when an error code in the range 500-599 is received.
+
+@@exception error_proto
+
+<p>Exception raised when a reply is received from the server that does
+not begin with a digit in the range 1-5.
+
+@@text 
+
+@see 
+{@link netrc Module netrc}
+
+Parser for the .netrc file format. The file .netrc is typically used by
+FTP clients to load user authentication information before prompting the
+user.
+
+<h2>FTP Objects</h2>
+
+<p>Several methods are available in two flavors: one for handling text
+files and another for binary files. These are named for the command
+which is used followed by "{@code lines}" for the text version or
+"{@code binary}" for the binary version.
+
+<p>{@link FTP} instances have the following methods:
+
+@@method FTP.set_debuglevel(level)
+
+<p>Set the instance's debugging level. This controls the amount of
+debugging output printed. The default, {@code 0}, produces no debugging
+output. A value of {@code 1} produces a moderate amount of debugging
+output, generally a single line per request. A value of {@code 2} or
+higher produces the maximum amount of debugging output, logging each
+line sent and received on the control connection.
+
+@@method FTP.connect(host[, port])
+
+<p>Connect to the given host and port. The default port number is {@code
+21}, as specified by the FTP protocol specification. It is rarely needed
+to specify a different port number. This function should be called only
+once for each instance; it should not be called at all if a host was
+given when the instance was created. All other methods can only be used
+after a connection has been made.
+
+@@method FTP.getwelcome()
+
+<p>Return the welcome message sent by the server in reply to the initial
+connection. (This message sometimes contains disclaimers or help
+information that may be relevant to the user.)
+
+@@method FTP.login([user[, passwd[, acct]]])
+
+<p>Log in as the given {@var user}. The {@var passwd} and {@var acct}
+parameters are optional and default to the empty string. If no {@var
+user} is specified, it defaults to {@code 'anonymous'}. If {@var user}
+is {@code 'anonymous'}, the default {@var passwd} is {@code
+'anonymous@'}. This function should be called only once for each
+instance, after a connection has been established; it should not be
+called at all if a host and user were given when the instance was
+created. Most FTP commands are only allowed after the client has logged
+in.
+
+@@method FTP.abort()
+
+<p>Abort a file transfer that is in progress. Using this does not always
+work, but it's worth a try.
+
+@@method FTP.sendcmd(command)
+
+<p>Send a simple command string to the server and return the response
+string.
+
+@@method FTP.voidcmd(command)
+
+<p>Send a simple command string to the server and handle the response.
+Return nothing if a response code in the range 200-299 is received.
+Raise an exception otherwise.
+
+@@method FTP.retrbinary(command, callback[, maxblocksize[, rest]])
+
+<p>Retrieve a file in binary transfer mode. {@var command} should be an
+appropriate "{@code RETR}" command: {@code 'RETR }{@var filename}'. The
+{@var callback} function is called for each block of data received, with
+a single string argument giving the data block. The optional {@var
+maxblocksize} argument specifies the maximum chunk size to read on the
+low-level socket object created to do the actual transfer (which will
+also be the largest size of the data blocks passed to {@var callback}).
+A reasonable default is chosen. {@var rest} means the same thing as in
+the {@link transfercmd} method.
+
+@@method FTP.retrlines(command[, callback])
+
+<p>Retrieve a file or directory listing in ASCII transfer mode. {@var
+command} should be an appropriate "{@code RETR}" command (see {@link
+retrbinary}) or a "{@code LIST}" command (usually just the string {@code
+'LIST'}). The {@var callback} function is called for each line, with the
+trailing CRLF stripped. The default {@var callback} prints the line to
+{@code sys.stdout}.
+
+@@method FTP.set_pasv(boolean)
+
+<p>Enable &#8220;passive&#8221; mode if {@var boolean} is true, other
+disable passive mode. (In Python 2.0 and before, passive mode was off by
+default; in Python 2.1 and later, it is on by default.)
+
+@@method FTP.storbinary(command, file[, blocksize])
+
+<p>Store a file in binary transfer mode. {@var command} should be an
+appropriate "{@code STOR}" command: {@code "STOR }{@var filename}".
+{@var file} is an open file object which is read until EOF using its
+{@link read} method in blocks of size {@var blocksize} to provide the
+data to be stored. The {@var blocksize} argument defaults to 8192.
+<blockquote>
+@since Changed in version 2.1: default for blocksize added. <br />
+</blockquote>
+
+@@method FTP.storlines(command, file)
+
+<p>Store a file in ASCII transfer mode. {@var command} should be an
+appropriate "{@code STOR}" command (see {@link storbinary}). Lines are
+read until EOF from the open file object {@var file} using its {@link
+readline} method to provide the data to be stored.
+
+@@method FTP.transfercmd(cmd[, rest])
+
+<p>Initiate a transfer over the data connection. If the transfer is
+active, send a "{@code EPRT}" or "{@code PORT}" command and the transfer
+command specified by {@var cmd}, and accept the connection. If the
+server is passive, send a "{@code EPSV}" or "{@code PASV}" command,
+connect to it, and start the transfer command. Either way, return the
+socket for the connection.
+
+<p>If optional {@var rest} is given, a "{@code REST}" command is sent to
+the server, passing {@var rest} as an argument. {@var rest} is usually a
+byte offset into the requested file, telling the server to restart
+sending the file's bytes at the requested offset, skipping over the
+initial bytes. Note however that RFC 959 requires only that {@var rest}
+be a string containing characters in the printable range from ASCII code
+33 to ASCII code 126. The {@link transfercmd} method, therefore,
+converts {@var rest} to a string, but no check is performed on the
+string's contents. If the server does not recognize the "{@code REST}"
+command, an {@link error_reply} exception will be raised. If this
+happens, simply call {@link transfercmd} without a {@var rest} argument.
+
+@@method FTP.ntransfercmd(cmd[, rest])
+
+<p>Like {@link transfercmd}, but returns a tuple of the data connection
+and the expected size of the data. If the expected size could not be
+computed, {@link None} will be returned as the expected size. {@var cmd}
+and {@var rest} means the same thing as in {@link transfercmd}.
+
+@@method FTP.nlst(argument[, ...])
+
+<p>Return a list of files as returned by the "{@code NLST}" command. The
+optional {@var argument} is a directory to list (default is the current
+server directory). Multiple arguments can be used to pass non-standard
+options to the "{@code NLST}" command.
+
+@@method FTP.dir(argument[, ...])
+
+<p>Produce a directory listing as returned by the "{@code LIST}"
+command, printing it to standard output. The optional {@var argument} is
+a directory to list (default is the current server directory). Multiple
+arguments can be used to pass non-standard options to the "{@code
+LIST}"command. If the last argument is a function, it is used as a {@var
+callback} function as for {@link retrlines}; the default prints to
+{@code sys.stdout}. This method returns {@link None}.
+
+@@method FTP.rename(fromname, toname)
+
+<p>Rename file {@var fromname} on the server to {@var toname}.
+
+@@method FTP.delete(filename)
+
+<p>Remove the file named {@var filename} from the server. If successful,
+returns the text of the response, otherwise raises {@link error_perm} on
+permission errors or {@link error_reply} on other errors.
+
+@@method FTP.cwd(pathname)
+
+<p>Set the current directory on the server.
+
+@@method FTP.mkd(pathname)
+
+<p>Create a new directory on the server.
+
+@@method FTP.pwd()
+
+<p>Return the pathname of the current directory on the server.
+
+@@method FTP.rmd(dirname)
+
+<p>Remove the directory named {@var dirname} on the server.
+
+@@method FTP.size(filename)
+
+<p>Request the size of the file named {@var filename} on the server. On
+success, the size of the file is returned as an integer, otherwise
+{@link None} is returned. Note that the "{@code SIZE}" command is not
+standardized, but is supported by many common server implementations.
+
+@@method FTP.quit()
+
+<p>Send a "{@code QUIT}" command to the server and close the connection.
+This is the &#8220;polite&#8221; way to close a connection, but it may
+raise an exception of the server reponds with an error to the "{@code
+QUIT}" command. This implies a call to the {@link close} method which
+renders the {@link FTP} instance useless for subsequent calls (see
+below).
+
+@@method FTP.close()
+
+<p>Close the connection unilaterally. This should not be applied to an
+already closed connection such as after a successful call to {@link
+quit}. After this call the {@link FTP} instance should not be used any
+more (after a call to {@link close} or {@link quit} you cannot reopen
+the connection by issuing another {@link login} method).

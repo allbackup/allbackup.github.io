@@ -1,0 +1,132 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>dl</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-dl.html'>original</a> :::
+<a href='dl.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>dl&#8212;Call C functions in shared objects</h1>
+
+<div class="toc"><dl><dt>On this page:</dt><dd><a href="#dl-objects">Dl Objects</a></dd></dl></div><p>Availability: Unix.</p>
+
+<p>The <code>dl</code> module defines an
+interface to the <code>c:dlopen</code>
+function, which is the most common interface on Unix platforms for
+handling dynamically linked libraries. It allows the program to
+call arbitrary functions in such a library.</p>
+
+<p class="note"><b>Note:</b> This module will not work unless
+<code>sizeof(int) == sizeof(long) == sizeof(char *)</code> If this
+is not the case, <code>exceptions.SystemError</code> will
+be raised on import.</p>
+
+<p>The <code>dl</code> module defines the
+following function:</p>
+</div>
+<dl><dt class="function" id="open"><b>open(name[, mode = RTLD_LAZY])</b> <tt class="nav"><a class="nav" href="dl.open" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Open a shared object file, and return a handle. Mode signifies
+late binding (<code>RTLD_LAZY</code>) or immediate binding
+(<code>RTLD_NOW</code>). Default is <code>RTLD_LAZY</code>. Note
+that some systems do not support <code>RTLD_NOW</code>.</p>
+
+<p>Return value is a dlobject.</p>
+</dd>
+</dl><div class="text">
+<p>The <code>dl</code> module defines the
+following constants:</p>
+</div>
+<dl><dt class="variable" id="RTLD_LAZY"><b>RTLD_LAZY</b> <tt class="nav"><a class="nav" href="dl.RTLD_LAZY" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Useful as an argument to <a class="link" href="#open"><code>
+open</code></a>.</p>
+</dd>
+<dt class="variable" id="RTLD_NOW"><b>RTLD_NOW</b> <tt class="nav"><a class="nav" href="dl.RTLD_NOW" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Useful as an argument to <a class="link" href="#open"><code>
+open</code></a>. Note that on systems which do not support immediate
+binding, this constant will not appear in the module. For maximum
+portability, use <code>hasattr</code> to
+determine if the system supports immediate binding.</p>
+</dd>
+</dl><div class="text">
+<p>The <code>dl</code> module defines the
+following exception:</p>
+</div>
+<dl><dt class="exception" id="error"><b>exception error</b> <tt class="nav"><a class="nav" href="dl.error" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="exception">
+<p>Exception raised when an error has occurred inside the dynamic
+loading and linking routines.</p>
+</dd>
+</dl><div class="text">
+<p>Example:</p>
+
+<pre>
+&gt;&gt;&gt; import dl, time
+&gt;&gt;&gt; a=dl.open('/lib/libc.so.6')
+&gt;&gt;&gt; a.call('time'), time.time()
+(929723914, 929723914.498)
+</pre>
+
+<p>This example was tried on a Debian GNU/Linux system, and is a
+good example of the fact that using this module is usually a bad
+alternative.</p>
+
+<h2 id="dl-objects">Dl Objects <a class="nav" href="#dl-objects">#</a></h2>
+
+<p>Dl objects, as returned by <a class="link" href="#open"><code>
+open</code></a> above, have the following methods:</p>
+</div>
+<dl><dt class="method" id="Dl.close"><b>close()</b> <tt class="nav"><a class="nav" href="dl.Dl.close" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Free all resources, except the memory.</p>
+</dd>
+<dt class="method" id="Dl.sym"><b>sym(name)</b> <tt class="nav"><a class="nav" href="dl.Dl.sym" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return the pointer for the function named <var>name</var>, as a
+number, if it exists in the referenced shared object, otherwise <code>None</code>. This is useful in code
+like:</p>
+
+<pre>
+&gt;&gt;&gt; if a.sym('time'): 
+...     a.call('time')
+... else: 
+...     time.time()
+</pre>
+
+<p>(Note that this function will return a non-zero number, as zero
+is the <code>NULL</code> pointer)</p>
+</dd>
+<dt class="method" id="Dl.call"><b>call(name[, arg1[, arg2...]])</b> <tt class="nav"><a class="nav" href="dl.Dl.call" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Call the function named <var>name</var> in the referenced shared
+object. The arguments must be either Python integers, which will be
+passed as is, Python strings, to which a pointer will be passed, or
+<code>None</code>, which will be passed as
+<code>NULL</code>. Note that strings should only be passed to
+functions as <code>char*</code>, as
+Python will not like its string mutated.</p>
+
+<p>There must be at most 10 arguments, and arguments not given will
+be treated as <code>None</code>. The
+function's return value must be a C <code>c:long</code>, which is a Python integer.</p>
+</dd>
+</dl></div></body></html>

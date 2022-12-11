@@ -1,0 +1,52 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>The parser&nbsp;module</title></head><body data-page-id="607"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">The parser&nbsp;module</h1></div><div class="yui-ge"><div class="yui-u first"><p>(Optional). The parser module provides an interface to Python&#8217;s
+built-in parser and compiler.</p><p>The following example compiles a simple expression into an
+<i>abstract syntax tree</i> (AST), turns the AST into a nested
+list, dumps the contents of the tree (where each node contains
+either a grammar symbol or a token), increments all numbers by one,
+and finally turns the list back into a code object. At least that&#8217;s
+what I think it does.</p><div class="example">
+<b style="example">Example: Using the parser module</b>
+<pre>
+# File: <a href="parser/parser-example-1.py">parser-example-1.py</a>
+
+import parser
+import symbol, token
+
+def dump_and_modify(node):
+    name = symbol.sym_name.get(node[0])
+    if name is None:
+        name = token.tok_name.get(node[0])
+    print name,
+    for i in range(1, len(node)):
+        item = node[i]
+        if type(item) is type([]):
+            dump_and_modify(item)
+        else:
+            print repr(item)
+            if name == "NUMBER":
+                # <i>increment all numbers!</i>
+                node[i] = repr(int(item)+1)
+
+ast = parser.expr("1 + 3")
+
+list = ast.tolist()
+
+dump_and_modify(list)
+
+ast = parser.sequence2ast(list)
+
+print eval(parser.compileast(ast))
+
+</pre><pre class="computeroutput" moreinfo="NONE">
+$ python parser-example-1.py
+eval_input testlist test and_test not_test comparison
+expr xor_expr and_expr shift_expr arith_expr term factor
+power atom NUMBER '1'
+PLUS '+'
+term factor power atom NUMBER '3'
+NEWLINE ''
+ENDMARKER ''
+6
+</pre></div></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to librarybook index page.">::: librarybook :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

@@ -1,0 +1,183 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>The zlib&nbsp;module</title></head><body data-page-id="729"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">The zlib&nbsp;module</h1></div><div class="yui-ge"><div class="yui-u first"><p>(Optional). This module provides support for <span>&#8220;zlib&#8221;</span>
+compression. (This compression method is also known as
+<span>&#8220;deflate&#8221;</span>.)</p><p>The <b>compress</b> and <b>decompress</b> functions take
+string arguments:</p><div class="example">
+<b style="example">Example: Using the zlib
+module to compress a string</b>
+<pre>
+# File: <a href="zlib/zlib-example-1.py">zlib-example-1.py</a>
+
+import zlib
+
+MESSAGE = "life of brian"
+
+compressed_message = zlib.compress(MESSAGE)
+decompressed_message = zlib.decompress(compressed_message)
+
+print "original:", repr(MESSAGE)
+print "compressed message:", repr(compressed_message)
+print "decompressed message:", repr(decompressed_message)
+
+</pre><pre>
+$ python zlib-example-1.py
+original: 'life of brian'
+compressed message: 'x\234\313\311LKU\310OSH*
+\312L\314\003\000!\010\004\302'
+decompressed message: 'life of brian'
+</pre></div><p>The compression rate varies a lot, depending on the contents of
+the file.</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><div class="example wide">
+<b style="example">Example: Using the zlib
+module to compress a group of files</b>
+<pre class="wide">
+# File: <a href="zlib/zlib-example-2.py">zlib-example-2.py</a>
+
+import zlib
+import glob
+
+for file in glob.glob("samples/*"):
+
+    indata = open(file, "rb").read()
+    outdata = zlib.compress(indata, zlib.Z_BEST_COMPRESSION)
+
+    print file, len(indata), "=&gt;", len(outdata),
+    print "%d%%" % (len(outdata) * 100 / len(indata))
+
+</pre><pre class="computeroutput wide" moreinfo="NONE">
+$ python zlib-example-2.py
+samples\sample.au 1676 =&gt; 1109 66%
+samples\sample.gz 42 =&gt; 51 121%
+samples\sample.htm 186 =&gt; 135 72%
+samples\sample.ini 246 =&gt; 190 77%
+samples\sample.jpg 4762 =&gt; 4632 97%
+samples\sample.msg 450 =&gt; 275 61%
+samples\sample.sgm 430 =&gt; 321 74%
+samples\sample.tar 10240 =&gt; 125 1%
+samples\sample.tgz 155 =&gt; 159 102%
+samples\sample.txt 302 =&gt; 220 72%
+samples\sample.wav 13260 =&gt; 10992 82%
+</pre></div></div><div class="yui-ge"><div class="yui-u first"><p>You can also compress or decompress data on the fly:</p><div class="example">
+<b style="example">Example: Using the zlib
+module to decompress streams</b>
+<pre>
+# File: <a href="zlib/zlib-example-3.py">zlib-example-3.py</a>
+
+import zlib
+
+encoder = zlib.compressobj()
+
+data = encoder.compress("life")
+data = data + encoder.compress(" of ")
+data = data + encoder.compress("brian")
+data = data + encoder.flush()
+
+print repr(data)
+print repr(zlib.decompress(data))
+
+</pre><pre class="computeroutput" moreinfo="NONE">
+$ python zlib-example-3.py
+'x\234\313\311LKU\310OSH*\312L\314\003\000!\010\004\302'
+'life of brian'
+</pre></div><p>To make it a bit more convenient to read a compressed file, you
+can wrap a decoder object in a file-like wrapper:</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><div class="example wide">
+<b style="example">Example: Emulating a file
+object for compressed streams</b>
+<pre class="wide">
+# File: <a href="zlib/zlib-example-4.py">zlib-example-4.py</a>
+
+import zlib
+import string, StringIO
+
+class ZipInputStream:
+
+    def __init__(self, file):
+        self.file = file
+        self.__rewind()
+
+    def __rewind(self):
+        self.zip = zlib.decompressobj()
+        self.pos = 0 # <i>position in zipped stream</i>
+        self.offset = 0 # <i>position in unzipped stream</i>
+        self.data = ""
+
+    def __fill(self, bytes):
+        if self.zip:
+            # <i>read until we have enough bytes in the buffer</i>
+            while not bytes or len(self.data) &lt; bytes:
+                self.file.seek(self.pos)
+                data = self.file.read(16384)
+                if not data:
+                    self.data = self.data + self.zip.flush()
+                    self.zip = None # <i>no more data</i>
+                    break
+                self.pos = self.pos + len(data)
+                self.data = self.data + self.zip.decompress(data)
+
+    def seek(self, offset, whence=0):
+        if whence == 0:
+            position = offset
+        elif whence == 1:
+            position = self.offset + offset
+        else:
+            raise IOError, "Illegal argument"
+        if position &lt; self.offset:
+            raise IOError, "Cannot seek backwards"
+
+        # <i>skip forward, in 16k blocks</i>
+        while position &gt; self.offset:
+            if not self.read(min(position - self.offset, 16384)):
+                break
+
+    def tell(self):
+        return self.offset
+
+    def read(self, bytes = 0):
+        self.__fill(bytes)
+        if bytes:
+            data = self.data[:bytes]
+            self.data = self.data[bytes:]
+        else:
+            data = self.data
+            self.data = ""
+        self.offset = self.offset + len(data)
+        return data
+
+    def readline(self):
+        # <i>make sure we have an entire line</i>
+        while self.zip and "\n" not in self.data:
+            self.__fill(len(self.data) + 512)
+        i = string.find(self.data, "\n") + 1
+        if i &lt;= 0:
+            return self.read()
+        return self.read(i)
+
+    def readlines(self):
+        lines = []
+        while 1:
+            s = self.readline()
+            if not s:
+                break
+            lines.append(s)
+        return lines
+
+#
+# <i>try it out</i>
+
+data = open("samples/sample.txt").read()
+data = zlib.compress(data)
+
+file = ZipInputStream(StringIO.StringIO(data))
+for line in file.readlines():
+    print line[:-1]
+
+</pre><pre class="computeroutput wide" moreinfo="NONE">
+$ python zlib-example-4.py
+We will perhaps eventually be writing only small
+modules which are identified by name as they are
+used to build larger ones, so that devices like
+indentation, rather than delimiters, might become
+feasible for expressing local structure in the
+source language.
+    -- Donald E. Knuth, December 1974
+</pre></div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to librarybook index page.">::: librarybook :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

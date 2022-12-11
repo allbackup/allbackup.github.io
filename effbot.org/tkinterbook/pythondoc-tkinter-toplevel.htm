@@ -1,0 +1,133 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>The Tkinter Toplevel&nbsp;Class</title></head><body data-page-id="1956"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">The Tkinter Toplevel&nbsp;Class</h1></div><div class="yui-ge"><div class="yui-u first"><dl><dt><b>Toplevel(master=None, **options)</b> (class) [<a href="#Tkinter.Toplevel-class">#</a>]</dt><dd>
+<p>A widget container placed in a new top level window.</p><dl><dt><i>master</i></dt><dd>
+Parent widget.</dd>
+<dt><i>**options</i></dt><dd>
+Widget options.  See the description of
+   the <a class="link" href="#toplevel.Toplevel.config-method"><b>config</b></a> method for a list of available
+   options.
+</dd>
+</dl><br />
+</dd>
+<dt><a id="Tkinter.Toplevel.config-method" name="Tkinter.Toplevel.config-method"><b>config(**options)</b></a> [<a href="#Tkinter.Toplevel.config-method">#</a>]</dt><dd>
+<p>Modifies one or more widget options.  If no options are given,
+the method returns a dictionary containing all current option
+values.</p><dl><dt><i>**options</i></dt><dd>
+Widget options.</dd>
+<dt><i>background=</i></dt><dd>
+The background color to use in this toplevel.
+    This defaults to the application background color. To prevent
+    updates, set the color to an empty string.
+    (the option database name is background, the class is Background)</dd>
+<dt><i>bg=</i></dt><dd>
+Same as <b>background</b>.
+</dd>
+<dt><i>borderwidth=</i></dt><dd>
+Width of the 3D border.  Defaults to 0
+    (no border).
+    (borderWidth/BorderWidth)</dd>
+<dt><i>bd=</i></dt><dd>
+Same as <b>borderwidth</b>.
+</dd>
+<dt><i>class=</i></dt><dd>
+Default value is Toplevel.
+    (class/Class)</dd>
+<dt><i>colormap=</i></dt><dd>
+Some displays support only 256 colors
+    (some use even less). Such displays usually provide a
+    color map to specify which 256 colors to use. This
+    option allows you to specify which color map to use
+    for this toplevel window, and its child widgets.
+    <br />
+    By default, a new toplevel window uses the same color
+    map as the root window. Using this option, you can
+    reuse the color map of another window instead (this
+    window must be on the same screen and have the same
+    visual characteristics). You can also use the value
+    &#8220;new&#8221; to allocate a new color map for this window.
+    <br />
+    You cannot change this option once you&#8217;ve created the
+    window.
+    (colormap/Colormap)
+</dd>
+<dt><i>container=</i></dt><dd>
+Default value is 0.
+    (container/Container)</dd>
+<dt><i>cursor=</i></dt><dd>
+The cursor to show when the mouse pointer
+    is located over the toplevel widget. Default is a system
+    specific arrow cursor.
+    (cursor/Cursor)</dd>
+<dt><i>height=</i></dt><dd>
+Window height, in pixels.  If omitted, the
+    widget is made large enough to hold its contents.
+    (height/Height)</dd>
+<dt><i>highlightbackground=</i></dt><dd>
+The color to use for the highlight
+    region when the widget doesn&#8217;t have focus.  The default is
+    system specific.
+    (highlightBackground/HighlightBackground)</dd>
+<dt><i>highlightcolor=</i></dt><dd>
+The color to use for the highlight
+    region when the widget has focus.  The default is system
+    specific.
+    (highlightColor/HighlightColor)</dd>
+<dt><i>highlightthickness=</i></dt><dd>
+The width of the highlight region.
+    Default is 0 (no region).
+    (highlightThickness/HighlightThickness)</dd>
+<dt><i>menu=</i></dt><dd>
+A menu to associate with this toplevel window.
+    On Unix and Windows, the menu is placed at the top of the
+    toplevel window itself. On Macs, the menu is displayed at
+    the top of the screen when the toplevel window is selected.
+    (menu/Menu)</dd>
+<dt><i>padx=</i></dt><dd>
+Horizontal padding.  Default is 0. (padX/Pad)</dd>
+<dt><i>pady=</i></dt><dd>
+Vertical padding.  Default is 0. (padY/Pad)</dd>
+<dt><i>relief=</i></dt><dd>
+Border decoration: either <b>FLAT</b>,
+    <b>SUNKEN</b>, <b>RAISED</b>, <b>GROOVE</b>, or <b>RIDGE</b>.
+    The default is <b>FLAT</b>.
+    (relief/Relief)
+</dd>
+<dt><i>screen=</i></dt><dd>
+No default value.
+    (screen/Screen)</dd>
+<dt><i>takefocus=</i></dt><dd>
+Indicates that the user can use the
+    <b>Tab</b> key to move to this widget. Default is false.
+    (takeFocus/TakeFocus)
+</dd>
+<dt><i>use=</i></dt><dd>
+No default value.
+    (use/Use)</dd>
+<dt><i>visual=</i></dt><dd>
+Controls the &#8220;visual&#8221; type to use for this
+    window. This option should usually be omitted. In that
+    case, the visual type is inherited from the root window.
+    <br />
+    Some more advanced displays support &#8220;mixed visuals&#8221;.
+    This typically means that the root window is a 256-color
+    display (the &#8220;pseudocolor&#8221; visual type), but that
+    individual windows can be displayed as true 24-bit color
+    (the &#8220;truecolor&#8221; visual type). On such displays, you may
+    wish to explicitly set the visual option to &#8220;truecolor&#8221;
+    for any windows used to display full-color images.
+    <br />
+    Other possible values include &#8220;directcolor&#8221;, &#8220;staticcolor&#8221;,
+    &#8220;grayscale&#8221;, or &#8220;staticgray&#8221;. See your X window documentation
+    for details.
+    <br />
+    You cannot change this option once you&#8217;ve created the
+    window.
+    (visual/Visual)
+</dd>
+<dt><i>width=</i></dt><dd>
+Window width, in pixels.  If omitted, the
+    widget is made large enough to hold its contents.</dd>
+</dl><br />
+</dd>
+</dl></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to tkinterbook index page.">::: tkinterbook :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

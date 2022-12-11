@@ -1,0 +1,78 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>colorsys</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-colorsys.html'>original</a> :::
+<a href='colorsys.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>colorsys&#8212;Conversions between color systems</h1>
+
+<p>The <code>colorsys</code> module
+defines bidirectional conversions of color values between colors
+expressed in the RGB (Red Green Blue) color space used in computer
+monitors and three other coordinate systems: YIQ, HLS (Hue
+Lightness Saturation) and HSV (Hue Saturation Value). Coordinates
+in all of these color spaces are floating point values. In the YIQ
+space, the Y coordinate is between 0 and 1, but the I and Q
+coordinates can be positive or negative. In all other spaces, the
+coordinates are all between 0 and 1.</p>
+
+<p>More information about color spaces can be found at <a class="link" href="http://www.poynton.com/ColorFAQ.html">
+http://www.poynton.com/ColorFAQ.html</a>.</p>
+
+<p>The <code>colorsys</code> module
+defines the following functions:</p>
+</div>
+<dl><dt class="function" id="rgb_to_yiq"><b>rgb_to_yiq(r, g, b)</b> <tt class="nav"><a class="nav" href="colorsys.rgb_to_yiq" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Convert the color from RGB coordinates to YIQ coordinates.</p>
+</dd>
+<dt class="function" id="yiq_to_rgb"><b>yiq_to_rgb(y, i, q)</b> <tt class="nav"><a class="nav" href="colorsys.yiq_to_rgb" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Convert the color from YIQ coordinates to RGB coordinates.</p>
+</dd>
+<dt class="function" id="rgb_to_hls"><b>rgb_to_hls(r, g, b)</b> <tt class="nav"><a class="nav" href="colorsys.rgb_to_hls" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Convert the color from RGB coordinates to HLS coordinates.</p>
+</dd>
+<dt class="function" id="hls_to_rgb"><b>hls_to_rgb(h, l, s)</b> <tt class="nav"><a class="nav" href="colorsys.hls_to_rgb" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Convert the color from HLS coordinates to RGB coordinates.</p>
+</dd>
+<dt class="function" id="rgb_to_hsv"><b>rgb_to_hsv(r, g, b)</b> <tt class="nav"><a class="nav" href="colorsys.rgb_to_hsv" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Convert the color from RGB coordinates to HSV coordinates.</p>
+</dd>
+<dt class="function" id="hsv_to_rgb"><b>hsv_to_rgb(h, s, v)</b> <tt class="nav"><a class="nav" href="colorsys.hsv_to_rgb" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Convert the color from HSV coordinates to RGB coordinates.</p>
+</dd>
+</dl><div class="text">
+<p>Example:</p>
+
+<pre>
+&gt;&gt;&gt; import colorsys
+&gt;&gt;&gt; colorsys.rgb_to_hsv(.3, .4, .2)
+(0.25, 0.5, 0.4)
+&gt;&gt;&gt; colorsys.hsv_to_rgb(0.25, 0.5, 0.4)
+(0.3, 0.4, 0.2)
+</pre>
+</div>
+</div></body></html>

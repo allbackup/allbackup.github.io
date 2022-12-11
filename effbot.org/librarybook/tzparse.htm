@@ -1,0 +1,33 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>The tzparse&nbsp;module</title></head><body data-page-id="699"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">The tzparse&nbsp;module</h1></div><div class="yui-ge"><div class="yui-u first"><p>(Obsolete). This (highly incomplete) module contains a parser
+for timezone specifications. When you import this module, it parses
+the content of the TZ environment variable.</p><div class="example">
+<b style="example">Example: Using the tzparse
+module</b>
+<pre>
+# File: <a href="tzparse/tzparse-example-1.py">tzparse-example-1.py</a>
+
+import os
+if not os.environ.has_key("TZ"):
+    # set it to something...
+    os.environ["TZ"] = "EST+5EDT;100/2,300/2"
+
+# importing this module will parse the TZ variable
+import tzparse
+
+print "tzparams", "=&gt;", tzparse.tzparams
+print "timezone", "=&gt;", tzparse.timezone
+print "altzone", "=&gt;", tzparse.altzone
+print "daylight", "=&gt;", tzparse.daylight
+print "tzname", "=&gt;", tzparse.tzname
+
+</pre><pre class="computeroutput" moreinfo="NONE">
+tzparams =&gt; ('EST', 5, 'EDT', 100, 2, 300, 2)
+timezone =&gt; 18000
+altzone =&gt; 14400
+daylight =&gt; 1
+tzname =&gt; ('EST', 'EDT')
+</pre></div><p>In addition to the variables shown in this example, this module
+contains a number of time manipulation functions that use the
+defined time zone.</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to librarybook index page.">::: librarybook :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

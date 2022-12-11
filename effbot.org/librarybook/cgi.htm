@@ -1,0 +1,72 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>The cgi&nbsp;module</title></head><body data-page-id="483"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">The cgi&nbsp;module</h1></div><div class="yui-ge"><div class="yui-u first"><p>This module provides a number of support functions and classes
+for common gateway interface (CGI) scripts. Among other things, it
+can parse CGI form data.</p><p>Here&#8217;s a simple CGI script that returns a list of a files in a
+given directory (relative to the root directory specified in the
+script).</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><div class="example wide">
+<b style="example">Example: Using the cgi module</b>
+<pre class="wide">
+# File: <a href="cgi/cgi-example-1.py">cgi-example-1.py</a>
+
+import cgi
+import os, urllib
+
+ROOT = "samples"
+
+# header
+print "text/html"
+print
+
+query = os.environ.get("QUERY_STRING")
+if not query:
+    query = "."
+
+script = os.environ.get("SCRIPT_NAME", "")
+if not script:
+    script = "cgi-example-1.py"
+
+print "&lt;html&gt;"
+print "&lt;head&gt;"
+print "&lt;title&gt;file listing&lt;/title&gt;"
+print "&lt;/head&gt;"
+print "&lt;/html&gt;"
+
+print "&lt;body&gt;"
+
+try:
+    files = os.listdir(os.path.join(ROOT, query))
+except os.error:
+    files = []
+
+for file in files:
+    link = cgi.escape(file)
+    if os.path.isdir(os.path.join(ROOT, query, file)):
+        href = script + "?" + os.path.join(query, file)
+        print "&lt;p&gt;&lt;a href='%s'&gt;%s&lt;/a&gt;" % (href, cgi.escape(link))
+    else:
+        print "&lt;p&gt;%s" % link
+
+print "&lt;/body&gt;"
+print "&lt;/html&gt;"
+
+</pre><pre class="computeroutput wide" moreinfo="NONE">
+text/html
+
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;file listing&lt;/title&gt;
+&lt;/head&gt;
+&lt;/html&gt;
+&lt;body&gt;
+&lt;p&gt;sample.gif
+&lt;p&gt;sample.gz
+&lt;p&gt;sample.netrc
+...
+&lt;p&gt;sample.txt
+&lt;p&gt;sample.xml
+&lt;p&gt;sample~
+&lt;p&gt;&lt;a href='cgi-example-1.py?web'&gt;web&lt;/a&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre></div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to librarybook index page.">::: librarybook :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

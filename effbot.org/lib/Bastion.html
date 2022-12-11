@@ -1,0 +1,70 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>Bastion</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-Bastion.html'>original</a> :::
+<a href='Bastion.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>Bastion&#8212;Restricting access to objects</h1>
+
+<p>Changed in version 2.3: Disabled module.</p>
+
+<p class="warning"><b>Warning:</b> The documentation has been left
+in place to help in reading old code that uses the module.</p>
+
+<p>According to the dictionary, a bastion is &#8220;a fortified
+area or position&#8221;, or &#8220;something that is considered a
+stronghold.&#8221; It's a suitable name for this module, which
+provides a way to forbid access to certain attributes of an object.
+It must always be used with the <code>
+rexec</code> module, in order to allow restricted-mode programs access
+to certain safe attributes of an object, while denying access to
+other, unsafe attributes.</p>
+</div>
+<dl><dt class="function" id="Bastion"><b>Bastion(object[, filter[, name[, class]]])</b> <tt class="nav"><a class="nav" href="Bastion.Bastion" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Protect the object <var>object</var>, returning a bastion for
+the object. Any attempt to access one of the object's attributes
+will have to be approved by the <var>filter</var> function; if the
+access is denied an <code>exceptions.AttributeError</code>
+exception will be raised.</p>
+
+<p>If present, <var>filter</var> must be a function that accepts a
+string containing an attribute name, and returns true if access to
+that attribute will be permitted; if <var>filter</var> returns
+false, the access is denied. The default filter denies access to
+any function beginning with an underscore ("<code>_</code>"). The
+bastion's string representation will be "<code>&amp;ltBastion
+for</code> <var>name</var>&gt;" if a value for <var>name</var> is
+provided; otherwise, "<code>repr(</code><var>object</var>)" will be
+used.</p>
+
+<p><var>class</var>, if present, should be a subclass of <a class="link" href="#BastionClass"><code>BastionClass</code></a>; see the
+code in bastion.py for the details. Overriding the default <a class="link" href="#BastionClass"><code>BastionClass</code></a> will rarely
+be required.</p>
+</dd>
+<dt class="class" id="BastionClass"><b>class BastionClass(getfunc, name)</b> <tt class="nav"><a class="nav" href="Bastion.BastionClass" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>Class which actually implements bastion objects. This is the
+default class used by <a class="link" href="#Bastion"><code>
+Bastion</code></a>. The <var>getfunc</var> parameter is a function which
+returns the value of an attribute which should be exposed to the
+restricted execution environment when called with the name of the
+attribute as the only parameter. <var>name</var> is used to
+construct the <code>repr</code> of the <a class="link" href="#BastionClass"><code>BastionClass</code></a>
+instance.</p>
+</dd>
+</dl></div></body></html>

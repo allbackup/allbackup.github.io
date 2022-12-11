@@ -1,0 +1,73 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>Using Channel Providers Outside the effbot.exe/effnews&nbsp;Application</title><script type="text/javascript">effbot_page_id=70;</script></head><body><div id="doc2" class="yui-t2"><div id="hd"><!-- header --></div><!-- hd --><div id="bd"><!-- body --><p class="note" style="text-align: center"><strong>
+
+We're back after a server migration that caused effbot.org to fall
+over a bit harder than expected.  Expect some glitches.
+
+</strong></p><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">Using Channel Providers Outside the effbot.exe/effnews&nbsp;Application</h1></div><!-- yui-g --><body>
+<p class="info">January 27, 2003 | Fredrik Lundh</p>
+<p>This note discusses how to use <a href="effnews-provider.htm">effnews
+provider scripts</a> in your own applications.</p>
+<h2 id="loading-providers">Loading Providers</h2>
+<p>A provider is a Python script that defines two objects, a <b>urls</b>
+sequence, and a callable <b>simpleprovider</b> object (usually a function).</p>
+<p>The following function loads all provider scripts in a given directory
+(in a default effnews install, the directory is <b>c:\effbot.exe\effnews</b>):</p>
+<div class="example">
+<b>Example: Loading available providers</b>
+<pre class="python">
+import os, glob
+
+def getproviders(directory):
+    providers = {}
+    for file in glob.glob(os.path.join(directory, "*.provider")):
+        ns = {}
+        try:
+            execfile(file, ns)
+            for url in ns.get("urls"):
+                if isinstance(url, type("")):
+                    providers[url] = ns
+        except:
+            pass
+    return providers
+</pre>
+</div>
+<p>The function returns a dictionary, mapping URLs to module namespaces.</p>
+<h2 id="using-a-provider">Using a Provider</h2>
+<p>Once you&#8217;ve loaded the provider dictionary, you can download entire
+web pages, and use the appropriate provider to parse them.  Here&#8217;s an example,
+which prints channel information and items to standard output:</p>
+<div class="example">
+<b>Example: Loading data using a provider</b>
+<pre class="python">
+import urllib
+
+class Context:
+
+    def push(self, tag, **args):
+        print "---", tag
+        for key, value in args.items():
+            print key, value
+
+providers = getproviders("c:/effbot.exe/effnews")
+
+def loadurl(url):
+
+    provider = providers.get(url)
+
+    file = urllib.urlopen(url)
+
+    if provider:
+        c = Context()
+        provider["simpleprovider"](c, file.read())
+
+    else:
+        ... rss_loader(url, file) ...
+
+    file.close()
+</pre>
+</div>
+<p>The <b>rss_loader</b> function isn&#8217;t shown in this example.  You can
+for example use the parser from the <a href="effnews.htm">effnews toolkit</a>
+to implement the function.</p></body><div class="yui-g"></div><!-- yui-g --></div><!-- content --></div><!-- yui-b --></div><!-- yui-main --><div class="yui-b"><div id='menu'></div><!-- menu --></div><!-- yui-b --></div><!-- bd --><div id="ft"><!-- footer --></div><!-- ft --></div><!-- doc --><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

@@ -1,0 +1,61 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>What is a&nbsp;generator?</title></head><body data-page-id="900"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><p class="note" style="text-align: center"><strong>
+This is an old copy of the Python FAQ.  The information here may be
+outdated.
+</strong></p><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">What is a&nbsp;generator?</h1></div><div class="yui-ge"><div class="yui-u first"><p>A generator is a special kind of function that returns <a href="what-is-an-iterator.htm">an iterator</a>.  It looks like a normal function, but values are returned to the caller using a <a href="/pyref/yield.htm"><strong>yield</strong></a> statement instead of a <a href="/pyref/return.htm"><strong>return</strong></a> statement.  When <a href="/pyref/yield.htm"><strong>yield</strong></a> is called, the function is suspended and the yielded value is returned to the caller.  The function is then resumed again the next time the caller asks for another value.</p><p>Generators are most often used with <a href="/pyref/for.htm"><strong>for</strong></a>-<a href="/pyref/in.htm"><strong>in</strong></a> and other
+operations that are designed to work with iterables:</p><pre><code>&gt;&gt;&gt; def gen():
+...     yield 1
+...     yield 2
+...     for each in (3,4,5):
+...         yield each
+... 
+&gt;&gt;&gt; for val in gen():
+...     print val
+... 
+1
+2
+3
+4
+5
+&gt;&gt;&gt; sum(gen())
+15
+&gt;&gt;&gt; [str(i) for i in gen()]
+['1', '2', '3', '4', '5']
+</code></pre><p>You can also fetch values from a generator <q>by hand</q>.  When you call
+a generator  function, it returns a special <q>generator object</q>, and
+then immediately  suspends itself.  To run the generator, call its
+<a href="/pyref/next.htm"><strong>next</strong></a> method:</p><pre class="python">&gt;&gt;&gt; x = gen()
+&gt;&gt;&gt; x
+&lt;generator object at 0x00AE63F0&gt;
+&gt;&gt;&gt; x.next()
+1
+&gt;&gt;&gt; x.next()
+2
+&gt;&gt;&gt; x.next()
+3
+&gt;&gt;&gt; x.next()
+4
+&gt;&gt;&gt; x.next()
+5</pre><p>When the generator is exhausted, it raises a <a href="/pyref/StopIteration.htm"><strong>StopIteration</strong></a>
+exception:</p><pre class="python">&gt;&gt;&gt; x.next()
+Traceback (most recent call last):
+  File <span class="pystring">"&lt;stdin&gt;"</span>, line 1, <span class="pykeyword">in</span> ?
+StopIteration</pre><p>You can also create a generator using a generator expression that returns a generator.  Like a list comprehension, a generator expression looks like a normal expression followed by a <a href="/pyref/for.htm"><strong>for</strong></a> expression defining a loop variable, a range or another iterable to loop over, and an optional <a href="/pyref/if.htm"><strong>if</strong></a> expression. The combined expression generates values for an enclosing function:</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><pre class="python wide wide">&gt;&gt;&gt; sum(i*i <span class="pykeyword">for</span> i <span class="pykeyword">in</span> range(10))         <span class="pycomment"># sum of squares 0, 1, 4, ... 81</span>
+285
+&gt;&gt;&gt; x = (i*i <span class="pykeyword">for</span> i <span class="pykeyword">in</span> range(4))
+&gt;&gt;&gt; x.next()
+0
+&gt;&gt;&gt; x.next()
+1
+&gt;&gt;&gt; x.next()
+4
+&gt;&gt;&gt; x.next()
+9
+&gt;&gt;&gt; x.next()
+Traceback (most recent call last):
+  File <span class="pystring">"&lt;stdin&gt;"</span>, line 1, <span class="pykeyword">in</span> ?
+StopIteration</pre></div><div class="yui-ge"><div class="yui-u first"><p>Note that generator expressions must be written inside parentheses,
+but the extra parentheses can be left out when the expression is the
+sole argument to a function (as in the <a href="/pyref/sum.htm"><strong>sum</strong></a> call in this
+example).</p><p>CATEGORY: general programming</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to pyfaq index page.">::: pyfaq :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

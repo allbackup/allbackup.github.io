@@ -1,0 +1,70 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>The Tkinter Menu&nbsp;Widget</title> <script type="text/javascript">effbot_page_id=1928;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> <!--
+<p style='color: #8f8f8f; background: #fff5bf; padding: 5px 10px;'> <b>2008-07-15:</b> Selected articles
+ (including this one) 
+now have experimental "comment" links in the left column and at the bottom.
+You're welcome to use them for commenting and voting on articles.
+For a bit more on this, see <a
+href="http://effbot.slinkset.com/links/Welcome_to_discuss_effbot_org">this
+page</a>. /F
+</p>
+--> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <p><a href="listbox.htm">back</a> <a href="menubutton.htm">next</a></p> <h1 class="maintitle">The Tkinter Menu&nbsp;Widget</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p>The <b>Menu</b> widget is used to implement toplevel, pulldown,
+and popup menus.</p><h2>When to use the Menu Widget</h2><p>This widget is used to display all kinds of menus used by an
+application. Since this widget uses native code where possible, you
+shouldn&#8217;t try to fake menus using buttons and other Tkinter
+widgets.</p><h2 id="patterns">Patterns&#160;<a class="nav" href="#patterns" title="bookmark!">#</a></h2><p>Toplevel menus are displayed just under the title bar of the
+root or any other toplevel windows (or on Macintosh, along the
+upper edge of the screen). To create a toplevel menu, create a new
+Menu instance, and use <b>add</b> methods to add commands and other
+menu entries to it.</p><pre class="python">
+root = Tk()
+
+<span class="pykeyword">def</span> <span class="pyfunction">hello</span>():
+    <span class="pykeyword">print</span> <span class="pystring">"hello!"</span>
+
+<span class="pycomment"># create a toplevel menu</span>
+menubar = Menu(root)
+menubar.add_command(label=<span class="pystring">"Hello!"</span>, command=hello)
+menubar.add_command(label=<span class="pystring">"Quit!"</span>, command=root.quit)
+
+<span class="pycomment"># display the menu</span>
+root.config(menu=menubar)</pre><p>Pulldown menus (and other submenus) are created in a similar
+fashion. The main difference is that they are attached to a parent
+menu (using <b>add_cascade)</b>, instead of a toplevel window.</p><pre class="python">
+root = Tk()
+
+<span class="pykeyword">def</span> <span class="pyfunction">hello</span>():
+    <span class="pykeyword">print</span> <span class="pystring">"hello!"</span>
+
+menubar = Menu(root)
+
+<span class="pycomment"># create a pulldown menu, and add it to the menu bar</span>
+filemenu = Menu(menubar, tearoff=0)
+filemenu.add_command(label=<span class="pystring">"Open"</span>, command=hello)
+filemenu.add_command(label=<span class="pystring">"Save"</span>, command=hello)
+filemenu.add_separator()
+filemenu.add_command(label=<span class="pystring">"Exit"</span>, command=root.quit)
+menubar.add_cascade(label=<span class="pystring">"File"</span>, menu=filemenu)
+
+<span class="pycomment"># create more pulldown menus</span>
+editmenu = Menu(menubar, tearoff=0)
+editmenu.add_command(label=<span class="pystring">"Cut"</span>, command=hello)
+editmenu.add_command(label=<span class="pystring">"Copy"</span>, command=hello)
+editmenu.add_command(label=<span class="pystring">"Paste"</span>, command=hello)
+menubar.add_cascade(label=<span class="pystring">"Edit"</span>, menu=editmenu)
+
+helpmenu = Menu(menubar, tearoff=0)
+helpmenu.add_command(label=<span class="pystring">"About"</span>, command=hello)
+menubar.add_cascade(label=<span class="pystring">"Help"</span>, menu=helpmenu)
+
+<span class="pycomment"># display the menu</span>
+root.config(menu=menubar)</pre><p>Finally, a popup menu is created in the same way, but is
+explicitly displayed, using the <b>post</b> method:</p><pre class="python">
+root = Tk()
+
+<span class="pykeyword">def</span> <span class="pyfunction">hello</span>():
+    <span class="pykeyword">print</span> <span class="pystring">"hello!"</span>
+
+<span class="pycomment"># create a popup menu</span>
+menu = Menu(root, tearoff=0)

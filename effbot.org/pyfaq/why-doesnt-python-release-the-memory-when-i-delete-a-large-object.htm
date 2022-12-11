@@ -1,0 +1,31 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>Why doesn't Python release the memory when I delete a large&nbsp;object?</title></head><body data-page-id="945"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><p class="note" style="text-align: center"><strong>
+This is an old copy of the Python FAQ.  The information here may be
+outdated.
+</strong></p><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">Why doesn't Python release the memory when I delete a large&nbsp;object?</h1></div><div class="yui-ge"><div class="yui-u first"><p>If you create a large object and delete it again, Python has probably
+released the memory, but the memory allocators involved don&#8217;t necessarily
+return the memory to the operating system, so it may look as if the Python
+process uses a lot more virtual memory than it actually uses.</p><p>Memory allocation works at several levels in Python.  There&#8217;s the system&#8217;s
+own allocator, which is what shows up when you check the memory use using
+the Windows Task Manager or <b>ps</b>.  Then there&#8217;s the C runtime&#8217;s memory
+allocator (<b>malloc</b>), which gets memory from the system allocator, and hands it out in smaller chunks to the application.  Finally, there&#8217;s Python&#8217;s
+own object allocator, which is used for objects up to 256 bytes.  This
+allocator grabs large chunks of memory from the C allocator, and chops
+them up in smaller pieces using an algorithm carefully tuned for Python.</p><p>Exactly if and when Python&#8217;s allocator returns memory to the C runtime, and when
+the C runtime returns memory to the operating system, depends on a lot of
+parameters, including Python and library versions, your application&#8217;s object
+allocation patterns, and so on.  For example, CPython 2.5 and later returns memory used for smaller objects to the C allocator when possible, while earlier versions never did that.  However, it&#8217;s important to remember that memory that&#8217;s returned to a given allocator will be reused by that allocator, even if it&#8217;s not returned to the system.</p><p>Another possible cause for excessive memory usage is that Python uses
+so-called &#8220;free lists&#8221; for certain object types, including integers and
+floats.  Tim Peters writes:</p><blockquote><blockquote><p>If I do</p><pre><code> &gt;&gt;&gt; L = range(50*1024*100)
+ &gt;&gt;&gt; del L
+</code></pre><p>Python is still using more than 60 MB.  Why isn&#8217;t the memory  released?</p></blockquote><p>It&#8217;s that you&#8217;ve created 5 million integers simultaneously alive,
+  and each int object consumes 12 bytes.  &#8220;For speed&#8221;, Python
+  maintains an internal free list for integer objects.  Unfortunately,
+  that free list is both immortal and unbounded in size.  floats also
+  use an immortal &amp; unbounded free list.</p><p>/&#8230;/ Do you really need a list containing 5 million
+  integers?  I never do ;-)  Something like</p><pre><code> for i in xrange(50*1024*100):  # note the "x" in "xrange"
+     whatever
+</code></pre><p>consumes a trivial amount of memory, because only two integers in
+  the range are simultaneously alive at any point, and the free list
+  makes reusing their space fast.</p></blockquote><p>CATEGORY: programming</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to pyfaq index page.">::: pyfaq :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

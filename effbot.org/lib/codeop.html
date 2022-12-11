@@ -1,0 +1,131 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>codeop</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-codeop.html'>original</a> :::
+<a href='codeop.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>codeop&#8212;Compile Python code</h1>
+
+<p>The <code>codeop</code> module
+provides utilities upon which the Python read-eval-print loop can
+be emulated, as is done in the <code>
+code</code> module. As a result, you probably don't want to use the
+module directly; if you want to include such a loop in your program
+you probably want to use the <code>
+code</code> module instead.</p>
+
+<p>There are two parts to this job:</p>
+
+<ol>
+<li>
+<p>Being able to tell if a line of input completes a Python
+statement: in short, telling whether to print
+`<code>&gt;</code>&gt;&gt; ' or `<code>...</code> ' next.</p>
+</li>
+
+<li>
+<p>Remembering which future statements the user has entered, so
+subsequent input can be compiled with these in effect.</p>
+</li>
+</ol>
+
+<p>The <code>codeop</code> module
+provides a way of doing each of these things, and a way of doing
+them both.</p>
+
+<p>To do just the former:</p>
+</div>
+<dl><dt class="function" id="compile_command"><b>compile_command(source[, filename[,
+symbol]])</b> <tt class="nav"><a class="nav" href="codeop.compile_command" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Tries to compile <var>source</var>, which should be a string of
+Python code and return a code object if <var>source</var> is valid
+Python code. In that case, the filename attribute of the code
+object will be <var>filename</var>, which defaults to <code>
+'&amp;ltinput&gt;'</code>. Returns <code>None</code> if <var>source</var> is <em>not</em>
+valid Python code, but is a prefix of valid Python code.</p>
+
+<p>If there is a problem with <var>source</var>, an exception will
+be raised. <code>
+exceptions.SyntaxError</code> is raised if there is invalid Python
+syntax, and <code>
+exceptions.OverflowError</code> or <code>exceptions.ValueError</code> if
+there is an invalid literal.</p>
+
+<p>The <var>symbol</var> argument determines whether <var>
+source</var> is compiled as a statement (<code>'single'</code>, the
+default) or as an expression (<code>'eval'</code>). Any other value
+will cause <code>
+exceptions.ValueError</code> to be raised.</p>
+
+<p>Caveat: It is possible (but not likely) that the parser stops
+parsing with a successful outcome before reaching the end of the
+source; in this case, trailing symbols may be ignored instead of
+causing an error. For example, a backslash followed by two newlines
+may be followed by arbitrary garbage. This will be fixed once the
+API for the parser is better.</p>
+</dd>
+<dt class="class" id="Compile"><b>class Compile()</b> <tt class="nav"><a class="nav" href="codeop.Compile" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>Instances of this class have <code>__call__</code> methods identical in signature to
+the built-in function <code>
+compile</code>, but with the difference that if the instance compiles
+program text containing a <code>
+__future__</code> statement, the instance 'remembers' and compiles all
+subsequent program texts with the statement in force.</p>
+</dd>
+<dt class="class" id="CommandCompiler"><b>class CommandCompiler()</b> <tt class="nav"><a class="nav" href="codeop.CommandCompiler" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>Instances of this class have <code>__call__</code> methods identical in signature to
+<a class="link" href="#compile_command"><code>compile_command</code></a>;
+the difference is that if the instance compiles program text
+containing a <code>__future__</code> statement, the instance
+'remembers' and compiles all subsequent program texts with the
+statement in force.</p>
+</dd>
+</dl><div class="text">
+<p>A note on version compatibility: the <a class="link" href="#Compile"><code>Compile</code></a> and <a class="link" href="#CommandCompiler"><code>CommandCompiler</code></a> are new in Python
+2.2. If you want to enable the future-tracking features of 2.2 but
+also retain compatibility with 2.1 and earlier versions of Python
+you can either write</p>
+
+<pre>
+try:
+    from codeop import CommandCompiler
+    compile_command = CommandCompiler()
+    del CommandCompiler
+except ImportError:
+    from codeop import compile_command
+</pre>
+
+<p>which is a low-impact change, but introduces possibly unwanted
+global state into your program, or you can write:</p>
+
+<pre>
+try:
+    from codeop import CommandCompiler
+except ImportError:
+    def CommandCompiler():
+        from codeop import compile_command
+        return compile_command
+</pre>
+
+<p>and then call <code>CommandCompiler</code> every time you need a
+fresh compiler object.</p>
+</div>
+</div></body></html>

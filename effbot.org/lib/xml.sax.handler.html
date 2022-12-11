@@ -1,0 +1,444 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>xml.sax.handler</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-xml.sax.handler.html'>original</a> :::
+<a href='xml.sax.handler.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>xml.sax.handler&#8212;Base classes for SAX handlers</h1>
+
+<div class="toc"><dl><dt>On this page:</dt><dd><a href="#contenthandler-objects">ContentHandler Objects</a></dd><dd><a href="#dtdhandler-objects">DTDHandler Objects</a></dd><dd><a href="#entityresolver-objects">EntityResolver Objects</a></dd><dd><a href="#errorhandler-objects">ErrorHandler Objects</a></dd></dl></div><p>New in version 2.0.</p>
+
+<p>The SAX API defines four kinds of handlers: content handlers,
+DTD handlers, error handlers, and entity resolvers. Applications
+normally only need to implement those interfaces whose events they
+are interested in; they can implement the interfaces in a single
+object or in multiple objects. Handler implementations should
+inherit from the base classes provided in the module <code>xml.sax</code>, so that all methods
+get default implementations.</p>
+</div>
+<dl><dt class="class" id="ContentHandler"><b>class ContentHandler</b> <tt class="nav"><a class="nav" href="xml.sax.handler.ContentHandler" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>This is the main callback interface in SAX, and the one most
+important to applications. The order of events in this interface
+mirrors the order of the information in the document.</p>
+</dd>
+<dt class="class" id="DTDHandler"><b>class DTDHandler</b> <tt class="nav"><a class="nav" href="xml.sax.handler.DTDHandler" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>Handle DTD events.</p>
+
+<p>This interface specifies only those DTD events required for
+basic parsing (unparsed entities and attributes).</p>
+</dd>
+<dt class="class" id="EntityResolver"><b>class EntityResolver</b> <tt class="nav"><a class="nav" href="xml.sax.handler.EntityResolver" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>Basic interface for resolving entities. If you create an object
+implementing this interface, then register the object with your
+Parser, the parser will call the method in your object to resolve
+all external entities.</p>
+</dd>
+<dt class="class" id="ErrorHandler"><b>class ErrorHandler</b> <tt class="nav"><a class="nav" href="xml.sax.handler.ErrorHandler" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>Interface used by the parser to present error and warning
+messages to the application. The methods of this object control
+whether errors are immediately converted to exceptions or are
+handled in some other way.</p>
+</dd>
+</dl><div class="text">
+<p>In addition to these classes, <code>xml.sax.handler</code> provides symbolic
+constants for the feature and property names.</p>
+</div>
+<dl><dt class="variable" id="feature_namespaces"><b>feature_namespaces</b> <tt class="nav"><a class="nav" href="xml.sax.handler.feature_namespaces" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Value: <code>"http://xml.org/sax/features/namespaces"</code>
+true: Perform Namespace processing. false: Optionally do not
+perform Namespace processing (implies namespace-prefixes; default).
+access: (parsing) read-only; (not parsing) read/write</p>
+</dd>
+<dt class="variable" id="feature_namespace_prefixes"><b>feature_namespace_prefixes</b> <tt class="nav"><a class="nav" href="xml.sax.handler.feature_namespace_prefixes" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Value: <code>
+"http://xml.org/sax/features/namespace-prefixes"</code> true:
+Report the original prefixed names and attributes used for
+Namespace declarations. false: Do not report attributes used for
+Namespace declarations, and optionally do not report original
+prefixed names (default). access: (parsing) read-only; (not
+parsing) read/write</p>
+</dd>
+<dt class="variable" id="feature_string_interning"><b>feature_string_interning</b> <tt class="nav"><a class="nav" href="xml.sax.handler.feature_string_interning" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Value: <code>
+"http://xml.org/sax/features/string-interning"</code> true: All
+element names, prefixes, attribute names, Namespace URIs, and local
+names are interned using the built-in intern function. false: Names
+are not necessarily interned, although they may be (default).
+access: (parsing) read-only; (not parsing) read/write</p>
+</dd>
+<dt class="variable" id="feature_validation"><b>feature_validation</b> <tt class="nav"><a class="nav" href="xml.sax.handler.feature_validation" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Value: <code>"http://xml.org/sax/features/validation"</code>
+true: Report all validation errors (implies
+external-general-entities and external-parameter-entities). false:
+Do not report validation errors. access: (parsing) read-only; (not
+parsing) read/write</p>
+</dd>
+<dt class="variable" id="feature_external_ges"><b>feature_external_ges</b> <tt class="nav"><a class="nav" href="xml.sax.handler.feature_external_ges" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Value: <code>
+"http://xml.org/sax/features/external-general-entities"</code>
+true: Include all external general (text) entities. false: Do not
+include external general entities. access: (parsing) read-only;
+(not parsing) read/write</p>
+</dd>
+<dt class="variable" id="feature_external_pes"><b>feature_external_pes</b> <tt class="nav"><a class="nav" href="xml.sax.handler.feature_external_pes" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Value: <code>
+"http://xml.org/sax/features/external-parameter-entities"</code>
+true: Include all external parameter entities, including the
+external DTD subset. false: Do not include any external parameter
+entities, even the external DTD subset. access: (parsing)
+read-only; (not parsing) read/write</p>
+</dd>
+<dt class="variable" id="all_features"><b>all_features</b> <tt class="nav"><a class="nav" href="xml.sax.handler.all_features" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>List of all features.</p>
+</dd>
+<dt class="variable" id="property_lexical_handler"><b>property_lexical_handler</b> <tt class="nav"><a class="nav" href="xml.sax.handler.property_lexical_handler" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Value: <code>
+"http://xml.org/sax/properties/lexical-handler"</code> data type:
+xml.sax.sax2lib.LexicalHandler (not supported in Python 2)
+description: An optional extension handler for lexical events like
+comments. access: read/write</p>
+</dd>
+<dt class="variable" id="property_declaration_handler"><b>property_declaration_handler</b> <tt class="nav"><a class="nav" href="xml.sax.handler.property_declaration_handler" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Value: <code>
+"http://xml.org/sax/properties/declaration-handler"</code> data
+type: xml.sax.sax2lib.DeclHandler (not supported in Python 2)
+description: An optional extension handler for DTD-related events
+other than notations and unparsed entities. access: read/write</p>
+</dd>
+<dt class="variable" id="property_dom_node"><b>property_dom_node</b> <tt class="nav"><a class="nav" href="xml.sax.handler.property_dom_node" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Value: <code>"http://xml.org/sax/properties/dom-node"</code>
+data type: org.w3c.dom.Node (not supported in Python 2)
+description: When parsing, the current DOM node being visited if
+this is a DOM iterator; when not parsing, the root DOM node for
+iteration. access: (parsing) read-only; (not parsing)
+read/write</p>
+</dd>
+<dt class="variable" id="property_xml_string"><b>property_xml_string</b> <tt class="nav"><a class="nav" href="xml.sax.handler.property_xml_string" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Value: <code>"http://xml.org/sax/properties/xml-string"</code>
+data type: String description: The literal string of characters
+that was the source for the current event. access: read-only</p>
+</dd>
+<dt class="variable" id="all_properties"><b>all_properties</b> <tt class="nav"><a class="nav" href="xml.sax.handler.all_properties" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>List of all known property names.</p>
+</dd>
+</dl><div class="text">
+<h2 id="contenthandler-objects">ContentHandler Objects <a class="nav" href="#contenthandler-objects">#</a></h2>
+
+<p>Users are expected to subclass <a class="link" href="#ContentHandler"><code>ContentHandler</code></a> to support their
+application. The following methods are called by the parser on the
+appropriate events in the input document:</p>
+</div>
+<dl><dt class="method" id="ContentHandler.setDocumentLocator"><b>setDocumentLocator(locator)</b> <tt class="nav"><a class="nav" href="xml.sax.handler.ContentHandler.setDocumentLocator" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Called by the parser to give the application a locator for
+locating the origin of document events.</p>
+
+<p>SAX parsers are strongly encouraged (though not absolutely
+required) to supply a locator: if it does so, it must supply the
+locator to the application by invoking this method before invoking
+any of the other methods in the DocumentHandler interface.</p>
+
+<p>The locator allows the application to determine the end position
+of any document-related event, even if the parser is not reporting
+an error. Typically, the application will use this information for
+reporting its own errors (such as character content that does not
+match an application's business rules). The information returned by
+the locator is probably not sufficient for use with a search
+engine.</p>
+
+<p>Note that the locator will return correct information only
+during the invocation of the events in this interface. The
+application should not attempt to use it at any other time.</p>
+</dd>
+<dt class="method" id="ContentHandler.startDocument"><b>startDocument()</b> <tt class="nav"><a class="nav" href="xml.sax.handler.ContentHandler.startDocument" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Receive notification of the beginning of a document.</p>
+
+<p>The SAX parser will invoke this method only once, before any
+other methods in this interface or in DTDHandler (except for <code>
+setDocumentLocator</code>).</p>
+</dd>
+<dt class="method" id="ContentHandler.endDocument"><b>endDocument()</b> <tt class="nav"><a class="nav" href="xml.sax.handler.ContentHandler.endDocument" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Receive notification of the end of a document.</p>
+
+<p>The SAX parser will invoke this method only once, and it will be
+the last method invoked during the parse. The parser shall not
+invoke this method until it has either abandoned parsing (because
+of an unrecoverable error) or reached the end of input.</p>
+</dd>
+<dt class="method" id="ContentHandler.startPrefixMapping"><b>startPrefixMapping(prefix,
+uri)</b> <tt class="nav"><a class="nav" href="xml.sax.handler.ContentHandler.startPrefixMapping" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Begin the scope of a prefix-URI Namespace mapping.</p>
+
+<p>The information from this event is not necessary for normal
+Namespace processing: the SAX XML reader will automatically replace
+prefixes for element and attribute names when the <code>
+feature_namespaces</code> feature is enabled (the default).</p>
+
+<p>There are cases, however, when applications need to use prefixes
+in character data or in attribute values, where they cannot safely
+be expanded automatically; the <code>startPrefixMapping</code> and <code>endPrefixMapping</code>
+events supply the information to the application to expand prefixes
+in those contexts itself, if necessary.</p>
+
+<p>Note that <code>
+startPrefixMapping</code> and <code>endPrefixMapping</code> events are not
+guaranteed to be properly nested relative to each-other: all <code>startPrefixMapping</code>
+events will occur before the corresponding <code>startElement</code> event, and all <code>endPrefixMapping</code>
+events will occur after the corresponding <code>endElement</code> event, but their order is not
+guaranteed.</p>
+</dd>
+<dt class="method" id="ContentHandler.endPrefixMapping"><b>endPrefixMapping(prefix)</b> <tt class="nav"><a class="nav" href="xml.sax.handler.ContentHandler.endPrefixMapping" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>End the scope of a prefix-URI mapping.</p>
+
+<p>See <code>
+startPrefixMapping</code> for details. This event will always occur
+after the corresponding <code>
+endElement</code> event, but the order of <code>endPrefixMapping</code> events is not
+otherwise guaranteed.</p>
+</dd>
+<dt class="method" id="ContentHandler.startElement"><b>startElement(name, attrs)</b> <tt class="nav"><a class="nav" href="xml.sax.handler.ContentHandler.startElement" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Signals the start of an element in non-namespace mode.</p>
+
+<p>The <var>name</var> parameter contains the raw XML 1.0 name of
+the element type as a string and the <var>attrs</var> parameter
+holds an object of the <code>Attributes interface</code>
+containing the attributes of the element. The object passed as
+<var>attrs</var> may be re-used by the parser; holding on to a
+reference to it is not a reliable way to keep a copy of the
+attributes. To keep a copy of the attributes, use the <code>copy</code> method of the <var>
+attrs</var> object.</p>
+</dd>
+<dt class="method" id="ContentHandler.endElement"><b>endElement(name)</b> <tt class="nav"><a class="nav" href="xml.sax.handler.ContentHandler.endElement" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Signals the end of an element in non-namespace mode.</p>
+
+<p>The <var>name</var> parameter contains the name of the element
+type, just as with the <code>
+startElement</code> event.</p>
+</dd>
+<dt class="method" id="ContentHandler.startElementNS"><b>startElementNS(name, qname,
+attrs)</b> <tt class="nav"><a class="nav" href="xml.sax.handler.ContentHandler.startElementNS" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Signals the start of an element in namespace mode.</p>
+
+<p>The <var>name</var> parameter contains the name of the element
+type as a <code>(</code><var>uri</var>, <var>localname</var>)
+tuple, the <var>qname</var> parameter contains the raw XML 1.0 name
+used in the source document, and the <var>attrs</var> parameter
+holds an instance of the <code>AttributesNS interface</code>
+containing the attributes of the element. If no namespace is
+associated with the element, the <var>uri</var> component of <var>
+name</var> will be <code>None</code>. The
+object passed as <var>attrs</var> may be re-used by the parser;
+holding on to a reference to it is not a reliable way to keep a
+copy of the attributes. To keep a copy of the attributes, use the
+<code>copy</code> method of the <var>
+attrs</var> object.</p>
+
+<p>Parsers may set the <var>qname</var> parameter to <code>
+None</code>, unless the <code>feature_namespace_prefixes</code>
+feature is activated.</p>
+</dd>
+<dt class="method" id="ContentHandler.endElementNS"><b>endElementNS(name, qname)</b> <tt class="nav"><a class="nav" href="xml.sax.handler.ContentHandler.endElementNS" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Signals the end of an element in namespace mode.</p>
+
+<p>The <var>name</var> parameter contains the name of the element
+type, just as with the <code>
+startElementNS</code> method, likewise the <var>qname</var>
+parameter.</p>
+</dd>
+<dt class="method" id="ContentHandler.characters"><b>characters(content)</b> <tt class="nav"><a class="nav" href="xml.sax.handler.ContentHandler.characters" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Receive notification of character data.</p>
+
+<p>The Parser will call this method to report each chunk of
+character data. SAX parsers may return all contiguous character
+data in a single chunk, or they may split it into several chunks;
+however, all of the characters in any single event must come from
+the same external entity so that the Locator provides useful
+information.</p>
+
+<p><var>content</var> may be a Unicode string or a byte string; the
+<code>expat</code> reader module produces always Unicode
+strings.</p>
+
+<p class="note"><b>Note:</b> The earlier SAX 1 interface provided
+by the Python XML Special Interest Group used a more Java-like
+interface for this method. Since most parsers used from Python did
+not take advantage of the older interface, the simpler signature
+was chosen to replace it. To convert old code to the new interface,
+use <var>content</var> instead of slicing content with the old
+<var>offset</var> and <var>length</var> parameters.</p>
+</dd>
+<dt class="method"><b>
+ContentHandler.ignorableWhitespace(whitespace)</b> <tt class="nav"><a class="nav" href="xml.sax.handler." title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Receive notification of ignorable whitespace in element
+content.</p>
+
+<p>Validating Parsers must use this method to report each chunk of
+ignorable whitespace (see the W3C XML 1.0 recommendation, section
+2.10): non-validating parsers may also use this method if they are
+capable of parsing and using content models.</p>
+
+<p>SAX parsers may return all contiguous whitespace in a single
+chunk, or they may split it into several chunks; however, all of
+the characters in any single event must come from the same external
+entity, so that the Locator provides useful information.</p>
+</dd>
+<dt class="method" id="ContentHandler.processingInstruction"><b>processingInstruction(target,
+data)</b> <tt class="nav"><a class="nav" href="xml.sax.handler.ContentHandler.processingInstruction" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Receive notification of a processing instruction.</p>
+
+<p>The Parser will invoke this method once for each processing
+instruction found: note that processing instructions may occur
+before or after the main document element.</p>
+
+<p>A SAX parser should never report an XML declaration (XML 1.0,
+section 2.8) or a text declaration (XML 1.0, section 4.3.1) using
+this method.</p>
+</dd>
+<dt class="method" id="ContentHandler.skippedEntity"><b>skippedEntity(name)</b> <tt class="nav"><a class="nav" href="xml.sax.handler.ContentHandler.skippedEntity" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Receive notification of a skipped entity.</p>
+
+<p>The Parser will invoke this method once for each entity skipped.
+Non-validating processors may skip entities if they have not seen
+the declarations (because, for example, the entity was declared in
+an external DTD subset). All processors may skip external entities,
+depending on the values of the <code>feature_external_ges</code>
+and the <code>feature_external_pes</code> properties.</p>
+</dd>
+</dl><div class="text">
+<h2 id="dtdhandler-objects">DTDHandler Objects <a class="nav" href="#dtdhandler-objects">#</a></h2>
+
+<p><a class="link" href="#DTDHandler"><code>DTDHandler</code></a> instances
+provide the following methods:</p>
+</div>
+<dl><dt class="method" id="DTDHandler.notationDecl"><b>notationDecl(name, publicId,
+systemId)</b> <tt class="nav"><a class="nav" href="xml.sax.handler.DTDHandler.notationDecl" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Handle a notation declaration event.</p>
+</dd>
+<dt class="method" id="DTDHandler.unparsedEntityDecl"><b>unparsedEntityDecl(name, publicId,
+systemId, ndata)</b> <tt class="nav"><a class="nav" href="xml.sax.handler.DTDHandler.unparsedEntityDecl" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Handle an unparsed entity declaration event.</p>
+</dd>
+</dl><div class="text">
+<h2 id="entityresolver-objects">EntityResolver Objects <a class="nav" href="#entityresolver-objects">#</a></h2>
+</div>
+<dl><dt class="method" id="EntityResolver.resolveEntity"><b>resolveEntity(publicId,
+systemId)</b> <tt class="nav"><a class="nav" href="xml.sax.handler.EntityResolver.resolveEntity" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Resolve the system identifier of an entity and return either the
+system identifier to read from as a string, or an InputSource to
+read from. The default implementation returns <var>
+systemId</var>.</p>
+</dd>
+</dl><div class="text">
+<h2 id="errorhandler-objects">ErrorHandler Objects <a class="nav" href="#errorhandler-objects">#</a></h2>
+
+<p>Objects with this interface are used to receive error and
+warning information from the <code>
+XMLReader</code>. If you create an object that implements this
+interface, then register the object with your <code>XMLReader</code>, the parser will call the
+methods in your object to report all warnings and errors. There are
+three levels of errors available: warnings, (possibly) recoverable
+errors, and unrecoverable errors. All methods take a <code>SAXParseException</code> as
+the only parameter. Errors and warnings may be converted to an
+exception by raising the passed-in exception object.</p>
+</div>
+<dl><dt class="method" id="ErrorHandler.error"><b>error(exception)</b> <tt class="nav"><a class="nav" href="xml.sax.handler.ErrorHandler.error" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Called when the parser encounters a recoverable error. If this
+method does not raise an exception, parsing may continue, but
+further document information should not be expected by the
+application. Allowing the parser to continue may allow additional
+errors to be discovered in the input document.</p>
+</dd>
+<dt class="method" id="ErrorHandler.fatalError"><b>fatalError(exception)</b> <tt class="nav"><a class="nav" href="xml.sax.handler.ErrorHandler.fatalError" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Called when the parser encounters an error it cannot recover
+from; parsing is expected to terminate when this method
+returns.</p>
+</dd>
+<dt class="method" id="ErrorHandler.warning"><b>warning(exception)</b> <tt class="nav"><a class="nav" href="xml.sax.handler.ErrorHandler.warning" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Called when the parser presents minor warning information to the
+application. Parsing is expected to continue when this method
+returns, and document information will continue to be passed to the
+application. Raising an exception in this method will cause parsing
+to end.</p>
+</dd>
+</dl></div></body></html>

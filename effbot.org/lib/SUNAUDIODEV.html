@@ -1,0 +1,160 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>SUNAUDIODEV</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-SUNAUDIODEV.html'>original</a> :::
+<a href='SUNAUDIODEV.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>sunaudiodev&#8212;Access to Sun audio hardware</h1>
+
+<div class="toc"><dl><dt>On this page:</dt><dd><a href="#audio-device-objects">Audio Device Objects</a></dd></dl></div><p>Availability: SunOS.</p>
+
+<p>This module allows you to access the Sun audio interface. The
+Sun audio hardware is capable of recording and playing back audio
+data in u-LAW format with a sample rate of 8K per second. A full
+description can be found in the audio(7I) manual page.</p>
+
+<p>The module <code>
+SUNAUDIODEV</code> defines constants which may be used with this
+module.</p>
+
+<p>This module defines the following variables and functions:</p>
+</div>
+<dl><dt class="exception" id="error"><b>exception error</b> <tt class="nav"><a class="nav" href="sunaudiodev.error" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="exception">
+<p>This exception is raised on all errors. The argument is a string
+describing what went wrong.</p>
+</dd>
+<dt class="function" id="open"><b>open(mode)</b> <tt class="nav"><a class="nav" href="sunaudiodev.open" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>This function opens the audio device and returns a Sun audio
+device object. This object can then be used to do I/O on. The <var>
+mode</var> parameter is one of <code>'r'</code> for record-only
+access, <code>'w'</code> for play-only access, <code>'rw'</code>
+for both and <code>'control'</code> for access to the control
+device. Since only one process is allowed to have the recorder or
+player open at the same time it is a good idea to open the device
+only for the activity needed. See audio(7I) for details.</p>
+
+<p>As per the manpage, this module first looks in the environment
+variable <code>AUDIODEV</code> for the base audio device filename.
+If not found, it falls back to /dev/audio. The control device is
+calculated by appending &#8220;ctl&#8221; to the base audio
+device.</p>
+</dd>
+</dl><div class="text">
+<h2 id="audio-device-objects">Audio Device Objects <a class="nav" href="#audio-device-objects">#</a></h2>
+
+<p>The audio device objects are returned by <a class="link" href="#open"><code>open</code></a> define the following methods (except
+<code>control</code> objects which only provide <a class="link" href="#getinfo"><code>getinfo</code></a>, <a class="link" href="#setinfo"><code>setinfo</code></a>, <a class="link" href="#fileno"><code>fileno</code></a>, and <a class="link" href="#drain"><code>drain</code></a>):</p>
+</div>
+<dl><dt class="method" id="close"><b>close()</b> <tt class="nav"><a class="nav" href="sunaudiodev.close" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>This method explicitly closes the device. It is useful in
+situations where deleting the object does not immediately close it
+since there are other references to it. A closed device should not
+be used again.</p>
+</dd>
+<dt class="method" id="fileno"><b>fileno()</b> <tt class="nav"><a class="nav" href="sunaudiodev.fileno" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Returns the file descriptor associated with the device. This can
+be used to set up <code>SIGPOLL</code> notification, as described
+below.</p>
+</dd>
+<dt class="method" id="drain"><b>drain()</b> <tt class="nav"><a class="nav" href="sunaudiodev.drain" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>This method waits until all pending output is processed and then
+returns. Calling this method is often not necessary: destroying the
+object will automatically close the audio device and this will do
+an implicit drain.</p>
+</dd>
+<dt class="method" id="flush"><b>flush()</b> <tt class="nav"><a class="nav" href="sunaudiodev.flush" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>This method discards all pending output. It can be used avoid
+the slow response to a user's stop request (due to buffering of up
+to one second of sound).</p>
+</dd>
+<dt class="method" id="getinfo"><b>getinfo()</b> <tt class="nav"><a class="nav" href="sunaudiodev.getinfo" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>This method retrieves status information like input and output
+volume, etc. and returns it in the form of an audio status object.
+This object has no methods but it contains a number of attributes
+describing the current device status. The names and meanings of the
+attributes are described in <code>&amp;ltsun/audioio.h&gt;</code>
+and in the audio(7I) manual page. Member names are slightly
+different from their C counterparts: a status object is only a
+single structure. Members of the play substructure have
+"<code>o_</code>" prepended to their name and members of the record
+structure have "<code>i_</code>". So, the C member play.sample_rate
+is accessed as <code>
+o_sample_rate</code>, record.gain as <code>i_gain</code> and monitor_gain plainly as <code>monitor_gain</code>.</p>
+</dd>
+<dt class="method" id="ibufcount"><b>ibufcount()</b> <tt class="nav"><a class="nav" href="sunaudiodev.ibufcount" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>This method returns the number of samples that are buffered on
+the recording side, i.e. the program will not block on a <a class="link" href="#read"><code>read</code></a> call of so many samples.</p>
+</dd>
+<dt class="method" id="obufcount"><b>obufcount()</b> <tt class="nav"><a class="nav" href="sunaudiodev.obufcount" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>This method returns the number of samples buffered on the
+playback side. Unfortunately, this number cannot be used to
+determine a number of samples that can be written without blocking
+since the kernel output queue length seems to be variable.</p>
+</dd>
+<dt class="method" id="read"><b>read(size)</b> <tt class="nav"><a class="nav" href="sunaudiodev.read" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>This method reads <var>size</var> samples from the audio input
+and returns them as a Python string. The function blocks until
+enough data is available.</p>
+</dd>
+<dt class="method" id="setinfo"><b>setinfo(status)</b> <tt class="nav"><a class="nav" href="sunaudiodev.setinfo" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>This method sets the audio device status parameters. The <var>
+status</var> parameter is an device status object as returned by <a class="link" href="#getinfo"><code>getinfo</code></a> and possibly modified
+by the program.</p>
+</dd>
+<dt class="method" id="write"><b>write(samples)</b> <tt class="nav"><a class="nav" href="sunaudiodev.write" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Write is passed a Python string containing audio samples to be
+played. If there is enough buffer space free it will immediately
+return, otherwise it will block.</p>
+</dd>
+</dl><div class="text">
+<p>The audio device supports asynchronous notification of various
+events, through the SIGPOLL signal. Here's an example of how you
+might enable this in Python:</p>
+
+<pre>
+def handle_sigpoll(signum, frame):
+    print 'I got a SIGPOLL update'
+
+import fcntl, signal, STROPTS
+
+signal.signal(signal.SIGPOLL, handle_sigpoll)
+fcntl.ioctl(audio_obj.fileno(), STROPTS.I_SETSIG, STROPTS.S_MSG)
+</pre>
+</div>
+</div></body></html>

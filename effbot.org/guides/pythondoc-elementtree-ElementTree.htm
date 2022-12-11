@@ -1,0 +1,94 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>The elementtree.ElementTree&nbsp;Module</title> <script type="text/javascript">effbot_page_id=232;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> <!--
+<p style='color: #8f8f8f; background: #fff5bf; padding: 5px 10px;'> <b>2008-07-15:</b> Selected articles
+
+now have experimental "comment" links in the left column and at the bottom.
+You're welcome to use them for commenting and voting on articles.
+For a bit more on this, see <a
+href="http://effbot.slinkset.com/links/Welcome_to_discuss_effbot_org">this
+page</a>. /F
+</p>
+--> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <h1 class="maintitle">The elementtree.ElementTree&nbsp;Module</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p>The <b>Element</b> type is a flexible container object, designed to
+store hierarchical data structures in memory. The type can be
+described as a cross between a list and a dictionary.
+</p><p>
+Each element has a number of properties associated with it:
+<ul><li>a <i>tag</i>. This is a string identifying what kind of data
+this element represents (the element type, in other words).</li><li>a number of <i>attributes</i>, stored in a Python dictionary.</li><li>a <i>text</i> string.</li><li>an optional <i>tail</i> string.</li><li>a number of <i>child elements</i>, stored in a Python sequence</li></ul>
+
+To create an element instance, use the <a class="link" href="#elementtree.ElementTree.Element-function"><b>Element</b></a> or <a class="link" href="#elementtree.ElementTree.SubElement-function"><b>SubElement</b></a> factory functions.
+</p><p>
+The <a class="link" href="#elementtree.ElementTree.ElementTree-class"><b>ElementTree</b></a> class can be used to wrap an element
+structure, and convert it from and to XML.
+</p><h2>Module Contents</h2><dl><dt><b>_ElementInterface(tag, attrib)</b> (class) [<a href="#elementtree.ElementTree._ElementInterface-class">#</a>]</dt><dd>
+<p>Internal element class.</p><p>For more information about this class, see <a href="#elementtree.ElementTree._ElementInterface-class"><i>The _ElementInterface Class</i></a>.</p></dd>
+<dt><a id="elementtree.ElementTree.Comment-function" name="elementtree.ElementTree.Comment-function"><b>Comment(text=None)</b></a> &#8658; Element [<a href="#elementtree.ElementTree.Comment-function">#</a>]</dt><dd>
+<p>Comment element factory.  This factory function creates a special
+element that will be serialized as an XML comment.
+</p><p>
+The comment string can be either an 8-bit ASCII string or a Unicode
+string.
+
+</p><dl><dt><i>text</i></dt><dd>
+A string containing the comment string.</dd>
+<dt>Returns:</dt><dd>
+An element instance, representing a comment.</dd>
+</dl><br />
+</dd>
+<dt><a id="elementtree.ElementTree.dump-function" name="elementtree.ElementTree.dump-function"><b>dump(elem)</b></a> [<a href="#elementtree.ElementTree.dump-function">#</a>]</dt><dd>
+<p>Writes an element tree or element structure to sys.stdout.  This
+function should be used for debugging only.
+</p><p>
+The exact output format is implementation dependent.  In this
+version, it&#8217;s written as an ordinary XML file.
+
+</p><dl><dt><i>elem</i></dt><dd>
+An element tree or an individual element.</dd>
+</dl><br />
+</dd>
+<dt><a id="elementtree.ElementTree.Element-function" name="elementtree.ElementTree.Element-function"><b>Element(tag, attrib={}, **extra)</b></a> &#8658; Element [<a href="#elementtree.ElementTree.Element-function">#</a>]</dt><dd>
+<p>Element factory.  This function returns an object implementing the
+standard Element interface.  The exact class or type of that object
+is implementation dependent, but it will always be compatible with
+the <a class="link" href="#elementtree.ElementTree._ElementInterface-class"><b>_ElementInterface</b></a> class in this module.
+</p><p>
+The element name, attribute names, and attribute values can be
+either 8-bit ASCII strings or Unicode strings.
+
+</p><dl><dt><i>tag</i></dt><dd>
+The element name.</dd>
+<dt><i>attrib</i></dt><dd>
+An optional dictionary, containing element attributes.</dd>
+<dt><i>**extra</i></dt><dd>
+Additional attributes, given as keyword arguments.</dd>
+<dt>Returns:</dt><dd>
+An element instance.</dd>
+</dl><br />
+</dd>
+<dt><b>ElementTree(element=None, file=None)</b> (class) [<a href="#elementtree.ElementTree.ElementTree-class">#</a>]</dt><dd>
+<p>ElementTree wrapper class.</p><dl><dt><i>element</i></dt><dd>
+Optional root element.</dd>
+<dt><i>file=</i></dt><dd>
+Optional file handle or name.  If given, the
+    tree is initialized with the contents of this XML file.</dd>
+</dl><br />
+<p>For more information about this class, see <a href="#elementtree.ElementTree.ElementTree-class"><i>The ElementTree Class</i></a>.</p></dd>
+<dt><a id="elementtree.ElementTree.fromstring-variable" name="elementtree.ElementTree.fromstring-variable"><b>fromstring</b></a> (variable) [<a href="#elementtree.ElementTree.fromstring-variable">#</a>]</dt><dd>
+<p>Parses an XML document from a string constant.  Same as <a class="link" href="#elementtree.ElementTree.XML-function"><b>XML</b></a>.
+
+</p><dl><dt><i>source</i></dt><dd>
+A string containing XML data.</dd>
+<dt>Returns:</dt><dd>
+An Element instance.</dd>
+</dl><br />
+</dd>
+<dt><a id="elementtree.ElementTree.iselement-function" name="elementtree.ElementTree.iselement-function"><b>iselement(element)</b></a> &#8658; flag [<a href="#elementtree.ElementTree.iselement-function">#</a>]</dt><dd>
+<p>Checks if an object appears to be a valid element object.</p><dl><dt><i>An</i></dt><dd>
+element instance.</dd>
+<dt>Returns:</dt><dd>
+A true value if this is an element object.</dd>
+</dl><br />
+</dd>
+<dt><a id="elementtree.ElementTree.parse-function" name="elementtree.ElementTree.parse-function"><b>parse(source, parser=None)</b></a> [<a href="#elementtree.ElementTree.parse-function">#</a>]</dt><dd>
+<p>Parses an XML document into an element tree.</p><dl><dt><i>source</i></dt><

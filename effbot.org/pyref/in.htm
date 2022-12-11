@@ -1,0 +1,38 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>The in&nbsp;operator</title><script type="text/javascript">effbot_page_id=1334;</script></head><body><div id="doc2" class="yui-t2"><div id="hd"><!-- header --></div><!-- hd --><div id="bd"><!-- body --><p class="note" style="text-align: center"><strong>
+
+We're back after a server migration that caused effbot.org to fall
+over a bit harder than expected.  Expect some glitches.
+
+</strong></p><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">The in&nbsp;operator</h1></div><!-- yui-g --><body><p>The operators <strong>in</strong> and <a href="not_in.htm"><strong>not in</strong></a> test for set membership.
+<code>x in s</code> evaluates to true if <em>x</em> is a member of the set <em>s</em>, and false otherwise.
+<code>x not in s</code> returns the negation of <code>x in s</code>.</p>
+
+<p>The set membership test has traditionally been bound to sequences; an object
+is a member of a set if the set is a sequence and contains an element equal
+to that object. However, it is possible for an object to support membership
+tests without being a sequence. In particular, dictionaries support membership
+testing as a nicer way of spelling <code>dict.has_key(key)</code>; other mapping types
+may follow suit.</p>
+
+<p>For the list and tuple types, <code>x in y</code> is true if and only if there exists an
+index i such that x == y[i] is true.</p>
+
+<p>For the Unicode and string types, <code>x in y</code> is true if and only if <em>x</em> is a
+substring of <em>y</em>. An equivalent test is y.find(x) != -1. Note, <em>x</em> and <em>y</em>
+need not be the same type; consequently, <code>u'ab' in 'abc'</code> will return true.
+Empty strings are always considered to be a substring of any other string,
+so &#8220;&#8221; in &#8220;abc&#8221; will return true.  Changed in version 2.3: Previously, <em>x</em>
+was required to be a string of length 1.</p>
+
+<p>For user-defined classes which define the <a href="__contains__.htm"><strong>__contains__</strong></a> method,
+<code>x in y</code> is true if and only if <code>y.__contains__(x)</code> is true.</p>
+
+<p>For user-defined classes which do not define <a href="__contains__.htm"><strong>__contains__</strong></a> and
+do define <a href="__getitem__.htm"><strong>__getitem__</strong></a>, <code>x in y</code> is true if and only if there is
+a non-negative integer index i such that <code>x == y[i]</code>, and all lower integer indices
+do not raise <a href="IndexError.htm"><strong>IndexError</strong></a> exception. (If any other exception is raised, it is as
+if in raised that exception).</p>
+
+<p>The operator <a href="not_in.htm"><strong>not in</strong></a> is defined to have the inverse true value of <strong>in</strong>.</p></body><div class="yui-g"></div><!-- yui-g --></div><!-- content --></div><!-- yui-b --></div><!-- yui-main --><div class="yui-b"><div id='menu'></div><!-- menu --></div><!-- yui-b --></div><!-- bd --><div id="ft"><!-- footer --></div><!-- ft --></div><!-- doc --><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

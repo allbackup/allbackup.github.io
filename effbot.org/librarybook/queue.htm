@@ -1,0 +1,217 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>The Queue&nbsp;module</title></head><body data-page-id="629"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">The Queue&nbsp;module</h1></div><div class="yui-ge"><div class="yui-u first"><p>This module provides a thread-safe queue implementation. It
+provides a convenient way of moving Python objects between
+different threads.</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><div class="example wide">
+<b style="example">Example: Using the Queue
+module</b>
+<pre class="wide">
+# File: <a href="queue/queue-example-1.py">queue-example-1.py</a>
+
+import threading
+import Queue
+import time, random
+
+WORKERS = 2
+
+class Worker(threading.Thread):
+
+    def __init__(self, queue):
+        self.__queue = queue
+        threading.Thread.__init__(self)
+
+    def run(self):
+        while 1:
+            item = self.__queue.get()
+            if item is None:
+                break # reached end of queue
+
+            # pretend we're doing something that takes 10-100 ms
+            time.sleep(random.randint(10, 100) / 1000.0)
+
+            print "task", item, "finished"
+
+#
+# try it
+
+queue = Queue.Queue(0)
+
+for i in range(WORKERS):
+    Worker(queue).start() # start a worker
+
+for i in range(10):
+    queue.put(i)
+
+for i in range(WORKERS):
+    queue.put(None) # add end-of-queue markers
+
+</pre><pre class="computeroutput wide" moreinfo="NONE">
+task 1 finished
+task 0 finished
+task 3 finished
+task 2 finished
+task 4 finished
+task 5 finished
+task 7 finished
+task 6 finished
+task 9 finished
+task 8 finished
+</pre></div></div><div class="yui-ge"><div class="yui-u first"><p>You can limit the size of the queue. If the producer threads
+fill the queue, they will block until items are popped off the
+queue.</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><div class="example wide">
+<b style="example">Example: Using the Queue
+module with a maximum size</b>
+<pre class="wide">
+# File: <a href="queue/queue-example-2.py">queue-example-2.py</a>
+
+import threading
+import Queue
+
+import time, random
+
+WORKERS = 2
+
+class Worker(threading.Thread):
+
+    def __init__(self, queue):
+        self.__queue = queue
+        threading.Thread.__init__(self)
+
+    def run(self):
+        while 1:
+            item = self.__queue.get()
+            if item is None:
+                break # reached end of queue
+
+            # pretend we're doing something that takes 10-100 ms
+            time.sleep(random.randint(10, 100) / 1000.0)
+
+            print "task", item, "finished"
+
+#
+# run with limited queue
+
+queue = Queue.Queue(3)
+
+for i in range(WORKERS):
+    Worker(queue).start() # start a worker
+
+for item in range(10):
+    print "push", item
+    queue.put(item)
+
+for i in range(WORKERS):
+    queue.put(None) # add end-of-queue markers
+
+</pre><pre class="computeroutput wide" moreinfo="NONE">
+push 0
+push 1
+push 2
+push 3
+push 4
+push 5
+task 0 finished
+push 6
+task 1 finished
+push 7
+task 2 finished
+push 8
+task 3 finished
+push 9
+task 4 finished
+task 6 finished
+task 5 finished
+task 7 finished
+task 9 finished
+task 8 finished
+</pre></div></div><div class="yui-ge"><div class="yui-u first"><p>You can modify the behavior through subclassing. The following
+class provides a simple priority queue. It expects all items added
+to the queue to be tuples, where the first member contains the
+priority (lower value means higher priority):</p><p class="note"><b>Note:</b>
+Python 2.4 does not use a mutable sequence for the internal queue,
+so the following example no longer works.  An updated version will
+be posted at a later time.
+</p><div class="example">
+<b style="example">Example: Using the Queue
+module to implement a priority queue</b>
+<pre>
+# File: <a href="queue/queue-example-3.py">queue-example-3.py</a>
+
+import Queue
+import bisect
+
+Empty = Queue.Empty
+
+class PriorityQueue(Queue.Queue):
+    "Thread-safe priority queue"
+
+    def _put(self, item):
+        # insert in order
+        bisect.insort(self.queue, item)
+
+#
+# try it
+
+queue = PriorityQueue(0)
+
+# add items out of order
+queue.put((20, "second"))
+queue.put((10, "first"))
+queue.put((30, "third"))
+
+# print queue contents
+try:
+    while 1:
+        print queue.get_nowait()
+except Empty:
+    pass
+
+</pre><pre class="computeroutput" moreinfo="NONE">
+third
+second
+first
+</pre></div><p>And here&#8217;s a simple stack implementation (last-in first-out,
+instead of first-in, first-out):</p><div class="example">
+<b style="example">Example: Using the Queue
+module to implement a stack</b>
+<pre>
+# File: <a href="queue/queue-example-4.py">queue-example-4.py</a>
+
+import Queue
+
+Empty = Queue.Empty
+
+class Stack(Queue.Queue):
+    "Thread-safe stack"
+    
+    def _put(self, item):
+        # insert at the beginning of queue, not at the end
+        self.queue.insert(0, item)
+
+    # method aliases
+    push = Queue.Queue.put
+    pop = Queue.Queue.get
+    pop_nowait = Queue.Queue.get_nowait
+
+#
+# try it
+
+stack = Stack(0)
+
+# push items on stack
+stack.push("first")
+stack.push("second")
+stack.push("third")
+
+# print stack contents
+try:
+    while 1:
+        print stack.pop_nowait()
+except Empty:
+    pass
+
+</pre><pre class="computeroutput" moreinfo="NONE">
+third
+second
+first
+</pre></div></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to librarybook index page.">::: librarybook :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

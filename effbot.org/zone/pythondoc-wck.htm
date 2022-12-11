@@ -1,0 +1,785 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>The WCK&nbsp;Module</title></head><body data-page-id="240"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">The WCK&nbsp;Module</h1></div><div class="yui-ge"><div class="yui-u first"><p>The Widget Construction Kit (WCK) is an extension API that allows you
+to implement all sorts of custom widgets, in pure Python.
+</p><p>
+For more information on the Widget Construction Kit, see
+<a href="http://effbot.org/zone/wck.htm">the WCK page</a> over at
+<a href="http://effbot.org">effbot.org</a>.
+
+<h3>Using the WCK Module</h3>
+
+To implement a new WCK widget, all you have to do is to subclass the
+<a class="link" href="#Widget-class"><b>Widget</b></a> class, and implement one or more hook methods.
+</p><p>
+Here&#8217;s a very simple example. This widget displays the text &#8220;hello,
+world&#8221; in the upper left corner:
+
+<pre class="python">
+<span class="pykeyword">class</span> <span class="pyclass">HelloWorld</span>(Widget):
+
+    <span class="pykeyword">def</span> <span class="pyfunction">ui_handle_repair</span>(self, draw, x0, y0, x1, y1):
+        font = self.ui_font(<span class="pystring">"black"</span>, <span class="pystring">"times"</span>)
+        draw.text((0, 0), <span class="pystring">"hello, world"</span>, font)
+
+widget = HelloWorld(root)
+widget.pack()</pre><b>Widget</b> hook methods:
+<ul><li><a class="link" href="#Widget.ui_handle_clear-method"><b>ui_handle_clear</b></a> is called to redraw the
+background.</li><li><a class="link" href="#Widget.ui_handle_config-method"><b>ui_handle_config</b></a> is called when the widget is
+(re)configured.</li><li><a class="link" href="#Widget.ui_handle_damage-method"><b>ui_handle_damage</b></a> is called to indicate that some
+region needs to be redrawn.  The widget should redraw itself in
+<b>ui_handle_repair</b>, not in this method.</li><li><a class="link" href="#Widget.ui_handle_destroy-method"><b>ui_handle_destroy</b></a> is called to release widget
+resources.</li><li><a class="link" href="#Widget.ui_handle_focus-method"><b>ui_handle_focus</b></a> is called to redraw the focus
+indicator.</li><li><a class="link" href="#Widget.ui_handle_repair-method"><b>ui_handle_repair</b></a> is called to redraw damaged
+regions.</li><li><a class="link" href="#Widget.ui_handle_resize-method"><b>ui_handle_resize</b></a> is called when the widget&#8217;s
+geometry is changed.</li><li><a class="link" href="#Widget.ui_handle_select-method"><b>ui_handle_select</b></a> is called to handle cut
+buffers/selections.</li></ul>
+All methods have default implementations, but you probably want to
+override at least <b>ui_handle_repair</b> in your widget.
+</p><h2>Module Contents</h2><dl><dt><b>ButtonController</b> (class)  [<a href="#ButtonController-class">#</a>]</dt><dd>
+<p>Standard controller for the ButtonMixin class and other
+button-like widgets.</p><p>For more information about this class, see <a href="#ButtonController-class"><i>The ButtonController Class</i></a>.</p></dd>
+<dt><b>ButtonMixin</b> (class)  [<a href="#ButtonMixin-class">#</a>]</dt><dd>
+<p>Button mixin.</p><p>For more information about this class, see <a href="#ButtonMixin-class"><i>The ButtonMixin Class</i></a>.</p></dd>
+<dt><b>ButtonWidget</b> (class)  [<a href="#ButtonWidget-class">#</a>]</dt><dd>
+<p>Standard button widget base class.</p><p>For more information about this class, see <a href="#ButtonWidget-class"><i>The ButtonWidget Class</i></a>.</p></dd>
+<dt><b>Controller</b> (class)  [<a href="#Controller-class">#</a>]</dt><dd>
+<p>Controller base class.</p><p>For more information about this class, see <a href="#Controller-class"><i>The Controller Class</i></a>.</p></dd>
+<dt><b>DrawInterface</b> (class)  [<a href="#DrawInterface-class">#</a>]</dt><dd>
+<p>Abstract 2D drawing interface.</p><p>For more information about this class, see <a href="#DrawInterface-class"><i>The DrawInterface Class</i></a>.</p></dd>
+<dt><b>EventController</b> (class)  [<a href="#EventController-class">#</a>]</dt><dd>
+<p>Standard controller for the EventMixin class.</p><p>For more information about this class, see <a href="#EventController-class"><i>The EventController Class</i></a>.</p></dd>
+<dt><b>EventMixin</b> (class)  [<a href="#EventMixin-class">#</a>]</dt><dd>
+<p>Event mixin.</p><p>For more information about this class, see <a href="#EventMixin-class"><i>The EventMixin Class</i></a>.</p></dd>
+<dt><a id="getcontroller-function" name="getcontroller-function"><b>getcontroller(controller_factory, widget)</b></a> [<a href="#getcontroller-function">#</a>]</dt><dd>
+<p>Creates a controller for the given widget.</p><dl><dt><i>controller_factory</i></dt><dd>
+A controller factory or class (usually a
+    subclass to <a class="link" href="#Controller-class"><b>Controller</b></a>, or a compatible class).
+</dd>
+<dt><i>widget</i></dt><dd>
+The widget to create a controller for.</dd>
+<dt>Returns:</dt><dd>
+A controller instance.  The controller is initialized, and
+    has a valid <b>tag</b> attribute.
+</dd>
+</dl><br />
+</dd>
+<dt><b>Observable</b> (class)  [<a href="#Observable-class">#</a>]</dt><dd>
+<p>Standard observable mixin.</p><p>For more information about this class, see <a href="#Observable-class"><i>The Observable Class</i></a>.</p></dd>
+<dt><b>ScrollMixin</b> (class)  [<a href="#ScrollMixin-class">#</a>]</dt><dd>
+<p>Scroll mixin.</p><p>For more information about this class, see <a href="#ScrollMixin-class"><i>The ScrollMixin Class</i></a>.</p></dd>
+<dt><b>SimpleWidget</b> (class)  [<a href="#SimpleWidget-class">#</a>]</dt><dd>
+<p>Simple scrolled event-handling widget base class.</p><p>For more information about this class, see <a href="#SimpleWidget-class"><i>The SimpleWidget Class</i></a>.</p></dd>
+<dt><b>Style(widget)</b> (class) [<a href="#Style-class">#</a>]</dt><dd>
+<p>Experimental style object.</p><p>For more information about this class, see <a href="#Style-class"><i>The Style Class</i></a>.</p></dd>
+<dt><b>TextMixin</b> (class)  [<a href="#TextMixin-class">#</a>]</dt><dd>
+<p>Text mixin.</p><p>For more information about this class, see <a href="#TextMixin-class"><i>The TextMixin Class</i></a>.</p></dd>
+<dt><b>Widget(master, **options)</b> (class) [<a href="#Widget-class">#</a>]</dt><dd>
+<p>The WCK widget base class.</p><p>For more information about this class, see <a href="#Widget-class"><i>The Widget Class</i></a>.</p></dd>
+</dl><h2><a id="ButtonController-class" name="ButtonController-class">The ButtonController Class</a></h2><dl><dt><b>ButtonController</b> (class)  [<a href="#ButtonController-class">#</a>]</dt><dd>
+<p>Standard controller for the <b>ButtonMixin</b> class and other
+button-like widgets.
+</p></dd>
+</dl><h2><a id="ButtonMixin-class" name="ButtonMixin-class">The ButtonMixin Class</a></h2><dl><dt><b>ButtonMixin</b> (class)  [<a href="#ButtonMixin-class">#</a>]</dt><dd>
+<p>Button mixin.  This mixin implements basic button widget behaviour
+(arm/click).</p></dd>
+<dt><a id="ButtonMixin.invoke-method" name="ButtonMixin.invoke-method"><b>invoke()</b></a> [<a href="#ButtonMixin.invoke-method">#</a>]</dt><dd>
+<p>Called when the user presses the button, either by clicking the
+mouse button over the button, or by pressing the space bar.
+</p><p>
+The default implementation calls the object given by the
+<b>command</b> option, if callable.
+</p></dd>
+<dt><a id="ButtonMixin.ui_button_arm-method" name="ButtonMixin.ui_button_arm-method"><b>ui_button_arm()</b></a> [<a href="#ButtonMixin.ui_button_arm-method">#</a>]</dt><dd>
+<p>Called when the mouse button is pressed with the mouse placed
+over the button.</p></dd>
+<dt><a id="ButtonMixin.ui_button_disarm-method" name="ButtonMixin.ui_button_disarm-method"><b>ui_button_disarm()</b></a> [<a href="#ButtonMixin.ui_button_disarm-method">#</a>]</dt><dd>
+<p>Called when the mouse button is released after the mouse has
+been moved out of the button.</p></dd>
+<dt><a id="ButtonMixin.ui_button_enter-method" name="ButtonMixin.ui_button_enter-method"><b>ui_button_enter()</b></a> [<a href="#ButtonMixin.ui_button_enter-method">#</a>]</dt><dd>
+<p>Called when the mouse pointer is moved over the button.</p></dd>
+<dt><a id="ButtonMixin.ui_button_leave-method" name="ButtonMixin.ui_button_leave-method"><b>ui_button_leave()</b></a> [<a href="#ButtonMixin.ui_button_leave-method">#</a>]</dt><dd>
+<p>Called when the mouse pointer is moved out from the button.</p></dd>
+</dl><h2><a id="ButtonWidget-class" name="ButtonWidget-class">The ButtonWidget Class</a></h2><dl><dt><b>ButtonWidget</b> (class)  [<a href="#ButtonWidget-class">#</a>]</dt><dd>
+<p>Standard button widget base class.  This widget inherits from <a class="link" href="#ButtonMixin-class"><b>ButtonMixin</b></a>, and adds a <b>relief</b> option, which is changed to
+&#8220;sunken&#8221; whenever the button is armed.
+</p></dd>
+</dl><h2><a id="Controller-class" name="Controller-class">The Controller Class</a></h2><dl><dt><b>Controller</b> (class)  [<a href="#Controller-class">#</a>]</dt><dd>
+<p>Controller base class.  This class provides a standard
+implementation of the controller class.  To implement a custom
+controller, create a subclass to this class and implement the
+<b>create</b> method.
+</p></dd>
+<dt><a id="Controller.attach-method" name="Controller.attach-method"><b>attach(widget)</b></a> [<a href="#Controller.attach-method">#</a>]</dt><dd>
+<p>(Hook) Called when this controller is attached to the given widget.</p><dl><dt><i>widget</i></dt><dd>
+The widget instance.</dd>
+</dl><br />
+</dd>
+<dt><a id="Controller.create-method" name="Controller.create-method"><b>create(handle)</b></a> [<a href="#Controller.create-method">#</a>]</dt><dd>
+<p>Creates a controller.  This method must be overridden by the
+implementation class.</p><dl><dt><i>handle</i></dt><dd>
+A binding function that takes an event specifier
+    (a string) and an event handler (a function).  The handler
+    will be called with an event structure for all matching
+    events.</dd>
+</dl><br />
+</dd>
+<dt><a id="Controller.detach-method" name="Controller.detach-method"><b>detach(widget)</b></a> [<a href="#Controller.detach-method">#</a>]</dt><dd>
+<p>(Hook) Called when this controller is detached from the given widget.</p><dl><dt><i>widget</i></dt><dd>
+The widget instance.</dd>
+</dl><br />
+</dd>
+<dt><a id="Controller.tag-attribute" name="Controller.tag-attribute"><b>tag</b></a> [<a href="#Controller.tag-attribute">#</a>]</dt><dd>
+<p>Binding tag for this controller.</p></dd>
+<dt><a id="Controller.ui_gettag-method" name="Controller.ui_gettag-method"><b>ui_gettag(widget)</b></a> [<a href="#Controller.ui_gettag-method">#</a>]</dt><dd>
+<p>(Internal) Calculate a unique binding tag for this controller
+instance.</p></dd>
+</dl><h2><a id="DrawInterface-class" name="DrawInterface-class">The DrawInterface Class</a></h2><dl><dt><b>DrawInterface</b> (class)  [<a href="#DrawInterface-class">#</a>]</dt><dd>
+<p>Abstract 2D drawing interface.
+</p><p>
+All WCK implementations provide a standard 2D drawing interface. By
+sticking to this interface, your widgets will work on all platforms
+supported by the WCK.
+</p><p>
+Note that different implementations use difference classes, and it
+isn&#8217;t always a class either.  Make sure your widgets only relies on
+the interface provided by the drawing object, not the exact
+implementation.
+</p></dd>
+<dt><a id="DrawInterface.circle-method" name="DrawInterface.circle-method"><b>circle(xy, pen, brush)</b></a> [<a href="#DrawInterface.circle-method">#</a>]</dt><dd>
+<p>(Experimental, not supported in WCK 1.0) Draws a circle.</p><dl><dt><i>xy</i></dt><dd>
+A bounding rectangle, given as a 4-element Python
+   sequence (x, y, x, y), with the upper left corner given
+   first.  The circle is drawn centered in this box.</dd>
+<dt><i>pen</i></dt><dd>
+Optional pen object created by <b>ui_pen</b>.
+</dd>
+<dt><i>brush</i></dt><dd>
+Optional brush created by <b>ui_brush</b>.
+</dd>
+</dl><br />
+</dd>
+<dt><a id="DrawInterface.crop-method" name="DrawInterface.crop-method"><b>crop(xy)</b></a> [<a href="#DrawInterface.crop-method">#</a>]</dt><dd>
+<p>Extracts a subrectangle from an image object or pixmap.
+</p><p>
+Example:
+<pre>
+draw.paste(image.crop(source), dest)
+</pre></p><dl><dt><i>xy</i></dt><dd>
+A 4-element Python sequence (x, y, x, y), with the
+   upper left corner given first.</dd>
+<dt>Returns:</dt><dd>
+A new pixmap object.  Note that this object is a reference
+   to the original object, so changes to the original are reflected
+   in the subrectangle.</dd>
+</dl><br />
+</dd>
+<dt><a id="DrawInterface.ellipse-method" name="DrawInterface.ellipse-method"><b>ellipse(xy, pen, brush)</b></a> [<a href="#DrawInterface.ellipse-method">#</a>]</dt><dd>
+<p>Draws an ellipse.</p><dl><dt><i>xy</i></dt><dd>
+A bounding rectangle, given as a 4-element Python
+   sequence (x, y, x, y), with the upper left corner given
+   first.  To draw a circle, make sure the coordinates form
+   a square.</dd>
+<dt><i>pen</i></dt><dd>
+Optional pen object created by <b>ui_pen</b>.
+</dd>
+<dt><i>brush</i></dt><dd>
+Optional brush created by <b>ui_brush</b>.
+</dd>
+</dl><br />
+</dd>
+<dt><a id="DrawInterface.line-method" name="DrawInterface.line-method"><b>line(xy, pen)</b></a> [<a href="#DrawInterface.line-method">#</a>]</dt><dd>
+<p>Draws a line.
+</p><p>
+Examples:
+<pre>
+# <i>a cross</i>
+pen = widget.ui_pen(red)
+draw.line((x0, y0, x1, y1), pen)
+draw.line((x0, y1, x1, y0), pen)
+
+# <i>a character</i>
+draw.line((0, 0, 20, 100, 30, 50, 40, 100, 60, 0), pen)
+</pre></p><dl><dt><i>xy</i></dt><dd>
+A Python sequence (x, y, x, y, &#8230;).  If more than two
+   coordinate pairs are given, they are connected in order, to
+   form a polyline.</dd>
+<dt><i>pen</i></dt><dd>
+A pen object created by the <b>ui_pen</b> factory
+   method.
+</dd>
+</dl><br />
+</dd>
+<dt><a id="DrawInterface.paste-method" name="DrawInterface.paste-method"><b>paste(image, xy=(0, 0))</b></a> [<a href="#DrawInterface.paste-method">#</a>]</dt><dd>
+<p>Draws an image or pixmap object.</p><dl><dt><i>image</i></dt><dd>
+An image or pixmap object.</dd>
+<dt><i>xy</i></dt><dd>
+A 2-element Python sequence (x, y).  If omitted, the
+    image is drawn in the upper left corner of the drawing area.</dd>
+</dl><br />
+</dd>
+<dt><a id="DrawInterface.polygon-method" name="DrawInterface.polygon-method"><b>polygon(xy, pen, brush)</b></a> [<a href="#DrawInterface.polygon-method">#</a>]</dt><dd>
+<p>Draws a polygon.
+</p><p>
+If a brush is given, it is used to fill the polygon. If a pen is
+given, it is used to draw an outline around the polygon. Either
+one (or both) can be left out.
+
+</p><dl><dt><i>xy</i></dt><dd>
+A Python sequence (x, y, x, y, &#8230;).</dd>
+<dt><i>pen</i></dt><dd>
+Optional pen object created by <b>ui_pen</b>.
+</dd>
+<dt><i>brush</i></dt><dd>
+Optional brush object created by <b>ui_brush</b>.
+</dd>
+</dl><br />
+</dd>
+<dt><a id="DrawInterface.rectangle-method" name="DrawInterface.rectangle-method"><b>rectangle(xy, pen, brush)</b></a> [<a href="#DrawInterface.rectangle-method">#</a>]</dt><dd>
+<p>Draws a rectangle.
+</p><p>
+If a brush is given, it is used to fill the rectangle.  If a pen
+is given, it is used to draw an outline around the rectangle.
+Either one (or both) can be left out.
+
+</p><dl><dt><i>xy</i></dt><dd>
+A 4-element Python sequence (x, y, x, y), with the
+   upper left corner given first.</dd>
+<dt><i>pen</i></dt><dd>
+Optional pen object created by <b>ui_pen</b>.
+</dd>
+<dt><i>brush</i></dt><dd>
+Optional brush created by <b>ui_brush</b>.
+</dd>
+</dl><br />
+</dd>
+<dt><a id="DrawInterface.settransform-method" name="DrawInterface.settransform-method"><b>settransform(transform)</b></a> [<a href="#DrawInterface.settransform-method">#</a>]</dt><dd>
+<p>Sets the drawing transform.  Note that the transform is reset
+before each call to <b>ui_handle_repair</b>.
+</p><p>
+Example:
+<pre>
+draw.settransform((dx, dy))
+</pre></p><dl><dt><i>transform</i></dt><dd>
+The new transform.  In the current version,
+    this must be a 2-tuple giving a horizontal and vertical
+    offset.</dd>
+</dl><br />
+</dd>
+<dt><a id="DrawInterface.text-method" name="DrawInterface.text-method"><b>text(xy, text, font)</b></a> [<a href="#DrawInterface.text-method">#</a>]</dt><dd>
+<p>Draws text.
+</p><p>
+Draws a text string at the given position, using the given
+font.
+</p><p>
+Example:
+<pre>
+font = widget.ui_font(black, times)
+draw.text((100, 100), "hello, world", font)
+</pre></p><dl><dt><i>xy</i></dt><dd>
+A 2-element Python sequence (x, y).</dd>
+<dt><i>text</i></dt><dd>
+An 8-bit string containing ASCII text, or a Unicode string.
+   Some implementations may attempt to interpret non-ASCII 8-bit
+   strings as ISO-8859-1 or UTF-8; don&#8217;t rely on this feature if
+   you can avoid it.</dd>
+<dt><i>font</i></dt><dd>
+A font object created by the <b>ui_font</b> method.
+</dd>
+</dl><br />
+</dd>
+<dt><a id="DrawInterface.textsize-method" name="DrawInterface.textsize-method"><b>textsize(text, font)</b></a> [<a href="#DrawInterface.textsize-method">#</a>]</dt><dd>
+<p>Determines the size of a text string.</p><dl><dt><i>text</i></dt><dd>
+An 8-bit string containing ASCII text, or a Unicode string.
+   Some implementations may attempt to interpret non-ASCII 8-bit
+   strings as ISO-8859-1 or UTF-8; don&#8217;t rely on this feature if
+   you can avoid it.</dd>
+<dt><i>font</i></dt><dd>
+A font object created by the <b>ui_font</b> method.
+</dd>
+<dt>Returns:</dt><dd>
+A (width, height) tuple.</dd>
+</dl><br />
+</dd>
+</dl><h2><a id="EventController-class" name="EventController-class">The EventController Class</a></h2><dl><dt><b>EventController</b> (class)  [<a href="#EventController-class">#</a>]</dt><dd>
+<p>Standard controller for the <b>EventMixin</b> class.
+</p></dd>
+</dl><h2><a id="EventMixin-class" name="EventMixin-class">The EventMixin Class</a></h2><dl><dt><b>EventMixin</b> (class)  [<a href="#EventMixin-class">#</a>]</dt><dd>
+<p>Event mixin.  This mixin simplifies user event handling, by mapping
+mouse and keyboard events to DOM/DHTML-style method calls.
+</p><p>
+Note that this mixin overrides the <b>ui_controller</b> attribute.
+</p></dd>
+<dt><a id="EventMixin.onclick-method" name="EventMixin.onclick-method"><b>onclick(event)</b></a> [<a href="#EventMixin.onclick-method">#</a>]</dt><dd>
+<p>Called for mouse clicks.</p><dl><dt><i>event</i></dt><dd>
+A button press event (ButtonPress).  Use
+    <b>event.num</b> to get the button number, <b>event.x</b>
+    and <b>event.y</b> to get the mouse coordinate, relative
+    to the parent widget.
+</dd>
+</dl><br />
+</dd>
+<dt><a id="EventMixin.onkey-method" name="EventMixin.onkey-method"><b>onkey(event)</b></a> [<a href="#EventMixin.onkey-method">#</a>]</dt><dd>
+<p>Called for keyboard events.</p><dl><dt><i>event</i></dt><dd>
+A keyboard event (Key).  Use <b>event.char</b> to
+    get the character string, <b>event.keysym</b> to get the
+    keyboard symbol, and <b>event.keycode</b> to get the key
+    code.
+</dd>
+</dl><br />
+</dd>
+<dt><a id="EventMixin.onmousedown-method" name="EventMixin.onmousedown-method"><b>onmousedown(event)</b></a> [<a href="#EventMixin.onmousedown-method">#</a>]</dt><dd>
+<p>Called for mouse button press events.</p><dl><dt><i>event</i></dt><dd>
+A button press event (ButtonPress).  Use
+    <b>event.num</b> to get the button number, <b>event.x</b>
+    and <b>event.y</b> to get the mouse coordinate, relative
+    to the parent widget.
+</dd>
+</dl><br />
+</dd>
+<dt><a id="EventMixin.onmousemove-method" name="EventMixin.onmousemove-method"><b>onmousemove(event)</b></a> [<a href="#EventMixin.onmousemove-method">#</a>]</dt><dd>
+<p>Called for mouse motion events.</p><dl><dt><i>event</i></dt><dd>
+A motion event (Motion).  Use <b>event.x</b>
+    and <b>event.y</b> to get the mouse coordinate, relative
+    to the parent widget.
+</dd>
+</dl><br />
+</dd>
+<dt><a id="EventMixin.onmouseout-method" name="EventMixin.onmouseout-method"><b>onmouseout(event)</b></a> [<a href="#EventMixin.onmouseout-method">#</a>]</dt><dd>
+<p>Called for window leave events.</p><dl><dt><i>event</i></dt><dd>
+A leave event (Leave).</dd>
+</dl><br />
+</dd>
+<dt><a id="EventMixin.onmouseover-method" name="EventMixin.onmouseover-method"><b>onmouseover(event)</b></a> [<a href="#EventMixin.onmouseover-method">#</a>]</dt><dd>
+<p>Called for window enter events.</p><dl><dt><i>event</i></dt><dd>
+An enter event (Enter).</dd>
+</dl><br />
+</dd>
+<dt><a id="EventMixin.onmouseup-method" name="EventMixin.onmouseup-method"><b>onmouseup(event)</b></a> [<a href="#EventMixin.onmouseup-method">#</a>]</dt><dd>
+<p>Called for mouse button release events.</p><dl><dt><i>event</i></dt><dd>
+A button release event (ButtonRelease).  Use
+    <b>event.num</b> to get the button number, <b>event.x</b>
+    and <b>event.y</b> to get the mouse coordinate, relative
+    to the parent widget.
+</dd>
+</dl><br />
+</dd>
+</dl><h2><a id="Observable-class" name="Observable-class">The Observable Class</a></h2><dl><dt><b>Observable</b> (class)  [<a href="#Observable-class">#</a>]</dt><dd>
+<p>Standard observable mixin.  This mixin class can be used to make
+container objects (including widget models) &#8220;observable&#8221;.</p></dd>
+<dt><a id="Observable.addobserver-method" name="Observable.addobserver-method"><b>addobserver(observer)</b></a> [<a href="#Observable.addobserver-method">#</a>]</dt><dd>
+<p>Add an observer object to the container.  The observer
+should be a callable object which takes two arguments (the
+event code and associated data).</p><dl><dt><i>observer</i></dt><dd>
+Observer object.</dd>
+</dl><br />
+</dd>
+<dt><a id="Observable.notify-method" name="Observable.notify-method"><b>notify(event, data=None)</b></a> [<a href="#Observable.notify-method">#</a>]</dt><dd>
+<p>Send the event and associated data to all observers.  If an
+exception occurs in an observer, notification is aborted and the
+exception is propagated back to the caller.</p><dl><dt><i>event</i></dt><dd>
+Observer event.</dd>
+<dt><i>data</i></dt><dd>
+Optional data associated with the event.</dd>
+</dl><br />
+</dd>
+<dt><a id="Observable.removeobserver-method" name="Observable.removeobserver-method"><b>removeobserver(observer)</b></a> [<a href="#Observable.removeobserver-method">#</a>]</dt><dd>
+<p>Remove the given observer object from the container.  The
+observer must exist.</p><dl><dt><i>observer</i></dt><dd>
+Observer object.</dd>
+</dl><br />
+</dd>
+</dl><h2><a id="ScrollMixin-class" name="ScrollMixin-class">The ScrollMixin Class</a></h2><dl><dt><b>ScrollMixin</b> (class)  [<a href="#ScrollMixin-class">#</a>]</dt><dd>
+<p>Scroll mixin.  This mixin implements vertical and horizontal
+scrolling.</p></dd>
+<dt><a id="ScrollMixin.ui_scroll_update-method" name="ScrollMixin.ui_scroll_update-method"><b>ui_scroll_update()</b></a> [<a href="#ScrollMixin.ui_scroll_update-method">#</a>]</dt><dd>
+<p>Update scrollbar.</p></dd>
+<dt><a id="ScrollMixin.ui_scroll_xinfo-method" name="ScrollMixin.ui_scroll_xinfo-method"><b>ui_scroll_xinfo()</b></a> [<a href="#ScrollMixin.ui_scroll_xinfo-method">#</a>]</dt><dd>
+<p>Get total/left/right indexes.</p></dd>
+<dt><a id="ScrollMixin.ui_scroll_xset-method" name="ScrollMixin.ui_scroll_xset-method"><b>ui_scroll_xset(left, units, pages)</b></a> [<a href="#ScrollMixin.ui_scroll_xset-method">#</a>]</dt><dd>
+<p>Set left margin to left + units + pages.</p></dd>
+<dt><a id="ScrollMixin.ui_scroll_yinfo-method" name="ScrollMixin.ui_scroll_yinfo-method"><b>ui_scroll_yinfo()</b></a> [<a href="#ScrollMixin.ui_scroll_yinfo-method">#</a>]</dt><dd>
+<p>Get total/top/bottom indexes.</p></dd>
+<dt><a id="ScrollMixin.ui_scroll_yset-method" name="ScrollMixin.ui_scroll_yset-method"><b>ui_scroll_yset(top, units, pages)</b></a> [<a href="#ScrollMixin.ui_scroll_yset-method">#</a>]</dt><dd>
+<p>Set top margin to left + units + pages.</p></dd>
+<dt><a id="ScrollMixin.xview-method" name="ScrollMixin.xview-method"><b>xview(command, value, unit=None)</b></a> [<a href="#ScrollMixin.xview-method">#</a>]</dt><dd>
+<p>Change the horizonal view.</p></dd>
+<dt><a id="ScrollMixin.yview-method" name="ScrollMixin.yview-method"><b>yview(command, value, unit=None)</b></a> [<a href="#ScrollMixin.yview-method">#</a>]</dt><dd>
+<p>Change the vertical view.</p></dd>
+</dl><h2><a id="SimpleWidget-class" name="SimpleWidget-class">The SimpleWidget Class</a></h2><dl><dt><b>SimpleWidget</b> (class)  [<a href="#SimpleWidget-class">#</a>]</dt><dd>
+<p>Simple scrolled event-handling widget base class.  This class
+inherits from <a class="link" href="#ScrollMixin-class"><b>ScrollMixin</b></a> and <a class="link" href="#EventMixin-class"><b>EventMixin</b></a>.
+</p></dd>
+</dl><h2><a id="Style-class" name="Style-class">The Style Class</a></h2><dl><dt><b>Style(widget)</b> (class) [<a href="#Style-class">#</a>]</dt><dd>
+<p>Experimental style object.</p></dd>
+<dt><a id="Style.drawbackground-method" name="Style.drawbackground-method"><b>drawbackground(xy, draw)</b></a> [<a href="#Style.drawbackground-method">#</a>]</dt><dd>
+<p>Draws the widget background.</p><dl><dt><i>xy</i></dt><dd>
+Background extent.</dd>
+<dt><i>draw</i></dt><dd>
+Drawing context.  This is an object implementing
+   the <a href="#DrawInterface-class"><b>DrawInterface</b></a> interface.
+</dd>
+</dl><br />
+</dd>
+<dt><a id="Style.drawborder-method" name="Style.drawborder-method"><b>drawborder(xy, draw)</b></a> [<a href="#Style.drawborder-method">#</a>]</dt><dd>
+<p>Draws the widget border.</p><dl><dt><i>xy</i></dt><dd>
+Background extent.</dd>
+<dt><i>draw</i></dt><dd>
+Drawing context.  This is an object implementing
+   the <a href="#DrawInterface-class"><b>DrawInterface</b></a> interface.
+</dd>
+</dl><br />
+</dd>
+<dt><a id="Style.getmargin-method" name="Style.getmargin-method"><b>getmargin()</b></a> [<a href="#Style.getmargin-method">#</a>]</dt><dd>
+<p>Gets the margin width.</p><dl><dt>Returns:</dt><dd>
+The margin, in pixels.</dd>
+</dl><br />
+</dd>
+</dl><h2><a id="TextMixin-class" name="TextMixin-class">The TextMixin Class</a></h2><dl><dt><b>TextMixin</b> (class)  [<a href="#TextMixin-class">#</a>]</dt><dd>
+<p>Text mixin.  This mixin class maps <b>foreground</b> and <b>font</b>
+options to a font resource attribute, and handles <b>width</b> and
+<b>height</b> in character units.
+</p><p>
+To define what should be drawn, override the <b>ui_text_get</b>
+method.
+</p></dd>
+<dt><a id="TextMixin.ui_handle_config-method" name="TextMixin.ui_handle_config-method"><b>ui_handle_config()</b></a> [<a href="#TextMixin.ui_handle_config-method">#</a>]</dt><dd>
+<p>Default config method.  This implementation sets up the <b>font</b>
+attribute and the widget size, based on the mixin options.  If you
+override this method, you must remember call the mixin version.
+</p></dd>
+<dt><a id="TextMixin.ui_handle_repair-method" name="TextMixin.ui_handle_repair-method"><b>ui_handle_repair(draw, x0, y0, x1, y1)</b></a> [<a href="#TextMixin.ui_handle_repair-method">#</a>]</dt><dd>
+<p>Default repair method.  This implementation calls the <a class="link" href="#TextMixin.ui_text_draw-method"><b>ui_text_draw</b></a> method.
+</p></dd>
+<dt><a id="TextMixin.ui_text_draw-method" name="TextMixin.ui_text_draw-method"><b>ui_text_draw(draw, text=None)</b></a> [<a href="#TextMixin.ui_text_draw-method">#</a>]</dt><dd>
+<p>Draws centered text. The default implementation draws centered
+text, and uses the <b>ui_text_get</b> method to determine what
+to draw.
+
+</p><dl><dt><i>draw</i></dt><dd>
+Drawing context, as passed to <b>ui_handle_repair</b>.
+</dd>
+<dt><i>text</i></dt><dd>
+Optional text.  If omitted or None, this method calls
+   the <a class="link" href="#TextMixin.ui_text_get-method"><b>ui_text_get</b></a> method to fetch the text.
+</dd>
+</dl><br />
+</dd>
+<dt><a id="TextMixin.ui_text_get-method" name="TextMixin.ui_text_get-method"><b>ui_text_get()</b></a> [<a href="#TextMixin.ui_text_get-method">#</a>]</dt><dd>
+<p>Get text to draw.  This method is only called if
+<a class="link" href="#TextMixin.ui_text_draw-method"><b>ui_text_draw</b></a> is called without a text argument.
+
+</p><dl><dt>Returns:</dt><dd>
+The string to draw.</dd>
+</dl><br />
+</dd>
+</dl><h2><a id="Widget-class" name="Widget-class">The Widget Class</a></h2><dl><dt><b>Widget(master, **options)</b> (class) [<a href="#Widget-class">#</a>]</dt><dd>
+<p>The WCK widget base class.  This class implements a generic WCK
+widget, which should be subclassed to provide drawing and event
+handling behaviour.</p></dd>
+<dt><a id="Widget.__init__-method" name="Widget.__init__-method"><b>__init__(master, **options)</b></a> [<a href="#Widget.__init__-method">#</a>]</dt><dd>
+<p>Creates a widget instance.
+</p><p>
+This method simply calls the <b>ui_init</b> method.  If you
+need to initalize instance variables, you can override this
+method.  You must remember to call <b>ui_init</b> when done
+(or if you prefer, call Widget.__init__).
+
+</p><dl><dt><i>master</i></dt><dd>
+The parent widget.</dd>
+<dt><i>**options</i></dt><dd>
+Widget configuration options.  You can use
+   standard keyword options (listed below), or widget-specific
+   extra options.</dd>
+<dt><i>background=</i></dt><dd>
+The background colour.</dd>
+<dt><i>relief=</i></dt><dd>
+The border style.</dd>
+<dt><i>borderwidth=</i></dt><dd>
+The border width, in pixels.</dd>
+<dt><i>highlightthickness=</i></dt><dd>
+The colour to use for a highlighted
+   border.</dd>
+<dt><i>cursor=</i></dt><dd>
+The cursor to use when the mouse pointer is
+   moved in this widget.</dd>
+</dl><br />
+</dd>
+<dt><a id="Widget.__setitem__-method" name="Widget.__setitem__-method"><b>__setitem__(option, value)</b></a> [<a href="#Widget.__setitem__-method">#</a>]</dt><dd>
+<p>Sets the value of a single configuration option.</p><dl><dt><i>option</i></dt><dd>
+What option to modify.</dd>
+<dt><i>value</i></dt><dd>
+The new value for this option.</dd>
+</dl><br />
+</dd>
+<dt><a id="Widget.cget-method" name="Widget.cget-method"><b>cget(option)</b></a> [<a href="#Widget.cget-method">#</a>]</dt><dd>
+<p>Gets the value of a widget configuration option.</p><dl><dt><i>option</i></dt><dd>
+What option value to fetch.</dd>
+<dt>Returns:</dt><dd>
+The option value.</dd>
+<dt>Raises <b>AttributeError</b>:</dt><dd>
+The option was not supported.</dd>
+</dl><br />
+</dd>
+<dt><a id="Widget.configure-method" name="Widget.configure-method"><b>config(**options)</b></a> [<a href="#Widget.configure-method">#</a>]</dt><dd>
+<p>Configures a widget instance.</p><dl><dt><i>**options</i></dt><dd>
+One or more options, given as keyword arguments.</dd>
+</dl><br />
+</dd>
+<dt><a id="Widget.destroy-method" name="Widget.destroy-method"><b>destroy()</b></a> [<a href="#Widget.destroy-method">#</a>]</dt><dd>
+<p>Destroys a widget instance.</p></dd>
+<dt><a id="Widget.keys-method" name="Widget.keys-method"><b>keys()</b></a> [<a href="#Widget.keys-method">#</a>]</dt><dd>
+<p>Gets a list of all available options.</p><dl><dt>Returns:</dt><dd>
+A list of option names.</dd>
+</dl><br />
+</dd>
+<dt><a id="Widget.manage-method" name="Widget.manage-method"><b>manage(manager=&#8221;pack&#8221;, **options)</b></a> [<a href="#Widget.manage-method">#</a>]</dt><dd>
+<p>(Experimental) Attach a geometry manager to this widget.</p><dl><dt><i>manager</i></dt><dd>
+What manager to use.</dd>
+<dt><i>**options</i></dt><dd>
+Manager options, given as keyword arguments.</dd>
+</dl><br />
+</dd>
+<dt><a id="Widget.ui_brush-method" name="Widget.ui_brush-method"><b>ui_brush(color=&#8221;black&#8221;, **options)</b></a> [<a href="#Widget.ui_brush-method">#</a>]</dt><dd>
+<p>Creates a brush object with the given characteristics.  The
+brush can only be used in this widget.</p><dl><dt><i>color</i></dt><dd>
+What colour to use.  This can be a colour
+   name, a hexadecimal colour specifier (&#8220;#rrggbb&#8221;), or
+   a packed integer (0xrrggbb).</dd>
+<dt><i>**options</i></dt><dd>
+Additional options (device specific).</dd>
+</dl><br />
+</dd>
+<dt><a id="Widget.ui_controller-attribute" name="Widget.ui_controller-attribute"><b>ui_controller</b></a> [<a href="#Widget.ui_controller-attribute">#</a>]</dt><dd>
+<p>(Class attribute) Standard event controller for this widget.</p></dd>
+<dt><a id="Widget.ui_damage-method" name="Widget.ui_damage-method"><b>ui_damage(x0=None, y0=None, x1=None, y1=None)</b></a> [<a href="#Widget.ui_damage-method">#</a>]</dt><dd>
+<p>Reports widget damage.  This will force the widget to redraw all
+or parts of it&#8217;s screen estate.</p><dl><dt><i>x0,y0,x1,y1</i></dt><dd>
+What region to redraw.  If omitted, the
+   entire widget will be redrawn.</dd>
+</dl><br />
+</dd>
+<dt><a id="Widget.ui_doublebuffer-attribute" name="Widget.ui_doublebuffer-attribute"><b>ui_doublebuffer</b></a> [<a href="#Widget.ui_doublebuffer-attribute">#</a>]</dt><dd>
+<p>(Class attribute) Control double buffering for this widget.  If
+set to a true value, the <b>ui_handle_repair</b> method will be
+set up to draw in an off-screen buffer, which is then copied to
+the screen in one step.
+</p></dd>
+<dt><a id="Widget.ui_draw-attribute" name="Widget.ui_draw-attribute"><b>ui_draw</b></a> [<a href="#Widget.ui_draw-attribute">#</a>]</dt><dd>
+<p>(Instance attribute) (Experimental) Drawing context for this
+widget.</p></dd>
+<dt><a id="Widget.ui_font-method" name="Widget.ui_font-method"><b>ui_font(color=&#8221;black&#8221;, font=&#8221;Courier&#8221;, **options)</b></a> [<a href="#Widget.ui_font-method">#</a>]</dt><dd>
+<p>Creates a font object with the given characteristics, for
+use in this widget.</p><dl><dt><i>color</i></dt><dd>
+What colour to use.  This can be a colour
+   name, a hexadecimal colour specifier (&#8220;#rrggbb&#8221;), or
+   a packed integer (0xrrggbb).</dd>
+<dt><i>font</i></dt><dd>
+<p>A font specifier.  This should be a string
+   with the following syntax: &#8220;{family} size style&#8230;&#8221;.
+</p><p>
+If the family name doesn&#8217;t contain whitespace, you can leave
+out the braces.  If omitted, the family name defaults to
+<b>courier</b>.
+</p><p>
+The <i>size</i> is given in points (defined as 1/72 inch).  If
+omitted, it defaults to 12 points.  Note that the toolkit takes
+the <i>logical screen size</i> into account when calculating the
+actual font size.  On low resolution screens, this means that a
+12-point font is usually larger than 12/72 inches.
+</p><p>
+The <i>style</i> attributes can be any combination of
+<b>normal</b>, <b>bold</b>, <b>roman</b> (upright),
+<b>italic</b>, <b>underline</b>, and <b>overstrike</b>.  If
+omitted, it defaults to the default setting for that family;
+usually <b>normal roman</b>.
+</p><p>
+For Tkinter compatibility, you can also give the font as a
+tuple: (&#8220;family&#8221;, size, style&#8230;).   Note that there should
+be no braces around the family name.  You can also leave out
+the size and/or the style arguments.  The defaults are the
+same as for the string syntax.
+</p></dd>
+<dt>Returns:</dt><dd>
+A font object.</dd>
+</dl><br />
+</dd>
+<dt><a id="Widget.ui_handle_clear-method" name="Widget.ui_handle_clear-method"><b>ui_handle_clear(draw, x0, y0, x1, y1)</b></a> [<a href="#Widget.ui_handle_clear-method">#</a>]</dt><dd>
+<p>(Hook) Called by the framework to clear a portion of this
+widget.  The default implementations fills the background with
+the current background style.  If you&#8217;re drawing the background
+in the repair method, you should override this method with an
+empty implementation.</p><dl><dt><i>draw</i></dt><dd>
+A drawing context.  This is an object implementing
+   the <a href="#DrawInterface-class"><b>DrawInterface</b></a> interface.
+</dd>
+<dt><i>x0,y0,x1,y1</i></dt><dd>
+What region to clear.  This region usually
+    covers the entire widget.</dd>
+</dl><br />
+</dd>
+<dt><a id="Widget.ui_handle_config-method" name="Widget.ui_handle_config-method"><b>ui_handle_config()</b></a> [<a href="#Widget.ui_handle_config-method">#</a>]</dt><dd>
+<p>(Hook) Called by the framework when this widget has been
+reconfigured.  This method should check configuration options
+(ui_option attributes), and update widget attributes as
+necessary.</p><dl><dt>Returns:</dt><dd>
+A 2-tuple giving the width and height, in pixels, or
+   None to preserve the current size.  When the widget is first
+   created, the current size is set to 100x100 pixels.</dd>
+</dl><br />
+</dd>
+<dt><a id="Widget.ui_handle_damage-method" name="Widget.ui_handle_damage-method"><b>ui_handle_damage(x0, y0, x1, y1)</b></a> [<a href="#Widget.ui_handle_damage-method">#</a>]</dt><dd>
+<p>(Hook) Called by the framework when some part of this widget has
+been damaged, and will have to be redrawn.  This method will
+always be called at least once before each call to
+<b>ui_handle_repair</b>.
+
+</p><dl><dt><i>x0,y0,x1,y1</i></dt><dd>
+The damaged region.</dd>
+</dl><br />
+</dd>
+<dt><a id="Widget.ui_handle_destroy-method" name="Widget.ui_handle_destroy-method"><b>ui_handle_destroy()</b></a> [<a href="#Widget.ui_handle_destroy-method">#</a>]</dt><dd>
+<p>(Hook) Called by the framework when this widget is about to be
+destroyed.</p></dd>
+<dt><a id="Widget.ui_handle_focus-method" name="Widget.ui_handle_focus-method"><b>ui_handle_focus(draw, has_focus)</b></a> [<a href="#Widget.ui_handle_focus-method">#</a>]</dt><dd>
+<p>(Hook) Called by the framework when this widget has received or
+is about to loose focus.</p><dl><dt><i>draw</i></dt><dd>
+A drawing context.  This is an object implementing
+   the <a href="#DrawInterface-class"><b>DrawInterface</b></a> interface.
+</dd>
+<dt><i>has_focus</i></dt><dd>
+A true value if the widget has just received
+   focus, a false value if it is about to loose focus.</dd>
+</dl><br />
+</dd>
+<dt><a id="Widget.ui_handle_repair-method" name="Widget.ui_handle_repair-method"><b>ui_handle_repair(draw, x0, y0, x1, y1)</b></a> [<a href="#Widget.ui_handle_repair-method">#</a>]</dt><dd>
+<p>(Hook) Called by the framework when this widget should be
+redrawn.  This call will always be preceeded by one or more
+calls to <b>ui_handle_damage</b>, and a single call to
+<b>ui_handle_clear</b>.
+
+</p><dl><dt><i>draw</i></dt><dd>
+A drawing context.  This is an object implementing
+   the <a href="#DrawInterface-class"><b>DrawInterface</b></a> interface.
+</dd>
+<dt><i>x0,y0,x1,y1</i></dt><dd>
+What region to redraw.  This region usually
+    covers the entire widget.  To redraw only portions of the
+    widget, override the <b>ui_handle_damage</b> method and keep
+    track of the damaged region.
+</dd>
+</dl><br />
+</dd>
+<dt><a id="Widget.ui_handle_resize-method" name="Widget.ui_handle_resize-method"><b>ui_handle_resize(width, height)</b></a> [<a href="#Widget.ui_handle_resize-method">#</a>]</dt><dd>
+<p>(Hook) Called by the framework when this widget has been
+resized, either by a geometry manager, or by the user.</p><dl><dt><i>width</i></dt><dd>
+The new width, in pixels.</dd>
+<dt><i>height</i></dt><dd>
+The new height, in pixels.</dd>
+</dl><br />
+</dd>
+<dt><a id="Widget.ui_handle_select-method" name="Widget.ui_handle_select-method"><b>ui_handle_select()</b></a> [<a href="#Widget.ui_handle_select-method">#</a>]</dt><dd>
+<p>(Hook) Called by the framework when this selection status has
+changed.  In the current implementation, this handler is never
+called.</p></dd>
+<dt><a id="Widget.ui_image-method" name="Widget.ui_image-method"><b>ui_image(image=None, size=None, data=None, **options)</b></a> [<a href="#Widget.ui_image-method">#</a>]</dt><dd>
+<p>Creates an image object with the given characteristics.  The
+image (or a cropped subregion of it) can be pasted onto a a
+window or a pixmap.
+</p><p>
+Note that image descriptors are not cached.
+</p><p>
+Also note that in the current version, this method returns a
+pixmap.  This may change in future versions.
+
+</p><dl><dt><i>image</i></dt><dd>
+The source image.  This can be a PIL <b>Image</b>
+    object, or a Tkinter <b>BitmapImage</b> or <b>PhotoImage</b>
+    object.  Alternatively, you can pass in a <b>fromstring</b>-style
+    mode string, a size tuple, and a string containing the pixel data.
+</dd>
+<dt>Returns:</dt><dd>
+An image object (currently a pixmap).</dd>
+</dl><br />
+</dd>
+<dt><a id="Widget.ui_init-method" name="Widget.ui_init-method"><b>ui_init(master, options=None)</b></a> [<a href="#Widget.ui_init-method">#</a>]</dt><dd>
+<p>Initializes a widget instance.</p><dl><dt><i>master</i></dt><dd>
+The parent widget.</dd>
+<dt><i>options</i></dt><dd>
+A dictionary containing configuration options.</dd>
+</dl><br />
+</dd>
+<dt><a id="Widget.ui_option_background-attribute" name="Widget.ui_option_background-attribute"><b>ui_option_background</b></a> [<a href="#Widget.ui_option_background-attribute">#</a>]</dt><dd>
+<p>(Class attribute) Background color.</p></dd>
+<dt><a id="Widget.ui_option_borderwidth-attribute" name="Widget.ui_option_borderwidth-attribute"><b>ui_option_borderwidth</b></a> [<a href="#Widget.ui_option_borderwidth-attribute">#</a>]</dt><dd>
+<p>(Class attribute) Border width.  If not zero, the border is
+decorated according to the <b>relief</b> setting.
+</p></dd>
+<dt><a id="Widget.ui_option_cursor-attribute" name="Widget.ui_option_cursor-attribute"><b>ui_option_cursor</b></a> [<a href="#Widget.ui_option_cursor-attribute">#</a>]</dt><dd>
+<p>(Class attribute) Cursor to use when the mouse is moved over
+this widget.  If empty, the default cursor is used.</p></dd>
+<dt><a id="Widget.ui_option_highlightthickness-attribute" name="Widget.ui_option_highlightthickness-attribute"><b>ui_option_highlightthickness</b></a> [<a href="#Widget.ui_option_highlightthickness-attribute">#</a>]</dt><dd>
+<p>(Class attribute) Focus region width.</p></dd>
+<dt><a id="Widget.ui_option_relief-attribute" name="Widget.ui_option_relief-attribute"><b>ui_option_relief</b></a> [<a href="#Widget.ui_option_relief-attribute">#</a>]</dt><dd>
+<p>(Class attribute) Border relief.</p></dd>
+<dt><a id="Widget.ui_option_takefocus-attribute" name="Widget.ui_option_takefocus-attribute"><b>ui_option_takefocus</b></a> [<a href="#Widget.ui_option_takefocus-attribute">#</a>]</dt><dd>
+<p>(Class attribute) Focus handling.</p></dd>
+<dt><a id="Widget.ui_path-method" name="Widget.ui_path-method"><b>ui_path(xy)</b></a> [<a href="#Widget.ui_path-method">#</a>]</dt><dd>
+<p>Converts a coordinate list to a more efficient representation.
+This method can be used to &#8220;compile&#8221; coordinate lists.</p><dl><dt><i>xy</i></dt><dd>
+Coordinate list.</dd>
+<dt>Returns:</dt><dd>
+A path object.  Note that this may be a reference to the
+    input list, for WCK platforms that do no support path
+    compilation.</dd>
+</dl><br />
+</dd>
+<dt><a id="Widget.ui_pen-method" name="Widget.ui_pen-method"><b>ui_pen(color=&#8221;black&#8221;, width=1, **options)</b></a> [<a href="#Widget.ui_pen-method">#</a>]</dt><dd>
+<p>Creates a pen object with the given characteristics.  The pen
+can only be used in this widget.</p><dl><dt><i>color</i></dt><dd>
+What colour to use.  This can be a colour
+   name, a hexadecimal colour specifier (&#8220;#rrggbb&#8221;), or
+   a packed integer (0xrrggbb).</dd>
+<dt><i>width</i></dt><dd>
+Pen width, in pixels.</dd>
+<dt><i>**options</i></dt><dd>
+Additional options (device specific).</dd>
+</dl><br />
+</dd>
+<dt><a id="Widget.ui_pixmap-method" name="Widget.ui_pixmap-method"><b>ui_pixmap(width, height, **options)</b></a> [<a href="#Widget.ui_pixmap-method">#</a>]</dt><dd>
+<p>Creates an pixmap object with the given characteristics.</p><dl><dt><i>width</i></dt><dd>
+The width of the pixmap, in pixels.</dd>
+<dt><i>height</i></dt><dd>
+The height of the pixmap, in pixels.</dd>
+<dt><i>**options</i></dt><dd>
+Additional options (device dependent).</dd>
+<dt>Returns:</dt><dd>
+A pixmap object.  This is an object implementing
+   the <a href="#DrawInterface-class"><b>DrawInterface</b></a> interface.
+</dd>
+</dl><br />
+</dd>
+<dt><a id="Widget.ui_purge-method" name="Widget.ui_purge-method"><b>ui_purge()</b></a> [<a href="#Widget.ui_purge-method">#</a>]</dt><dd>
+<p>Clears the resource cache.  Clears the cache for this
+widget (and any other widgets that may share the same
+cache).  Resources that are cached as instance attributes
+are not affected.
+</p><p>
+If this method is called from the constructor, before the
+<b>ui_init</b> is called, caching is disabled for this
+widget.  Widgets that use large numbers of resources (e.g.
+font and colour browsers) should disable the cache.
+</p></dd>
+<dt><a id="Widget.ui_setcontroller-method" name="Widget.ui_setcontroller-method"><b>ui_setcontroller(controller=None)</b></a> [<a href="#Widget.ui_setcontroller-method">#</a>]</dt><dd>
+<p>Sets the controller for this widget.</p><dl><dt><i>controller</i></dt><dd>
+Controller class.</dd>
+<dt>Returns:</dt><dd>
+Controller instance, or None.</dd>
+</dl><br />
+</dd>
+<dt><a id="Widget.ui_size-method" name="Widget.ui_size-method"><b>ui_size()</b></a> [<a href="#Widget.ui_size-method">#</a>]</dt><dd>
+<p>Gets the current size of this widget.</p><dl><dt>Returns:</dt><dd>
+The size in pixels, as a (width, height) 2-tuple.</dd>
+</dl><br />
+</dd>
+</dl></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to zone index page.">::: zone :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

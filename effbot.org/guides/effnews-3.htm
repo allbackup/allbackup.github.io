@@ -1,0 +1,154 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>EffNews Part 3: Displaying RSS&nbsp;Data</title> <script type="text/javascript">effbot_page_id=61;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> <!--
+<p style='color: #8f8f8f; background: #fff5bf; padding: 5px 10px;'> <b>2008-07-15:</b> Selected articles
+
+now have experimental "comment" links in the left column and at the bottom.
+You're welcome to use them for commenting and voting on articles.
+For a bit more on this, see <a
+href="http://effbot.slinkset.com/links/Welcome_to_discuss_effbot_org">this
+page</a>. /F
+</p>
+--> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <p><a href="effnews-2.htm">back</a> <a href="effnews-4.htm">next</a></p> <h1 class="maintitle">EffNews Part 3: Displaying RSS&nbsp;Data</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p class="info">September 26, 2002 | Fredrik Lundh</p><p>This is the third article covering <a href="effnews.htm">the
+effnews project</a>; a simple RSS newsreader written in Python.  Other
+articles in this series are available via <a href="effnews.htm">this
+page</a>.</p><h2 id="storing-channel-lists">Storing Channel Lists&#160;<a class="nav" href="#storing-channel-lists" title="bookmark!">#</a></h2><p>In the <a href="effnews-2.htm">previous article</a>, we ended up
+creating a simple utility that downloads a number of channels,
+parses their content, and writes titles, links and descriptions to
+the screen as plain text.  The list of channels to read is stored
+in a text file, <b>channels.txt</b>.</p><p>Other RSS tools use a variety of file formats to store channel
+lists.  One popular format is <a href="http://www.opml.org">OPML
+(Outline Processor Markup Language)</a>, which is a simple XML-based
+format.  An OPML file contains a <b>head</b> element that stores
+information about the OPML file itself, and a <b>body</b> element that
+holds a number of <b>outline</b> elements.</p><p>Each <b>outline</b> element can have any number of attributes.
+Common attributes include <b>type</b> (how to interpret other
+attributes) and <b>text</b> (what to display for this node in an
+outline viewer).  Outline elements can be nested.</p><p>When storing RSS channels, the <b>type</b> attribute is set to
+<b>rss</b>, and channel information is stored in the <b>title</b> and
+<b>xmlUrl</b> attributes.  Here&#8217;s an example:</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><pre class="xml wide wide">
+&lt;<span class="pyfunction">opml</span> version="1.0"&gt;
+&lt;<span class="pyfunction">body</span>&gt;
+&lt;<span class="pyfunction">outline</span> type="rss" title="bbc news"
+  xmlUrl="http://www.bbc.co.uk/syndication/feeds/news/ukfs_news/front_page/rss091.xml" /&gt;
+&lt;<span class="pyfunction">outline</span> type="rss" title="effbot.org"
+  xmlUrl="http://online.effbot.org/rss.xml" /&gt;
+&lt;<span class="pyfunction">outline</span> type="rss" title="scripting news"
+  xmlUrl="http://www.scripting.com/rss.xml" /&gt;
+&lt;<span class="pyfunction">outline</span> type="rss" title="mark pilgrim"
+  xmlUrl="http://diveintomark.org/xml/rss2.xml" /&gt;
+&lt;<span class="pyfunction">outline</span> type="rss" title="jason kottke"
+  xmlUrl="http://www.kottke.org/index.xml" /&gt;
+&lt;<span class="pyfunction">outline</span> type="rss" title="example"
+  xmlUrl="http://www.example.com/rss.xml" /&gt;
+&lt;/<span class="pyfunction">body</span>&gt;
+&lt;/<span class="pyfunction">opml</span>&gt;</pre></div><div class="yui-ge"><div class="yui-u first"><h3 id="parsing-opml">Parsing OPML&#160;<a class="nav" href="#parsing-opml" title="bookmark!">#</a></h3><p>You can use the <b>xmllib</b> library to extract channel
+information from OPML files.  The following parser class looks for
+<b>outline</b> tags, and collects titles and channel URLs from the
+attributes (Note that the parser looks for both <b>xmlUrl</b> and
+<b>xmlurl</b> attributes; both names are used in the documentation
+and samples I&#8217;ve seen).</p><div class="example">
+<b>Example: a simple OPML bookmark parser (File: opml_parser.py)</b>
+<pre class="python">
+<span class="pykeyword">import</span> xmllib
+
+<span class="pykeyword">class</span> <span class="pyclass">ParseError</span>(Exception):
+    <span class="pykeyword">pass</span>
+
+<span class="pykeyword">class</span> <span class="pyclass">opml_parser</span>(xmllib.XMLParser):
+
+    <span class="pykeyword">def</span> <span class="pyfunction">__init__</span>(self):
+        xmllib.XMLParser.__init__(self)
+        self.channels = []
+
+    <span class="pykeyword">def</span> <span class="pyfunction">start_opml</span>(self, attr):
+        <span class="pykeyword">if</span> attr.get(<span class="pystring">"version"</span>, <span class="pystring">"1.0"</span>) != <span class="pystring">"1.0"</span>:
+            <span class="pykeyword">raise</span> ParseError(<span class="pystring">"unknown OPML version"</span>)
+
+    <span class="pykeyword">def</span> <span class="pyfunction">start_outline</span>(self, attr):
+        channel = attr.get(<span class="pystring">"xmlUrl"</span>) <span class="pykeyword">or</span> attr.get(<span class="pystring">"xmlurl"</span>)
+        <span class="pykeyword">if</span> channel:
+            self.add_channel(attr.get(<span class="pystring">"title"</span>), channel)
+
+    <span class="pykeyword">def</span> <span class="pyfunction">add_channel</span>(self, title, channel):
+        <span class="pycomment"># can be overridden</span>
+        self.channels.append((title, channel))
+
+
+<span class="pykeyword">def</span> <span class="pyfunction">load</span>(file):
+
+    file = open(file)
+
+    parser = opml_parser()
+    parser.feed(file.read())
+    parser.close()
+
+    <span class="pykeyword">return</span> parser.channels</pre></div><p>The <b>load</b> function feeds the content of an OPML file through
+the parser, and returns a list of (title, channel URL) pairs.</p><p>Here&#8217;s a simple script that uses the <b>http_rss_parser</b> class
+from the <a href="effnews-2.htm">second article</a> to fetch and
+render all channels listed in the <b>channels.opml</b> file:</p><pre class="python">
+<span class="pykeyword">import</span> asyncore, http_client, opml_parser
+
+channels = opml_parser.load(<span class="pystring">"channels.opml"</span>)
+
+<span class="pykeyword">for</span> title, uri <span class="pykeyword">in</span> channels:
+    http_client.do_request(uri, http_rss_parser())
+
+asyncore.loop()</pre><h2 id="managing-downloads">Managing Downloads&#160;<a class="nav" href="#managing-downloads" title="bookmark!">#</a></h2><p>You can find RSS channel collections in various places on the web,
+such as <a href="http://www.newsisfree.com/syndicate.php">NewsIsFree</a> and <a href="http://www.syndic8.com/xml.php">Syndic8</a>.  These sites have
+links to thousands of RSS channels from a wide variety of sources.</p><p>Most real people probably use a dozen feeds or so, but someone like
+the pirate <a href="http://www.google.com/search?q=pirate+pugg">Pugg</a>
+(&#8220;<i>For I am not your usual uncouth pirate, but refined and with
+a Ph.D., and therefore extremely high-strung</i>&#8220;) would most
+likely want to subscribe to every feed under the sun.  What would
+happen if he tried?</p><p>If you pass an OPML file containing a thousand feeds to the
+previous script, it will happily issue a thousand socket requests.
+Exactly what happens depends on your operating system, but it&#8217;s likely
+that it will run out of resources at some point (if you decide to try
+this out on your favourite platform, let me know what happens).</p><p>To avoid this problem, you can add requests to a queue, and make
+sure you never create more sockets than your computer can handle
+(leaving some room for other applications is also a nice thing to
+do).</p><h3>Limiting the number of simultaneous connections</h3><p>Here&#8217;s a simple manager class that never creates more than a given
+number of sockets:</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><div class="wide">
+<b>Example: An HTTP connection manager class (File: http_manager.py)</b>
+<pre class="python wide">
+<span class="pykeyword">import</span> asyncore
+
+<span class="pykeyword">class</span> <span class="pyclass">http_manager</span>:
+
+    max_connections = 4
+
+    <span class="pykeyword">def</span> <span class="pyfunction">__init__</span>(self):
+        self._queue = []
+
+    <span class="pykeyword">def</span> <span class="pyfunction">request</span>(self, uri, consumer):
+        self._queue.append((uri, consumer))
+
+    <span class="pykeyword">def</span> <span class="pyfunction">poll</span>(self, timeout=0.1):
+        <span class="pycomment"># activate up to max_connections channels</span>
+        <span class="pykeyword">while</span> self._queue <span class="pykeyword">and</span> len(asyncore.socket_map) &lt; self.max_connections:
+            http_client.do_request(*self._queue.pop(0))
+        <span class="pycomment"># keep the network running</span>
+        asyncore.poll(timeout)
+        <span class="pycomment"># return non-zero if we should keep polling</span>
+        <span class="pykeyword">return</span> len(self._queue) <span class="pykeyword">or</span> len(asyncore.socket_map)</pre></div></div><div class="yui-ge"><div class="yui-u first"><p>In this class, the <b>request</b> method adds URLs and consumer
+instances to an internal queue.  The <b>poll</b> method makes sure at
+least <b>max_connections</b> asyncore objects are activated (asyncore
+keeps references to active sockets in the <b>socket_map</b>
+variable).</p><p>To use the manager, all you have to do is to create an instance of
+the <b>http_manager</b> class, call the <b>request</b> method for each
+channel you want fetch, and keep calling the <b>poll</b> method over
+and over again to keep the network traffic going:</p><pre class="python">
+manager = http_manager.http_manager()
+
+manager.request(url, consumer)
+
+<span class="pykeyword">while</span> manager.poll(1):
+    <span class="pykeyword">pass</span></pre><h3>Limiting the size of an RSS file</h3><p>You can also use the manager for other purposes.  For example, to
+prevent denial-of-service attacks from malicious (or confused) RSS
+providers, you can use the http client&#8217;s byte counters, and simply
+kill the socket if it has processed more than a given number of
+bytes:</p><pre class="python">
+    max_size = 1000000 <span class="pycomment"># bytes</span>
+
+    <span class="pykeyword">for</span> channel <span class="pykeyword">in</

@@ -1,0 +1,260 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>Classes</title> <script type="text/javascript">effbot_page_id=1899;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> <!--
+<p style='color: #8f8f8f; background: #fff5bf; padding: 5px 10px;'> <b>2008-07-15:</b> Selected articles
+
+now have experimental "comment" links in the left column and at the bottom.
+You're welcome to use them for commenting and voting on articles.
+For a bit more on this, see <a
+href="http://effbot.slinkset.com/links/Welcome_to_discuss_effbot_org">this
+page</a>. /F
+</p>
+--> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <h1 class="maintitle">Classes</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p>COMMENT: <a href="http://docs.python.org/tut/node11.html">Original Source</a></p><p>COMMENT: <strong>(I&#8217;ve done a brand new introduction for this section, find it at <a href="node11-baseline.html">New Classes Intro</a>. I&#8217;d love some feedback on it, put it below in the comments section. If there&#8217;s general consensus, maybe we can make it the new official-unofficial intro)</strong></p><p>Python&#8217;s class mechanism adds classes to the language with a minimum of new syntax and semantics. It is a mixture of the class mechanisms found in C++ and Modula-3. As is true for modules, classes in Python do not put an absolute barrier between definition and user, but rather rely on the politeness of the user not to <q>break into the definition.</q> The most important features of classes are retained with full power, however: the class inheritance mechanism allows multiple base classes, a derived class can override any methods of its base class or classes, and a method can call the method of a base class with the same name. Objects can contain an arbitrary amount of private data.</p><p>In C++ terminology, all class members (including the data members) are <em>public</em>, and all member functions are <em>virtual</em>. There are no special constructors or destructors. As in Modula-3, there are no shorthands for referencing the object&#8217;s members from its methods: the method function is declared with an explicit first argument representing the object, which is provided implicitly by the call. As in Smalltalk, classes themselves are objects, albeit in the wider sense of the word: in Python, all data types are objects. This provides semantics for importing and renaming. Unlike C++ and Modula-3, built-in types can be used as base classes for extension by the user. Also, like in C++ but unlike in Modula-3, most built-in operators with special syntax (arithmetic operators, subscripting etc.) can be redefined for class instances.</p><p>ShowMeDo.com has a three-part video-set <a href="http://showmedo.com/videos/series?name=IntroductionToPythonObjectsUsingIPython_JerolH">Introducing Python Objects</a>.</p><h2 id="a-word-about-terminology">A Word About Terminology&#160;<a class="nav" href="#a-word-about-terminology" title="bookmark!">#</a></h2><p>Lacking universally accepted terminology to talk about classes, I will make occasional use of Smalltalk and C++ terms. (I would use Modula-3 terms, since its object-oriented semantics are closer to those of Python than C++, but I expect that few readers have heard of it.)</p><p>Objects have individuality, and multiple names (in multiple scopes) can be bound to the same object. This is known as aliasing in other languages. This is usually not appreciated on a first glance at Python, and can be safely ignored when dealing with immutable basic types (numbers, strings, tuples). However, aliasing has an (intended!) effect on the semantics of Python code involving mutable objects such as lists, dictionaries, and most types representing entities outside the program (files, windows, etc.). This is usually used to the benefit of the program, since aliases behave like pointers in some respects. For example, passing an object is cheap since only a pointer is passed by the implementation; and if a function modifies an object passed as an argument, the caller will see the change &#8212; this eliminates the need for two different argument passing mechanisms as in Pascal.</p><h2 id="python-scopes-and-name-spaces">Python Scopes and Name Spaces&#160;<a class="nav" href="#python-scopes-and-name-spaces" title="bookmark!">#</a></h2><p>Before introducing classes, I first have to tell you something about Python&#8217;s scope rules. Class definitions play some neat tricks with namespaces, and you need to know how scopes and namespaces work to fully understand what&#8217;s going on. Incidentally, knowledge about this subject is useful for any advanced Python programmer.</p><p>Let&#8217;s begin with some definitions.</p><p>A <em>namespace</em> is a mapping from names to objects. Most namespaces are currently implemented as Python dictionaries, but that&#8217;s normally not noticeable in any way (except for performance), and it may change in the future. Examples of namespaces are: the set of built-in names (functions such as abs(), and built-in exception names); the global names in a module; and the local names in a function invocation. In a sense the set of attributes of an object also form a namespace. The important thing to know about namespaces is that there is absolutely no relation between names in different namespaces; for instance, two different modules may both define a function <q>maximize</q> without confusion &#8212; users of the modules must prefix it with the module name.</p><p>By the way, I use the word <em>attribute</em> for any name following a dot &#8212; for example, in the expression <code>z.real</code>, <code>real</code> is an attribute of the object <code>z</code>. Strictly speaking, references to names in modules are attribute references: in the expression <code>modname.funcname</code>, <code>modname</code> is a module object and <code>funcname</code> is an attribute of it. In this case there happens to be a straightforward mapping between the module&#8217;s attributes and the global names defined in the module: they share the same namespace! <a href="#foot1849">9.1</a></p><p>Attributes may be read-only or writable. In the latter case, assignment to attributes is possible. Module attributes are writable: you can write &#8220;modname.the<em>answer = 42&#8221;. Writable attributes may also be deleted with the del statement. For example, &#8220;del modname.the</em>answer&#8221; will remove the attribute the_answer from the object named by <code>modname</code>.</p><p>Name spaces are created at different moments and have different lifetimes. The namespace containing the built-in names is created when the Python interpreter starts up, and is never deleted. The global namespace for a module is created when the module definition is read in; normally, module namespaces also last until the interpreter quits. The statements executed by the top-level invocation of the interpreter, either read from a script file or interactively, are considered part of a module called __main__, so they have their own global namespace. (The built-in names actually also live in a module; this is called __builtin__.)</p><p>The local namespace for a function is created when the function is called, and deleted when the function returns or raises an exception that is not handled within the function. (Actually, forgetting would be a better way to describe what actually happens.) Of course, recursive invocations each have their own local namespace.</p><p>A <em>scope</em> is a textual region of a Python program where a namespace is directly accessible. <q>Directly accessible</q> here means that an unqualified reference to a name attempts to find the name in the namespace.</p><p>Although scopes are determined statically, they are used dynamically. At any time during execution, there are at least three nested scopes whose namespaces are directly accessible: the innermost scope, which is searched first, contains the local names; the namespaces of any enclosing functions, which are searched starting with the nearest enclosing scope; the middle scope, searched next, contains the current module&#8217;s global names; and the outermost scope (searched last) is the namespace containing built-in names.</p><p>If a name is declared global, then all references and assignments go directly to the middle scope containing the module&#8217;s global names. Otherwise, all variables found outside of the innermost scope are read-only (an attempt to write to such a variable will simply create a <em>new</em> local variable in the innermost scope, leaving the identically named outer variable unchanged).</p><p>Usually, the local scope references the local names of the (textually) current function. Outside functions, the local scope references the same namespace as the global scope: the module&#8217;s namespace. Class definitions place yet another namespace in the local scope.</p><p>It is important to realize that scopes are determined textually: the global scope of a function defined in a module is that module&#8217;s namespace, no matter from where or by what alias the function is called. On the other hand, the actual search for names is done dynamically, at run time &#8212; however, the language definition is evolving towards static name resolution, at <q>compile</q> time, so don&#8217;t rely on dynamic name resolution! (In fact, local variables are already determined statically.)</p><p>A special quirk of Python is that assignments always go into the innermost scope. Assignments do not copy data &#8212; they just bind names to objects. The same is true for deletions: the statement &#8220;del x&#8221; removes the binding of <code>x</code> from the namespace referenced by the local scope. In fact, all operations that introduce new names use the local scope: in particular, import statements and function definitions bind the module or function name in the local scope. (The global statement can be used to indicate that particular variables live in the global scope.)</p><h2 id="a-first-look-at-classes">A First Look at Classes&#160;<a class="nav" href="#a-first-look-at-classes" title="bookmark!">#</a></h2><p>Classes introduce a little bit of new syntax, three new object types, and some new semantics.</p><h3 id="class-definition-syntax">Class Definition Syntax&#160;<a class="nav" href="#class-definition-syntax" title="bookmark!">#</a></h3><p>The simplest form of class definition looks like this:</p><pre><code>class ClassName(baseclass):
+    &lt;statement-1&gt;
+    .
+    .
+    .
+    &lt;statement-N&gt;
+</code></pre><p>Class definitions, like function definitions (def statements) must be executed before they have any effect. (You could conceivably place a class definition in a branch of an if statement, or inside a function.)</p><p>In practice, the statements inside a class definition will usually be function definitions, but other statements are allowed, and sometimes useful &#8212; we&#8217;ll come back to this later. The function definitions inside a class normally have a peculiar form of argument list, dictated by the calling conventions for methods &#8212; again, this is explained later.</p><p>When a class definition is entered, a new namespace is created, and used as the local scope &#8212; thus, all assignments to local variables go into this new namespace. In particular, function definitions bind the name of the new function here.</p><p>When a class definition is left normally (via the end), a <em>class object</em> is created. This is basically a wrapper around the contents of the namespace created by the class definition; we&#8217;ll learn more about class objects in the next section. The original local scope (the one in effect just before the class definition was entered) is reinstated, and the class object is bound here to the class name given in the class definition header (ClassName in the example).</p><p>Note also that classes can inherit from other classes by placing the names of the intended superclasses in parentheses. If Python is your first object oriented language, don&#8217;t worry yet about what &#8220;inherit&#8221; and &#8220;superclass&#8221; means, we&#8217;ll get into all that later.</p><h3 id="class-objects">Class Objects&#160;<a class="nav" href="#class-objects" title="bookmark!">#</a></h3><p>Class objects support two kinds of operations: attribute references and instantiation.</p><p><em>Attribute references</em> use the standard syntax used for all attribute references in Python: <code>obj.name</code>. Valid attribute names are all the names that were in the class&#8217;s namespace when the class object was created. So, if the class definition looked like this:</p><pre class="python"><span class="pykeyword">class</span> <span class="pyclass">MyClass</span>(object):
+    <span class="pystring">"A simple example class"</span>
+    i = 12345
+    <span class="pykeyword">def</span> <span class="pyfunction">f</span>(self):
+        <span class="pykeyword">return</span> <span class="pystring">'hello world'</span></pre><p>then <code>MyClass.i</code> and <code>MyClass.f</code> are valid attribute references, returning an integer and a function object, respectively. Class attributes can also be assigned to, so you can change the value of <code>MyClass.i</code> by assignment. __doc__ is also a valid attribute, returning the docstring belonging to the class: <code>"A simple example class"</code>.</p><p>Notice that in the class definition we inherit from <code>object</code>. In Python, all your classes <em>should</em> inherit from <code>object</code>, or from some other class that inherits from <code>object</code> (directly or indirectly). However, you don&#8217;t actually have to. We could have written <code>class MyClass:</code>, and everything would still work. We&#8217;ll get into the reasons for this in &#8220;New-Style Classes&#8221;, below. For now though, try to always inherit from <code>object</code>.</p><p>Class <em>instantiation</em> uses function notation. Just pretend that the class object is a parameterless function that returns a new instance of the class. For example (assuming the above class):</p><pre class="python">x = MyClass()</pre><p>creates a new <em>instance</em> of the class and assigns this object to the local variable <code>x</code>.</p><p>The instantiation operation (<q>calling</q> a class object) creates an empty object. Many classes like to create objects with instances customized to a specific initial state. Therefore a class may define a special method named __init__(), like this:</p><pre><code>    def __init__(self):
+        self.data = []
+</code></pre><p>When a class defines an __init__() method, class instantiation automatically invokes __init__() for the newly-created class instance. So in this example, a new, initialized instance can be obtained by:</p><pre class="python">x = MyClass()</pre><p>Of course, the __init__() method may have arguments for greater flexibility. In that case, arguments given to the class instantiation operator are passed on to __init__(). For example,</p><pre><code>&gt;&gt;&gt; class Complex(object):
+...     def __init__(self, realpart, imagpart):
+...         self.r = realpart
+...         self.i = imagpart
+... 
+&gt;&gt;&gt; x = Complex(3.0, -4.5)
+&gt;&gt;&gt; x.r, x.i
+(3.0, -4.5)
+</code></pre><h3 id="instance-objects">Instance Objects&#160;<a class="nav" href="#instance-objects" title="bookmark!">#</a></h3><p>Now what can we do with instance objects? The only operations understood by instance objects are attribute references. There are two kinds of valid attribute names, data attributes and methods.</p><p><em>data attributes</em> correspond to <q>instance variables</q> in Smalltalk, and to <q>data members</q> in C++. Data attributes need not be declared; like local variables, they spring into existence when they are first assigned to. For example, if <code>x</code> is the instance of MyClass created above, the following piece of code will print the value <code>16</code>, without leaving a trace:</p><pre class="python">x.counter = 1
+<span class="pykeyword">while</span> x.counter &lt; 10:
+    x.counter = x.counter * 2
+<span class="pykeyword">print</span> x.counter
+<span class="pykeyword">del</span> x.counter</pre><p>The other kind of instance attribute reference is a <em>method</em>. A method is a function that <q>belongs to</q> an object. (In Python, the term method is not unique to class instances: other object types can have methods as well. For example, list objects have methods called append, insert, remove, sort, and so on. However, in the following discussion, we&#8217;ll use the term method exclusively to mean methods of class instance objects, unless explicitly stated otherwise.)</p><p>Valid method names of an instance object depend on its class. By definition, all attributes of a class that are function objects define corresponding methods of its instances. So in our example, <code>x.f</code> is a valid method reference, since <code>MyClass.f</code> is a function, but <code>x.i</code> is not, since <code>MyClass.i</code> is not. But <code>x.f</code> is not the same thing as <code>MyClass.f</code> &#8212; it is a <em>method object</em>, not a function object.</p><h3 id="method-objects">Method Objects&#160;<a class="nav" href="#method-objects" title="bookmark!">#</a></h3><p>Usually, a method is called right after it is bound:</p><pre class="python">x.f()</pre><p>In the MyClass example, this will return the string <code>'hello world'</code>. However, it is not necessary to call a method right away: <code>x.f</code> is a method object, and can be stored away and called at a later time. For example:</p><pre class="python">xf = x.f
+<span class="pykeyword">while</span> True:
+    <span class="pykeyword">print</span> xf()</pre><p>will continue to print &#8220;hello world&#8221; until the end of time.</p><p>What exactly happens when a method is called? You may have noticed that <code>x.f()</code> was called without an argument above, even though the function definition for f specified an argument. What happened to the argument? Surely Python raises an exception when a function that requires an argument is called without any &#8212; even if the argument isn&#8217;t actually used&#8230;</p><p>Actually, you may have guessed the answer: the special thing about methods is that the object is passed as the first argument of the function. In our example, the call <code>x.f()</code> is exactly equivalent to <code>MyClass.f(x)</code>. In general, calling a method with a list of n arguments is equivalent to calling the corresponding function with an argument list that is created by inserting the method&#8217;s object before the first argument.</p><p>If you still don&#8217;t understand how methods work, a look at the implementation can perhaps clarify matters. When an instance attribute is referenced that isn&#8217;t a data attribute, its class is searched. If the name denotes a valid class attribute that is a function object, a method object is created by packing (pointers to) the instance object and the function object just found together in an abstract object: this is the method object. When the method object is called with an argument list, it is unpacked again, a new argument list is constructed from the instance object and the original argument list, and the function object is called with this new argument list.</p><h2 id="random-remarks">Random Remarks&#160;<a class="nav" href="#random-remarks" title="bookmark!">#</a></h2><p>Data attributes override method attributes with the same name; to avoid accidental name conflicts, which may cause hard-to-find bugs in large programs, it is wise to use some kind of convention that minimizes the chance of conflicts. Possible conventions include capitalizing method names, prefixing data attribute names with a small unique string (perhaps just an underscore), or using verbs for methods and nouns for data attributes.</p><p>Data attributes may be referenced by methods as well as by ordinary users (<q>clients</q>) of an object. In other words, classes are not usable to implement pure abstract data types. In fact, nothing in Python makes it possible to enforce data hiding &#8212; it is all based upon convention. (On the other hand, the Python implementation, written in C, can completely hide implementation details and control access to an object if necessary; this can be used by extensions to Python written in C.)</p><p>Clients should use data attributes with care &#8212; clients may mess up invariants maintained by the methods by stamping on their data attributes. Note that clients may add data attributes of their own to an instance object without affecting the validity of the methods, as long as name conflicts are avoided &#8212; again, a naming convention can save a lot of headaches here.</p><p>There is no shorthand for referencing data attributes (or other methods!) from within methods. I find that this actually increases the readability of methods: there is no chance of confusing local variables and instance variables when glancing through a method.</p><p>Often, the first argument of a method is called <code>self</code>. This is nothing more than a convention: the name <code>self</code> has absolutely no special meaning to Python. (Note, however, that by not following the convention your code may be less readable to other Python programmers, and it is also conceivable that a <em>class browser</em> program might be written that relies upon such a convention.)</p><p>Any function object that is a class attribute defines a method for instances of that class. It is not necessary that the function definition is textually enclosed in the class definition: assigning a function object to a local variable in the class is also ok. For example:</p><pre class="python"><span class="pycomment"># Function defined outside the class</span>
+<span class="pykeyword">def</span> <span class="pyfunction">f1</span>(self, x, y):
+    <span class="pykeyword">return</span> min(x, x+y)
+
+<span class="pykeyword">class</span> <span class="pyclass">C</span>(object):
+    f = f1
+    <span class="pykeyword">def</span> <span class="pyfunction">g</span>(self):
+        <span class="pykeyword">return</span> <span class="pystring">'hello world'</span>
+    h = g</pre><p>Now <code>f</code>, <code>g</code> and <code>h</code> are all attributes of class C that refer to function objects, and consequently they are all methods of instances of C &#8212; <code>h</code> being exactly equivalent to <code>g</code>. Note that this practice usually only serves to confuse the reader of a program.</p><p>Methods may call other methods by using method attributes of the <code>self</code> argument:</p><pre class="python"><span class="pykeyword">class</span> <span class="pyclass">Bag</span>(object):
+    <span class="pykeyword">def</span> <span class="pyfunction">__init__</span>(self):
+        self.data = []
+    <span class="pykeyword">def</span> <span class="pyfunction">add</span>(self, x):
+        self.data.append(x)
+    <span class="pykeyword">def</span> <span class="pyfunction">addtwice</span>(self, x):
+        self.add(x)
+        self.add(x)</pre><p>Methods may reference global names in the same way as ordinary functions. The global scope associated with a method is the module containing the class definition. (The class itself is never used as a global scope!) While one rarely encounters a good reason for using global data in a method, there are many legitimate uses of the global scope: for one thing, functions and modules imported into the global scope can be used by methods, as well as functions and classes defined in it. Usually, the class containing the method is itself defined in this global scope, and in the next section we&#8217;ll find some good reasons why a method would want to reference its own class!</p><h2 id="inheritance">Inheritance&#160;<a class="nav" href="#inheritance" title="bookmark!">#</a></h2><p>Of course, a language feature would not be worthy of the name <q>class</q> without supporting inheritance. The syntax for a derived class definition looks like this:</p><pre><code>class DerivedClassName(BaseClassName):
+    &lt;statement-1&gt;
+    .
+    .
+    .
+    &lt;statement-N&gt;
+</code></pre><p>The name BaseClassName must be defined in a scope containing the derived class definition. In place of a base class name, other arbitrary expressions are also allowed. This can be useful, for example, when the base class is defined in another module:</p><pre><code>class DerivedClassName(modname.BaseClassName):
+</code></pre><p>Execution of a derived class definition proceeds the same as for a base class. When the class object is constructed, the base class is remembered. This is used for resolving attribute references: if a requested attribute is not found in the class, the search proceeds to look in the base class. This rule is applied recursively if the base class itself is derived from some other class.</p><p>There&#8217;s nothing special about instantiation of derived classes: <code>DerivedClassName()</code> creates a new instance of the class. Method references are resolved as follows: the corresponding class attribute is searched, descending down the chain of base classes if necessary, and the method reference is valid if this yields a function object.</p><p>Derived classes may override methods of their base classes. Because methods have no special privileges when calling other methods of the same object, a method of a base class that calls another method defined in the same base class may end up calling a method of a derived class that overrides it. (For C++ programmers: all methods in Python are effectively virtual.)</p><p>An overriding method in a derived class may in fact want to extend rather than simply replace the base class method of the same name. There is a simple way to call the base class method directly: just call &#8220;BaseClassName.methodname(self, arguments)&#8221;. This is occasionally useful to clients as well. (Note that this only works if the base class is defined or imported directly in the global scope.)</p><h3 id="new-style-classes">New-Style Classes&#160;<a class="nav" href="#new-style-classes" title="bookmark!">#</a></h3><p>As we stated before, you <em>should</em> always use <code>object</code>, or another class derived from <code>object</code>, as your baseclass. At the same time though, your classes technically don&#8217;t have to inherit from anything at all.</p><p>The reason for this is that Python actually has <em>two</em> separate type systems, often called &#8220;old-style classes&#8221; and &#8220;new-style classes&#8221;.</p><p>&#8220;Old-style classes&#8221; (classes that at no point inherit from <code>object</code>) are a relic from the days of old, ie. versions of Python less than 2.2. In those days, the situation around types and classes was sometimes murky, and there were a variety of restrictions in place because of this.</p><p>As of Python 2.2 though, so-called &#8220;new-style classes&#8221; were introduced. These classes, which all have <code>object</code> as their base superclass, are the basis for all the types in Python. Every single base type (int, strings, lists, dictionaries, etc.) all inherit from <code>object</code>. This brought a better consistency to the type system, and also enabled a bunch of fun new features (such as use of the <code>property</code> keyword).</p><p>As an example, in the interpreter, try this:</p><pre class="python">&gt;&gt;&gt; isinstance(5, object)
+True</pre><p>See that? Even the number <code>5</code> is an instance of a class that inherits from <code>object</code>.</p><p>Going forward into the future, all your classes should be &#8220;new-style&#8221;. You may not see any immediate differences, but as you get deeper into Python, you&#8217;ll start to see examples of things that can only be done with new-style. All old-style classes will continue to work, for backwards compatability, but they are not recommended for new Python code. In Python 3.0 old-style classes won&#8217;t be supported any more.</p><h3 id="multiple-inheritance">Multiple Inheritance&#160;<a class="nav" href="#multiple-inheritance" title="bookmark!">#</a></h3><p>Python supports a limited form of multiple inheritance as well. A class definition with multiple base classes looks like this:</p><pre><code>class DerivedClassName(Base1, Base2, Base3):
+    &lt;statement-1&gt;
+    .
+    .
+    .
+    &lt;statement-N&gt;
+</code></pre><p>The only rule necessary to explain the semantics is the resolution rule used for class attribute references. This is depth-first, left-to-right. Thus, if an attribute is not found in DerivedClassName, it is searched in Base1, then (recursively) in the base classes of Base1, and only if it is not found there, it is searched in Base2, and so on.</p><p>(To some people breadth first &#8212; searching Base2 and Base3 before the base classes of Base1 &#8212; looks more natural. However, this would require you to know whether a particular attribute of Base1 is actually defined in Base1 or in one of its base classes before you can figure out the consequences of a name conflict with an attribute of Base2. The depth-first rule makes no differences between direct and inherited attributes of Base1.)</p><p>It is clear that indiscriminate use of multiple inheritance is a maintenance nightmare, given the reliance in Python on conventions to avoid accidental name conflicts. A well-known problem with multiple inheritance is a class derived from two classes that happen to have a common base class. While it is easy enough to figure out what happens in this case (the instance will have a single copy of <q>instance variables</q> or data attributes used by the common base class), it is not clear that these semantics are in any way useful.</p><p>Another benefit that new-style classes brought was a more consistent method resolution ordering (mro) for classes using multiple inheritance. For more on this, see <a href="http://www.python.org/download/releases/2.2.3/descrintro/">Guido&#8217;s new-style class essay</a>.</p><h2 id="private-variables">Private Variables&#160;<a class="nav" href="#private-variables" title="bookmark!">#</a></h2><p>There is limited support for class-private identifiers. Any identifier of the form <code>__spam</code> (at least two leading underscores, at most one trailing underscore) is textually replaced with <code>_classname__spam</code>, where <code>classname</code> is the current class name with leading underscore(s) stripped. This mangling is done without regard to the syntactic position of the identifier, so it can be used to define class-private instance and class variables, methods, variables stored in globals, and even variables stored in instances. private to this class on instances of <em>other</em> classes. Truncation may occur when the mangled name would be longer than 255 characters. Outside classes, or when the class name consists of only underscores, no mangling occurs.</p><p>Name mangling is intended to give classes an easy way to define <q>private</q> instance variables and methods, without having to worry about instance variables defined by derived classes, or mucking with instance variables by code outside the class. Note that the mangling rules are designed mostly to avoid accidents; it still is possible for a determined soul to access or modify a variable that is considered private. This can even be useful in special circumstances, such as in the debugger, and that&#8217;s one reason why this loophole is not closed. (Buglet: derivation of a class with the same name as the base class makes use of private variables of the base class possible.)</p><p>Notice that code passed to <code>exec</code>, <code>eval()</code> or <code>evalfile()</code> does not consider the classname of the invoking class to be the current class; this is similar to the effect of the <code>global</code> statement, the effect of which is likewise restricted to code that is byte-compiled together. The same restriction applies to <code>getattr()</code>, <code>setattr()</code> and <code>delattr()</code>, as well as when referencing <code>__dict__</code> directly.</p><h2 id="odds-and-ends">Odds and Ends&#160;<a class="nav" href="#odds-and-ends" title="bookmark!">#</a></h2><p>Sometimes it is useful to have a data type similar to the Pascal <q>record</q> or C <q>struct</q>, bundling together a few named data items. An empty class definition will do nicely:</p><pre class="python"><span class="pykeyword">class</span> <span class="pyclass">Employee</span>(object):
+    <span class="pykeyword">pass</span>
+
+john = Employee() <span class="pycomment"># Create an empty employee record</span>
+
+<span class="pycomment"># Fill the fields of the record</span>
+john.name = <span class="pystring">'John Doe'</span>
+john.dept = <span class="pystring">'computer lab'</span>
+john.salary = 1000</pre><p>A piece of Python code that expects a particular abstract data type can often be passed a class that emulates the methods of that data type instead. For instance, if you have a function that formats some data from a file object, you can define a class with methods read() and readline() that get the data from a string buffer instead, and pass it as an argument.</p><p>Instance method objects have attributes, too: <code>m.im_self</code> is the instance object with the method m, and <code>m.im_func</code> is the function object corresponding to the method.</p><h2 id="tired-of-typing-object">Tired Of Typing <code>object</code>&#160;<a class="nav" href="#tired-of-typing-object" title="bookmark!">#</a></h2><p>If you&#8217;re tired of always inheriting from <code>object</code> (ie. you don&#8217;t want to waste your time typing an extra 8 characters per class you define), there is a simple trick for making all your classes new-style, without explicitly typing <code>object</code>.</p><p>At the beginning of any module where you want new-style classes, simply do:</p><pre class="python">__metaclass__ = type</pre><p>After that, you can simply define your classes like:</p><pre class="python"><span class="pykeyword">class</span> <span class="pyclass">Foo</span>:
+    <span class="pykeyword">def</span> <span class="pyfunction">bar</span>(self):
+        <span class="pykeyword">pass</span></pre><p>and Python will treat the class as if it had inherited from <code>object</code>. The reasons for this are very deep and beyond the scope of this document, and it&#8217;s recommended that you probably don&#8217;t do this (as it&#8217;s non-obvious what it does), but it is one way around explicitly inheriting from <code>object</code>.</p><h2 id="exceptions-are-classes-too">Exceptions Are Classes Too&#160;<a class="nav" href="#exceptions-are-classes-too" title="bookmark!">#</a></h2><p>User-defined exceptions are identified by classes as well. Using this mechanism it is possible to create extensible hierarchies of exceptions.</p><p>You can use classes with the raise statement in several ways, including:</p><pre class="python"><span class="pykeyword">raise</span> Class, instance
+
+<span class="pykeyword">raise</span> Class(argument)
+
+<span class="pykeyword">raise</span> instance</pre><p>In the first form, <code>instance</code> must be an instance of Class or of a class derived from it.  If it is something else, Python creates an exception object by calling the Class constructor with the given instance as argument, and raises the resulting object.</p><p>The third form is a shorthand for:</p><pre class="python"><span class="pykeyword">raise</span> instance.__class__, instance</pre><p>A class in an except clause matches an exception if it is the same class, or a base class thereof (but not the other way around &#8212; an except clause listing a derived class will not match the base class). For example, the following code will print B, C, D in that order:</p><pre class="python"><span class="pykeyword">class</span> <span class="pyclass">B</span>(object):
+    <span class="pykeyword">pass</span>
+<span class="pykeyword">class</span> <span class="pyclass">C</span>(B):
+    <span class="pykeyword">pass</span>
+<span class="pykeyword">class</span> <span class="pyclass">D</span>(C):
+    <span class="pykeyword">pass</span>
+
+<span class="pykeyword">for</span> c <span class="pykeyword">in</span> [B, C, D]:
+    <span class="pykeyword">try</span>:
+        <span class="pykeyword">raise</span> c()
+    <span class="pykeyword">except</span> D:
+        <span class="pykeyword">print</span> <span class="pystring">"D"</span>
+    <span class="pykeyword">except</span> C:
+        <span class="pykeyword">print</span> <span class="pystring">"C"</span>
+    <span class="pykeyword">except</span> B:
+        <span class="pykeyword">print</span> <span class="pystring">"B"</span></pre><p>Note that if the except clauses were reversed (with &#8220;except B&#8221; first), it would have printed B, B, B &#8212; Python checks the except clauses in order, and picks the first one that matches.</p><p>When an error message is printed for an unhandled exception, the exception&#8217;s class name is printed, then a colon and a space, and finally the exception instance (converted to a string using the built-in function str()).</p><h2 id="iterators">Iterators&#160;<a class="nav" href="#iterators" title="bookmark!">#</a></h2><p>By now you have probably noticed that most container objects can be looped over using a for statement:</p><pre class="python"><span class="pykeyword">for</span> element <span class="pykeyword">in</span> [1, 2, 3]:
+    <span class="pykeyword">print</span> element
+<span class="pykeyword">for</span> element <span class="pykeyword">in</span> (1, 2, 3):
+    <span class="pykeyword">print</span> element
+<span class="pykeyword">for</span> key <span class="pykeyword">in</span> {<span class="pystring">'one'</span>:1, <span class="pystring">'two'</span>:2}:
+    <span class="pykeyword">print</span> key
+<span class="pykeyword">for</span> char <span class="pykeyword">in</span> <span class="pystring">"123"</span>:
+    <span class="pykeyword">print</span> char
+<span class="pykeyword">for</span> line <span class="pykeyword">in</span> open(<span class="pystring">"myfile.txt"</span>):
+    <span class="pykeyword">print</span> line</pre><p>This style of access is clear, concise, and convenient. The use of iterators pervades and unifies Python. Behind the scenes, the for statement calls iter() on the container object. The function returns an iterator object that defines the method next() which accesses elements in the container one at a time. When there are no more elements, next() raises a StopIteration exception which tells the for loop to terminate. This example shows how it all works:</p><pre class="python">&gt;&gt;&gt; s = <span class="pystring">'abc'</span>
+&gt;&gt;&gt; it = iter(s)
+&gt;&gt;&gt; it
+&lt;iterator object at 0x00A1DB50&gt;
+&gt;&gt;&gt; it.next()
+<span class="pystring">'a'</span>
+&gt;&gt;&gt; it.next()
+<span class="pystring">'b'</span>
+&gt;&gt;&gt; it.next()
+<span class="pystring">'c'</span>
+&gt;&gt;&gt; it.next()
+
+Traceback (most recent call last):
+  File <span class="pystring">"&lt;stdin&gt;"</span>, line 1, <span class="pykeyword">in</span> ?
+    it.next()
+StopIteration</pre><p>Having seen the mechanics behind the iterator protocol, it is easy to add iterator behavior to your classes. Define a <strong>iter</strong>() method which returns an object with a next() method. If the class defines next(), then <strong>iter</strong>() can just return <code>self</code>:</p><pre><code>class Reverse(object):
+    "Iterator for looping over a sequence backwards"
+    def __init__(self, data):
+        self.data = data
+        self.index = len(data)
+    def __iter__(self):
+        return self
+    def next(self):
+        if self.index == 0:
+            raise StopIteration
+        self.index = self.index - 1
+        return self.data[self.index]
+
+&gt;&gt;&gt; for char in Reverse('spam'):
+...     print char
+...
+m
+a
+p
+s
+</code></pre><h2 id="generators">Generators&#160;<a class="nav" href="#generators" title="bookmark!">#</a></h2><p>Generators are a simple and powerful tool for creating iterators. They are written like regular functions but use the yield statement whenever they want to return data. Each time next() is called, the generator resumes where it left-off (it remembers all the data values and which statement was last executed). An example shows that generators can be trivially easy to create:</p><pre><code>def reverse(data):
+    for index in range(len(data)-1, -1, -1):
+        yield data[index]
+
+&gt;&gt;&gt; for char in reverse('golf'):
+...     print char
+...
+f
+l
+o
+g
+</code></pre><p>Anything that can be done with generators can also be done with class based iterators as described in the previous section. What makes generators so compact is that the <strong>iter</strong>() and next() methods are created automatically.</p><p>Another key feature is that the local variables and execution state are automatically saved between calls. This made the function easier to write and much more clear than an approach using instance variables like <code>self.index</code> and <code>self.data</code>.</p><p>In addition to automatic method creation and saving program state, when generators terminate, they automatically raise StopIteration. In combination, these features make it easy to create iterators with no more effort than writing a regular function.</p><h2 id="generator-expressions">Generator Expressions&#160;<a class="nav" href="#generator-expressions" title="bookmark!">#</a></h2><p>Some simple generators can be coded succinctly as expressions using a syntax similar to list comprehensions but with parentheses instead of brackets. These expressions are designed for situations where the generator is used right away by an enclosing function. Generator expressions are more compact but less versatile than full generator definitions and tend to be more memory friendly than equivalent list comprehensions.</p><p>Examples:</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><pre class="python wide wide">&gt;&gt;&gt; sum(i*i <span class="pykeyword">for</span> i <span class="pykeyword">in</span> range(10))                 <span class="pycomment"># sum of squares</span>
+285
+
+&gt;&gt;&gt; xvec = [10, 20, 30]
+&gt;&gt;&gt; yvec = [7, 5, 3]
+&gt;&gt;&gt; sum(x*y <span class="pykeyword">for</span> x,y <span class="pykeyword">in</span> zip(xvec, yvec))         <span class="pycomment"># dot product</span>
+260
+
+&gt;&gt;&gt; <span class="pykeyword">from</span> math <span class="pykeyword">import</span> pi, sin
+&gt;&gt;&gt; sine_table = dict((x, sin(x*pi/180)) <span class="pykeyword">for</span> x <span class="pykeyword">in</span> range(0, 91))
+
+&gt;&gt;&gt; unique_words = set(word  <span class="pykeyword">for</span> line <span class="pykeyword">in</span> page  <span class="pykeyword">for</span> word <span class="pykeyword">in</span> line.split())
+
+&gt;&gt;&gt; valedictorian = max((student.gpa, student.name) <span class="pykeyword">for</span> student <span class="pykeyword">in</span> graduates)
+
+&gt;&gt;&gt; data = <span class="pystring">'golf'</span>
+&gt;&gt;&gt; list(data[i] <span class="pykeyword">for</span> i <span class="pykeyword">in</span> range(len(data)-1,-1,-1))
+[<span class="pystring">'f'</span>, <span class="pystring">'l'</span>, <span class="pystring">'o'</span>, <span class="pystring">'g'</span>]</pre></div><div class="yui-ge"><div class="yui-u first"><hr /><h4>Footnotes</h4><p>&#8230; namespace<img alt="9.1" src="node11.html#tex2html5" />
+     Except for one thing. Module objects have a secret read-only attribute called <strong>dict</strong> which returns the dictionary used to implement the module&#8217;s namespace; the name <strong>dict</strong> is an attribute but not a global name. Obviously, using this violates the abstraction of namespace implementation, and should be restricted to things like post-mortem debuggers.</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><div class='comment'>
+<p><b>Comment:</b></p>
+<p>
+"Python's class mechanism adds classes to the language with a minimum of new syntax and semantics"
+
+This feels a bit aged.</p>
+<p>Posted by <b class='author'><a href='http://pytut.infogami.com/node11.html/_comments/3p7v'>infogami</a></b></p>
+</div>
+
+<div class='comment'>
+<p><b>Comment:</b></p>
+<p>
+I've tweaked that text a little, but it needs more work.</p>
+<p>Posted by <b class='author'><a href='http://pytut.infogami.com/node11.html/_comments/3pxd/_comments/3q3v'>infogami</a></b></p>
+</div>
+
+<div class='comment'>
+<p><b>Comment:</b></p>
+<p>
+"There are two new valid (semantic) forms for the raise statement:"
+
+This also seems dated; raising objects instead of strings has been around for a while now. There will be fewer people coming to the tutorial from the exceptions-are-strings era of Python than from other (or no) languages.</p>
+<p>Posted by <b class='author'><a href='http://pytut.infogami.com/node11.html/_comments/3pxd'>infogami</a></b></p>
+</div>
+
+<div class='comment'>
+<p><b>Comment:</b></p>
+<p>
+I remember when I first read the tutorial nearly 10 years ago, the section about scopes and namespaces was the one that puzzled me most, partly because I didn't understand what these words meant in the first place.
+
+I think, this section should start off with some examples that show the effect of scoping rules and then explain *why* things work as they do afterwards, rather than the theoretical gobbledigook (at least to a novice) it has now. The whole theoretical background could be marked as an excursion for the advanced reader, telling the novice programmer to come back to it later.</p>
+<p>Posted by <b class='author'><a href='http://pytut.infogami.com/node11.html/_comments/3td8'>infogami</a></b></p>
+</div>
+
+<div class='comment'>
+<p><b>Comment:</b></p>
+<p>
+Done. All classes now inherit from object, and I've given a little info on new-style vs. old-style. Comments would be appreciated.
+
+Jay P. </p>
+<p>Posted by <b class='author'><a href='http://pytut.infogami.com/node11.html/_comments/3wt0/_comments/3wy3/_comments/413t'>infogami</a></b></p>
+</div>
+
+<div class='comment'>
+<p><b>Comment:</b></p>
+<p>
+I'd say it's about time ;-)
+
+(but we probably need a brief explanation of "old-style" classes as well,
+since people will stumble upon them in the wild).</p>
+<p>Posted by <b class='author'><a href='http://pytut.infogami.com/node11.html/_comments/3wt0/_comments/3wy3'>infogami</a></b></p>
+</div>
+
+<div class='comment'>
+<p><b>Comment:</b></p>
+<p>
+What about changing all the examples to define classes that inherit from 'object'? </p>
+<p>Posted by <b class='author'><a href='http://pytut.infogami.com/node11.html/_comments/3wt0'>infogami</a></b></p>
+</div>
+
+<div class='comment'>
+<p><b>Comment:</b></p>
+<p>
+Oh, and before anyone asks, I purposely didn't have my classes in my new intro inheriting from "object". There's only so many times I can say "ignore this, it'll make sense later" before I feel like it's a Java tutorial.
+</p>
+<p>Posted by <b class='author'><a href='http://pytut.infogami.com/node11.html/_comments/43qy/_comments/43rh'>infogami</a></b></p>
+</div>
+
+<div class='comment'>
+<p><b>Comment:</b></p>
+<p>
+I just moved the page onsite, to http://pytut.infogami.com/node11-baseline.html</p>
+<p>Posted by <b class='author'><a href='http://pytut.infogami.com/node11.html/_comments/43qy/_comments/4p71'>infogami</a></b></p>
+</div>
+
+<div class='comment'>
+<p><b>Comment:</b></p>
+<p>
+As I noted at the beginning of the page, I've created a new introduction for this section (http://parlar.infogami.com/pytut_classes_copy). Can I get some feedback on it (positive/negative). If it's deemed reasonable enough, we can make it the new intro for this page, and then people can start hacking on it.
+
+Jay P.</p>
+<p>Posted by <b class='author'><a href='http://pytut.infogami.com/node11.html/_comments/43qy'>infogami</a></b></p>
+</div>
+
+<div class='comment'>
+<p><b>Comment:</b></p>
+<p>
+Added a reference to the three-part Introducing Python Objects video-set over at ShowMeDo.</p>
+<p>Posted by <b class='author'><a href='http://pytut.infogami.com/node11.html/_comments/aarj'>infogami</a></b></p>
+</div>
+</div> <!-- yui-g --></div> <!-- content --> </div> <!-- yui-b --> </div> <!-- yui-main --> <div class="yui-b"> <div id='menu'> <ul> <li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li> <li><b><a href="." title="Go to pytut index page.">::: pytut :::</a></b></li> </ul> <ul><li><b>::: contents</b></li></ul> <ul><li><ul><li><a href="#a-word-about-terminology">A Word About Terminology</a></li><li><a href="#python-scopes-and-name-spaces">Python Scopes and Name Spaces</a></li><li><a href="#a-first-look-at-classes">A First Look at Classes</a></li><li><ul><li><a href="#class-definition-syntax">Class Definition Syntax</a></li><li><a href="#class-objects">Class Objects</a></li><li><a href="#instance-objects">Instance Objects</a></li><li><a href="#method-objects">Method Objects</a></li></ul></li><li><a href="#random-remarks">Random Remarks</a></li><li><a href="#inheritance">Inheritance</a></li><li><ul><li><a href="#new-style-classes">New-Style Classes</a></li><li><a href="#multiple-inheritance">Multiple Inheritance</a></li></ul></li><li><a href="#private-variables">Private Variables</a></li><li><a href="#odds-and-ends">Odds and Ends</a></li><li><a href="#tired-of-typing-object">Tired Of Typing object</a></li><li><a href="#exceptions-are-classes-too">Exceptions Are Classes Too</a></li><li><a href="#iterators">Iterators</a></li><li><a href="#generators">Generators</a></li><li><a href="#generator-expressions">Generator Expressions</a></li></ul></li></ul> </div> <!-- menu --> </div> <!-- yui-b --> </div> <!-- bd --> <div id="ft"> <!-- footer --> <p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15_grey.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;"></a>
+this page was rendered by a <a href="http://www.djangoproject.com/">django</a> application in 0.09s 2009-06-21 18:44:24.531817.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p> </div> <!-- ft --> </div> <!-- doc --> <script src="/media/js/effbot-min.js" type="text/javascript"> </script> </body> </html>

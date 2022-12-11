@@ -1,0 +1,853 @@
+
+@@module urllib2
+
+<h1>urllib2&#8212;extensible library for opening URLs</h1>
+
+<p>The {@link urllib2} module defines functions and classes which help
+in opening URLs (mostly HTTP) in a complex world -- basic and digest
+authentication, redirections, cookies and more.
+
+<p>The {@link urllib2} module defines the following functions:
+
+@@function urlopen(url[, data])
+
+<p>Open the URL {@var url}, which can be either a string or a {@link
+Request} object.
+
+<p>{@var data} should be a string, which specifies additional data to
+send to the server. In HTTP requests, which are the only ones that
+support {@var data}, it should be a buffer in the format of
+application/x-www-form-urlencoded, for example one returned from {@link
+urllib.urlencode}.
+
+<p>This function returns a file-like object with two additional methods:
+<ul>
+<li>
+<p>{@link geturl} -- return the URL of the resource retrieved
+<li>
+<p>{@link info} -- return the meta-information of the page, as a
+dictionary-like object
+</ul>
+
+<p>Raises {@link URLError} on errors.
+
+<p>Note that {@link None} may be returned if no handler handles the
+request (though the default installed global {@link OpenerDirector} uses
+{@link UnknownHandler} to ensure this never happens).
+
+@@function install_opener(opener)
+
+<p>Install an {@link OpenerDirector} instance as the default global
+opener. Installing an opener is only necessary if you want urlopen to
+use that opener; otherwise, simply call {@link OpenerDirector.open}
+instead of {@link urlopen}. The code does not check for a real {@link
+OpenerDirector}, and any class with the appropriate interface will work.
+
+@@function build_opener([handler, ...])
+
+<p>Return an {@link OpenerDirector} instance, which chains the handlers
+in the order given. {@var handler}s can be either instances of {@link
+BaseHandler}, or subclasses of {@link BaseHandler} (in which case it
+must be possible to call the constructor without any parameters).
+Instances of the following classes will be in front of the {@var
+handler}s, unless the {@var handler}s contain them, instances of them or
+subclasses of them: {@link ProxyHandler}, {@link UnknownHandler}, {@link
+HTTPHandler}, {@link HTTPDefaultErrorHandler}, {@link
+HTTPRedirectHandler}, {@link FTPHandler}, {@link FileHandler}, {@link
+HTTPErrorProcessor}.
+
+<p>If the Python installation has SSL support ({@link socket.ssl}
+exists), {@link HTTPSHandler} will also be added.
+
+<p>Beginning in Python 2.3, a {@link BaseHandler} subclass may also
+change its {@link handler_order} member variable to modify its position
+in the handlers list. Besides {@link ProxyHandler}, which has {@link
+handler_order} of {@code 100}, all handlers currently have it set to
+{@code 500}.
+
+@@text 
+
+<p>The following exceptions are raised as appropriate:
+
+@@exception URLError
+
+<p>The handlers raise this exception (or derived exceptions) when they
+run into a problem. It is a subclass of {@link exceptions.IOError}.
+
+@@exception HTTPError
+
+<p>A subclass of {@link URLError}, it can also function as a
+non-exceptional file-like return value (the same thing that {@link
+urlopen} returns). This is useful when handling exotic HTTP errors, such
+as requests for authentication.
+
+@@exception GopherError
+
+<p>A subclass of {@link URLError}, this is the error raised by the
+Gopher handler.
+
+@@text 
+
+<p>The following classes are provided:
+
+@@class Request(url[, data][, headers] [, origin_req_host][, unverifiable])
+
+<p>This class is an abstraction of a URL request.
+
+<p>{@var url} should be a string which is a valid URL. For a description
+of {@var data} see the {@link add_data} description. {@var headers}
+should be a dictionary, and will be treated as if {@link add_header} was
+called with each key and value as arguments.
+
+<p>The final two arguments are only of interest for correct handling of
+third-party HTTP cookies:
+
+<p>{@var origin_req_host} should be the request-host of the origin
+transaction, as defined by {@link http://www.faqs.org/rfcs/rfc2965.html
+RFC 2965}. It defaults to {@code cookielib.request_host(self)}. This is
+the host name or IP address of the original request that was initiated
+by the user. For example, if the request is for an image in an HTML
+document, this should be the request-host of the request for the page
+containing the image.
+
+<p>{@var unverifiable} should indicate whether the request is
+unverifiable, as defined by RFC 2965. It defaults to False. An
+unverifiable request is one whose URL the user did not have the option
+to approve. For example, if the request is for an image in an HTML
+document, and the user had no option to approve the automatic fetching
+of the image, this should be true.
+
+@@class OpenerDirector()
+
+<p>The {@link OpenerDirector} class opens URLs via {@link BaseHandler}s
+chained together. It manages the chaining of handlers, and recovery from
+errors.
+
+@@class BaseHandler()
+
+<p>This is the base class for all registered handlers -- and handles
+only the simple mechanics of registration.
+
+@@class HTTPDefaultErrorHandler()
+
+<p>A class which defines a default handler for HTTP error responses; all
+responses are turned into {@link HTTPError} exceptions.
+
+@@class HTTPRedirectHandler()
+
+<p>A class to handle redirections.
+
+@@class HTTPCookieProcessor([cookiejar])
+
+<p>A class to handle HTTP Cookies.
+
+@@class ProxyHandler([proxies])
+
+<p>Cause requests to go through a proxy. If {@var proxies} is given, it
+must be a dictionary mapping protocol names to URLs of proxies. The
+default is to read the list of proxies from the environment variables
+&ltprotocol>_proxy.
+
+@@class HTTPPasswordMgr()
+
+<p>Keep a database of {@code (}{@var realm}, {@var uri}) -> ({@var
+user}, {@var password}) mappings.
+
+@@class HTTPPasswordMgrWithDefaultRealm()
+
+<p>Keep a database of {@code (}{@var realm}, {@var uri}) -> ({@var
+user}, {@var password}) mappings. A realm of {@link None} is considered
+a catch-all realm, which is searched if no other realm fits.
+
+@@class AbstractBasicAuthHandler([password_mgr])
+
+<p>This is a mixin class that helps with HTTP authentication, both to
+the remote host and to a proxy. {@var password_mgr}, if given, should be
+something that is compatible with {@link HTTPPasswordMgr}; refer to
+section {@link http-password-mgr.html#http-password-mgr} for information
+on the interface that must be supported.
+
+@@class HTTPBasicAuthHandler([password_mgr])
+
+<p>Handle authentication with the remote host. {@var password_mgr}, if
+given, should be something that is compatible with {@link
+HTTPPasswordMgr}; refer to section {@link
+http-password-mgr.html#http-password-mgr} for information on the
+interface that must be supported.
+
+@@class ProxyBasicAuthHandler([password_mgr])
+
+<p>Handle authentication with the proxy. {@var password_mgr}, if given,
+should be something that is compatible with {@link HTTPPasswordMgr};
+refer to section {@link http-password-mgr.html#http-password-mgr} for
+information on the interface that must be supported.
+
+@@class AbstractDigestAuthHandler([password_mgr])
+
+<p>This is a mixin class that helps with HTTP authentication, both to
+the remote host and to a proxy. {@var password_mgr}, if given, should be
+something that is compatible with {@link HTTPPasswordMgr}; refer to
+section {@link http-password-mgr.html#http-password-mgr} for information
+on the interface that must be supported.
+
+@@class HTTPDigestAuthHandler([password_mgr])
+
+<p>Handle authentication with the remote host. {@var password_mgr}, if
+given, should be something that is compatible with {@link
+HTTPPasswordMgr}; refer to section {@link
+http-password-mgr.html#http-password-mgr} for information on the
+interface that must be supported.
+
+@@class ProxyDigestAuthHandler([password_mgr])
+
+<p>Handle authentication with the proxy. {@var password_mgr}, if given,
+should be something that is compatible with {@link HTTPPasswordMgr};
+refer to section {@link http-password-mgr.html#http-password-mgr} for
+information on the interface that must be supported.
+
+@@class HTTPHandler()
+
+<p>A class to handle opening of HTTP URLs.
+
+@@class HTTPSHandler()
+
+<p>A class to handle opening of HTTPS URLs.
+
+@@class FileHandler()
+
+<p>Open local files.
+
+@@class FTPHandler()
+
+<p>Open FTP URLs.
+
+@@class CacheFTPHandler()
+
+<p>Open FTP URLs, keeping a cache of open FTP connections to minimize
+delays.
+
+@@class GopherHandler()
+
+<p>Open gopher URLs.
+
+@@class UnknownHandler()
+
+<p>A catch-all class to handle unknown URLs.
+
+@@text 
+
+<h2>Request Objects</h2>
+
+<p>The following methods describe all of {@link Request}'s public
+interface, and so all must be overridden in subclasses.
+
+@@method Request.add_data(data)
+
+<p>Set the {@link Request} data to {@var data}. This is ignored by all
+handlers except HTTP handlers -- and there it should be a byte string,
+and will change the request to be {@code POST} rather than {@code GET}.
+
+@@method Request.get_method()
+
+<p>Return a string indicating the HTTP request method. This is only
+meaningful for HTTP requests, and currently always returns {@code 'GET'}
+or {@code 'POST'}.
+
+@@method Request.has_data()
+
+<p>Return whether the instance has a non-{@link None} data.
+
+@@method Request.get_data()
+
+<p>Return the instance's data.
+
+@@method Request.add_header(key, val)
+
+<p>Add another header to the request. Headers are currently ignored by
+all handlers except HTTP handlers, where they are added to the list of
+headers sent to the server. Note that there cannot be more than one
+header with the same name, and later calls will overwrite previous calls
+in case the {@var key} collides. Currently, this is no loss of HTTP
+functionality, since all headers which have meaning when used more than
+once have a (header-specific) way of gaining the same functionality
+using only one header.
+
+@@method Request.add_unredirected_header(key, header)
+
+<p>Add a header that will not be added to a redirected request.
+<blockquote>
+@since New in version 2.4. <br />
+</blockquote>
+
+@@method Request.has_header(header)
+
+<p>Return whether the instance has the named header (checks both regular
+and unredirected).
+<blockquote>
+@since New in version
+2.4. <br />
+</blockquote>
+
+@@method Request.get_full_url()
+
+<p>Return the URL given in the constructor.
+
+@@method Request.get_type()
+
+<p>Return the type of the URL -- also known as the scheme.
+
+@@method Request.get_host()
+
+<p>Return the host to which a connection will be made.
+
+@@method Request.get_selector()
+
+<p>Return the selector -- the part of the URL that is sent to the
+server.
+
+@@method Request.set_proxy(host, type)
+
+<p>Prepare the request by connecting to a proxy server. The {@var host}
+and {@var type} will replace those of the instance, and the instance's
+selector will be the original URL given in the constructor.
+
+@@method Request.get_origin_req_host()
+
+<p>Return the request-host of the origin transaction, as defined by
+{@link http://www.faqs.org/rfcs/rfc2965.html RFC 2965}. See the
+documentation for the {@link Request} constructor.
+
+@@method Request.is_unverifiable()
+
+<p>Return whether the request is unverifiable, as defined by RFC 2965.
+See the documentation for the {@link Request} constructor.
+
+@@text 
+
+<h2>OpenerDirector Objects</h2>
+
+<p>{@link OpenerDirector} instances have the following methods:
+
+@@method OpenerDirector.add_handler(handler)
+
+<p>{@var handler} should be an instance of {@link BaseHandler}. The
+following methods are searched, and added to the possible chains (note
+that HTTP errors are a special case).
+<ul>
+<li>
+<p>{@var protocol}_open() -- signal that the handler knows how to open
+{@var protocol} URLs.
+<li>
+<p>{@link http_error_}{@var type}() -- signal that the handler knows how
+to handle HTTP errors with HTTP error code {@var type}.
+<li>
+<p>{@var protocol}_error() -- signal that the handler knows how to
+handle errors from (non-{@code http}) {@var protocol}.
+<li>
+<p>{@var protocol}_request() -- signal that the handler knows how to
+pre-process {@var protocol} requests.
+<li>
+<p>{@var protocol}_response() -- signal that the handler knows how to
+post-process {@var protocol} responses.
+</ul>
+
+@@method OpenerDirector.open(url[, data])
+
+<p>Open the given {@var url} (which can be a request object or a
+string), optionally passing the given {@var data}. Arguments, return
+values and exceptions raised are the same as those of {@link urlopen}
+(which simply calls the {@link open} method on the currently installed
+global {@link OpenerDirector}).
+
+@@method OpenerDirector.error(proto[, arg[, ...]])
+
+<p>Handle an error of the given protocol. This will call the registered
+error handlers for the given protocol with the given arguments (which
+are protocol specific). The HTTP protocol is a special case which uses
+the HTTP response code to determine the specific error handler; refer to
+the {@link http_error_*} methods of the handler classes.
+
+<p>Return values and exceptions raised are the same as those of {@link
+urlopen}.
+
+@@text 
+
+<p>OpenerDirector objects open URLs in three stages:
+
+<p>The order in which these methods are called within each stage is
+determined by sorting the handler instances.
+<ol>
+<li>
+<p>Every handler with a method named like {@var protocol}_request() has
+that method called to pre-process the request.
+<li>
+<p>Handlers with a method named like {@var protocol}_open() are called
+to handle the request. This stage ends when a handler either returns a
+non-{@code None} value (ie. a response), or raises an exception (usually
+URLError). Exceptions are allowed to propagate.
+
+<p>In fact, the above algorithm is first tried for methods named {@link
+default_open}. If all such methods return {@code None}, the algorithm is
+repeated for methods named like {@var protocol}_open(). If all such
+methods return {@code None}, the algorithm is repeated for methods named
+{@link unknown_open}.
+
+<p>Note that the implementation of these methods may involve calls of
+the parent {@link OpenerDirector} instance's {@link .open} and {@link
+.error} methods.
+<li>
+<p>Every handler with a method named like {@var protocol}_response() has
+that method called to post-process the response.
+</ol>
+
+<h2>BaseHandler Objects</h2>
+
+<p>{@link BaseHandler} objects provide a couple of methods that are
+directly useful, and others that are meant to be used by derived
+classes. These are intended for direct use:
+
+@@method BaseHandler.add_parent(director)
+
+<p>Add a director as parent.
+
+@@method BaseHandler.close()
+
+<p>Remove any parents.
+
+@@text 
+
+
+<p class='note'><b>Note:</b> The following members and methods should
+only be used by classes derived from The convention has been adopted
+that subclasses defining {@var protocol}_request() or {@var
+protocol}_response() methods are named {@link *Processor}; all others
+are named {@link *Handler}.
+
+@@attribute BaseHandler.parent
+
+<p>A valid {@link OpenerDirector}, which can be used to open using a
+different protocol, or handle errors.
+
+@@method BaseHandler.default_open(req)
+
+<p>This method is {@em not} defined in {@link BaseHandler}, but
+subclasses should define it if they want to catch all URLs.
+
+<p>This method, if implemented, will be called by the parent {@link
+OpenerDirector}. It should return a file-like object as described in the
+return value of the {@link open} of {@link OpenerDirector}, or {@code
+None}. It should raise {@link URLError}, unless a truly exceptional
+thing happens (for example, {@link exceptions.MemoryError} should not be
+mapped to {@link URLError}).
+
+<p>This method will be called before any protocol-specific open method.
+
+@@unknown protocol_open(req)
+
+<p>This method is {@em not} defined in {@link BaseHandler}, but
+subclasses should define it if they want to handle URLs with the given
+protocol.
+
+<p>This method, if defined, will be called by the parent {@link
+OpenerDirector}. Return values should be the same as for {@link
+default_open}.
+
+@@method BaseHandler.unknown_open(req)
+
+<p>This method is {@var not} defined in {@link BaseHandler}, but
+subclasses should define it if they want to catch all URLs with no
+specific registered handler to open it.
+
+<p>This method, if implemented, will be called by the {@link parent}
+{@link OpenerDirector}. Return values should be the same as for {@link
+default_open}.
+
+@@method BaseHandler.http_error_default(req, fp, code, msg, hdrs)
+
+<p>This method is {@em not} defined in {@link BaseHandler}, but
+subclasses should override it if they intend to provide a catch-all for
+otherwise unhandled HTTP errors. It will be called automatically by the
+{@link OpenerDirector} getting the error, and should not normally be
+called in other circumstances.
+
+<p>{@var req} will be a {@link Request} object, {@var fp} will be a
+file-like object with the HTTP error body, {@var code} will be the
+three-digit code of the error, {@var msg} will be the user-visible
+explanation of the code and {@var hdrs} will be a mapping object with
+the headers of the error.
+
+<p>Return values and exceptions raised should be the same as those of
+{@link urlopen}.
+
+@@method BaseHandler.http_error_nnn(req, fp, code, msg, hdrs)
+
+<p>{@var nnn} should be a three-digit HTTP error code. This method is
+also not defined in {@link BaseHandler}, but will be called, if it
+exists, on an instance of a subclass, when an HTTP error with code {@var
+nnn} occurs.
+
+<p>Subclasses should override this method to handle specific HTTP
+errors.
+
+<p>Arguments, return values and exceptions raised should be the same as
+for {@link http_error_default}.
+
+@@unknown protocol_request(req)
+
+<p>This method is {@em not} defined in {@link BaseHandler}, but
+subclasses should define it if they want to pre-process requests of the
+given protocol.
+
+<p>This method, if defined, will be called by the parent {@link
+OpenerDirector}. {@var req} will be a {@link Request} object. The return
+value should be a {@link Request} object.
+
+@@unknown protocol_response(req, response)
+
+<p>This method is {@em not} defined in {@link BaseHandler}, but
+subclasses should define it if they want to post-process responses of
+the given protocol.
+
+<p>This method, if defined, will be called by the parent {@link
+OpenerDirector}. {@var req} will be a {@link Request} object. {@var
+response} will be an object implementing the same interface as the
+return value of {@link urlopen}. The return value should implement the
+same interface as the return value of {@link urlopen}.
+
+@@text 
+
+<h2>HTTPRedirectHandler Objects</h2>
+
+
+<p class='note'><b>Note:</b> Some HTTP redirections require action from
+this module's client code. If this is the case, {@link HTTPError} is
+raised. See {@link http://www.faqs.org/rfcs/rfc2616.html RFC 2616} for
+details of the precise meanings of the various redirection codes.
+
+@@method HTTPRedirectHandler.redirect_request(req, fp, code, msg, hdrs)
+
+<p>Return a {@link Request} or {@link None} in response to a redirect.
+This is called by the default implementations of the {@link
+http_error_30*} methods when a redirection is received from the server.
+If a redirection should take place, return a new {@link Request} to
+allow {@link http_error_30*} to perform the redirect. Otherwise, raise
+{@link HTTPError} if no other handler should try to handle this URL, or
+return {@link None} if you can't but another handler might.
+
+<p class='note'><b>Note:</b> The default implementation of this method
+does not strictly follow {@link http://www.faqs.org/rfcs/rfc2616.html
+RFC 2616}, which says that 301 and 302 responses to {@code POST}
+requests must not be automatically redirected without confirmation by
+the user. In reality, browsers do allow automatic redirection of these
+responses, changing the POST to a {@code GET}, and the default
+implementation reproduces this behavior.
+
+@@method HTTPRedirectHandler.http_error_301(req, fp, code, msg, hdrs)
+
+<p>Redirect to the {@code Location:} URL. This method is called by the
+parent {@link OpenerDirector} when getting an HTTP `moved permanently'
+response.
+
+@@method HTTPRedirectHandler.http_error_302(req, fp, code, msg, hdrs)
+
+<p>The same as {@link http_error_301}, but called for the `found'
+response.
+
+@@method HTTPRedirectHandler.http_error_303(req, fp, code, msg, hdrs)
+
+<p>The same as {@link http_error_301}, but called for the `see other'
+response.
+
+@@method HTTPRedirectHandler.http_error_307(req, fp, code, msg, hdrs)
+
+<p>The same as {@link http_error_301}, but called for the `temporary
+redirect' response.
+
+@@text 
+
+<h2>HTTPCookieProcessor Objects</h2>
+
+<p>{@link HTTPCookieProcessor} instances have one attribute:
+
+@@attribute HTTPCookieProcessor.cookiejar
+
+<p>The {@link cookielib.CookieJar} in which cookies are stored.
+
+@@text 
+
+<h2>ProxyHandler Objects</h2>
+
+@@unknown protocol_open(request)
+
+<p>The {@link ProxyHandler} will have a method {@var protocol}_open()
+for every {@var protocol} which has a proxy in the {@var proxies}
+dictionary given in the constructor. The method will modify requests to
+go through the proxy, by calling {@code request.set_proxy()}, and call
+the next handler in the chain to actually execute the protocol.
+
+@@text 
+
+<h2>HTTPPasswordMgr Objects</h2>
+
+<p>These methods are available on {@link HTTPPasswordMgr} and {@link
+HTTPPasswordMgrWithDefaultRealm} objects.
+
+@@method HTTPPasswordMgr.add_password(realm, uri, user, passwd)
+
+<p>{@var uri} can be either a single URI, or a sequence of URIs. {@var
+realm}, {@var user} and {@var passwd} must be strings. This causes
+{@code (}{@var user}, {@var passwd}) to be used as authentication tokens
+when authentication for {@var realm} and a super-URI of any of the given
+URIs is given.
+
+@@method HTTPPasswordMgr.find_user_password(realm, authuri)
+
+<p>Get user/password for given realm and URI, if any. This method will
+return {@code (None, None)} if there is no matching user/password.
+
+<p>For {@link HTTPPasswordMgrWithDefaultRealm} objects, the realm {@link
+None} will be searched if the given {@var realm} has no matching
+user/password.
+
+@@text 
+
+<h2>AbstractBasicAuthHandler Objects</h2>
+
+@@method AbstractBasicAuthHandler.handle_authentication_request(authreq, host, req, headers)
+
+<p>Handle an authentication request by getting a user/password pair, and
+re-trying the request. {@var authreq} should be the name of the header
+where the information about the realm is included in the request, {@var
+host} is the host to authenticate to, {@var req} should be the (failed)
+{@link Request} object, and {@var headers} should be the error headers.
+
+@@text 
+
+<h2>HTTPBasicAuthHandler Objects</h2>
+
+@@method HTTPBasicAuthHandler.http_error_401(req, fp, code, msg, hdrs)
+
+<p>Retry the request with authentication information, if available.
+
+@@text 
+
+<h2>ProxyBasicAuthHandler Objects</h2>
+
+@@method ProxyBasicAuthHandler.http_error_407(req, fp, code, msg, hdrs)
+
+<p>Retry the request with authentication information, if available.
+
+@@text 
+
+<h2>AbstractDigestAuthHandler Objects</h2>
+
+@@method AbstractDigestAuthHandler.handle_authentication_request(authreq, host, req, headers)
+
+<p>{@var authreq} should be the name of the header where the information
+about the realm is included in the request, {@var host} should be the
+host to authenticate to, {@var req} should be the (failed) {@link
+Request} object, and {@var headers} should be the error headers.
+
+@@text 
+
+<h2>HTTPDigestAuthHandler Objects</h2>
+
+@@method HTTPDigestAuthHandler.http_error_401(req, fp, code, msg, hdrs)
+
+<p>Retry the request with authentication information, if available.
+
+@@text 
+
+<h2>ProxyDigestAuthHandler Objects</h2>
+
+@@method ProxyDigestAuthHandler.http_error_407(req, fp, code, msg, hdrs)
+
+<p>Retry the request with authentication information, if available.
+
+@@text 
+
+<h2>HTTPHandler Objects</h2>
+
+@@method HTTPHandler.http_open(req)
+
+<p>Send an HTTP request, which can be either GET or POST, depending on
+{@var req}.has_data().
+
+@@text 
+
+<h2>HTTPSHandler Objects</h2>
+
+@@method HTTPSHandler.https_open(req)
+
+<p>Send an HTTPS request, which can be either GET or POST, depending on
+{@var req}.has_data().
+
+@@text 
+
+<h2>FileHandler Objects</h2>
+
+@@method FileHandler.file_open(req)
+
+<p>Open the file locally, if there is no host name, or the host name is
+{@code 'localhost'}. Change the protocol to {@code ftp} otherwise, and
+retry opening it using {@link parent}.
+
+@@text 
+
+<h2>FTPHandler Objects</h2>
+
+@@method FTPHandler.ftp_open(req)
+
+<p>Open the FTP file indicated by {@var req}. The login is always done
+with empty username and password.
+
+@@text 
+
+<h2>CacheFTPHandler Objects</h2>
+
+<p>{@link CacheFTPHandler} objects are {@link FTPHandler} objects with
+the following additional methods:
+
+@@method CacheFTPHandler.setTimeout(t)
+
+<p>Set timeout of connections to {@var t} seconds.
+
+@@method CacheFTPHandler.setMaxConns(m)
+
+<p>Set maximum number of cached connections to {@var m}.
+
+@@text 
+
+<h2>GopherHandler Objects</h2>
+
+@@method GopherHandler.gopher_open(req)
+
+<p>Open the gopher resource indicated by {@var req}.
+
+@@text 
+
+<h2>UnknownHandler Objects</h2>
+
+@@method UnknownHandler.unknown_open()
+
+<p>Raise a {@link URLError} exception.
+
+@@text 
+
+<h2>HTTPErrorProcessor Objects</h2>
+
+<p>New in version 2.4.
+
+@@method HTTPErrorProcessor.unknown_open()
+
+<p>Process HTTP error responses.
+
+<p>For 200 error codes, the response object is returned immediately.
+
+<p>For non-200 error codes, this simply passes the job on to the {@var
+protocol}_error_{@var code}() handler methods, via {@link
+OpenerDirector.error}. Eventually, {@link
+urllib2.HTTPDefaultErrorHandler} will raise an {@link HTTPError} if no
+other handler handles the error.
+
+@@text 
+
+<h2>Examples</h2>
+
+<p>This example gets the python.org main page and displays the first 100
+bytes of it:
+
+<pre>
+&gt;&gt;&gt; import urllib2
+&gt;&gt;&gt; f = urllib2.urlopen('http://www.python.org/')
+&gt;&gt;&gt; print f.read(100)
+&lt;!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"&gt;
+&lt;?xml-stylesheet href="./css/ht2html
+</pre>
+
+
+<p>Here we are sending a data-stream to the stdin of a CGI and reading
+the data it returns to us:
+
+<pre>
+&gt;&gt;&gt; import urllib2
+&gt;&gt;&gt; req = urllib2.Request(url='https://localhost/cgi-bin/test.cgi',
+...                       data='This data is passed to stdin of the CGI')
+&gt;&gt;&gt; f = urllib2.urlopen(req)
+&gt;&gt;&gt; print f.read()
+Got Data: "This data is passed to stdin of the CGI"
+</pre>
+
+
+<p>The code for the sample CGI used in the above example is:
+
+<pre>
+#!/usr/bin/env python
+import sys
+data = sys.stdin.read()
+print 'Content-type: text-plain\n\nGot Data: "%s"' % data
+</pre>
+
+
+<p>Use of Basic HTTP Authentication:
+
+<pre>
+import urllib2
+# Create an OpenerDirector with support for Basic HTTP Authentication...
+auth_handler = urllib2.HTTPBasicAuthHandler()
+auth_handler.add_password('realm', 'host', 'username', 'password')
+opener = urllib2.build_opener(auth_handler)
+# ...and install it globally so it can be used with urlopen.
+urllib2.install_opener(opener)
+urllib2.urlopen('http://www.example.com/login.html')
+</pre>
+
+
+<p>{@link build_opener} provides many handlers by default, including a
+{@link ProxyHandler}. By default, {@link ProxyHandler} uses the
+environment variables named {@code &ltscheme>_proxy}, where {@code
+&ltscheme>} is the URL scheme involved. For example, the http_proxy
+environment variable is read to obtain the HTTP proxy's URL.
+
+<p>This example replaces the default {@link ProxyHandler} with one that
+uses programatically-supplied proxy URLs, and adds proxy authorization
+support with {@link ProxyBasicAuthHandler}.
+
+<pre>
+proxy_handler = urllib2.ProxyHandler({'http': 'http://www.example.com:3128/'})
+proxy_auth_handler = urllib2.HTTPBasicAuthHandler()
+proxy_auth_handler.add_password('realm', 'host', 'username', 'password')
+
+opener = build_opener(proxy_handler, proxy_auth_handler)
+# This time, rather than install the OpenerDirector, we use it directly:
+opener.open('http://www.example.com/login.html')
+</pre>
+
+
+<p>Adding HTTP headers:
+
+<p>Use the {@var headers} argument to the {@link Request} constructor,
+or:
+
+<pre>
+import urllib2
+req = urllib2.Request('http://www.example.com/')
+req.add_header('Referer', 'http://www.python.org/')
+r = urllib2.urlopen(req)
+</pre>
+
+
+<p>{@link OpenerDirector} automatically adds a User-Agent: header to
+every {@link Request}. To change this:
+
+<pre>
+import urllib2
+opener = urllib2.build_opener()
+opener.addheaders = [('User-agent', 'Mozilla/5.0')]
+opener.open('http://www.example.com/')
+</pre>
+
+
+<p>Also, remember that a few standard headers (Content-Length:,
+Content-Type: and Host:) are added when the {@link Request} is passed to
+{@link urlopen} (or {@link OpenerDirector.open}).

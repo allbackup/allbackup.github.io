@@ -1,0 +1,652 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>errno</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-errno.html'>original</a> :::
+<a href='errno.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>errno&#8212;Standard errno system symbols</h1>
+
+<p>This module makes available standard <code>errno</code> system
+symbols. The value of each symbol is the corresponding integer
+value. The names and descriptions are borrowed from
+linux/include/errno.h, which should be pretty all-inclusive.</p>
+</div>
+<dl><dt class="variable" id="errorcode"><b>errorcode</b> <tt class="nav"><a class="nav" href="errno.errorcode" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Dictionary providing a mapping from the errno value to the
+string name in the underlying system. For instance, <code>
+errno.errorcode[errno.EPERM]</code> maps to <code>
+'EPERM'</code>.</p>
+</dd>
+</dl><div class="text">
+<p>To translate a numeric error code to an error message, use <code>os.strerror</code>.</p>
+
+<p>Of the following list, symbols that are not used on the current
+platform are not defined by the module. The specific list of
+defined symbols is available as <code>
+errno.errorcode.keys()</code>. Symbols available can include:</p>
+</div>
+<dl><dt class="variable" id="EPERM"><b>EPERM</b> <tt class="nav"><a class="nav" href="errno.EPERM" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Operation not permitted</p>
+</dd>
+<dt class="variable" id="ENOENT"><b>ENOENT</b> <tt class="nav"><a class="nav" href="errno.ENOENT" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>No such file or directory</p>
+</dd>
+<dt class="variable" id="ESRCH"><b>ESRCH</b> <tt class="nav"><a class="nav" href="errno.ESRCH" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>No such process</p>
+</dd>
+<dt class="variable" id="EINTR"><b>EINTR</b> <tt class="nav"><a class="nav" href="errno.EINTR" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Interrupted system call</p>
+</dd>
+<dt class="variable" id="EIO"><b>EIO</b> <tt class="nav"><a class="nav" href="errno.EIO" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>I/O error</p>
+</dd>
+<dt class="variable" id="ENXIO"><b>ENXIO</b> <tt class="nav"><a class="nav" href="errno.ENXIO" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>No such device or address</p>
+</dd>
+<dt class="variable" id="E2BIG"><b>E2BIG</b> <tt class="nav"><a class="nav" href="errno.E2BIG" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Arg list too long</p>
+</dd>
+<dt class="variable" id="ENOEXEC"><b>ENOEXEC</b> <tt class="nav"><a class="nav" href="errno.ENOEXEC" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Exec format error</p>
+</dd>
+<dt class="variable" id="EBADF"><b>EBADF</b> <tt class="nav"><a class="nav" href="errno.EBADF" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Bad file number</p>
+</dd>
+<dt class="variable" id="ECHILD"><b>ECHILD</b> <tt class="nav"><a class="nav" href="errno.ECHILD" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>No child processes</p>
+</dd>
+<dt class="variable" id="EAGAIN"><b>EAGAIN</b> <tt class="nav"><a class="nav" href="errno.EAGAIN" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Try again</p>
+</dd>
+<dt class="variable" id="ENOMEM"><b>ENOMEM</b> <tt class="nav"><a class="nav" href="errno.ENOMEM" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Out of memory</p>
+</dd>
+<dt class="variable" id="EACCES"><b>EACCES</b> <tt class="nav"><a class="nav" href="errno.EACCES" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Permission denied</p>
+</dd>
+<dt class="variable" id="EFAULT"><b>EFAULT</b> <tt class="nav"><a class="nav" href="errno.EFAULT" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Bad address</p>
+</dd>
+<dt class="variable" id="ENOTBLK"><b>ENOTBLK</b> <tt class="nav"><a class="nav" href="errno.ENOTBLK" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Block device required</p>
+</dd>
+<dt class="variable" id="EBUSY"><b>EBUSY</b> <tt class="nav"><a class="nav" href="errno.EBUSY" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Device or resource busy</p>
+</dd>
+<dt class="variable" id="EEXIST"><b>EEXIST</b> <tt class="nav"><a class="nav" href="errno.EEXIST" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>File exists</p>
+</dd>
+<dt class="variable" id="EXDEV"><b>EXDEV</b> <tt class="nav"><a class="nav" href="errno.EXDEV" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Cross-device link</p>
+</dd>
+<dt class="variable" id="ENODEV"><b>ENODEV</b> <tt class="nav"><a class="nav" href="errno.ENODEV" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>No such device</p>
+</dd>
+<dt class="variable" id="ENOTDIR"><b>ENOTDIR</b> <tt class="nav"><a class="nav" href="errno.ENOTDIR" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Not a directory</p>
+</dd>
+<dt class="variable" id="EISDIR"><b>EISDIR</b> <tt class="nav"><a class="nav" href="errno.EISDIR" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Is a directory</p>
+</dd>
+<dt class="variable" id="EINVAL"><b>EINVAL</b> <tt class="nav"><a class="nav" href="errno.EINVAL" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Invalid argument</p>
+</dd>
+<dt class="variable" id="ENFILE"><b>ENFILE</b> <tt class="nav"><a class="nav" href="errno.ENFILE" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>File table overflow</p>
+</dd>
+<dt class="variable" id="EMFILE"><b>EMFILE</b> <tt class="nav"><a class="nav" href="errno.EMFILE" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Too many open files</p>
+</dd>
+<dt class="variable" id="ENOTTY"><b>ENOTTY</b> <tt class="nav"><a class="nav" href="errno.ENOTTY" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Not a typewriter</p>
+</dd>
+<dt class="variable" id="ETXTBSY"><b>ETXTBSY</b> <tt class="nav"><a class="nav" href="errno.ETXTBSY" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Text file busy</p>
+</dd>
+<dt class="variable" id="EFBIG"><b>EFBIG</b> <tt class="nav"><a class="nav" href="errno.EFBIG" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>File too large</p>
+</dd>
+<dt class="variable" id="ENOSPC"><b>ENOSPC</b> <tt class="nav"><a class="nav" href="errno.ENOSPC" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>No space left on device</p>
+</dd>
+<dt class="variable" id="ESPIPE"><b>ESPIPE</b> <tt class="nav"><a class="nav" href="errno.ESPIPE" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Illegal seek</p>
+</dd>
+<dt class="variable" id="EROFS"><b>EROFS</b> <tt class="nav"><a class="nav" href="errno.EROFS" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Read-only file system</p>
+</dd>
+<dt class="variable" id="EMLINK"><b>EMLINK</b> <tt class="nav"><a class="nav" href="errno.EMLINK" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Too many links</p>
+</dd>
+<dt class="variable" id="EPIPE"><b>EPIPE</b> <tt class="nav"><a class="nav" href="errno.EPIPE" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Broken pipe</p>
+</dd>
+<dt class="variable" id="EDOM"><b>EDOM</b> <tt class="nav"><a class="nav" href="errno.EDOM" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Math argument out of domain of func</p>
+</dd>
+<dt class="variable" id="ERANGE"><b>ERANGE</b> <tt class="nav"><a class="nav" href="errno.ERANGE" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Math result not representable</p>
+</dd>
+<dt class="variable" id="EDEADLK"><b>EDEADLK</b> <tt class="nav"><a class="nav" href="errno.EDEADLK" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Resource deadlock would occur</p>
+</dd>
+<dt class="variable" id="ENAMETOOLONG"><b>ENAMETOOLONG</b> <tt class="nav"><a class="nav" href="errno.ENAMETOOLONG" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>File name too long</p>
+</dd>
+<dt class="variable" id="ENOLCK"><b>ENOLCK</b> <tt class="nav"><a class="nav" href="errno.ENOLCK" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>No record locks available</p>
+</dd>
+<dt class="variable" id="ENOSYS"><b>ENOSYS</b> <tt class="nav"><a class="nav" href="errno.ENOSYS" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Function not implemented</p>
+</dd>
+<dt class="variable" id="ENOTEMPTY"><b>ENOTEMPTY</b> <tt class="nav"><a class="nav" href="errno.ENOTEMPTY" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Directory not empty</p>
+</dd>
+<dt class="variable" id="ELOOP"><b>ELOOP</b> <tt class="nav"><a class="nav" href="errno.ELOOP" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Too many symbolic links encountered</p>
+</dd>
+<dt class="variable" id="EWOULDBLOCK"><b>EWOULDBLOCK</b> <tt class="nav"><a class="nav" href="errno.EWOULDBLOCK" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Operation would block</p>
+</dd>
+<dt class="variable" id="ENOMSG"><b>ENOMSG</b> <tt class="nav"><a class="nav" href="errno.ENOMSG" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>No message of desired type</p>
+</dd>
+<dt class="variable" id="EIDRM"><b>EIDRM</b> <tt class="nav"><a class="nav" href="errno.EIDRM" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Identifier removed</p>
+</dd>
+<dt class="variable" id="ECHRNG"><b>ECHRNG</b> <tt class="nav"><a class="nav" href="errno.ECHRNG" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Channel number out of range</p>
+</dd>
+<dt class="variable" id="EL2NSYNC"><b>EL2NSYNC</b> <tt class="nav"><a class="nav" href="errno.EL2NSYNC" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Level 2 not synchronized</p>
+</dd>
+<dt class="variable" id="EL3HLT"><b>EL3HLT</b> <tt class="nav"><a class="nav" href="errno.EL3HLT" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Level 3 halted</p>
+</dd>
+<dt class="variable" id="EL3RST"><b>EL3RST</b> <tt class="nav"><a class="nav" href="errno.EL3RST" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Level 3 reset</p>
+</dd>
+<dt class="variable" id="ELNRNG"><b>ELNRNG</b> <tt class="nav"><a class="nav" href="errno.ELNRNG" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Link number out of range</p>
+</dd>
+<dt class="variable" id="EUNATCH"><b>EUNATCH</b> <tt class="nav"><a class="nav" href="errno.EUNATCH" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Protocol driver not attached</p>
+</dd>
+<dt class="variable" id="ENOCSI"><b>ENOCSI</b> <tt class="nav"><a class="nav" href="errno.ENOCSI" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>No CSI structure available</p>
+</dd>
+<dt class="variable" id="EL2HLT"><b>EL2HLT</b> <tt class="nav"><a class="nav" href="errno.EL2HLT" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Level 2 halted</p>
+</dd>
+<dt class="variable" id="EBADE"><b>EBADE</b> <tt class="nav"><a class="nav" href="errno.EBADE" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Invalid exchange</p>
+</dd>
+<dt class="variable" id="EBADR"><b>EBADR</b> <tt class="nav"><a class="nav" href="errno.EBADR" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Invalid request descriptor</p>
+</dd>
+<dt class="variable" id="EXFULL"><b>EXFULL</b> <tt class="nav"><a class="nav" href="errno.EXFULL" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Exchange full</p>
+</dd>
+<dt class="variable" id="ENOANO"><b>ENOANO</b> <tt class="nav"><a class="nav" href="errno.ENOANO" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>No anode</p>
+</dd>
+<dt class="variable" id="EBADRQC"><b>EBADRQC</b> <tt class="nav"><a class="nav" href="errno.EBADRQC" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Invalid request code</p>
+</dd>
+<dt class="variable" id="EBADSLT"><b>EBADSLT</b> <tt class="nav"><a class="nav" href="errno.EBADSLT" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Invalid slot</p>
+</dd>
+<dt class="variable" id="EDEADLOCK"><b>EDEADLOCK</b> <tt class="nav"><a class="nav" href="errno.EDEADLOCK" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>File locking deadlock error</p>
+</dd>
+<dt class="variable" id="EBFONT"><b>EBFONT</b> <tt class="nav"><a class="nav" href="errno.EBFONT" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Bad font file format</p>
+</dd>
+<dt class="variable" id="ENOSTR"><b>ENOSTR</b> <tt class="nav"><a class="nav" href="errno.ENOSTR" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Device not a stream</p>
+</dd>
+<dt class="variable" id="ENODATA"><b>ENODATA</b> <tt class="nav"><a class="nav" href="errno.ENODATA" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>No data available</p>
+</dd>
+<dt class="variable" id="ETIME"><b>ETIME</b> <tt class="nav"><a class="nav" href="errno.ETIME" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Timer expired</p>
+</dd>
+<dt class="variable" id="ENOSR"><b>ENOSR</b> <tt class="nav"><a class="nav" href="errno.ENOSR" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Out of streams resources</p>
+</dd>
+<dt class="variable" id="ENONET"><b>ENONET</b> <tt class="nav"><a class="nav" href="errno.ENONET" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Machine is not on the network</p>
+</dd>
+<dt class="variable" id="ENOPKG"><b>ENOPKG</b> <tt class="nav"><a class="nav" href="errno.ENOPKG" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Package not installed</p>
+</dd>
+<dt class="variable" id="EREMOTE"><b>EREMOTE</b> <tt class="nav"><a class="nav" href="errno.EREMOTE" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Object is remote</p>
+</dd>
+<dt class="variable" id="ENOLINK"><b>ENOLINK</b> <tt class="nav"><a class="nav" href="errno.ENOLINK" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Link has been severed</p>
+</dd>
+<dt class="variable" id="EADV"><b>EADV</b> <tt class="nav"><a class="nav" href="errno.EADV" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Advertise error</p>
+</dd>
+<dt class="variable" id="ESRMNT"><b>ESRMNT</b> <tt class="nav"><a class="nav" href="errno.ESRMNT" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Srmount error</p>
+</dd>
+<dt class="variable" id="ECOMM"><b>ECOMM</b> <tt class="nav"><a class="nav" href="errno.ECOMM" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Communication error on send</p>
+</dd>
+<dt class="variable" id="EPROTO"><b>EPROTO</b> <tt class="nav"><a class="nav" href="errno.EPROTO" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Protocol error</p>
+</dd>
+<dt class="variable" id="EMULTIHOP"><b>EMULTIHOP</b> <tt class="nav"><a class="nav" href="errno.EMULTIHOP" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Multihop attempted</p>
+</dd>
+<dt class="variable" id="EDOTDOT"><b>EDOTDOT</b> <tt class="nav"><a class="nav" href="errno.EDOTDOT" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>RFS specific error</p>
+</dd>
+<dt class="variable" id="EBADMSG"><b>EBADMSG</b> <tt class="nav"><a class="nav" href="errno.EBADMSG" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Not a data message</p>
+</dd>
+<dt class="variable" id="EOVERFLOW"><b>EOVERFLOW</b> <tt class="nav"><a class="nav" href="errno.EOVERFLOW" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Value too large for defined data type</p>
+</dd>
+<dt class="variable" id="ENOTUNIQ"><b>ENOTUNIQ</b> <tt class="nav"><a class="nav" href="errno.ENOTUNIQ" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Name not unique on network</p>
+</dd>
+<dt class="variable" id="EBADFD"><b>EBADFD</b> <tt class="nav"><a class="nav" href="errno.EBADFD" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>File descriptor in bad state</p>
+</dd>
+<dt class="variable" id="EREMCHG"><b>EREMCHG</b> <tt class="nav"><a class="nav" href="errno.EREMCHG" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Remote address changed</p>
+</dd>
+<dt class="variable" id="ELIBACC"><b>ELIBACC</b> <tt class="nav"><a class="nav" href="errno.ELIBACC" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Can not access a needed shared library</p>
+</dd>
+<dt class="variable" id="ELIBBAD"><b>ELIBBAD</b> <tt class="nav"><a class="nav" href="errno.ELIBBAD" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Accessing a corrupted shared library</p>
+</dd>
+<dt class="variable" id="ELIBSCN"><b>ELIBSCN</b> <tt class="nav"><a class="nav" href="errno.ELIBSCN" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>.lib section in a.out corrupted</p>
+</dd>
+<dt class="variable" id="ELIBMAX"><b>ELIBMAX</b> <tt class="nav"><a class="nav" href="errno.ELIBMAX" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Attempting to link in too many shared libraries</p>
+</dd>
+<dt class="variable" id="ELIBEXEC"><b>ELIBEXEC</b> <tt class="nav"><a class="nav" href="errno.ELIBEXEC" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Cannot exec a shared library directly</p>
+</dd>
+<dt class="variable" id="EILSEQ"><b>EILSEQ</b> <tt class="nav"><a class="nav" href="errno.EILSEQ" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Illegal byte sequence</p>
+</dd>
+<dt class="variable" id="ERESTART"><b>ERESTART</b> <tt class="nav"><a class="nav" href="errno.ERESTART" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Interrupted system call should be restarted</p>
+</dd>
+<dt class="variable" id="ESTRPIPE"><b>ESTRPIPE</b> <tt class="nav"><a class="nav" href="errno.ESTRPIPE" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Streams pipe error</p>
+</dd>
+<dt class="variable" id="EUSERS"><b>EUSERS</b> <tt class="nav"><a class="nav" href="errno.EUSERS" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Too many users</p>
+</dd>
+<dt class="variable" id="ENOTSOCK"><b>ENOTSOCK</b> <tt class="nav"><a class="nav" href="errno.ENOTSOCK" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Socket operation on non-socket</p>
+</dd>
+<dt class="variable" id="EDESTADDRREQ"><b>EDESTADDRREQ</b> <tt class="nav"><a class="nav" href="errno.EDESTADDRREQ" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Destination address required</p>
+</dd>
+<dt class="variable" id="EMSGSIZE"><b>EMSGSIZE</b> <tt class="nav"><a class="nav" href="errno.EMSGSIZE" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Message too long</p>
+</dd>
+<dt class="variable" id="EPROTOTYPE"><b>EPROTOTYPE</b> <tt class="nav"><a class="nav" href="errno.EPROTOTYPE" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Protocol wrong type for socket</p>
+</dd>
+<dt class="variable" id="ENOPROTOOPT"><b>ENOPROTOOPT</b> <tt class="nav"><a class="nav" href="errno.ENOPROTOOPT" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Protocol not available</p>
+</dd>
+<dt class="variable" id="EPROTONOSUPPORT"><b>EPROTONOSUPPORT</b> <tt class="nav"><a class="nav" href="errno.EPROTONOSUPPORT" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Protocol not supported</p>
+</dd>
+<dt class="variable" id="ESOCKTNOSUPPORT"><b>ESOCKTNOSUPPORT</b> <tt class="nav"><a class="nav" href="errno.ESOCKTNOSUPPORT" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Socket type not supported</p>
+</dd>
+<dt class="variable" id="EOPNOTSUPP"><b>EOPNOTSUPP</b> <tt class="nav"><a class="nav" href="errno.EOPNOTSUPP" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Operation not supported on transport endpoint</p>
+</dd>
+<dt class="variable" id="EPFNOSUPPORT"><b>EPFNOSUPPORT</b> <tt class="nav"><a class="nav" href="errno.EPFNOSUPPORT" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Protocol family not supported</p>
+</dd>
+<dt class="variable" id="EAFNOSUPPORT"><b>EAFNOSUPPORT</b> <tt class="nav"><a class="nav" href="errno.EAFNOSUPPORT" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Address family not supported by protocol</p>
+</dd>
+<dt class="variable" id="EADDRINUSE"><b>EADDRINUSE</b> <tt class="nav"><a class="nav" href="errno.EADDRINUSE" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Address already in use</p>
+</dd>
+<dt class="variable" id="EADDRNOTAVAIL"><b>EADDRNOTAVAIL</b> <tt class="nav"><a class="nav" href="errno.EADDRNOTAVAIL" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Cannot assign requested address</p>
+</dd>
+<dt class="variable" id="ENETDOWN"><b>ENETDOWN</b> <tt class="nav"><a class="nav" href="errno.ENETDOWN" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Network is down</p>
+</dd>
+<dt class="variable" id="ENETUNREACH"><b>ENETUNREACH</b> <tt class="nav"><a class="nav" href="errno.ENETUNREACH" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Network is unreachable</p>
+</dd>
+<dt class="variable" id="ENETRESET"><b>ENETRESET</b> <tt class="nav"><a class="nav" href="errno.ENETRESET" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Network dropped connection because of reset</p>
+</dd>
+<dt class="variable" id="ECONNABORTED"><b>ECONNABORTED</b> <tt class="nav"><a class="nav" href="errno.ECONNABORTED" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Software caused connection abort</p>
+</dd>
+<dt class="variable" id="ECONNRESET"><b>ECONNRESET</b> <tt class="nav"><a class="nav" href="errno.ECONNRESET" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Connection reset by peer</p>
+</dd>
+<dt class="variable" id="ENOBUFS"><b>ENOBUFS</b> <tt class="nav"><a class="nav" href="errno.ENOBUFS" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>No buffer space available</p>
+</dd>
+<dt class="variable" id="EISCONN"><b>EISCONN</b> <tt class="nav"><a class="nav" href="errno.EISCONN" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Transport endpoint is already connected</p>
+</dd>
+<dt class="variable" id="ENOTCONN"><b>ENOTCONN</b> <tt class="nav"><a class="nav" href="errno.ENOTCONN" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Transport endpoint is not connected</p>
+</dd>
+<dt class="variable" id="ESHUTDOWN"><b>ESHUTDOWN</b> <tt class="nav"><a class="nav" href="errno.ESHUTDOWN" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Cannot send after transport endpoint shutdown</p>
+</dd>
+<dt class="variable" id="ETOOMANYREFS"><b>ETOOMANYREFS</b> <tt class="nav"><a class="nav" href="errno.ETOOMANYREFS" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Too many references: cannot splice</p>
+</dd>
+<dt class="variable" id="ETIMEDOUT"><b>ETIMEDOUT</b> <tt class="nav"><a class="nav" href="errno.ETIMEDOUT" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Connection timed out</p>
+</dd>
+<dt class="variable" id="ECONNREFUSED"><b>ECONNREFUSED</b> <tt class="nav"><a class="nav" href="errno.ECONNREFUSED" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Connection refused</p>
+</dd>
+<dt class="variable" id="EHOSTDOWN"><b>EHOSTDOWN</b> <tt class="nav"><a class="nav" href="errno.EHOSTDOWN" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Host is down</p>
+</dd>
+<dt class="variable" id="EHOSTUNREACH"><b>EHOSTUNREACH</b> <tt class="nav"><a class="nav" href="errno.EHOSTUNREACH" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>No route to host</p>
+</dd>
+<dt class="variable" id="EALREADY"><b>EALREADY</b> <tt class="nav"><a class="nav" href="errno.EALREADY" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Operation already in progress</p>
+</dd>
+<dt class="variable" id="EINPROGRESS"><b>EINPROGRESS</b> <tt class="nav"><a class="nav" href="errno.EINPROGRESS" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Operation now in progress</p>
+</dd>
+<dt class="variable" id="ESTALE"><b>ESTALE</b> <tt class="nav"><a class="nav" href="errno.ESTALE" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Stale NFS file handle</p>
+</dd>
+<dt class="variable" id="EUCLEAN"><b>EUCLEAN</b> <tt class="nav"><a class="nav" href="errno.EUCLEAN" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Structure needs cleaning</p>
+</dd>
+<dt class="variable" id="ENOTNAM"><b>ENOTNAM</b> <tt class="nav"><a class="nav" href="errno.ENOTNAM" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Not a XENIX named type file</p>
+</dd>
+<dt class="variable" id="ENAVAIL"><b>ENAVAIL</b> <tt class="nav"><a class="nav" href="errno.ENAVAIL" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>No XENIX semaphores available</p>
+</dd>
+<dt class="variable" id="EISNAM"><b>EISNAM</b> <tt class="nav"><a class="nav" href="errno.EISNAM" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Is a named type file</p>
+</dd>
+<dt class="variable" id="EREMOTEIO"><b>EREMOTEIO</b> <tt class="nav"><a class="nav" href="errno.EREMOTEIO" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Remote I/O error</p>
+</dd>
+<dt class="variable" id="EDQUOT"><b>EDQUOT</b> <tt class="nav"><a class="nav" href="errno.EDQUOT" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Quota exceeded</p>
+</dd>
+</dl></div></body></html>

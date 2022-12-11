@@ -1,0 +1,20 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>What are the "best practices" for using import in a&nbsp;module?</title> <script type="text/javascript">effbot_page_id=895;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> <!--
+<p style='color: #8f8f8f; background: #fff5bf; padding: 5px 10px;'> <b>2008-07-15:</b> Selected articles
+
+now have experimental "comment" links in the left column and at the bottom.
+You're welcome to use them for commenting and voting on articles.
+For a bit more on this, see <a
+href="http://effbot.slinkset.com/links/Welcome_to_discuss_effbot_org">this
+page</a>. /F
+</p>
+--> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <h1 class="maintitle">What are the "best practices" for using import in a&nbsp;module?</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p>In general, don&#8217;t use the <a href="/pyref/import.htm"><strong>from modulename import *</strong></a>
+form of import.  Doing so clutters the importer&#8217;s namespace.  Some
+people avoid this idiom even with modules like <a href="/pyref/Tkinter.htm"><strong>Tkinter</strong></a>
+and <a href="/pyref/threading.htm"><strong>threading</strong></a> that are intentionally designed to be imported
+in this manner.</p><p>Import modules at the top of a file.  Doing so makes it clear what
+other modules your code requires and avoids questions of whether the
+module name is in scope.  Using one <a href="/pyref/import.htm"><strong>import</strong></a> per line makes it
+easy to add and delete module imports, but using multiple imports per
+line uses less screen space.</p><p>It&#8217;s good practice if you import modules in the following order:</p><ol><li>standard library modules &#8212; e.g. <a href="/pyref/sys.htm"><strong>sys</strong></a>, <a href="/pyref/os.htm"><strong>os</strong></a>, <a href="/pyref/getopt.htm"><strong>getopt</strong></a>, <a href="/pyref/re.htm"><strong>re</strong></a>)</li><li>third-party library modules (anything installed in Python&#8217;s site-packages directory) &#8212; e.g. mx.DateTime, ZODB, PIL.Image, etc.</li><li>locally-developed modules</li></ol><p>Avoid relative package imports.  If you&#8217;re writing code th

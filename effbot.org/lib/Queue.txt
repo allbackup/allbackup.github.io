@@ -1,0 +1,93 @@
+
+@@module Queue
+
+<h1>Queue&#8212;A synchronized queue class</h1>
+
+<p>The {@link Queue} module implements a multi-producer, multi-consumer
+FIFO queue. It is especially useful in threads programming when
+information must be exchanged safely between multiple threads. The
+{@link Queue} class in this module implements all the required locking
+semantics. It depends on the availability of thread support in Python.
+
+<p>The {@link Queue} module defines the following class and exception:
+
+@@class Queue(maxsize)
+
+<p>Constructor for the class. {@var maxsize} is an integer that sets the
+upperbound limit on the number of items that can be placed in the queue.
+Insertion will block once this size has been reached, until queue items
+are consumed. If {@var maxsize} is less than or equal to zero, the queue
+size is infinite.
+
+@@exception Empty
+
+<p>Exception raised when non-blocking {@link get} (or {@link
+get_nowait}) is called on a {@link Queue} object which is empty.
+
+@@exception Full
+
+<p>Exception raised when non-blocking {@link put} (or {@link
+put_nowait}) is called on a {@link Queue} object which is full.
+
+@@text 
+
+<h2>Queue Objects</h2>
+
+<p>Class {@link Queue} implements queue objects and has the methods
+described below. This class can be derived from in order to implement
+other queue organizations (e.g. stack) but the inheritable interface is
+not described here. See the source code for details. The public methods
+are:
+
+@@method Queue.qsize()
+
+<p>Return the approximate size of the queue. Because of multithreading
+semantics, this number is not reliable.
+
+@@method Queue.empty()
+
+<p>Return {@link True} if the queue is empty, {@code False} otherwise.
+Because of multithreading semantics, this is not reliable.
+
+@@method Queue.full()
+
+<p>Return {@link True} if the queue is full, {@code False} otherwise.
+Because of multithreading semantics, this is not reliable.
+
+@@method Queue.put(item[, block[, timeout]])
+
+<p>Put {@var item} into the queue. If optional args {@var block} is true
+and {@var timeout} is None (the default), block if necessary until a
+free slot is available. If {@var timeout} is a positive number, it
+blocks at most {@var timeout} seconds and raises the {@link Full}
+exception if no free slot was available within that time. Otherwise
+({@var block} is false), put an item on the queue if a free slot is
+immediately available, else raise the {@link Full} exception ({@var
+timeout} is ignored in that case).
+<blockquote>
+@since New in version 2.3: the timeout
+parameter. <br />
+</blockquote>
+
+@@method Queue.put_nowait(item)
+
+<p>Equivalent to {@code put(}{@var item}, False).
+
+@@method Queue.get([block[, timeout]])
+
+<p>Remove and return an item from the queue. If optional args {@var
+block} is true and {@var timeout} is None (the default), block if
+necessary until an item is available. If {@var timeout} is a positive
+number, it blocks at most {@var timeout} seconds and raises the {@link
+Empty} exception if no item was available within that time. Otherwise
+({@var block} is false), return an item if one is immediately available,
+else raise the {@link Empty} exception ({@var timeout} is ignored in
+that case).
+<blockquote>
+@since New in version 2.3: the timeout
+parameter. <br />
+</blockquote>
+
+@@method Queue.get_nowait()
+
+<p>Equivalent to {@code get(False)}.

@@ -1,0 +1,65 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>linecache</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-linecache.html'>original</a> :::
+<a href='linecache.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>linecache&#8212;Random access to text lines</h1>
+
+<p>The <code>linecache</code> module
+allows one to get any line from any file, while attempting to
+optimize internally, using a cache, the common case where many
+lines are read from a single file. This is used by the <code>traceback</code> module to retrieve
+source lines for inclusion in the formatted traceback.</p>
+
+<p>The <code>linecache</code> module
+defines the following functions:</p>
+</div>
+<dl><dt class="function" id="getline"><b>getline(filename, lineno)</b> <tt class="nav"><a class="nav" href="linecache.getline" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Get line <var>lineno</var> from file named <var>filename</var>.
+This function will never throw an exception -- it will return
+<code>&#8221;</code> on errors (the terminating newline character
+will be included for lines that are found).</p>
+
+<p>If a file named <var>filename</var> is not found, the function
+will look for it in the module search path, <code>
+sys.path</code>.</p>
+</dd>
+<dt class="function" id="clearcache"><b>clearcache()</b> <tt class="nav"><a class="nav" href="linecache.clearcache" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Clear the cache. Use this function if you no longer need lines
+from files previously read using <a class="link" href="#getline"><code>getline</code></a>.</p>
+</dd>
+<dt class="function" id="checkcache"><b>checkcache([filename])</b> <tt class="nav"><a class="nav" href="linecache.checkcache" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Check the cache for validity. Use this function if files in the
+cache may have changed on disk, and you require the updated
+version. If <var>filename</var> is omitted, it will check the whole
+cache entries.</p>
+</dd>
+</dl><div class="text">
+<p>Example:</p>
+
+<pre>
+&gt;&gt;&gt; import linecache
+&gt;&gt;&gt; linecache.getline('/etc/passwd', 4)
+'sys:x:3:3:sys:/dev:/bin/sh\n'
+</pre>
+</div>
+</div></body></html>

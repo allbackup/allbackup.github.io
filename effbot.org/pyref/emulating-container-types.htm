@@ -1,0 +1,41 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>Emulating container&nbsp;types</title> <script type="text/javascript">effbot_page_id=1271;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <h1 class="maintitle">Emulating container&nbsp;types</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p>The following methods can be defined to implement container
+objects. Containers usually are sequences (such as lists or tuples) or
+mappings (like dictionaries), but can represent other containers as
+well.  The first set of methods is used either to emulate a sequence
+or to emulate a mapping; the difference is that for a sequence, the
+allowable keys should be the integers k for which <code>0 &amp;lt;= k &amp;lt; N</code>
+where N is the length of the sequence, or slice objects, which define
+a range of items. (For backwards compatibility, the method
+<a href="__getslice__.htm"><strong>__getslice__</strong></a> (see below) can also be defined to handle simple,
+but not extended slices.)  It is also recommended that mappings
+provide the methods keys(), values(), items(), has_key(), get(),
+clear(), setdefault(), iterkeys(), itervalues(), iteritems(), pop(),
+popitem(), copy(), and update() behaving similar to those for Python&#8217;s
+standard dictionary objects. The UserDict module provides a DictMixin
+class to help create those methods from a base set of
+<a href="__getitem__.htm"><strong>__getitem__</strong></a>, <a href="__setitem__.htm"><strong>__setitem__</strong></a>, <a href="__delitem__.htm"><strong>__delitem__</strong></a>, and
+keys(). Mutable sequences should provide methods append(), count(),
+index(), extend(), insert(), pop(), remove(), reverse() and sort(),
+like Python standard list objects. Finally, sequence types should
+implement addition (meaning concatenation) and multiplication (meaning
+repetition) by defining the methods <a href="__add__.htm"><strong>__add__</strong></a>, <a href="__radd__.htm"><strong>__radd__</strong></a>,
+<a href="__iadd__.htm"><strong>__iadd__</strong></a>, <a href="__mul__.htm"><strong>__mul__</strong></a>, <a href="__rmul__.htm"><strong>__rmul__</strong></a> and
+<a href="__imul__.htm"><strong>__imul__</strong></a> described below; they should not define
+<a href="__coerce__.htm"><strong>__coerce__</strong></a> or other numerical operators. It is recommended
+that both mappings and sequences implement the <a href="__contains__.htm"><strong>__contains__</strong></a>
+method to allow efficient use of the <a href="in.htm"><strong>in</strong></a> operator; for mappings,
+<a href="in.htm"><strong>in</strong></a> should be equivalent of has_key(); for sequences, it should
+search through the values. It is further recommended that both
+mappings and sequences implement the <a href="__iter__.htm"><strong>__iter__</strong></a> method to allow
+efficient iteration through the container; for mappings,
+<a href="__iter__.htm"><strong>__iter__</strong></a> should be the same as iterkeys(); for sequences, it
+should iterate through the values.</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><div class='comment'>
+<p><b>Comment:</b></p>
+<p>
+UserDict.DictMixin should be noted here, and maybe UserList (though it doesn't provide a mixin like DictMixin, and UserDict and UserList are pretty useless).</p>
+<p>Posted by <b class='author'><a href='http://pyref.infogami.com/emulating-container-types/_comments/8z9v'>infogami</a></b></p>
+</div>
+</div> <!-- yui-g --></div> <!-- content --> </div> <!-- yui-b --> </div> <!-- yui-main --> <div class="yui-b"> <div id='menu'> <ul> <li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li> <li><b><a href="." title="Go to pyref index page.">::: pyref :::</a></b></li> </ul> </div> <!-- menu --> </div> <!-- yui-b --> </div> <!-- bd --> <div id="ft"> <!-- footer --> <p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;"></a>
+this page was rendered by a <a href="http://www.djangoproject.com/">django</a> application in 0.02s 2010-12-16 17:49:12.255479.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p> </div> <!-- ft --> </div> <!-- doc --> <script src="/media/js/effbot-min.js" type="text/javascript"> </script> </body> </html>

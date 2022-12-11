@@ -1,0 +1,376 @@
+<html>
+<head>
+<title>effnews-exe ::: www.effbot.org</title>
+<link rel='stylesheet' href='/effbot.css' type='text/css' media='screen' />
+</head>
+<body bgcolor='#ccffcc'>
+<div>[<a href='effnews-exe.htm'>back</a>]</div>
+<h3>Welcome to the effbot.org user editor!</h3>
+
+
+<p><b>Note: This is not a contact form!  Support questions, spam, and
+other off-topic stuff will be ignored.</b></p>
+
+<p>To suggest changes, edit the HTML fragment in the text box below.
+You can use the 'update preview' button to check your changes (the
+preview is displayed beneath the text box).  When done, fill in the
+name and address fields (optional) and click 'submit patch' to mail
+the patch to me.  (I reserve the right to decide which patches to
+include, of course.)  Thanks! /F</p>
+
+<form method='post' id='useredit'>
+<input type='hidden' name='name' value='effnews-exe'/>
+<p>
+<input type='submit' name='preview' value='update preview' style='background:#084; color:white; width:200px; font-weight:bold;' >
+&nbsp;&nbsp;&nbsp;
+<input type='submit' name='submit' value='submit patch'  style='background:#084; color:white; width:200px; font-weight:bold;' >
+</p>
+<textarea name='text' rows='30' cols='80'>The EffNews RSS Reader for Windows
+
+&lt;!-- ADSENSE --&gt;
+
+&lt;p class='info'&gt;Updated July 14, 2003 | Fredrik Lundh&lt;/p&gt;
+
+&lt;p&gt;The &lt;b&gt;EffNews RSS Reader&lt;/b&gt; is a minimalist &lt;a
+href="http://davenet.userland.com/2002/10/08/whatIsANewsAggregator"
+title="reader, not aggregator.  not yet"&gt;RSS reader&lt;/a&gt; for
+Windows.&lt;/p&gt;
+
+&lt;p&gt;The reader is shipped as part of &lt;a href="effbot-exe-index.htm"&gt;the
+&lt;b&gt;effbot.exe&lt;/b&gt; application framework&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;The reader is based on the &lt;a href="effnews.htm"&gt;effnews toolkit&lt;/a&gt;,
+which is a freely available Python library that includes a tolerant RSS
+parser and an asynchronous HTTP client module.&lt;/p&gt;
+
+&lt;p&gt;
+[&lt;a href="effbot-exe-index.htm"&gt;download&lt;/a&gt;]
+[&lt;a href="#guide"&gt;user's guide&lt;/a&gt;]
+[&lt;a href="effnews-exe-notes.htm"&gt;questions?&lt;/a&gt;]
+&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="/images/effbot-exe-0-9.png" alt="effnews screenshot" /&gt;&lt;/p&gt;
+
+&lt;p&gt;"&lt;i&gt;If you love and respect very primitive and frugal things, EffNews certainly fits that profile. It's like BlogBuddy - it's for vegans, hobos and back-to-nature nuts :)&lt;/i&gt;"&lt;/p&gt;
+
+&lt;h2 id="guide"&gt;Brief EffNews User's Guide&lt;/h2&gt;
+
+&lt;p&gt;(for release 1.0.5 and later; the current version is 1.0.15)&lt;/p&gt;
+
+&lt;dl&gt;
+&lt;dt&gt;&lt;b&gt;Starting the Application&lt;/b&gt;&lt;/dt&gt;
+&lt;dd&gt;
+
+&lt;p&gt;Use the &lt;b&gt;effbot.exe&lt;/b&gt; icon on the desktop to start the
+application.&lt;/p&gt;
+
+&lt;p&gt;If there is no icon on the desktop, use the explorer to
+locate the &lt;b&gt;c:\effbot.exe&lt;/b&gt; directory, and run the
+&lt;b&gt;effbot.exe&lt;/b&gt; binary in that directory.&lt;/p&gt;
+
+&lt;p&gt;You can drag the icon to the start menu or to the process
+bar.  If there is no icon, you can use the explorer to locate
+the executable, and use the "send to" menu to create a desktop
+shortcut.&lt;/p&gt;
+
+&lt;/dd&gt;
+
+&lt;dt&gt;&lt;b&gt;Viewing RSS Channels&lt;/b&gt;&lt;/dt&gt;
+&lt;dd&gt;
+
+&lt;p&gt;To view an RSS channel, click on the channel name in the list to
+the left.  If the channel is loaded, it should appear in the main window
+within a second.&lt;/p&gt;
+
+&lt;p&gt;You can use the arrow keys to quickly scan for new articles.&lt;/p&gt;
+
+&lt;p&gt;To view an article in your browser, double click on the article's
+title or body.  Double-clicking on the channel title opens the channel's
+home page, if available.&lt;/p&gt;
+
+&lt;p&gt;Or, click the right button over the article panel, and select
+&lt;b&gt;Open in browser&lt;/b&gt; in the context menu that appears.&lt;/p&gt;
+
+&lt;p&gt;If the channel does not appear, the feed is broken or unavailable,
+or uses an unknown format.  The &lt;a href="effnews.htm"&gt;effnews RSS parser&lt;/a&gt;
+knows about most RSS flavours, including RSS 0.9, RSS 0.9x, RSS 1.0, RSS 2.0,
+and Echo (in 1.0.10 and later).  The parser can also work around some common
+problems, but may have to give up if the feed is too messed up.  In that
+case, a somewhat technical error message is displayed instead of the channel
+contents.&lt;/p&gt;
+
+&lt;/dd&gt;
+
+&lt;dt&gt;&lt;b&gt;Adding RSS Channels&lt;/b&gt;&lt;/dt&gt;
+&lt;dd&gt;
+
+&lt;p&gt;To add a channel, use your favourite web browser to look for nice
+sites that support RSS.  Look for links to the RSS feed; this is often
+&lt;a href="http://www.antipixel.com/blog/archives/2002/10/22/steal_these_buttons.html"&gt;an orange (or blue) button with the text XML (or RSS)&lt;/a&gt;, or a link that mentions &lt;b&gt;RSS&lt;/b&gt; or &lt;b&gt;Syndication&lt;/b&gt; or something similar.&lt;/p&gt;
+
+&lt;p&gt;When you've found something that might be an RSS link, use the mouse
+to drag it from the browser and drop it anywhere in the effnews application
+window.  If successful, the site should appear in the effnews window
+after a few seconds.&lt;/p&gt;
+
+&lt;p&gt;If the effnews application window is not visible, drag the link to
+the effnews item in the Windows taskbar (usually at the bottom of the
+screen).  This will bring the application window to front, so you can
+drop it in the window as usual.&lt;/p&gt;
+
+&lt;p&gt;If you like what you see, click on the &lt;b&gt;&amp;lt;add&lt;/b&gt; button.  This
+adds the site to the channel list.&lt;/p&gt;
+
+&lt;p&gt;If you cannot find a link, you can try dropping the URL of the home
+page itself on the effnews application.  If the URL doesn't point to
+RSS data, the viewer will attempt to "auto-discover" the RSS feed by
+looking for
+&lt;a href='http://diveintomark.org/archives/2002/06/02/important_change_to_the_link_tag.html'&gt;clues&lt;/a&gt;
+in the page's source code.&lt;/p&gt;
+
+&lt;p&gt;You can also add channels based on ordinary web pages, or other non-RSS
+sources, by adding &lt;a href="effnews-provider.htm"&gt;provider plugins&lt;/a&gt; to
+the application.  The application ships with a sample plugin for PythonWare's
+&lt;a href="http://www.pythonware.com/daily/"&gt;Daily Python URL&lt;/a&gt; site
+(to subscribe to that channel, drag that link to the application window
+as usual).&lt;/p&gt;
+&lt;/dd&gt;
+
+&lt;dt&gt;&lt;b&gt;Refreshing RSS Channels&lt;/b&gt;&lt;/dt&gt;
+&lt;dd&gt;
+
+&lt;p&gt;To refresh all channels, click the &lt;b&gt;refresh&lt;/b&gt; button in the lower
+left corner.
+
+&lt;p&gt;Channels that have been modified since they were last viewed are marked
+with an asterisk.&lt;/p&gt;
+
+&lt;p&gt;To refresh an individual channel, display it, click the right button over the article panel, and select &lt;b&gt;Reload&lt;/b&gt; in the context menu.  This forces &lt;b&gt;effnews&lt;/b&gt; to reload the channel even if it hasn't changed.&lt;/p&gt;
+
+&lt;/dd&gt;
+
+&lt;dt&gt;&lt;b&gt;Removing RSS Channels&lt;/b&gt;&lt;/dt&gt;
+&lt;dd&gt;
+
+&lt;p&gt;To remove a channel, display it as usual, click the right button over the article panel, and select &lt;b&gt;Remove channel&lt;/b&gt; in the context menu.&lt;/p&gt;
+
+&lt;/dd&gt;
+
+&lt;dt&gt;&lt;b&gt;Organizing RSS Channels&lt;/b&gt;&lt;/dt&gt;
+&lt;dd&gt;
+
+&lt;p&gt;To change the channel order, you can use the mouse to drag the channels
+around in the channel list.
+
+&lt;p&gt;To rename channels, shut down the application and use your favourite text
+editor (!) to edit the &lt;b&gt;c:\effbot.exe\effnews.ini&lt;/b&gt; file.&lt;/p&gt;
+
+&lt;p class='small'&gt;(yes, I know.  I'll fix this in a some post-1.0 release)&lt;/p&gt;
+
+&lt;/dd&gt;
+
+&lt;/dl&gt;
+
+&lt;h2 id="bugs"&gt;Known Issues&lt;/h2&gt;
+
+&lt;p&gt;(in release 1.0.9 and later)&lt;/p&gt;
+
+&lt;p&gt;The modification indicator is sometimes set even if the feed hasn't
+changed.  I'm investigating this, and will fix it as soon as I can figure
+out why this happens.&lt;/p&gt;
+
+&lt;p&gt;If you use mousewheel scrolling on a feed with few entries, effnews
+may display the contents twice (Fixed in 1.0.12).&lt;/p&gt;
+
+&lt;p&gt;There's no feedback when you drag channels around in the channel
+list.&lt;/p&gt;
+
+&lt;p&gt;Also see the list of &lt;a href='effnews-exe-notes.htm'&gt;frequently
+asked questions&lt;/a&gt;.&lt;/p&gt;</textarea>
+<table>
+<tr><td><label for='author'>Name:</label></td><td>
+<div><input name='author' value="" size=40></div>
+</td><td>(Optional)</td></tr>
+<tr><td><label for='email'>Mail:</label></td><td>
+<div><input name='email' value="" size=40></div>
+</td><td>(Optional)</td></tr>
+<tr><td><label for='note'>Comment:</label></td><td>
+<div><input name='note' value="" size=40></div>
+</td><td>(Optional)</td></tr>
+<tr><td><label for='password'>Password:</label></td><td>
+<div><input name='password' value="(replace with the sum of 7+4)" size=40></div>
+</td><td>(Required)</td></tr>
+</table>
+<p>
+<input type='submit' name='preview' value='update preview' style='background:#084; color:white; width:200px; font-weight:bold;' >
+&nbsp;&nbsp;&nbsp;
+<input type='submit' name='submit' value='submit patch'  style='background:#084; color:white; width:200px; font-weight:bold;' >
+</p>
+<p>&nbsp;</p>
+</form>
+<div style='background: white; border: 2px solid #084; padding: 0px 20px;'>
+<h2>The EffNews RSS Reader for Windows</h2>
+
+<!-- ADSENSE -->
+
+<p class='info'>Updated July 14, 2003 | Fredrik Lundh</p>
+
+<p>The <b>EffNews RSS Reader</b> is a minimalist <a
+href="http://davenet.userland.com/2002/10/08/whatIsANewsAggregator"
+title="reader, not aggregator.  not yet">RSS reader</a> for
+Windows.</p>
+
+<p>The reader is shipped as part of <a href="effbot-exe-index.htm">the
+<b>effbot.exe</b> application framework</a>.</p>
+
+<p>The reader is based on the <a href="effnews.htm">effnews toolkit</a>,
+which is a freely available Python library that includes a tolerant RSS
+parser and an asynchronous HTTP client module.</p>
+
+<p>
+[<a href="effbot-exe-index.htm">download</a>]
+[<a href="#guide">user's guide</a>]
+[<a href="effnews-exe-notes.htm">questions?</a>]
+</p>
+
+<p><img src="/images/effbot-exe-0-9.png" alt="effnews screenshot" /></p>
+
+<p>"<i>If you love and respect very primitive and frugal things, EffNews certainly fits that profile. It's like BlogBuddy - it's for vegans, hobos and back-to-nature nuts :)</i>"</p>
+
+<h2 id="guide">Brief EffNews User's Guide</h2>
+
+<p>(for release 1.0.5 and later; the current version is 1.0.15)</p>
+
+<dl>
+<dt><b>Starting the Application</b></dt>
+<dd>
+
+<p>Use the <b>effbot.exe</b> icon on the desktop to start the
+application.</p>
+
+<p>If there is no icon on the desktop, use the explorer to
+locate the <b>c:\effbot.exe</b> directory, and run the
+<b>effbot.exe</b> binary in that directory.</p>
+
+<p>You can drag the icon to the start menu or to the process
+bar.  If there is no icon, you can use the explorer to locate
+the executable, and use the "send to" menu to create a desktop
+shortcut.</p>
+
+</dd>
+
+<dt><b>Viewing RSS Channels</b></dt>
+<dd>
+
+<p>To view an RSS channel, click on the channel name in the list to
+the left.  If the channel is loaded, it should appear in the main window
+within a second.</p>
+
+<p>You can use the arrow keys to quickly scan for new articles.</p>
+
+<p>To view an article in your browser, double click on the article's
+title or body.  Double-clicking on the channel title opens the channel's
+home page, if available.</p>
+
+<p>Or, click the right button over the article panel, and select
+<b>Open in browser</b> in the context menu that appears.</p>
+
+<p>If the channel does not appear, the feed is broken or unavailable,
+or uses an unknown format.  The <a href="effnews.htm">effnews RSS parser</a>
+knows about most RSS flavours, including RSS 0.9, RSS 0.9x, RSS 1.0, RSS 2.0,
+and Echo (in 1.0.10 and later).  The parser can also work around some common
+problems, but may have to give up if the feed is too messed up.  In that
+case, a somewhat technical error message is displayed instead of the channel
+contents.</p>
+
+</dd>
+
+<dt><b>Adding RSS Channels</b></dt>
+<dd>
+
+<p>To add a channel, use your favourite web browser to look for nice
+sites that support RSS.  Look for links to the RSS feed; this is often
+<a href="http://www.antipixel.com/blog/archives/2002/10/22/steal_these_buttons.html">an orange (or blue) button with the text XML (or RSS)</a>, or a link that mentions <b>RSS</b> or <b>Syndication</b> or something similar.</p>
+
+<p>When you've found something that might be an RSS link, use the mouse
+to drag it from the browser and drop it anywhere in the effnews application
+window.  If successful, the site should appear in the effnews window
+after a few seconds.</p>
+
+<p>If the effnews application window is not visible, drag the link to
+the effnews item in the Windows taskbar (usually at the bottom of the
+screen).  This will bring the application window to front, so you can
+drop it in the window as usual.</p>
+
+<p>If you like what you see, click on the <b>&lt;add</b> button.  This
+adds the site to the channel list.</p>
+
+<p>If you cannot find a link, you can try dropping the URL of the home
+page itself on the effnews application.  If the URL doesn't point to
+RSS data, the viewer will attempt to "auto-discover" the RSS feed by
+looking for
+<a href='http://diveintomark.org/archives/2002/06/02/important_change_to_the_link_tag.html'>clues</a>
+in the page's source code.</p>
+
+<p>You can also add channels based on ordinary web pages, or other non-RSS
+sources, by adding <a href="effnews-provider.htm">provider plugins</a> to
+the application.  The application ships with a sample plugin for PythonWare's
+<a href="http://www.pythonware.com/daily/">Daily Python URL</a> site
+(to subscribe to that channel, drag that link to the application window
+as usual).</p>
+</dd>
+
+<dt><b>Refreshing RSS Channels</b></dt>
+<dd>
+
+<p>To refresh all channels, click the <b>refresh</b> button in the lower
+left corner.
+
+<p>Channels that have been modified since they were last viewed are marked
+with an asterisk.</p>
+
+<p>To refresh an individual channel, display it, click the right button over the article panel, and select <b>Reload</b> in the context menu.  This forces <b>effnews</b> to reload the channel even if it hasn't changed.</p>
+
+</dd>
+
+<dt><b>Removing RSS Channels</b></dt>
+<dd>
+
+<p>To remove a channel, display it as usual, click the right button over the article panel, and select <b>Remove channel</b> in the context menu.</p>
+
+</dd>
+
+<dt><b>Organizing RSS Channels</b></dt>
+<dd>
+
+<p>To change the channel order, you can use the mouse to drag the channels
+around in the channel list.
+
+<p>To rename channels, shut down the application and use your favourite text
+editor (!) to edit the <b>c:\effbot.exe\effnews.ini</b> file.</p>
+
+<p class='small'>(yes, I know.  I'll fix this in a some post-1.0 release)</p>
+
+</dd>
+
+</dl>
+
+<h2 id="bugs">Known Issues</h2>
+
+<p>(in release 1.0.9 and later)</p>
+
+<p>The modification indicator is sometimes set even if the feed hasn't
+changed.  I'm investigating this, and will fix it as soon as I can figure
+out why this happens.</p>
+
+<p>If you use mousewheel scrolling on a feed with few entries, effnews
+may display the contents twice (Fixed in 1.0.12).</p>
+
+<p>There's no feedback when you drag channels around in the channel
+list.</p>
+
+<p>Also see the list of <a href='effnews-exe-notes.htm'>frequently
+asked questions</a>.</p>
+</div>
+</body>
+</html>

@@ -1,0 +1,22 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>How do I escape SQL values when using the&nbsp;DB-API?</title></head><body data-page-id="793"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><p class="note" style="text-align: center"><strong>
+This is an old copy of the Python FAQ.  The information here may be
+outdated.
+</strong></p><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">How do I escape SQL values when using the&nbsp;DB-API?</h1></div><div class="yui-ge"><div class="yui-u first"><p>You don&#8217;t.  Instead of constructing SQL statements yourself, use parameter
+markers, and pass the data to <b>execute</b> in a separate tuple:</p><pre class="python">db = dbapi.connect(args)
+
+c = db.cursor()
+
+c.execute(
+    <span class="pystring">"SELECT * FROM TABLE WHERE NAME=? AND ADDRESS=?"</span>,
+    (name, address)
+)
+<span class="pykeyword">for</span> row <span class="pykeyword">in</span> c.fetchall():
+    <span class="pykeyword">print</span> row</pre><p>The database driver will either escape the values for you, or, better, pass
+the values to the database via a separate API.  This often gives you better
+performance, and more importantly, eliminates common forms of
+<a href="http://en.wikipedia.org/wiki/SQL_injection">SQL injection attacks</a>.</p><p>The exact syntax to use for parameters depends on what database you are using;
+for example, <a href="/pyref/sqlite3.htm"><strong>sqlite3</strong></a> uses &#8220;?&#8221; markers, while MySQLdb usually uses &#8220;%s&#8221; markers.
+You can use the <a href="/pyref/dbapi2.paramstyle.htm"><strong>paramstyle</strong></a> variable to check
+what syntax your database expects.</p><p>CATEGORY: database</p><p>CATEGORY: programming</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to pyfaq index page.">::: pyfaq :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

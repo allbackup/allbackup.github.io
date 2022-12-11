@@ -1,0 +1,35 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>Why is join() a string method instead of a list or tuple&nbsp;method?</title></head><body data-page-id="949"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><p class="note" style="text-align: center"><strong>
+This is an old copy of the Python FAQ.  The information here may be
+outdated.
+</strong></p><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">Why is join() a string method instead of a list or tuple&nbsp;method?</h1></div><div class="yui-ge"><div class="yui-u first"><p>In brief, it&#8217;s because <a href="/pyref/str.join.htm"><strong>join</strong></a> and its predecessor
+<a href="/pyref/string.join.htm"><strong>string.join</strong></a> are both generic operations that work on any
+iterable.</p><p>Strings became much more like other standard types starting in Python
+1.6, when methods were added which give the same functionality that
+has always been available using the functions of the <a href="/pyref/string.htm"><strong>string</strong></a>
+module. Most of these new methods have been widely accepted, but the
+one which appears to make some programmers feel uncomfortable is:</p><pre class="python"><span class="pystring">", "</span>.join([<span class="pystring">'1'</span>, <span class="pystring">'2'</span>, <span class="pystring">'4'</span>, <span class="pystring">'8'</span>, <span class="pystring">'16'</span>])</pre><p>which gives the result:</p><pre class="python"><span class="pystring">"1, 2, 4, 8, 16"</span></pre><p>There are two usual arguments against this usage.</p><p>The first runs along the lines of: &#8220;It looks really ugly using a
+method of a string literal (string constant)&#8221;, to which the answer is
+that it might, but a string literal is just a fixed value.  If the
+methods are to be allowed on names bound to strings there is no
+logical reason to make them unavailable on literals.</p><p>The second objection is typically cast as: &#8220;I am really telling a
+sequence to join its members together with a string constant&#8221;.  Sadly,
+you aren&#8217;t.  For some reason there seems to be much less difficulty
+with having <a href="/pyref/str.split.htm"><strong>split</strong></a> as a string method, since in
+that case it is easy to see that</p><pre class="python"><span class="pystring">"1, 2, 4, 8, 16"</span>.split(<span class="pystring">", "</span>)</pre><p>is an instruction to a string literal to return the substrings
+delimited by the given separator (or, by default, arbitrary runs of
+white space). In this case a Unicode string returns a list of Unicode
+strings, an ASCII string returns a list of ASCII strings, and everyone
+is happy.</p><p><a href="/pyref/str.join.htm"><strong>join</strong></a> is a string method because in using it you are
+telling the separator string to iterate over an arbitrary sequence,
+forming string representations of each of the elements, and inserting
+itself between the elements&#8217; representations.  This method can be used
+with any argument that implements the iterator or sequence protocols,
+including any new classes you might define yourself.</p><p>Because this is a string method it can work for Unicode strings as
+well as plain ASCII strings. If <a href="/pyref/str.join.htm"><strong>join</strong></a> were a method
+of the sequence types then the sequence types would have to decide
+which type of string to return depending on the type of the separator.</p><p>If none of these arguments persuade you, then for the moment you can
+continue to use the <a href="/pyref/string.join.htm"><strong>join</strong></a> function from the
+<a href="/pyref/string.htm"><strong>string</strong></a> module, which allows you to write</p><pre class="python">string.join([<span class="pystring">'1'</span>, <span class="pystring">'2'</span>, <span class="pystring">'4'</span>, <span class="pystring">'8'</span>, <span class="pystring">'16'</span>], <span class="pystring">", "</span>)</pre><p>This still dispatches on the separator under the covers, but you can
+pretend that it doesn&#8217;t.</p><p>CATEGORY: general</p><p>CATEGORY: design</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to pyfaq index page.">::: pyfaq :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

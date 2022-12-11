@@ -1,0 +1,35 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>Why can't raw strings (r-strings) end with a&nbsp;backslash?</title></head><body data-page-id="933"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><p class="note" style="text-align: center"><strong>
+This is an old copy of the Python FAQ.  The information here may be
+outdated.
+</strong></p><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">Why can't raw strings (r-strings) end with a&nbsp;backslash?</h1></div><div class="yui-ge"><div class="yui-u first"><p>Raw string literals are parsed in exactly the same way as ordinary
+string literals; it&#8217;s just the conversion from string literal to
+string object that&#8217;s different.  This means that all string literals
+must end with an even number of backslashes; otherwise, the unpaired
+backslash at the end escapes the closing quote character, leaving an
+unterminated string.</p><p>Raw strings were designed to ease creating input for processors, such
+as regular expression engines, that want to do their own backslash
+escape processing.  Such processors consider an unmatched trailing
+backslash to be an error anyway, so raw strings disallow that.  In
+return, they allow you to pass on the string quote character by
+escaping it with a backslash.  These rules work well when r-strings
+are used for their intended purpose.</p><p>If you&#8217;re trying to use raw strings to build Windows path names, note
+that all Windows system calls accept forward slashes too:</p><pre class="python">f = open(<span class="pystring">"/mydir/file.txt"</span>) <span class="pycomment"># works fine!</span></pre><p>The exception is commands passed to the Windows command interpreter
+(command.com or cmd.exe).  The easiest way to handle that is to run
+the filename through <a href="/pyref/os.path.normpath.htm"><strong>os.path.normpath</strong></a> before passing it to
+the command interpreter:</p><pre class="python">arg = os.path.normpath(<span class="pystring">"/this/is/my/dos/dir/"</span>)
+os.system(<span class="pystring">"myapp "</span> + arg)</pre><p>Note that getting the slashes right before you call <a href="/pyref/os.system.htm"><strong>os.system</strong></a> still won&#8217;t help you with spaces and other special
+characters.  To write robust code, you can use the <a href="/pyref/subprocess.list2cmdline.htm"><strong>subprocess.list2cmdline</strong></a> helper function.  It takes a list of
+arguments, and turns them into a properly quoted command line:</p><pre class="python"><span class="pykeyword">import</span> os
+<span class="pykeyword">import</span> subprocess
+
+<span class="pykeyword">def</span> <span class="pyfunction">mysystem</span>(command, *files):
+    files = map(os.path.normpath, files)
+    files = subprocess.list2cmdline(files)
+    <span class="pykeyword">return</span> os.system(command + <span class="pystring">" "</span> + files)
+
+mysystem(<span class="pystring">"more"</span>, <span class="pystring">"/program files/subversion/readme.txt"</span>)</pre><p>But then you might as well use <a href="/pyref/subprocess.call.htm"><strong>subprocess.call</strong></a> and the
+<em>shell</em> option, of course.</p><p>But back to the raw strings; if you really want to add a backslash to
+the end of a raw string, you can work around the parser limitation by
+doing:</p><pre class="python">arg = <span class="pystring">r"\this\is\my\dos\dir"</span> <span class="pystring">"\\"</span></pre><p>or</p><pre class="python">arg = <span class="pystring">r"\this\is\my\dos\dir\ "</span>[:-1]</pre></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to pyfaq index page.">::: pyfaq :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

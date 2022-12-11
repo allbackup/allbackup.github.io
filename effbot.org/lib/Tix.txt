@@ -1,0 +1,469 @@
+
+@@module Tix
+
+<h1>Tix&#8212;Extension widgets for Tk</h1>
+
+<p>The {@link Tix} (Tk Interface Extension) module provides an
+additional rich set of widgets. Although the standard Tk library has
+many useful widgets, they are far from complete. The {@link Tix} library
+provides most of the commonly needed widgets that are missing from
+standard Tk: {@link HList}, {@link ComboBox}, {@link Control} (a.k.a.
+SpinBox) and an assortment of scrollable widgets. {@link Tix} also
+includes many more widgets that are generally useful in a wide range of
+applications: {@link NoteBook}, {@link FileEntry}, {@link PanedWindow},
+etc; there are more than 40 of them.
+
+<p>With all these new widgets, you can introduce new interaction
+techniques into applications, creating more useful and more intuitive
+user interfaces. You can design your application by choosing the most
+appropriate widgets to match the special needs of your application and
+users.
+
+@see 
+{@link http://tix.sourceforge.net/ Tix Homepage}
+
+The home page for Tix. This includes links to additional documentation
+and downloads.
+@see 
+{@link http://tix.sourceforge.net/dist/current/man/ Tix Man Pages}
+
+On-line version of the man pages and reference material.
+@see 
+{@link http://tix.sourceforge.net/dist/current/docs/tix-book/tix.book.html Tix Programming Guide}
+
+On-line version of the programmer's reference material.
+@see 
+{@link http://tix.sourceforge.net/Tide/ Tix Development Applications}
+
+Tix applications for development of Tix and Tkinter programs. Tide
+applications work under Tk or Tkinter, and include TixInspect, an
+inspector to remotely modify and debug Tix/Tk/Tkinter applications.
+
+<h2>Using Tix</h2>
+
+@@class Tix(screenName[, baseName[, className]])
+
+<p>Toplevel widget of Tix which represents mostly the main window of an
+application. It has an associated Tcl interpreter.
+
+<p>Classes in the {@link Tix} module subclasses the classes in the
+{@link Tkinter} module. The former imports the latter, so to use {@link
+Tix} with Tkinter, all you need to do is to import one module. In
+general, you can just import {@link Tix}, and replace the toplevel call
+to {@link Tkinter.Tk} with {@link Tix.Tk}:
+
+<pre>
+import Tix
+from Tkconstants import *
+root = Tix.Tk()
+</pre>
+
+
+@@text 
+
+<p>To use {@link Tix}, you must have the {@link Tix} widgets installed,
+usually alongside your installation of the Tk widgets. To test your
+installation, try the following:
+
+<pre>
+import Tix
+root = Tix.Tk()
+root.tk.eval('package require Tix')
+</pre>
+
+
+<p>If this fails, you have a Tk installation problem which must be
+resolved before proceeding. Use the environment variable TIX_LIBRARY to
+point to the installed {@link Tix} library directory, and make sure you
+have the dynamic object library (tix8183.dll or libtix8183.so) in the
+same directory that contains your Tk dynamic object library (tk8183.dll
+or libtk8183.so). The directory with the dynamic object library should
+also have a file called pkgIndex.tcl (case sensitive), which contains
+the line:
+
+<pre>
+package ifneeded Tix 8.1 [list load "[file join $dir tix8183.dll]" Tix]
+</pre>
+
+
+<h2>Tix Widgets</h2>
+
+<p>{@link
+http://tix.sourceforge.net/dist/current/man/html/TixCmd/TixIntro.htm
+Tix} introduces over 40 widget classes to the {@link Tkinter}
+repertoire. There is a demo of all the {@link Tix} widgets in the
+Demo/tix directory of the standard distribution.
+@@error unexpected div online-navigation
+
+<h3>Basic Widgets</h3>
+
+@@class Balloon()
+
+<p>A {@link
+http://tix.sourceforge.net/dist/current/man/html/TixCmd/tixBalloon.htm
+Balloon} that pops up over a widget to provide help. When the user moves
+the cursor inside a widget to which a Balloon widget has been bound, a
+small pop-up window with a descriptive message will be shown on the
+screen.
+
+@@class ButtonBox()
+
+<p>The {@link
+http://tix.sourceforge.net/dist/current/man/html/TixCmd/tixButtonBox.htm
+ButtonBox} widget creates a box of buttons, such as is commonly used for
+{@code Ok Cancel}.
+
+@@class ComboBox()
+
+<p>The {@link
+http://tix.sourceforge.net/dist/current/man/html/TixCmd/tixComboBox.htm
+ComboBox} widget is similar to the combo box control in MS Windows. The
+user can select a choice by either typing in the entry subwdget or
+selecting from the listbox subwidget.
+
+@@class Control()
+
+<p>The {@link
+http://tix.sourceforge.net/dist/current/man/html/TixCmd/tixControl.htm
+Control} widget is also known as the {@link SpinBox} widget. The user
+can adjust the value by pressing the two arrow buttons or by entering
+the value directly into the entry. The new value will be checked against
+the user-defined upper and lower limits.
+
+@@class LabelEntry()
+
+<p>The {@link
+http://tix.sourceforge.net/dist/current/man/html/TixCmd/tixLabelEntry.htm
+LabelEntry} widget packages an entry widget and a label into one mega
+widget. It can be used be used to simplify the creation of
+&#8220;entry-form&#8221; type of interface.
+
+@@class LabelFrame()
+
+<p>The {@link
+http://tix.sourceforge.net/dist/current/man/html/TixCmd/tixLabelFrame.htm
+LabelFrame} widget packages a frame widget and a label into one mega
+widget. To create widgets inside a LabelFrame widget, one creates the
+new widgets relative to the {@link frame} subwidget and manage them
+inside the {@link frame} subwidget.
+
+@@class Meter()
+
+<p>The {@link
+http://tix.sourceforge.net/dist/current/man/html/TixCmd/tixMeter.htm
+Meter} widget can be used to show the progress of a background job which
+may take a long time to execute.
+
+@@class OptionMenu()
+
+<p>The {@link
+http://tix.sourceforge.net/dist/current/man/html/TixCmd/tixOptionMenu.htm
+OptionMenu} creates a menu button of options.
+
+@@class PopupMenu()
+
+<p>The {@link
+http://tix.sourceforge.net/dist/current/man/html/TixCmd/tixPopupMenu.htm
+PopupMenu} widget can be used as a replacement of the {@code tk_popup}
+command. The advantage of the {@link Tix} {@link PopupMenu} widget is it
+requires less application code to manipulate.
+
+@@class Select()
+
+<p>The {@link
+http://tix.sourceforge.net/dist/current/man/html/TixCmd/tixSelect.htm
+Select} widget is a container of button subwidgets. It can be used to
+provide radio-box or check-box style of selection options for the user.
+
+@@class StdButtonBox()
+
+<p>The {@link
+http://tix.sourceforge.net/dist/current/man/html/TixCmd/tixStdButtonBox.htm
+StdButtonBox} widget is a group of standard buttons for Motif-like
+dialog boxes.
+
+@@text 
+
+<h3>File Selectors</h3>
+
+@@class DirList()
+
+<p>The {@link
+http://tix.sourceforge.net/dist/current/man/html/TixCmd/tixDirList.htm
+DirList} widget displays a list view of a directory, its previous
+directories and its sub-directories. The user can choose one of the
+directories displayed in the list or change to another directory.
+
+@@class DirTree()
+
+<p>The {@link
+http://tix.sourceforge.net/dist/current/man/html/TixCmd/tixDirTree.htm
+DirTree} widget displays a tree view of a directory, its previous
+directories and its sub-directories. The user can choose one of the
+directories displayed in the list or change to another directory.
+
+@@class DirSelectDialog()
+
+<p>The {@link
+http://tix.sourceforge.net/dist/current/man/html/TixCmd/tixDirSelectDialog.htm
+DirSelectDialog} widget presents the directories in the file system in a
+dialog window. The user can use this dialog window to navigate through
+the file system to select the desired directory.
+
+@@class DirSelectBox()
+
+<p>The {@link DirSelectBox} is similar to the standard Motif(TM)
+directory-selection box. It is generally used for the user to choose a
+directory. DirSelectBox stores the directories mostly recently selected
+into a ComboBox widget so that they can be quickly selected again.
+
+@@class ExFileSelectBox()
+
+<p>The {@link
+http://tix.sourceforge.net/dist/current/man/html/TixCmd/tixExFileSelectBox.htm
+ExFileSelectBox} widget is usually embedded in a tixExFileSelectDialog
+widget. It provides an convenient method for the user to select files.
+The style of the {@link ExFileSelectBox} widget is very similar to the
+standard file dialog on MS Windows 3.1.
+
+@@class FileSelectBox()
+
+<p>The {@link
+http://tix.sourceforge.net/dist/current/man/html/TixCmd/tixFileSelectBox.htm
+FileSelectBox} is similar to the standard Motif(TM) file-selection box.
+It is generally used for the user to choose a file. FileSelectBox stores
+the files mostly recently selected into a {@link ComboBox} widget so
+that they can be quickly selected again.
+
+@@class FileEntry()
+
+<p>The {@link
+http://tix.sourceforge.net/dist/current/man/html/TixCmd/tixFileEntry.htm
+FileEntry} widget can be used to input a filename. The user can type in
+the filename manually. Alternatively, the user can press the button
+widget that sits next to the entry, which will bring up a file selection
+dialog.
+
+@@text 
+
+<h3>Hierachical ListBox</h3>
+
+@@class HList()
+
+<p>The {@link
+http://tix.sourceforge.net/dist/current/man/html/TixCmd/tixHList.htm
+HList} widget can be used to display any data that have a hierarchical
+structure, for example, file system directory trees. The list entries
+are indented and connected by branch lines according to their places in
+the hierarchy.
+
+@@class CheckList()
+
+<p>The {@link
+http://tix.sourceforge.net/dist/current/man/html/TixCmd/tixCheckList.htm
+CheckList} widget displays a list of items to be selected by the user.
+CheckList acts similarly to the Tk checkbutton or radiobutton widgets,
+except it is capable of handling many more items than checkbuttons or
+radiobuttons.
+
+@@class Tree()
+
+<p>The {@link
+http://tix.sourceforge.net/dist/current/man/html/TixCmd/tixTree.htm
+Tree} widget can be used to display hierarchical data in a tree form.
+The user can adjust the view of the tree by opening or closing parts of
+the tree.
+
+@@text 
+
+<h3>Tabular ListBox</h3>
+
+@@class TList()
+
+<p>The {@link
+http://tix.sourceforge.net/dist/current/man/html/TixCmd/tixTList.htm
+TList} widget can be used to display data in a tabular format. The list
+entries of a {@link TList} widget are similar to the entries in the Tk
+listbox widget. The main differences are (1) the {@link TList} widget
+can display the list entries in a two dimensional format and (2) you can
+use graphical images as well as multiple colors and fonts for the list
+entries.
+
+@@text 
+
+<h3>Manager Widgets</h3>
+
+@@class PanedWindow()
+
+<p>The {@link
+http://tix.sourceforge.net/dist/current/man/html/TixCmd/tixPanedWindow.htm
+PanedWindow} widget allows the user to interactively manipulate the
+sizes of several panes. The panes can be arranged either vertically or
+horizontally. The user changes the sizes of the panes by dragging the
+resize handle between two panes.
+
+@@class ListNoteBook()
+
+<p>The {@link
+http://tix.sourceforge.net/dist/current/man/html/TixCmd/tixListNoteBook.htm
+ListNoteBook} widget is very similar to the {@link TixNoteBook} widget:
+it can be used to display many windows in a limited space using a
+notebook metaphor. The notebook is divided into a stack of pages
+(windows). At one time only one of these pages can be shown. The user
+can navigate through these pages by choosing the name of the desired
+page in the {@link hlist} subwidget.
+
+@@class NoteBook()
+
+<p>The {@link
+http://tix.sourceforge.net/dist/current/man/html/TixCmd/tixNoteBook.htm
+NoteBook} widget can be used to display many windows in a limited space
+using a notebook metaphor. The notebook is divided into a stack of
+pages. At one time only one of these pages can be shown. The user can
+navigate through these pages by choosing the visual &#8220;tabs&#8221;
+at the top of the NoteBook widget.
+
+@@text 
+
+<h3>Image Types</h3>
+
+<p>The {@link Tix} module adds:
+<ul>
+<li>
+<p>{@link
+http://tix.sourceforge.net/dist/current/man/html/TixCmd/pixmap.htm
+pixmap} capabilities to all {@link Tix} and {@link Tkinter} widgets to
+create color images from XPM files.
+<li>
+<p>{@link
+http://tix.sourceforge.net/dist/current/man/html/TixCmd/compound.htm
+Compound} image types can be used to create images that consists of
+multiple horizontal lines; each line is composed of a series of items
+(texts, bitmaps, images or spaces) arranged from left to right. For
+example, a compound image can be used to display a bitmap and a text
+string simultaneously in a Tk {@link Button} widget.
+</ul>
+
+<h3>Miscellaneous Widgets</h3>
+
+@@class InputOnly()
+
+<p>The {@link
+http://tix.sourceforge.net/dist/current/man/html/TixCmd/tixInputOnly.htm
+InputOnly} widgets are to accept inputs from the user, which can be done
+with the {@code bind} command (Unix only).
+
+@@text 
+
+<h3>Form Geometry Manager</h3>
+
+<p>In addition, {@link Tix} augments {@link Tkinter} by providing:
+
+@@class Form()
+
+<p>The {@link
+http://tix.sourceforge.net/dist/current/man/html/TixCmd/tixForm.htm
+Form} geometry manager based on attachment rules for all Tk widgets.
+
+@@text 
+
+<h2>Tix Commands</h2>
+
+@@class tixCommand()
+
+<p>The {@link
+http://tix.sourceforge.net/dist/current/man/html/TixCmd/tix.htm tix
+commands} provide access to miscellaneous elements of {@link Tix}'s
+internal state and the {@link Tix} application context. Most of the
+information manipulated by these methods pertains to the application as
+a whole, or to a screen or display, rather than to a particular window.
+
+<p>To view the current settings, the common usage is:
+
+<pre>
+import Tix
+root = Tix.Tk()
+print root.tix_configure()
+</pre>
+
+
+@@method tixCommand.tix_configure([cnf,] **kw)
+
+<p>Query or modify the configuration options of the Tix application
+context. If no option is specified, returns a dictionary all of the
+available options. If option is specified with no value, then the method
+returns a list describing the one named option (this list will be
+identical to the corresponding sublist of the value returned if no
+option is specified). If one or more option-value pairs are specified,
+then the method modifies the given option(s) to have the given value(s);
+in this case the method returns an empty string. Option may be any of
+the configuration options.
+
+@@method tixCommand.tix_cget(option)
+
+<p>Returns the current value of the configuration option given by {@var
+option}. Option may be any of the configuration options.
+
+@@method tixCommand.tix_getbitmap(name)
+
+<p>Locates a bitmap file of the name {@code name.xpm} or {@code name} in
+one of the bitmap directories (see the {@link tix_addbitmapdir} method).
+By using {@link tix_getbitmap}, you can avoid hard coding the pathnames
+of the bitmap files in your application. When successful, it returns the
+complete pathname of the bitmap file, prefixed with the character
+"{@code @}". The returned value can be used to configure the {@code
+bitmap} option of the Tk and Tix widgets.
+
+@@method tixCommand.tix_addbitmapdir(directory)
+
+<p>Tix maintains a list of directories under which the {@link
+tix_getimage} and {@link tix_getbitmap} methods will search for image
+files. The standard bitmap directory is $TIX_LIBRARY/bitmaps. The {@link
+tix_addbitmapdir} method adds {@var directory} into this list. By using
+this method, the image files of an applications can also be located
+using the {@link tix_getimage} or {@link tix_getbitmap} method.
+
+@@method tixCommand.tix_filedialog([dlgclass])
+
+<p>Returns the file selection dialog that may be shared among different
+calls from this application. This method will create a file selection
+dialog widget when it is called the first time. This dialog will be
+returned by all subsequent calls to {@link tix_filedialog}. An optional
+dlgclass parameter can be passed as a string to specified what type of
+file selection dialog widget is desired. Possible options are {@code
+tix}, {@code FileSelectDialog} or {@code tixExFileSelectDialog}.
+
+@@method tixCommand.tix_getimage(self, name)
+
+<p>Locates an image file of the name name.xpm, name.xbm or name.ppm in
+one of the bitmap directories (see the {@link tix_addbitmapdir} method
+above). If more than one file with the same name (but different
+extensions) exist, then the image type is chosen according to the depth
+of the X display: xbm images are chosen on monochrome displays and color
+images are chosen on color displays. By using {@link tix_getimage}, you
+can avoid hard coding the pathnames of the image files in your
+application. When successful, this method returns the name of the newly
+created image, which can be used to configure the {@code image} option
+of the Tk and Tix widgets.
+
+@@method tixCommand.tix_option_get(name)
+
+<p>Gets the options maintained by the Tix scheme mechanism.
+
+@@method tixCommand.tix_resetoptions(newScheme, newFontSet[, newScmPrio])
+
+<p>Resets the scheme and fontset of the Tix application to {@var
+newScheme} and {@var newFontSet}, respectively. This affects only those
+widgets created after this call. Therefore, it is best to call the
+resetoptions method before the creation of any widgets in a Tix
+application.
+
+<p>The optional parameter {@var newScmPrio} can be given to reset the
+priority level of the Tk options set by the Tix schemes.
+
+<p>Because of the way Tk handles the X option database, after Tix has
+been has imported and inited, it is not possible to reset the color
+schemes and font sets using the {@link tix_config} method. Instead, the
+{@link tix_resetoptions} method must be used.
+
+@@text 

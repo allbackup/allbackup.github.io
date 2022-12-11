@@ -1,0 +1,212 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>fcntl</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-fcntl.html'>original</a> :::
+<a href='fcntl.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>fcntl&#8212;The fcntl() and ioctl() system calls</h1>
+
+<p>Availability: Unix.</p>
+
+<p>This module performs file control and I/O control on file
+descriptors. It is an interface to the <code>c:fcntl</code> and <code>c:ioctl</code> Unix routines.</p>
+
+<p>All functions in this module take a file descriptor <var>
+fd</var> as their first argument. This can be an integer file
+descriptor, such as returned by <code>sys.stdin.fileno()</code>, or
+a file object, such as <code>sys.stdin</code> itself, which
+provides a <code>fileno</code> which
+returns a genuine file descriptor.</p>
+
+<p>The module defines the following functions:</p>
+</div>
+<dl><dt class="function" id="fcntl"><b>fcntl(fd, op[, arg])</b> <tt class="nav"><a class="nav" href="fcntl.fcntl" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Perform the requested operation on file descriptor <var>fd</var>
+(file objects providing a <code>
+fileno</code> method are accepted as well). The operation is defined
+by <var>op</var> and is operating system dependent. These codes are
+also found in the <a class="link" href="#fcntl"><code>fcntl</code></a>
+module. The argument <var>arg</var> is optional, and defaults to
+the integer value <code>0</code>. When present, it can either be an
+integer value, or a string. With the argument missing or an integer
+value, the return value of this function is the integer return
+value of the C <code>c:fcntl</code>
+call. When the argument is a string it represents a binary
+structure, e.g. created by <code>
+struct</code>.pack(). The binary data is copied to a buffer whose
+address is passed to the C <code>
+c:fcntl</code> call. The return value after a successful call is the
+contents of the buffer, converted to a string object. The length of
+the returned string will be the same as the length of the <var>
+arg</var> argument. This is limited to 1024 bytes. If the
+information returned in the buffer by the operating system is
+larger than 1024 bytes, this is most likely to result in a
+segmentation violation or a more subtle data corruption.</p>
+
+<p>If the <code>c:fcntl</code> fails, an
+<code>
+exceptions.IOError</code> is raised.</p>
+</dd>
+<dt class="function" id="ioctl"><b>ioctl(fd, op[, arg[, mutate_flag]])</b> <tt class="nav"><a class="nav" href="fcntl.ioctl" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>This function is identical to the <a class="link" href="#fcntl"><code>fcntl</code></a> function, except that the operations
+are typically defined in the library module <code>termios</code> and the argument handling is even
+more complicated.</p>
+
+<p>The parameter <var>arg</var> can be one of an integer, absent
+(treated identically to the integer <code>0</code>), an object
+supporting the read-only buffer interface (most likely a plain
+Python string) or an object supporting the read-write buffer
+interface.</p>
+
+<p>In all but the last case, behaviour is as for the <a class="link" href="#fcntl"><code>fcntl</code></a> function.</p>
+
+<p>If a mutable buffer is passed, then the behaviour is determined
+by the value of the <var>mutate_flag</var> parameter.</p>
+
+<p>If it is false, the buffer's mutability is ignored and behaviour
+is as for a read-only buffer, except that the 1024 byte limit
+mentioned above is avoided - so long as the buffer you pass is
+longer than what the operating system wants to put there, things
+should work.</p>
+
+<p>If <var>mutate_flag</var> is true, then the buffer is (in
+effect) passed to the underlying <a class="link" href="#ioctl"><code>
+ioctl</code></a> system call, the latter's return code is passed back to
+the calling Python, and the buffer's new contents reflect the
+action of the <a class="link" href="#ioctl"><code>ioctl</code></a>. This is
+a slight simplification, because if the supplied buffer is less
+than 1024 bytes long it is first copied into a static buffer 1024
+bytes long which is then passed to <a class="link" href="#ioctl"><code>ioctl</code></a> and copied back into the supplied
+buffer.</p>
+
+<p>If <var>mutate_flag</var> is not supplied, then in 2.3 it
+defaults to false. This is planned to change over the next few
+Python versions: in 2.4 failing to supply <var>mutate_flag</var>
+will get a warning but the same behavior and in versions later than
+2.5 it will default to true.</p>
+
+<p>An example:</p>
+
+<pre>
+&gt;&gt;&gt; import array, fcntl, struct, termios, os
+&gt;&gt;&gt; os.getpgrp()
+13341
+&gt;&gt;&gt; struct.unpack('h', fcntl.ioctl(0, termios.TIOCGPGRP, "  "))[0]
+13341
+&gt;&gt;&gt; buf = array.array('h', [0])
+&gt;&gt;&gt; fcntl.ioctl(0, termios.TIOCGPGRP, buf, 1)
+0
+&gt;&gt;&gt; buf
+array('h', [13341])
+</pre>
+</dd>
+<dt class="function" id="flock"><b>flock(fd, op)</b> <tt class="nav"><a class="nav" href="fcntl.flock" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Perform the lock operation <var>op</var> on file descriptor
+<var>fd</var> (file objects providing a <code>fileno</code> method are accepted as well). See the
+Unix manual flock(3) for details. (On some systems, this function
+is emulated using <code>
+c:fcntl</code>.)</p>
+</dd>
+<dt class="function" id="lockf"><b>lockf(fd, operation, [length, [start,
+[whence]]])</b> <tt class="nav"><a class="nav" href="fcntl.lockf" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>This is essentially a wrapper around the <a class="link" href="#fcntl"><code>fcntl</code></a> locking calls. <var>fd</var> is the
+file descriptor of the file to lock or unlock, and <var>
+operation</var> is one of the following values:</p>
+
+<ul>
+<li>
+<p><code>LOCK_UN</code> - unlock</p>
+</li>
+
+<li>
+<p><code>LOCK_SH</code> - acquire a shared lock</p>
+</li>
+
+<li>
+<p><code>LOCK_EX</code> - acquire an exclusive lock</p>
+</li>
+</ul>
+
+<p>When <var>operation</var> is <code>LOCK_SH</code> or <code>
+LOCK_EX</code>, it can also be bit-wise OR'd with <code>
+LOCK_NB</code> to avoid blocking on lock acquisition. If <code>
+LOCK_NB</code> is used and the lock cannot be acquired, an <code>exceptions.IOError</code>
+will be raised and the exception will have an <var>errno</var>
+attribute set to <code>EACCES</code> or <code>EAGAIN</code>
+(depending on the operating system; for portability, check for both
+values). On at least some systems, <code>LOCK_EX</code> can only be
+used if the file descriptor refers to a file opened for
+writing.</p>
+
+<p><var>length</var> is the number of bytes to lock, <var>
+start</var> is the byte offset at which the lock starts, relative
+to <var>whence</var>, and <var>whence</var> is as with <code>fileobj.seek</code>,
+specifically:</p>
+
+<ul>
+<li>
+<p><code>0</code> - relative to the start of the file
+(<code>SEEK_SET</code>)</p>
+</li>
+
+<li>
+<p><code>1</code> - relative to the current buffer position
+(<code>SEEK_CUR</code>)</p>
+</li>
+
+<li>
+<p><code>2</code> - relative to the end of the file
+(<code>SEEK_END</code>)</p>
+</li>
+</ul>
+
+<p>The default for <var>start</var> is 0, which means to start at
+the beginning of the file. The default for <var>length</var> is 0
+which means to lock to the end of the file. The default for <var>
+whence</var> is also 0.</p>
+</dd>
+</dl><div class="text">
+<p>Examples (all on a SVR4 compliant system):</p>
+
+<pre>
+import struct, fcntl, os
+
+f = open(...)
+rv = fcntl.fcntl(f, fcntl.F_SETFL, os.O_NDELAY)
+
+lockdata = struct.pack('hhllhh', fcntl.F_WRLCK, 0, 0, 0, 0, 0)
+rv = fcntl.fcntl(f, fcntl.F_SETLKW, lockdata)
+</pre>
+
+<p>Note that in the first example the return value variable <var>
+rv</var> will hold an integer value; in the second example it will
+hold a string value. The structure lay-out for the <var>
+lockdata</var> variable is system dependent -- therefore using the
+<a class="link" href="#flock"><code>flock</code></a> call may be better.
+<span class="mark">@see</span> <code>
+Module os</code> The os.open() function supports locking flags and is
+available on a wider variety of platforms than the lockf() and
+flock() functions, providing a more platform-independent file
+locking facility.</p>
+</div>
+</div></body></html>

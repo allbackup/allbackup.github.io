@@ -1,0 +1,19 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>How do I check if an object is an instance of a given class or of a subclass of&nbsp;it?</title> <script type="text/javascript">effbot_page_id=779;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> <!--
+<p style='color: #8f8f8f; background: #fff5bf; padding: 5px 10px;'> <b>2008-07-15:</b> Selected articles
+
+now have experimental "comment" links in the left column and at the bottom.
+You're welcome to use them for commenting and voting on articles.
+For a bit more on this, see <a
+href="http://effbot.slinkset.com/links/Welcome_to_discuss_effbot_org">this
+page</a>. /F
+</p>
+--> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <h1 class="maintitle">How do I check if an object is an instance of a given class or of a subclass of&nbsp;it?</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p>Use the built-in function <a href="/pyref/isinstance.htm"><strong>isinstance</strong></a>.</p><pre class="python"><span class="pykeyword">if</span> isinstance(obj, MyClass):
+     <span class="pykeyword">print</span> <span class="pystring">"obj is my object"</span></pre><p>You can check if an object is an instance of any of a number of classes by providing a tuple instead of a single class, e.g.  isinstance(obj, (class1, class2, &#8230;)), and can also check whether an object is one of Python&#8217;s built-in types.  Examples:</p><pre class="python"><span class="pykeyword">if</span> isinstance(obj, str):
+     <span class="pykeyword">print</span> repr(obj), <span class="pystring">"is an 8-bit string"</span>
+
+<span class="pykeyword">if</span> isinstance(obj, basestring):
+     <span class="pykeyword">print</span> repr(obj), <span class="pystring">"is some kind of string"</span>
+
+<span class="pykeyword">if</s

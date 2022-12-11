@@ -1,0 +1,117 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>The base64&nbsp;module</title></head><body data-page-id="472"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">The base64&nbsp;module</h1></div><div class="yui-ge"><div class="yui-u first"><p>The <b>base64</b> encoding scheme is used to convert arbitrary
+binary data to plain text. To do this, the encoder stores each
+group of three binary bytes as a group of four characters from the
+following set:</p><blockquote class="blockquote"><pre>
+ABCDEFGHIJKLMNOPQRSTUVWXYZ
+abcdefghijklmnopqrstuvwxyz
+0123456789+/
+</pre></blockquote><p>In addition, the <b>=</b> character is used for padding at the
+end of the data stream.</p><p>The <b>encode</b> and <b>decode</b> functions work on file
+objects:</p><div class="example">
+<b style="example">Example: Using the base64
+module to encode files</b>
+<pre>
+# File: <a href="base64/base64-example-1.py">base64-example-1.py</a>
+
+import base64
+
+MESSAGE = "life of brian"
+
+file = open("out.txt", "w")
+file.write(MESSAGE)
+file.close()
+
+base64.encode(open("out.txt"), open("out.b64", "w"))
+base64.decode(open("out.b64"), open("out.txt", "w"))
+
+print "original:", repr(MESSAGE)
+print "encoded message:", repr(open("out.b64").read())
+print "decoded message:", repr(open("out.txt").read())
+
+</pre><pre class="computeroutput" moreinfo="NONE">
+original: 'life of brian'
+encoded message: 'bGlmZSBvZiBicmlhbg==\012'
+decoded message: 'life of brian'
+</pre></div><p>The <b>encodestring</b> and <b>decodestring</b> functions
+convert between strings instead. They&#8217;re currently implemented as
+wrappers on top of <b>encode</b> and <b>decode</b>, using
+<b>StringIO</b> objects for input and output.</p><div class="example">
+<b style="example">Example: Using the base64 module to encode strings</b>
+<pre>
+# File: <a href="base64/base64-example-2.py">base64-example-2.py</a>
+
+import base64
+
+MESSAGE = "life of brian"
+
+data = base64.encodestring(MESSAGE)
+
+original_data = base64.decodestring(data)
+
+print "original:", repr(MESSAGE)
+print "encoded data:", repr(data)
+print "decoded data:", repr(original_data)
+
+</pre><pre class="computeroutput" moreinfo="NONE">
+original: 'life of brian'
+encoded data: 'bGlmZSBvZiBicmlhbg==\012'
+decoded data: 'life of brian'
+</pre></div><p>Here&#8217;s how to convert a user name and a password to an HTTP basic
+authentication string. Note that you don&#8217;t really have to work for
+the <a href="http://www.nsa.gov">NSA</a> to be able to decode this
+format&#8230;</p><div class="example">
+<b style="example">Example: Using the base64
+module for basic authentication</b>
+<pre>
+# File: <a href="base64/base64-example-3.py">base64-example-3.py</a>
+
+import base64
+
+def getbasic(user, password):
+    # basic authentication (according to HTTP)
+    return base64.encodestring(user + ":" + password)    
+
+print getbasic("Aladdin", "open sesame")
+
+</pre><pre class="computeroutput" moreinfo="NONE">
+'QWxhZGRpbjpvcGVuIHNlc2FtZQ=='
+</pre></div><p>Finally, here&#8217;s a small utility that converts a GIF image to a
+Python script, for use with the Tkinter library:</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><div class="example wide">
+<b style="example">Example: Using the base64
+module to wrap GIF images for Tkinter</b>
+<pre class="wide">
+# File: <a href="base64/base64-example-4.py">base64-example-4.py</a>
+
+import base64, sys
+
+if not sys.argv[1:]:
+    print "Usage: gif2tk.py giffile &gt;pyfile"
+    sys.exit(1)
+
+data = open(sys.argv[1], "rb").read()
+
+if data[:4] != "GIF8":
+    print sys.argv[1], "is not a GIF file"
+    sys.exit(1)
+
+print '# generated from', sys.argv[1], 'by gif2tk.py'
+print
+print 'from Tkinter import PhotoImage' 
+print
+print 'image = PhotoImage(data="""'
+print base64.encodestring(data),
+print '""")'
+
+</pre><pre class="computeroutput wide" moreinfo="NONE">
+# generated from samples/sample.gif by gif2tk.py
+
+from Tkinter import PhotoImage
+
+image = PhotoImage(data="""
+R0lGODlhoAB4APcAAAAAAIAAAACAAICAAAAAgIAAgACAgICAgAQEBIwEBIyMBJRUlISE/LRUBAQE
+...
+AjmQBFmQBnmQCJmQCrmQDNmQDvmQEBmREnkRAQEAOw==
+""")
+</pre></div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to librarybook index page.">::: librarybook :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

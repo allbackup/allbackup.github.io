@@ -1,0 +1,48 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>Coercion&nbsp;rules</title> <script type="text/javascript">effbot_page_id=1232;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <h1 class="maintitle">Coercion&nbsp;rules</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p>This section used to document the rules for coercion. As the language
+has evolved, the coercion rules have become hard to document
+precisely; documenting what one version of one particular
+implementation does is undesirable. Instead, here are some informal
+guidelines regarding coercion. In Python 3.0, coercion will not be
+supported.</p><ul><li><p>If the left operand of a % operator is a string or Unicode object,
+no coercion takes place and the string formatting operation is invoked
+instead.</p></li><li><p>It is no longer recommended to define a coercion
+operation. Mixed-mode operations on types that don&#8217;t define coercion
+pass the original arguments to the operation.</p></li><li><p>New-style classes (those derived from object) never invoke the
+__coerce__() method in response to a binary operator; the only
+time __coerce__() is invoked is when the built-in function
+coerce() is called.</p></li><li><p>For most intents and purposes, an operator that returns `
+NotImplemented` is treated the same as one that is not implemented at
+all.</p></li><li><p>Below, __op__() and __rop__() are used to signify the
+generic method names corresponding to an operator; __iop__() is
+used for the corresponding in-place operator. For example, for the
+operator <code>`+</code>&#8216;, __add__() and __radd__() are used for the left
+and right variant of the binary operator, and __iadd__() for the
+in-place variant.</p></li><li><p>For objects x and y, first <code>x.\_\_op\_\_(y)</code> is tried. If this is
+not implemented or returns <code>NotImplemented</code>, <code>y.\_\_rop\_\_(x)</code> is
+tried. If this is also not implemented or returns <code>NotImplemented</code>, a
+TypeError exception is raised. But see the following exception:</p></li><li><p>Exception to the previous item: if the left operand is an instance
+of a built-in type or a new-style class, and the right operand is an
+instance of a proper subclass of that type or class and overrides the
+base&#8217;s __rop__() method, the right operand&#8217;s __rop__() method
+is tried <em>before</em> the left operand&#8217;s __op__() method.</p></li></ul><p>This is done so that a subclass can completely override binary operators. Otherwise, the left operand&#8217;s  __op__() method would always accept the right operand: when an instance of a given class is expected, an instance of a subclass of that class is always acceptable.</p><ul><li><p>When either operand type defines a coercion, this coercion is
+called before that type&#8217;s __op__() or __rop__() method is
+called, but no sooner. If the coercion returns an object of a
+different type for the operand whose coercion is invoked, part of the
+process is redone using the new object.</p></li><li><p>When an in-place operator (like <code>`+=</code>&#8216;) is used, if the left
+operand implements __iop__(), it is invoked without any
+coercion. When the operation falls back to __op__() and/or
+__rop__(), the normal coercion rules apply.</p></li><li><p>In x<code>+</code>y, if x is a sequence that implements sequence
+concatenation, sequence concatenation is invoked.</p></li><li><p>In x<code>\*</code>y, if one operator is a sequence that implements sequence
+repetition, and the other is an integer (int or long), sequence
+repetition is invoked.</p></li><li><p>Rich comparisons (implemented by methods __eq__() and so on)
+never use coercion. Three-way comparison (implemented by
+__cmp__()) does use coercion under the same conditions as other
+binary operations use it.</p></li><li><p>In the current implementation, the built-in numeric types int,
+long and float do not use coercion; the type complex however does use
+it. The difference can become apparent when subclassing these
+types. Over time, the type complex may be fixed to avoid coercion. All
+these types implement a __coerce__() method, for use by the
+built-in coerce() function.</p></li></ul></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div> <!-- yui-g --></div> <!-- content --> </div> <!-- yui-b --> </div> <!-- yui-main --> <div class="yui-b"> <div id='menu'> <ul> <li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li> <li><b><a href="." title="Go to pyref index page.">::: pyref :::</a></b></li> </ul> </div> <!-- menu --> </div> <!-- yui-b --> </div> <!-- bd --> <div id="ft"> <!-- footer --> <p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;"></a>
+this page was rendered by a <a href="http://www.djangoproject.com/">django</a> application in 0.01s 2011-06-21 20:51:55.509819.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p> </div> <!-- ft --> </div> <!-- doc --> <script src="/media/js/effbot-min.js" type="text/javascript"> </script> </body> </html>

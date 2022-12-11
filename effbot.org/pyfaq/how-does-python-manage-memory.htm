@@ -1,0 +1,59 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>How does Python manage&nbsp;memory?</title></head><body data-page-id="835"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><p class="note" style="text-align: center"><strong>
+This is an old copy of the Python FAQ.  The information here may be
+outdated.
+</strong></p><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">How does Python manage&nbsp;memory?</h1></div><div class="yui-ge"><div class="yui-u first"><p>The details of Python memory management depend on the implementation.
+The standard C implementation of Python uses reference counting to
+detect inaccessible objects, and a separate mechanism to collect
+reference cycles, periodically executing a cycle detection algorithm
+which looks for inaccessible cycles and deletes the objects involved.
+The <a href="/pyref/gc.htm"><strong>gc</strong></a> module provides functions to force garbage
+collection, obtain debugging statistics, and tune the collector&#8217;s
+parameters.</p><p>Jython relies on the Java runtime so the JVM&#8217;s garbage collector is
+used.  The same applies to IronPython, which uses the CLR garbage
+collector.  This difference can cause some subtle porting problems if
+your Python code depends on the behavior of the reference counting
+implementation.</p><p>Sometimes objects get stuck in tracebacks temporarily and hence are
+not deallocated when you might expect.  Clear the tracebacks with:</p><pre class="python"><span class="pykeyword">import</span> sys
+sys.exc_clear()
+sys.exc_traceback = sys.last_traceback = None</pre><p>Tracebacks are used for reporting errors, implementing debuggers and
+related things.  They contain a portion of the program state extracted
+during the handling of an exception (usually the most recent
+exception).</p><p>In the absence of circularities and tracebacks, Python programs need
+not explicitly manage memory.</p><p>Why doesn&#8217;t Python use a more traditional garbage collection scheme?
+For one thing, this is not a C standard feature and hence it&#8217;s not
+portable.  (Yes, we know about the Boehm GC library.  It has bits of
+assembler code for <em>most</em> common platforms, not for all of them, and
+although it is mostly transparent, it isn&#8217;t completely transparent;
+patches are required to get Python to work with it.)</p><p>Traditional GC also becomes a problem when Python is embedded into
+other applications.  While in a standalone Python it&#8217;s fine to replace
+the standard malloc() and free() with versions provided by the GC
+library, an application embedding Python may want to have its <em>own</em>
+substitute for malloc() and free(), and may not want Python&#8217;s.  Right
+now, Python works with anything that implements malloc() and free()
+properly.</p><p>Note that on systems using traditional GC, code that uses external
+resources without explicitly releasing them may run out of resources
+before the GC kicks in.  Consider this example:</p><pre><code>class Resource:
+    def __init__(self, name):
+        self.handle = allocate_resource(name)
+    def __del__(self):
+        if self.handle:
+            self.close()
+    def close(self):
+        release_resource(self.handle)
+        self.handle = None
+    ...
+
+for name in big_list:
+    x = Resource(name)
+    do something with x
+</code></pre><p>In current releases of CPython, each new assignment to <em>x</em> inside the
+loop will release the previously allocated resource.  Using GC, this
+is not guaranteed.  If you want to write code that will work with any
+Python implementation, you should explicitly close the resource; this
+will work regardless of GC:</p><pre><code>for name in big_list:
+    x = Resource()
+    do something with x
+    x.close()
+</code></pre><p>CATEGORY: general</p><p>CATEGORY: cpython</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to pyfaq index page.">::: pyfaq :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

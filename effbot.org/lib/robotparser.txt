@@ -1,0 +1,55 @@
+
+@@module robotparser
+
+<h1>robotparser&#8212;Parser for robots.txt</h1>
+
+<p>This module provides a single class, {@link RobotFileParser}, which
+answers questions about whether or not a particular user agent can fetch
+a URL on the Web site that published the robots.txt file. For more
+details on the structure of robots.txt files, see {@link
+http://www.robotstxt.org/wc/norobots.html}.
+
+@@class RobotFileParser()
+
+<p>This class provides a set of methods to read, parse and answer
+questions about a single robots.txt file.
+@@attribute set_url( url)
+
+<p>Sets the URL referring to a robots.txt file.
+@@attribute read( )
+
+<p>Reads the robots.txt URL and feeds it to the parser.
+@@attribute parse( lines)
+
+<p>Parses the lines argument.
+@@attribute can_fetch( useragent, url)
+
+<p>Returns {@link True} if the {@var useragent} is allowed to fetch the
+{@var url} according to the rules contained in the parsed robots.txt
+file.
+@@attribute mtime( )
+
+<p>Returns the time the {@code robots.txt} file was last fetched. This
+is useful for long-running web spiders that need to check for new {@code
+robots.txt} files periodically.
+@@attribute modified( )
+
+<p>Sets the time the {@code robots.txt} file was last fetched to the
+current time.
+
+@@text 
+
+<p>The following example demonstrates basic use of the RobotFileParser
+class.
+
+<pre>
+&gt;&gt;&gt; import robotparser
+&gt;&gt;&gt; rp = robotparser.RobotFileParser()
+&gt;&gt;&gt; rp.set_url("http://www.musi-cal.com/robots.txt")
+&gt;&gt;&gt; rp.read()
+&gt;&gt;&gt; rp.can_fetch("*", "http://www.musi-cal.com/cgi-bin/search?city=San+Francisco")
+False
+&gt;&gt;&gt; rp.can_fetch("*", "http://www.musi-cal.com/")
+True
+</pre>
+

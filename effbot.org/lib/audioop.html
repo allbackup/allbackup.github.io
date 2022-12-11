@@ -1,0 +1,304 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>audioop</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-audioop.html'>original</a> :::
+<a href='audioop.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>audioop&#8212;Manipulate raw audio data</h1>
+
+<p>The <code>audioop</code> module
+contains some useful operations on sound fragments. It operates on
+sound fragments consisting of signed integer samples 8, 16 or 32
+bits wide, stored in Python strings. This is the same format as
+used by the <code>al</code> and <code>sunaudiodev</code> modules. All
+scalar items are integers, unless specified otherwise.</p>
+
+<p>This module provides support for u-LAW and Intel/DVI ADPCM
+encodings.</p>
+
+<p>A few of the more complicated operations only take 16-bit
+samples, otherwise the sample size (in bytes) is always a parameter
+of the operation.</p>
+
+<p>The module defines the following variables and functions:</p>
+</div>
+<dl><dt class="exception" id="error"><b>exception error</b> <tt class="nav"><a class="nav" href="audioop.error" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="exception">
+<p>This exception is raised on all errors, such as unknown number
+of bytes per sample, etc.</p>
+</dd>
+<dt class="function" id="add"><b>add(fragment1, fragment2, width)</b> <tt class="nav"><a class="nav" href="audioop.add" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return a fragment which is the addition of the two samples
+passed as parameters. <var>width</var> is the sample width in
+bytes, either <code>1</code>, <code>2</code> or <code>4</code>.
+Both fragments should have the same length.</p>
+</dd>
+<dt class="function" id="adpcm2lin"><b>adpcm2lin(adpcmfragment, width, state)</b> <tt class="nav"><a class="nav" href="audioop.adpcm2lin" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Decode an Intel/DVI ADPCM coded fragment to a linear fragment.
+See the description of <a class="link" href="#lin2adpcm"><code>
+lin2adpcm</code></a> for details on ADPCM coding. Return a tuple <code>
+(</code><var>sample</var>, <var>newstate</var>) where the sample
+has the width specified in <var>width</var>.</p>
+</dd>
+<dt class="function" id="adpcm32lin"><b>adpcm32lin(adpcmfragment, width, state)</b> <tt class="nav"><a class="nav" href="audioop.adpcm32lin" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Decode an alternative 3-bit ADPCM code. See <a class="link" href="#lin2adpcm3"><code>lin2adpcm3</code></a> for details.</p>
+</dd>
+<dt class="function" id="avg"><b>avg(fragment, width)</b> <tt class="nav"><a class="nav" href="audioop.avg" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return the average over all samples in the fragment.</p>
+</dd>
+<dt class="function" id="avgpp"><b>avgpp(fragment, width)</b> <tt class="nav"><a class="nav" href="audioop.avgpp" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return the average peak-peak value over all samples in the
+fragment. No filtering is done, so the usefulness of this routine
+is questionable.</p>
+</dd>
+<dt class="function" id="bias"><b>bias(fragment, width, bias)</b> <tt class="nav"><a class="nav" href="audioop.bias" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return a fragment that is the original fragment with a bias
+added to each sample.</p>
+</dd>
+<dt class="function" id="cross"><b>cross(fragment, width)</b> <tt class="nav"><a class="nav" href="audioop.cross" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return the number of zero crossings in the fragment passed as an
+argument.</p>
+</dd>
+<dt class="function" id="findfactor"><b>findfactor(fragment, reference)</b> <tt class="nav"><a class="nav" href="audioop.findfactor" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return a factor <var>F</var> such that <code>
+rms(add(</code><var>fragment</var>, mul(<var>reference</var>,
+-<var>F</var>))) is minimal, i.e., return the factor with which you
+should multiply <var>reference</var> to make it match as well as
+possible to <var>fragment</var>. The fragments should both contain
+2-byte samples.</p>
+
+<p>The time taken by this routine is proportional to <code>
+len(</code><var>fragment</var>).</p>
+</dd>
+<dt class="function" id="findfit"><b>findfit(fragment, reference)</b> <tt class="nav"><a class="nav" href="audioop.findfit" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Try to match <var>reference</var> as well as possible to a
+portion of <var>fragment</var> (which should be the longer
+fragment). This is (conceptually) done by taking slices out of
+<var>fragment</var>, using <a class="link" href="#findfactor"><code>
+findfactor</code></a> to compute the best match, and minimizing the
+result. The fragments should both contain 2-byte samples. Return a
+tuple <code>(</code><var>offset</var>, <var>factor</var>) where
+<var>offset</var> is the (integer) offset into <var>fragment</var>
+where the optimal match started and <var>factor</var> is the
+(floating-point) factor as per <a class="link" href="#findfactor"><code>findfactor</code></a>.</p>
+</dd>
+<dt class="function" id="findmax"><b>findmax(fragment, length)</b> <tt class="nav"><a class="nav" href="audioop.findmax" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Search <var>fragment</var> for a slice of length <var>
+length</var> samples (not bytes!) with maximum energy, i.e., return
+<var>i</var> for which <code>rms(fragment[i*2:(i+length)*2])</code>
+is maximal. The fragments should both contain 2-byte samples.</p>
+
+<p>The routine takes time proportional to <code>
+len(</code><var>fragment</var>).</p>
+</dd>
+<dt class="function" id="getsample"><b>getsample(fragment, width, index)</b> <tt class="nav"><a class="nav" href="audioop.getsample" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return the value of sample <var>index</var> from the
+fragment.</p>
+</dd>
+<dt class="function" id="lin2lin"><b>lin2lin(fragment, width, newwidth)</b> <tt class="nav"><a class="nav" href="audioop.lin2lin" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Convert samples between 1-, 2- and 4-byte formats.</p>
+</dd>
+<dt class="function" id="lin2adpcm"><b>lin2adpcm(fragment, width, state)</b> <tt class="nav"><a class="nav" href="audioop.lin2adpcm" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Convert samples to 4 bit Intel/DVI ADPCM encoding. ADPCM coding
+is an adaptive coding scheme, whereby each 4 bit number is the
+difference between one sample and the next, divided by a (varying)
+step. The Intel/DVI ADPCM algorithm has been selected for use by
+the IMA, so it may well become a standard.</p>
+
+<p><var>state</var> is a tuple containing the state of the coder.
+The coder returns a tuple <code>(</code><var>adpcmfrag</var>, <var>
+newstate</var>), and the <var>newstate</var> should be passed to
+the next call of <a class="link" href="#lin2adpcm"><code>
+lin2adpcm</code></a>. In the initial call, <code>None</code> can be passed as the state. <var>
+adpcmfrag</var> is the ADPCM coded fragment packed 2 4-bit values
+per byte.</p>
+</dd>
+<dt class="function" id="lin2adpcm3"><b>lin2adpcm3(fragment, width, state)</b> <tt class="nav"><a class="nav" href="audioop.lin2adpcm3" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>This is an alternative ADPCM coder that uses only 3 bits per
+sample. It is not compatible with the Intel/DVI ADPCM coder and its
+output is not packed (due to laziness on the side of the author).
+Its use is discouraged.</p>
+</dd>
+<dt class="function" id="lin2ulaw"><b>lin2ulaw(fragment, width)</b> <tt class="nav"><a class="nav" href="audioop.lin2ulaw" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Convert samples in the audio fragment to u-LAW encoding and
+return this as a Python string. u-LAW is an audio encoding format
+whereby you get a dynamic range of about 14 bits using only 8 bit
+samples. It is used by the Sun audio hardware, among others.</p>
+</dd>
+<dt class="function" id="minmax"><b>minmax(fragment, width)</b> <tt class="nav"><a class="nav" href="audioop.minmax" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return a tuple consisting of the minimum and maximum values of
+all samples in the sound fragment.</p>
+</dd>
+<dt class="function" id="max"><b>max(fragment, width)</b> <tt class="nav"><a class="nav" href="audioop.max" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return the maximum of the <em>absolute value</em> of all samples
+in a fragment.</p>
+</dd>
+<dt class="function" id="maxpp"><b>maxpp(fragment, width)</b> <tt class="nav"><a class="nav" href="audioop.maxpp" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return the maximum peak-peak value in the sound fragment.</p>
+</dd>
+<dt class="function" id="mul"><b>mul(fragment, width, factor)</b> <tt class="nav"><a class="nav" href="audioop.mul" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return a fragment that has all samples in the original fragment
+multiplied by the floating-point value <var>factor</var>. Overflow
+is silently ignored.</p>
+</dd>
+<dt class="function" id="ratecv"><b>ratecv(fragment, width, nchannels, inrate,
+outrate, state[, weightA[, weightB]])</b> <tt class="nav"><a class="nav" href="audioop.ratecv" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Convert the frame rate of the input fragment.</p>
+
+<p><var>state</var> is a tuple containing the state of the
+converter. The converter returns a tuple <code>
+(</code><var>newfragment</var>, <var>newstate</var>), and <var>
+newstate</var> should be passed to the next call of <a class="link" href="#ratecv"><code>ratecv</code></a>. The initial call should pass <code>
+None</code> as the state.</p>
+
+<p>The <var>weightA</var> and <var>weightB</var> arguments are
+parameters for a simple digital filter and default to <code>
+1</code> and <code>0</code> respectively.</p>
+</dd>
+<dt class="function" id="reverse"><b>reverse(fragment, width)</b> <tt class="nav"><a class="nav" href="audioop.reverse" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Reverse the samples in a fragment and returns the modified
+fragment.</p>
+</dd>
+<dt class="function" id="rms"><b>rms(fragment, width)</b> <tt class="nav"><a class="nav" href="audioop.rms" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return the root-mean-square of the fragment, i.e. <img alt="\begin{displaymath} \catcode\lq _=8 \sqrt{\frac{\sum{{S_{i}}^{2}}}{n}} \end{displaymath}" border="0" height="55" src="img3.png" width="61" /></p>
+
+<p>This is a measure of the power in an audio signal.</p>
+</dd>
+<dt class="function" id="tomono"><b>tomono(fragment, width, lfactor, rfactor)</b> <tt class="nav"><a class="nav" href="audioop.tomono" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Convert a stereo fragment to a mono fragment. The left channel
+is multiplied by <var>lfactor</var> and the right channel by <var>
+rfactor</var> before adding the two channels to give a mono
+signal.</p>
+</dd>
+<dt class="function" id="tostereo"><b>tostereo(fragment, width, lfactor, rfactor)</b> <tt class="nav"><a class="nav" href="audioop.tostereo" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Generate a stereo fragment from a mono fragment. Each pair of
+samples in the stereo fragment are computed from the mono sample,
+whereby left channel samples are multiplied by <var>lfactor</var>
+and right channel samples by <var>rfactor</var>.</p>
+</dd>
+<dt class="function" id="ulaw2lin"><b>ulaw2lin(fragment, width)</b> <tt class="nav"><a class="nav" href="audioop.ulaw2lin" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Convert sound fragments in u-LAW encoding to linearly encoded
+sound fragments. u-LAW encoding always uses 8 bits samples, so
+<var>width</var> refers only to the sample width of the output
+fragment here.</p>
+</dd>
+</dl><div class="text">
+<p>Note that operations such as <a class="link" href="#mul"><code>
+mul</code></a> or <a class="link" href="#max"><code>max</code></a> make no
+distinction between mono and stereo fragments, i.e. all samples are
+treated equal. If this is a problem the stereo fragment should be
+split into two mono fragments first and recombined later. Here is
+an example of how to do that:</p>
+
+<pre>
+def mul_stereo(sample, width, lfactor, rfactor):
+    lsample = audioop.tomono(sample, width, 1, 0)
+    rsample = audioop.tomono(sample, width, 0, 1)
+    lsample = audioop.mul(sample, width, lfactor)
+    rsample = audioop.mul(sample, width, rfactor)
+    lsample = audioop.tostereo(lsample, width, 1, 0)
+    rsample = audioop.tostereo(rsample, width, 0, 1)
+    return audioop.add(lsample, rsample, width)
+</pre>
+
+<p>If you use the ADPCM coder to build network packets and you want
+your protocol to be stateless (i.e. to be able to tolerate packet
+loss) you should not only transmit the data but also the state.
+Note that you should send the <var>initial</var> state (the one you
+passed to <a class="link" href="#lin2adpcm"><code>lin2adpcm</code></a>)
+along to the decoder, not the final state (as returned by the
+coder). If you want to use <code>struct.struct</code> to store the state in
+binary you can code the first element (the predicted value) in 16
+bits and the second (the delta index) in 8.</p>
+
+<p>The ADPCM coders have never been tried against other ADPCM
+coders, only against themselves. It could well be that I
+misinterpreted the standards in which case they will not be
+interoperable with the respective standards.</p>
+
+<p>The <code>find*</code> routines might
+look a bit funny at first sight. They are primarily meant to do
+echo cancellation. A reasonably fast way to do this is to pick the
+most energetic piece of the output sample, locate that in the input
+sample and subtract the whole output sample from the input
+sample:</p>
+
+<pre>
+def echocancel(outputdata, inputdata):
+    pos = audioop.findmax(outputdata, 800)    # one tenth second
+    out_test = outputdata[pos*2:]
+    in_test = inputdata[pos*2:]
+    ipos, factor = audioop.findfit(in_test, out_test)
+    # Optional (for better cancellation):
+    # factor = audioop.findfactor(in_test[ipos*2:ipos*2+len(out_test)], 
+    #              out_test)
+    prefill = '\0'*(pos+ipos)*2
+    postfill = '\0'*(len(inputdata)-len(prefill)-len(outputdata))
+    outputdata = prefill + audioop.mul(outputdata,2,-factor) + postfill
+    return audioop.add(inputdata, outputdata, 2)
+</pre>
+</div>
+</div></body></html>

@@ -1,0 +1,44 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>The Tkinter LabelFrame&nbsp;Widget</title> <script type="text/javascript">effbot_page_id=1926;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> <!--
+<p style='color: #8f8f8f; background: #fff5bf; padding: 5px 10px;'> <b>2008-07-15:</b> Selected articles
+ (including this one) 
+now have experimental "comment" links in the left column and at the bottom.
+You're welcome to use them for commenting and voting on articles.
+For a bit more on this, see <a
+href="http://effbot.slinkset.com/links/Welcome_to_discuss_effbot_org">this
+page</a>. /F
+</p>
+--> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <p><a href="label.htm">back</a> <a href="listbox.htm">next</a></p> <h1 class="maintitle">The Tkinter LabelFrame&nbsp;Widget</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p>(new in Tk 8.4) The <b>LabelFrame</b> widget is a variant of the
+Tkinter Frame widget. By default, it draws a border around its
+child widgets, and it can also display a title.</p><h2>When to use the LabelFrame Widget</h2><p>The <b>LabelFrame</b> can be used when you want to group a
+number of related widgets, such as a number of radiobuttons.</p><h2 id="patterns">Patterns&#160;<a class="nav" href="#patterns" title="bookmark!">#</a></h2><p>To display a group, create a LabelFrame, and add child widgets
+to the frame as usual. The widget draws a border around the
+children, and a text label above them.</p><pre class="python">
+<span class="pykeyword">from</span> Tkinter <span class="pykeyword">import</span> *
+
+master = Tk()
+
+group = LabelFrame(master, text=<span class="pystring">"Group"</span>, padx=5, pady=5)
+group.pack(padx=10, pady=10)
+
+w = Entry(group)
+w.pack()
+
+mainloop()</pre><p>You can use options to control where and how to draw the label,
+and how to draw the border. See below for details.</p><h2 id="reference">Reference&#160;<a class="nav" href="#reference" title="bookmark!">#</a></h2><div class="zone:include"><dl><dt><b>LabelFrame(master=None, **options)</b> (class) [<a href="#Tkinter.LabelFrame-class">#</a>]</dt><dd>
+<p>A frame widget with an internal group border and an opertional
+label.</p><dl><dt><i>master</i></dt><dd>
+Parent widget.</dd>
+<dt><i>**options</i></dt><dd>
+Widget options.  See the description of
+   the config method for a list of available options.</dd>
+</dl><br />
+</dd>
+<dt><a id="Tkinter.LabelFrame.config-method" name="Tkinter.LabelFrame.config-method"><b>config(**options)</b></a> [<a href="#Tkinter.LabelFrame.config-method">#</a>]</dt><dd>
+<p>Modifies one or more widget options.  If no options are given,
+the method returns a dictionary containing all current option
+values.</p><dl><dt><i>**options</i></dt><dd>
+Widget options.</dd>
+<dt><i>background=</i></dt><dd>
+The background color to use in this f

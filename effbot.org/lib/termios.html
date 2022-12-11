@@ -1,0 +1,123 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>termios</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-termios.html'>original</a> :::
+<a href='termios.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>termios&#8212;POSIX style tty control</h1>
+
+<div class="toc"><dl><dt>On this page:</dt><dd><a href="#example">Example</a></dd></dl></div><p>Availability: Unix.</p>
+
+<p>This module provides an interface to the POSIX calls for tty I/O
+control. For a complete description of these calls, see the POSIX
+or Unix manual pages. It is only available for those Unix versions
+that support POSIX <em>termios</em> style tty I/O control (and then
+only if configured at installation time).</p>
+
+<p>All functions in this module take a file descriptor <var>
+fd</var> as their first argument. This can be an integer file
+descriptor, such as returned by <code>sys.stdin.fileno()</code>, or
+a file object, such as <code>sys.stdin</code> itself.</p>
+
+<p>This module also defines all the constants needed to work with
+the functions provided here; these have the same name as their
+counterparts in C. Please refer to your system documentation for
+more information on using these terminal control interfaces.</p>
+
+<p>The module defines the following functions:</p>
+</div>
+<dl><dt class="function" id="tcgetattr"><b>tcgetattr(fd)</b> <tt class="nav"><a class="nav" href="termios.tcgetattr" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return a list containing the tty attributes for file descriptor
+<var>fd</var>, as follows: <code>[</code><var>iflag</var>, <var>
+oflag</var>, <var>cflag</var>, <var>lflag</var>, <var>ispeed</var>,
+<var>ospeed</var>, <var>cc</var><code>]</code> where <var>cc</var>
+is a list of the tty special characters (each a string of length 1,
+except the items with indices <code>VMIN</code> and <code>
+VTIME</code>, which are integers when these fields are defined).
+The interpretation of the flags and the speeds as well as the
+indexing in the <var>cc</var> array must be done using the symbolic
+constants defined in the <code>
+termios</code> module.</p>
+</dd>
+<dt class="function" id="tcsetattr"><b>tcsetattr(fd, when, attributes)</b> <tt class="nav"><a class="nav" href="termios.tcsetattr" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Set the tty attributes for file descriptor <var>fd</var> from
+the <var>attributes</var>, which is a list like the one returned by
+<a class="link" href="#tcgetattr"><code>tcgetattr</code></a>. The <var>
+when</var> argument determines when the attributes are changed:
+<code>TCSANOW</code> to change immediately, <code>TCSADRAIN</code>
+to change after transmitting all queued output, or <code>
+TCSAFLUSH</code> to change after transmitting all queued output and
+discarding all queued input.</p>
+</dd>
+<dt class="function" id="tcsendbreak"><b>tcsendbreak(fd, duration)</b> <tt class="nav"><a class="nav" href="termios.tcsendbreak" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Send a break on file descriptor <var>fd</var>. A zero <var>
+duration</var> sends a break for 0.25-0.5 seconds; a nonzero <var>
+duration</var> has a system dependent meaning.</p>
+</dd>
+<dt class="function" id="tcdrain"><b>tcdrain(fd)</b> <tt class="nav"><a class="nav" href="termios.tcdrain" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Wait until all output written to file descriptor <var>fd</var>
+has been transmitted.</p>
+</dd>
+<dt class="function" id="tcflush"><b>tcflush(fd, queue)</b> <tt class="nav"><a class="nav" href="termios.tcflush" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Discard queued data on file descriptor <var>fd</var>. The <var>
+queue</var> selector specifies which queue: <code>TCIFLUSH</code>
+for the input queue, <code>TCOFLUSH</code> for the output queue, or
+<code>TCIOFLUSH</code> for both queues.</p>
+</dd>
+<dt class="function" id="tcflow"><b>tcflow(fd, action)</b> <tt class="nav"><a class="nav" href="termios.tcflow" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Suspend or resume input or output on file descriptor <var>
+fd</var>. The <var>action</var> argument can be <code>TCOOFF</code>
+to suspend output, <code>TCOON</code> to restart output, <code>
+TCIOFF</code> to suspend input, or <code>TCION</code> to restart
+input.</p>
+</dd>
+</dl><div class="text"><span class="mark">@see</span> <code>Module tty</code> Convenience functions for common
+terminal control operations. 
+
+<h2 id="example">Example <a class="nav" href="#example">#</a></h2>
+
+<p>Here's a function that prompts for a password with echoing
+turned off. Note the technique using a separate <a class="link" href="#tcgetattr"><code>tcgetattr</code></a> call and a <code>try</code> ... <code>
+finally</code> statement to ensure that the old tty attributes are
+restored exactly no matter what happens:</p>
+
+<pre>
+def getpass(prompt = "Password: "):
+    import termios, sys
+    fd = sys.stdin.fileno()
+    old = termios.tcgetattr(fd)
+    new = termios.tcgetattr(fd)
+    new[3] = new[3] &amp; ~termios.ECHO          # lflags
+    try:
+        termios.tcsetattr(fd, termios.TCSADRAIN, new)
+        passwd = raw_input(prompt)
+    finally:
+        termios.tcsetattr(fd, termios.TCSADRAIN, old)
+    return passwd
+</pre>
+</div>
+</div></body></html>

@@ -1,0 +1,329 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>random</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-random.html'>original</a> :::
+<a href='random.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>random&#8212;Generate pseudo-random numbers</h1>
+
+<p>This module implements pseudo-random number generators for
+various distributions.</p>
+
+<p>For integers, uniform selection from a range. For sequences,
+uniform selection of a random element, a function to generate a
+random permutation of a list in-place, and a function for random
+sampling without replacement.</p>
+
+<p>On the real line, there are functions to compute uniform, normal
+(Gaussian), lognormal, negative exponential, gamma, and beta
+distributions. For generating distributions of angles, the von
+Mises distribution is available.</p>
+
+<p>Almost all module functions depend on the basic function <a class="link" href="#random"><code>random</code></a>, which generates a
+random float uniformly in the semi-open range [0.0, 1.0). Python
+uses the Mersenne Twister as the core generator. It produces 53-bit
+precision floats and has a period of 2**19937-1. The underlying
+implementation in C is both fast and threadsafe. The Mersenne
+Twister is one of the most extensively tested random number
+generators in existence. However, being completely deterministic,
+it is not suitable for all purposes, and is completely unsuitable
+for cryptographic purposes.</p>
+
+<p>The functions supplied by this module are actually bound methods
+of a hidden instance of the <code>random.Random</code> class. You can
+instantiate your own instances of <code>Random</code> to get generators that don't share
+state. This is especially useful for multi-threaded programs,
+creating a different instance of <code>Random</code> for each thread, and using the <a class="link" href="#jumpahead"><code>jumpahead</code></a> method to ensure
+that the generated sequences seen by each thread don't overlap.</p>
+
+<p>Class <code>Random</code> can also be
+subclassed if you want to use a different basic generator of your
+own devising: in that case, override the <a class="link" href="#random"><code>random</code></a>, <a class="link" href="#seed"><code>
+seed</code></a>, <a class="link" href="#getstate"><code>getstate</code></a>, <a class="link" href="#setstate"><code>setstate</code></a> and <a class="link" href="#jumpahead"><code>jumpahead</code></a> methods. Optionally, a new
+generator can supply a <code>
+getrandombits</code> method -- this allows <a class="link" href="#randrange"><code>randrange</code></a> to produce selections over an
+arbitrarily large range. New in version 2.4: the <code>getrandombits</code> method.</p>
+
+<p>As an example of subclassing, the <a class="link" href="#random"><code>random</code></a> module provides the <a class="link" href="#WichmannHill"><code>WichmannHill</code></a> class which implements an
+alternative generator in pure Python. The class provides a backward
+compatible way to reproduce results from earlier versions of Python
+which used the Wichmann-Hill algorithm as the core generator.
+Changed in version 2.3: Substituted MersenneTwister for
+Wichmann-Hill.</p>
+
+<p>Bookkeeping functions:</p>
+</div>
+<dl><dt class="function" id="seed"><b>seed([x])</b> <tt class="nav"><a class="nav" href="random.seed" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Initialize the basic random number generator. Optional argument
+<var>x</var> can be any hashable object. If <var>x</var> is omitted
+or <code>None</code>, current system time
+is used; current system time is also used to initialize the
+generator when the module is first imported. If randomness sources
+are provided by the operating system, they are used instead of the
+system time (see the <code>
+os.urandom</code> function for details on availability). <var>x</var>
+is not <code>None</code> or an int or long,
+<code>hash(</code><var>x</var>) is used instead. If <var>x</var> is
+an int or long, <var>x</var> is used directly.</p>
+
+<blockquote><span class="mark">@since</span> Changed in version
+2.4: formerly, operating system resources were not used.<br />
+</blockquote>
+</dd>
+<dt class="function" id="getstate"><b>getstate()</b> <tt class="nav"><a class="nav" href="random.getstate" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return an object capturing the current internal state of the
+generator. This object can be passed to <a class="link" href="#setstate"><code>setstate</code></a> to restore the state.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.1.<br />
+</blockquote>
+</dd>
+<dt class="function" id="setstate"><b>setstate(state)</b> <tt class="nav"><a class="nav" href="random.setstate" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p><var>state</var> should have been obtained from a previous call
+to <a class="link" href="#getstate"><code>getstate</code></a>, and <a class="link" href="#setstate"><code>setstate</code></a> restores the
+internal state of the generator to what it was at the time <a class="link" href="#setstate"><code>setstate</code></a> was called.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.1.<br />
+</blockquote>
+</dd>
+<dt class="function" id="jumpahead"><b>jumpahead(n)</b> <tt class="nav"><a class="nav" href="random.jumpahead" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Change the internal state to one different from and likely far
+away from the current state. <var>n</var> is a non-negative integer
+which is used to scramble the current state vector. This is most
+useful in multi-threaded programs, in conjuction with multiple
+instances of the <code>Random</code>
+class: <a class="link" href="#setstate"><code>setstate</code></a> or <a class="link" href="#seed"><code>seed</code></a> can be used to force all
+instances into the same internal state, and then <a class="link" href="#jumpahead"><code>jumpahead</code></a> can be used to force the
+instances' states far apart. Changed in version 2.3: Instead of
+jumping to a specific state, <var>n</var> steps ahead, <code>jumpahead(</code><var>n</var>)
+jumps to another state likely to be separated by many steps..</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.1.<br />
+</blockquote>
+</dd>
+<dt class="function" id="getrandbits"><b>getrandbits(k)</b> <tt class="nav"><a class="nav" href="random.getrandbits" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Returns a python <code>long</code> int
+with <var>k</var> random bits. This method is supplied with the
+MersenneTwister generator and some other generators may also
+provide it as an optional part of the API. When available, <a class="link" href="#getrandbits"><code>getrandbits</code></a> enables <a class="link" href="#randrange"><code>randrange</code></a> to handle
+arbitrarily large ranges.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.4.<br />
+</blockquote>
+</dd>
+</dl><div class="text">
+<p>Functions for integers:</p>
+</div>
+<dl><dt class="function" id="randrange"><b>randrange([start,] stop[, step])</b> <tt class="nav"><a class="nav" href="random.randrange" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return a randomly selected element from <code>
+range(</code><var>start</var>, <var>stop</var>, <var>step</var>).
+This is equivalent to <code>choice(range(</code><var>start</var>,
+<var>stop</var>, <var>step</var>)), but doesn't actually build a
+range object.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+1.5.2.<br />
+</blockquote>
+</dd>
+<dt class="function" id="randint"><b>randint(a, b)</b> <tt class="nav"><a class="nav" href="random.randint" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return a random integer <var>N</var> such that <var>a</var>
+&lt;= <var>N</var> &lt;= <var>b</var>.</p>
+</dd>
+</dl><div class="text">
+<p>Functions for sequences:</p>
+</div>
+<dl><dt class="function" id="choice"><b>choice(seq)</b> <tt class="nav"><a class="nav" href="random.choice" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return a random element from the non-empty sequence <var>
+seq</var>. If <var>seq</var> is empty, raises <code>exceptions.IndexError</code>.</p>
+</dd>
+<dt class="function" id="shuffle"><b>shuffle(x[, random])</b> <tt class="nav"><a class="nav" href="random.shuffle" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Shuffle the sequence <var>x</var> in place. The optional
+argument <var>random</var> is a 0-argument function returning a
+random float in [0.0, 1.0); by default, this is the function <a class="link" href="#random"><code>random</code></a>.</p>
+
+<p>Note that for even rather small <code>len(</code><var>x</var>),
+the total number of permutations of <var>x</var> is larger than the
+period of most random number generators; this implies that most
+permutations of a long sequence can never be generated.</p>
+</dd>
+<dt class="function" id="sample"><b>sample(population, k)</b> <tt class="nav"><a class="nav" href="random.sample" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return a <var>k</var> length list of unique elements chosen from
+the population sequence. Used for random sampling without
+replacement.</p>
+
+<p>Returns a new list containing elements from the population while
+leaving the original population unchanged. The resulting list is in
+selection order so that all sub-slices will also be valid random
+samples. This allows raffle winners (the sample) to be partitioned
+into grand prize and second place winners (the subslices).</p>
+
+<p>Members of the population need not be hashable or unique. If the
+population contains repeats, then each occurrence is a possible
+selection in the sample.</p>
+
+<p>To choose a sample from a range of integers, use <code>xrange</code> as an argument. This is especially
+fast and space efficient for sampling from a large population:
+<code>sample(xrange(10000000), 60)</code>.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.3.<br />
+</blockquote>
+</dd>
+</dl><div class="text">
+<p>The following functions generate specific real-valued
+distributions. Function parameters are named after the
+corresponding variables in the distribution's equation, as used in
+common mathematical practice; most of these equations can be found
+in any statistics text.</p>
+</div>
+<dl><dt class="function" id="random"><b>random()</b> <tt class="nav"><a class="nav" href="random.random" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return the next random floating point number in the range [0.0,
+1.0).</p>
+</dd>
+<dt class="function" id="uniform"><b>uniform(a, b)</b> <tt class="nav"><a class="nav" href="random.uniform" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return a random real number <var>N</var> such that <var>a</var>
+&lt;= <var>N</var> &lt; <var>b</var>.</p>
+</dd>
+<dt class="function" id="betavariate"><b>betavariate(alpha, beta)</b> <tt class="nav"><a class="nav" href="random.betavariate" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Beta distribution. Conditions on the parameters are <var>
+alpha</var> &gt; -1 and <var>beta</var> &gt; -1. Returned values
+range between 0 and 1.</p>
+</dd>
+<dt class="function" id="expovariate"><b>expovariate(lambd)</b> <tt class="nav"><a class="nav" href="random.expovariate" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Exponential distribution. <var>lambd</var> is 1.0 divided by the
+desired mean. (The parameter would be called &#8220;lambda&#8221;,
+but that is a reserved word in Python.) Returned values range from
+0 to positive infinity.</p>
+</dd>
+<dt class="function" id="gammavariate"><b>gammavariate(alpha, beta)</b> <tt class="nav"><a class="nav" href="random.gammavariate" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Gamma distribution. (<em>Not</em> the gamma function!)
+Conditions on the parameters are <var>alpha</var> &gt; 0 and <var>
+beta</var> &gt; 0.</p>
+</dd>
+<dt class="function" id="gauss"><b>gauss(mu, sigma)</b> <tt class="nav"><a class="nav" href="random.gauss" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Gaussian distribution. <var>mu</var> is the mean, and <var>
+sigma</var> is the standard deviation. This is slightly faster than
+the <a class="link" href="#normalvariate"><code>normalvariate</code></a>
+function defined below.</p>
+</dd>
+<dt class="function" id="lognormvariate"><b>lognormvariate(mu, sigma)</b> <tt class="nav"><a class="nav" href="random.lognormvariate" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Log normal distribution. If you take the natural logarithm of
+this distribution, you'll get a normal distribution with mean <var>
+mu</var> and standard deviation <var>sigma</var>. <var>mu</var> can
+have any value, and <var>sigma</var> must be greater than zero.</p>
+</dd>
+<dt class="function" id="normalvariate"><b>normalvariate(mu, sigma)</b> <tt class="nav"><a class="nav" href="random.normalvariate" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Normal distribution. <var>mu</var> is the mean, and <var>
+sigma</var> is the standard deviation.</p>
+</dd>
+<dt class="function" id="vonmisesvariate"><b>vonmisesvariate(mu, kappa)</b> <tt class="nav"><a class="nav" href="random.vonmisesvariate" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p><var>mu</var> is the mean angle, expressed in radians between 0
+and 2*<em>pi</em>, and <var>kappa</var> is the concentration
+parameter, which must be greater than or equal to zero. If <var>
+kappa</var> is equal to zero, this distribution reduces to a
+uniform random angle over the range 0 to 2*<em>pi</em>.</p>
+</dd>
+<dt class="function" id="paretovariate"><b>paretovariate(alpha)</b> <tt class="nav"><a class="nav" href="random.paretovariate" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Pareto distribution. <var>alpha</var> is the shape
+parameter.</p>
+</dd>
+<dt class="function" id="weibullvariate"><b>weibullvariate(alpha, beta)</b> <tt class="nav"><a class="nav" href="random.weibullvariate" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Weibull distribution. <var>alpha</var> is the scale parameter
+and <var>beta</var> is the shape parameter.</p>
+</dd>
+</dl><div class="text">
+<p>Alternative Generators</p>
+</div>
+<dl><dt class="class" id="WichmannHill"><b>class WichmannHill([seed])</b> <tt class="nav"><a class="nav" href="random.WichmannHill" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>Class that implements the Wichmann-Hill algorithm as the core
+generator. Has all of the same methods as <code>Random</code> plus the <a class="link" href="#whseed"><code>whseed</code></a> method described below. Because this
+class is implemented in pure Python, it is not threadsafe and may
+require locks between calls. The period of the generator is
+6,953,607,871,644 which is small enough to require care that two
+independent random sequences do not overlap.</p>
+</dd>
+<dt class="function" id="whseed"><b>whseed([x])</b> <tt class="nav"><a class="nav" href="random.whseed" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>This is obsolete, supplied for bit-level compatibility with
+versions of Python prior to 2.1. See <a class="link" href="#seed"><code>seed</code></a> for details. <a class="link" href="#whseed"><code>whseed</code></a> does not guarantee that distinct
+integer arguments yield distinct internal states, and can yield no
+more than about 2**24 distinct internal states in all.</p>
+</dd>
+<dt class="class" id="SystemRandom"><b>class SystemRandom([seed])</b> <tt class="nav"><a class="nav" href="random.SystemRandom" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>Class that uses the <code>
+os.urandom</code> function for generating random numbers from sources
+provided by the operating system. Not available on all systems.
+Does not rely on software state and sequences are not reproducible.
+Accordingly, the <a class="link" href="#seed"><code>seed</code></a> and <a class="link" href="#jumpahead"><code>jumpahead</code></a> methods have no
+effect and are ignored. The <a class="link" href="#getstate"><code>
+getstate</code></a> and <a class="link" href="#setstate"><code>setstate</code></a>
+methods raise <code>
+exceptions.NotImplementedError</code> if called.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.4.<br />
+</blockquote>
+</dd>
+</dl></div></body></html>

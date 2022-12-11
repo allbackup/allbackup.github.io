@@ -1,0 +1,26 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>The print&nbsp;statement</title><script type="text/javascript">effbot_page_id=1521;</script></head><body><div id="doc2" class="yui-t2"><div id="hd"><!-- header --></div><!-- hd --><div id="bd"><!-- body --><p class="note" style="text-align: center"><strong>
+
+We're back after a server migration that caused effbot.org to fall
+over a bit harder than expected.  Expect some glitches.
+
+</strong></p><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">The print&nbsp;statement</h1></div><!-- yui-g --><body><p>Syntax:</p>
+
+<blockquote>
+  <p><strong>print</strong> <em><a href="syntax-expression">expression</a></em> [<strong>,</strong> <em><a href="syntax-expression">expression</a></em>]&#8230; [<strong>,</strong>]</p>
+  
+  <p><strong>print</strong></p>
+  
+  <p><strong>print</strong> &gt;&gt; <em><a href="syntax-expression">expression</a></em> [<strong>,</strong> <em><a href="syntax-expression">expression</a></em> [<strong>,</strong> <em><a href="syntax-expression">expression</a></em>]&#8230; [<strong>,</strong>]]</p>
+</blockquote>
+
+<p><strong>print</strong> evaluates each expression in turn and writes the resulting object to standard output (see below). If an object is not a string, it is first converted to a string using <a href="str.htm"><strong>str</strong></a>. The (resulting or original) string is then written.</p>
+
+<p>A space is written before each object is (converted and) written, unless the output system believes it is positioned at the beginning of a line. This is the case (1) when no characters have yet been written to standard output, (2) when the last character written to standard output is &#8220;\n&#8221;, or (3) when the last write operation on standard output was not a print statement. (In some cases it may be functional to write an empty string to standard output for this reason.) <strong>Note:</strong> Objects which act like file objects but which are not the built-in file objects often do not properly emulate this aspect of the file object&#8217;s behavior, so it is best not to rely on this.</p>
+
+<p>A linefeed character (&#8220;\n&#8221;) is written at the end, unless the <strong>print</strong> statement ends with a comma. This is the only action if the statement contains just the keyword <strong>print</strong>.</p>
+
+<p>Standard output is defined as the file object named <code>stdout</code> in the built-in module <a href="sys.htm"><strong>sys</strong></a>. If no such object exists, or if it does not have a write() method, a <a href="RuntimeError.htm"><strong>RuntimeError</strong></a> exception is raised.</p>
+
+<p><strong>print</strong> also has an extended form, defined by the second portion of the syntax described above. This form is sometimes referred to as <q>print chevron.</q> In this form, the first expression after the <code>&gt;&gt;</code> must evaluate to a <q>file-like</q> object, specifically an object that has a  write() method as described above. With this extended form, the subsequent expressions are printed to this file object. If the first expression evaluates to <a href="None.htm"><strong>None</strong></a>, then <a href="sys.stdout.htm"><strong>sys.stdout</strong></a> is used as the file for output.</p></body><div class="yui-g"></div><!-- yui-g --></div><!-- content --></div><!-- yui-b --></div><!-- yui-main --><div class="yui-b"><div id='menu'></div><!-- menu --></div><!-- yui-b --></div><!-- bd --><div id="ft"><!-- footer --></div><!-- ft --></div><!-- doc --><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

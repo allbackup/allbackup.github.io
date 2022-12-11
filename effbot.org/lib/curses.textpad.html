@@ -1,0 +1,300 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>curses.textpad</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-curses.textpad.html'>original</a> :::
+<a href='curses.textpad.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>curses.textpad&#8212;Text input widget for curses programs</h1>
+
+<div class="toc"><dl><dt>On this page:</dt><dd><a href="#textbox-objects">Textbox objects</a></dd></dl></div><p>New in version 1.6.</p>
+
+<p>The <code>
+curses.textpad</code> module provides a <a class="link" href="#Textbox"><code>Textbox</code></a> class that handles elementary text
+editing in a curses window, supporting a set of keybindings
+resembling those of Emacs (thus, also of Netscape Navigator, BBedit
+6.x, FrameMaker, and many other programs). The module also provides
+a rectangle-drawing function useful for framing text boxes or for
+other purposes.</p>
+
+<p>The module <code>
+curses.textpad</code> defines the following function:</p>
+</div>
+<dl><dt class="function" id="rectangle"><b>rectangle(win, uly, ulx, lry, lrx)</b> <tt class="nav"><a class="nav" href="curses.textpad.rectangle" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Draw a rectangle. The first argument must be a window object;
+the remaining arguments are coordinates relative to that window.
+The second and third arguments are the y and x coordinates of the
+upper left hand corner of the rectangle to be drawn; the fourth and
+fifth arguments are the y and x coordinates of the lower right hand
+corner. The rectangle will be drawn using VT100/IBM PC forms
+characters on terminals that make this possible (including xterm
+and most other software terminal emulators). Otherwise it will be
+drawn with ASCII dashes, vertical bars, and plus signs.</p>
+</dd>
+</dl><div class="text">
+<h2 id="textbox-objects">Textbox objects <a class="nav" href="#textbox-objects">#</a></h2>
+
+<p>You can instantiate a <a class="link" href="#Textbox"><code>
+Textbox</code></a> object as follows:</p>
+</div>
+<dl><dt class="class" id="Textbox"><b>class Textbox(win)</b> <tt class="nav"><a class="nav" href="curses.textpad.Textbox" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>Return a textbox widget object. The <var>win</var> argument
+should be a curses <code>
+WindowObject</code> in which the textbox is to be contained. The edit
+cursor of the textbox is initially located at the upper left hand
+corner of the containing window, with coordinates <code>(0,
+0)</code>. The instance's <code>
+stripspaces</code> flag is initially on.</p>
+</dd>
+</dl><div class="text">
+<p><a class="link" href="#Textbox"><code>Textbox</code></a> objects have the
+following methods:</p>
+</div>
+<dl><dt class="method" id="Textbox.edit"><b>edit([validator])</b> <tt class="nav"><a class="nav" href="curses.textpad.Textbox.edit" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>This is the entry point you will normally use. It accepts
+editing keystrokes until one of the termination keystrokes is
+entered. If <var>validator</var> is supplied, it must be a
+function. It will be called for each keystroke entered with the
+keystroke as a parameter; command dispatch is done on the result.
+This method returns the window contents as a string; whether blanks
+in the window are included is affected by the <code>stripspaces</code> member.</p>
+</dd>
+<dt class="method" id="Textbox.do_command"><b>do_command(ch)</b> <tt class="nav"><a class="nav" href="curses.textpad.Textbox.do_command" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Process a single command keystroke. Here are the supported
+special keystrokes:</p>
+
+<table border="1">
+<tr>
+<th>
+<p>Keystroke</p>
+</th>
+<th>
+<p>Action</p>
+</th>
+</tr>
+
+<tr>
+<td>
+<p><code>Control-A</code></p>
+</td>
+<td>
+<p>Go to left edge of window.</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>Control-B</code></p>
+</td>
+<td>
+<p>Cursor left, wrapping to previous line if appropriate.</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>Control-D</code></p>
+</td>
+<td>
+<p>Delete character under cursor.</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>Control-E</code></p>
+</td>
+<td>
+<p>Go to right edge (stripspaces off) or end of line (stripspaces
+on).</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>Control-F</code></p>
+</td>
+<td>
+<p>Cursor right, wrapping to next line when appropriate.</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>Control-G</code></p>
+</td>
+<td>
+<p>Terminate, returning the window contents.</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>Control-H</code></p>
+</td>
+<td>
+<p>Delete character backward.</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>Control-J</code></p>
+</td>
+<td>
+<p>Terminate if the window is 1 line, otherwise insert newline.</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>Control-K</code></p>
+</td>
+<td>
+<p>If line is blank, delete it, otherwise clear to end of line.</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>Control-L</code></p>
+</td>
+<td>
+<p>Refresh screen.</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>Control-N</code></p>
+</td>
+<td>
+<p>Cursor down; move down one line.</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>Control-O</code></p>
+</td>
+<td>
+<p>Insert a blank line at cursor location.</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>Control-P</code></p>
+</td>
+<td>
+<p>Cursor up; move up one line.</p>
+</td>
+</tr>
+</table>
+
+<br />
+<br />
+ 
+
+<p>Move operations do nothing if the cursor is at an edge where the
+movement is not possible. The following synonyms are supported
+where possible:</p>
+
+<table border="1">
+<tr>
+<th>
+<p>Constant</p>
+</th>
+<th>
+<p>Keystroke</p>
+</th>
+</tr>
+
+<tr>
+<td>
+<p><code>KEY_LEFT</code></p>
+</td>
+<td>
+<p>Control-B</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>KEY_RIGHT</code></p>
+</td>
+<td>
+<p>Control-F</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>KEY_UP</code></p>
+</td>
+<td>
+<p>Control-P</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>KEY_DOWN</code></p>
+</td>
+<td>
+<p>Control-N</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>KEY_BACKSPACE</code></p>
+</td>
+<td>
+<p>Control-h</p>
+</td>
+</tr>
+</table>
+
+<br />
+<br />
+ 
+
+<p>All other keystrokes are treated as a command to insert the
+given character and move right (with line wrapping).</p>
+</dd>
+<dt class="method" id="Textbox.gather"><b>gather()</b> <tt class="nav"><a class="nav" href="curses.textpad.Textbox.gather" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>This method returns the window contents as a string; whether
+blanks in the window are included is affected by the <code>stripspaces</code> member.</p>
+</dd>
+<dt class="attribute" id="Textbox.stripspaces"><b>stripspaces</b> <tt class="nav"><a class="nav" href="curses.textpad.Textbox.stripspaces" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>This data member is a flag which controls the interpretation of
+blanks in the window. When it is on, trailing blanks on each line
+are ignored; any cursor motion that would land the cursor on a
+trailing blank goes to the end of that line instead, and trailing
+blanks are stripped when the window contents are gathered.</p>
+</dd>
+</dl></div></body></html>

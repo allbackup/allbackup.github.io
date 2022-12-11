@@ -1,0 +1,58 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>Simple Django-like&nbsp;Templating</title> <script type="text/javascript">effbot_page_id=45;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> <!--
+<p style='color: #8f8f8f; background: #fff5bf; padding: 5px 10px;'> <b>2008-07-15:</b> Selected articles
+
+now have experimental "comment" links in the left column and at the bottom.
+You're welcome to use them for commenting and voting on articles.
+For a bit more on this, see <a
+href="http://effbot.slinkset.com/links/Welcome_to_discuss_effbot_org">this
+page</a>. /F
+</p>
+--> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <h1 class="maintitle">Simple Django-like&nbsp;Templating</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p class="info">October 2006 | Fredrik Lundh</p><p>I&#8217;m currently working on a new version of the ludicrously simple
+content management system I&#8217;m using for <b>zone.effbot.org</b>, and
+wanted a template system that was a bit more flexible than the old
+<b>replace</b>-based hack I&#8217;d been using.
+
+</p><p>I ended up implementing a small subset of the
+<a href="http://www.djangoproject.com/documentation/templates/">Django template
+syntax</a>, partially because the syntax is pretty okay, partially because
+the Django&#8217;s template rendering model provides a separation between templates
+and code that has worked very well in earlier projects.  (But mostly
+because it&#8217;s fun to play with minimalistic reimplementations of larger
+designs.  Do you really need all that code?)
+
+</p><p>Here&#8217;s a small Django template (a simplified version of an example
+from the Django documentation):</p><pre class="xml django">
+&lt;<span class="pyfunction">h1</span>&gt;{{ section.title }}&lt;/<span class="pyfunction">h1</span>&gt;
+
+&lt;<span class="pyfunction">h2</span>&gt;
+  &lt;<span class="pyfunction">a</span> href="{{ story.get_absolute_url }}"&gt;
+    {{ story.headline|upper }}
+  &lt;/<span class="pyfunction">a</span>&gt;
+&lt;/<span class="pyfunction">h2</span>&gt;
+&lt;<span class="pyfunction">p</span>&gt;{{ story.tease|truncatewords:"100" }}&lt;/<span class="pyfunction">p</span>&gt;</pre><p>The {{ &#8230; }} sections are Django variable markers, which are
+replaced with the specified content when the template is rendered.</p><p>The variables are looked up in a given rendering context, and the dot
+notation is used as a general access mechanism; what looks like an
+attribute can be either a key in a dictionary, an attribute, the
+result of a method call, or, for numeric attributes, an item in a sequence.
+This makes it easy to tweak the underlying data model, without having
+to change the templates.</p><p>(Django also supports {% &#8230; %} syntax for blocks, but that&#8217;s outside
+the scope of this article.  At least this version of it.)
+
+<h2 id="parsing">Parsing the Template&#160;<a class="nav" href="#parsing" title="bookmark!">#</a></h2></p><p>But enough talk; let&#8217;s look at some code instead.</p><p>To locate the Django variables, you need to parse the template.  Since
+the format is really simple, parsing it is pretty simple too;  you can
+create a token stream simply by splitting the template on &#8220;{{&#8221; and &#8220;}}&#8221;
+markers, and then use an
+<a href="simple-iterator-parser.htm">iterator-based parser</a>
+approach to do the actual parsing.</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><div class="example wide"><pre class="python wide">
+<span class="pykeyword">import</span> re
+
+<span class="pykeyword">def</span> <span class="pyfunction">render</span>(template, context):
+    next = iter(re.split(<span class="pystring">"({{|}})"</span>, template)).next
+    data = []
+    <span class="pykeyword">try</span>:
+        token = next()
+        <span class="pykeyword">while</span> 1:
+            <span class="pykeyword">if</span> token == <span class="pystring">"{{"</span>: <span class="pycomment"># variable</span>
+                data.app

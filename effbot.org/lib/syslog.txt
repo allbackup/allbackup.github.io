@@ -1,0 +1,60 @@
+
+@@module syslog
+
+<h1>syslog&#8212;Unix syslog library routines</h1>
+
+<p>Availability: Unix.
+
+<p>This module provides an interface to the Unix {@code syslog} library
+routines. Refer to the Unix manual pages for a detailed description of
+the {@code syslog} facility.
+
+<p>The module defines the following functions:
+
+@@function syslog([priority,] message)
+
+<p>Send the string {@var message} to the system logger. A trailing
+newline is added if necessary. Each message is tagged with a priority
+composed of a {@var facility} and a {@var level}. The optional {@var
+priority} argument, which defaults to {@code LOG_INFO}, determines the
+message priority. If the facility is not encoded in {@var priority}
+using logical-or ({@code LOG_INFO | LOG_USER}), the value given in the
+{@link openlog} call is used.
+
+@@function openlog(ident[, logopt[, facility]])
+
+<p>Logging options other than the defaults can be set by explicitly
+opening the log file with {@link openlog} prior to calling {@link
+syslog}. The defaults are (usually) {@var ident} = {@code 'syslog'},
+{@var logopt} = {@code 0}, {@var facility} = {@code LOG_USER}. The {@var
+ident} argument is a string which is prepended to every message. The
+optional {@var logopt} argument is a bit field - see below for possible
+values to combine. The optional {@var facility} argument sets the
+default facility for messages which do not have a facility explicitly
+encoded.
+
+@@function closelog()
+
+<p>Close the log file.
+
+@@function setlogmask(maskpri)
+
+<p>Set the priority mask to {@var maskpri} and return the previous mask
+value. Calls to {@link syslog} with a priority level not set in {@var
+maskpri} are ignored. The default is to log all priorities. The function
+{@code LOG_MASK(}{@var pri}) calculates the mask for the individual
+priority {@var pri}. The function {@code LOG_UPTO(}{@var pri})
+calculates the mask for all priorities up to and including {@var pri}.
+
+@@text 
+
+<p>The module defines the following constants:
+
+@@variable Priority levels (high to low):
+@@unknown LOG_EMERG, LOG_ALERT, LOG_CRIT, LOG_ERR, LOG_WARNING, LOG_NOTICE, LOG_INFO, LOG_DEBUG.
+@@variable Facilities:
+@@unknown LOG_KERN, LOG_USER, LOG_MAIL, LOG_DAEMON, LOG_AUTH, LOG_LPR, LOG_NEWS, LOG_UUCP, LOG_CRON and LOG_LOCAL0 to LOG_LOCAL7.
+@@variable Log options:
+
+<p>{@code LOG_PID}, {@code LOG_CONS}, {@code LOG_NDELAY}, {@code
+LOG_NOWAIT} and {@code LOG_PERROR} if defined in {@code &ltsyslog.h>}.

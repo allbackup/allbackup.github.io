@@ -1,0 +1,37 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>Default Parameter Values in&nbsp;Python</title> <script type="text/javascript">effbot_page_id=2024;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> <!--
+<p style='color: #8f8f8f; background: #fff5bf; padding: 5px 10px;'> <b>2008-07-15:</b> Selected articles
+ (including this one) 
+now have experimental "comment" links in the left column and at the bottom.
+You're welcome to use them for commenting and voting on articles.
+For a bit more on this, see <a
+href="http://effbot.slinkset.com/links/Welcome_to_discuss_effbot_org">this
+page</a>. /F
+</p>
+--> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <h1 class="maintitle">Default Parameter Values in&nbsp;Python</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p class="info">Fredrik Lundh | July 17, 2008 | based on a comp.lang.python post</p></div><div class="yui-u">&#160;</div></div><div class="yui-ge"><div class="yui-u first"><p>Python&#8217;s handling of default parameter values is one of a
+few things that tends to trip up most new Python programmers
+(but usually only once).</p><p>What causes the confusion is the behaviour you get when you
+use a &#8220;mutable&#8221; object as a default value; that is, a value
+that can be modified in place, like a list or a dictionary.</p><p>An example:</p><pre><code>&gt;&gt;&gt; def function(data=[]):
+...     data.append(1)
+...     return data
+...
+&gt;&gt;&gt; function()
+[1]
+&gt;&gt;&gt; function()
+[1, 1]
+&gt;&gt;&gt; function()
+[1, 1, 1]
+</code></pre><p>As you can see, the list keeps getting longer and longer.  If
+you look at the list identity, you&#8217;ll see that the function keeps returning the same object:</p><pre class="python">&gt;&gt;&gt; id(function())
+12516768
+&gt;&gt;&gt; id(function())
+12516768
+&gt;&gt;&gt; id(function())
+12516768</pre><p>The reason is simple: the function keeps using the same object,  in each call.  The modifications we make are &#8220;sticky&#8221;.</p><h3 id="why-does-this-happen">Why does this happen?&#160;<a class="nav" href="#why-does-this-happen" title="bookmark!">#</a></h3><p>Default parameter values are <em>always</em> evaluated when, and only when, the &#8220;def&#8221; statement they belong to is executed; see:</p><blockquote><p><a href="http://docs.python.org/ref/function.html">http://docs.python.org/ref/function.html</a></p></blockquote><p>for the relevant section in the Language Reference.</p><p>Also note that &#8220;def&#8221; is an executable statement in Python, and that default arguments are evaluated in the &#8220;def&#8221; statement&#8217;s environment. If you execute &#8220;def&#8221; multiple times, it&#8217;ll create a new function object (with freshly calculated default values) each time.  We&#8217;ll see examples of this below.</p><h3 id="what-to-do-instead">What to do instead?&#160;<a class="nav" href="#what-to-do-instead" title="bookmark!">#</a></h3><p>The workaround is, as others have mentioned, to use a placeholder value instead of modifying the default value.
+<strong>None</strong> is a common value:</p><pre><code>def myfunc(value=None):
+    if value is None:
+        value = []
+    # modify value here
+</code></pre><p>If you need to handle arbitrary objects (including None), you can use a sentinel object:</p><

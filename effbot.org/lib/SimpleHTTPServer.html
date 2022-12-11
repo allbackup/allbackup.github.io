@@ -1,0 +1,108 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>SimpleHTTPServer</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-SimpleHTTPServer.html'>original</a> :::
+<a href='SimpleHTTPServer.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>SimpleHTTPServer&#8212;Simple HTTP request handler</h1>
+
+<p>The <code>
+SimpleHTTPServer</code> module defines a request-handler class,
+interface-compatible with <code>
+BaseHTTPServer.BaseHTTPRequestHandler</code>, that serves files only
+from a base directory.</p>
+
+<p>The <code>
+SimpleHTTPServer</code> module defines the following class:</p>
+</div>
+<dl><dt class="class" id="SimpleHTTPRequestHandler"><b>class SimpleHTTPRequestHandler(request, client_address,
+server)</b> <tt class="nav"><a class="nav" href="SimpleHTTPServer.SimpleHTTPRequestHandler" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>This class is used to serve files from the current directory and
+below, directly mapping the directory structure to HTTP
+requests.</p>
+
+<p>A lot of the work, such as parsing the request, is done by the
+base class <code>
+BaseHTTPServer.BaseHTTPRequestHandler</code>. This class implements
+the <code>do_GET</code> and <code>do_HEAD</code> functions.</p>
+</dd>
+</dl><div class="text">
+<p>The <a class="link" href="#SimpleHTTPRequestHandler"><code>
+SimpleHTTPRequestHandler</code></a> defines the following member
+variables:</p>
+</div>
+<dl><dt class="attribute" id="SimpleHTTPRequestHandler.server_version"><b>server_version</b> <tt class="nav"><a class="nav" href="SimpleHTTPServer.SimpleHTTPRequestHandler.server_version" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>This will be <code>"SimpleHTTP/" + __version__</code>, where
+<code>__version__</code> is defined in the module.</p>
+</dd>
+<dt class="attribute" id="SimpleHTTPRequestHandler.extensions_map"><b>extensions_map</b> <tt class="nav"><a class="nav" href="SimpleHTTPServer.SimpleHTTPRequestHandler.extensions_map" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>A dictionary mapping suffixes into MIME types. The default is
+signified by an empty string, and is considered to be <code>
+application/octet-stream</code>. The mapping is used
+case-insensitively, and so should contain only lower-cased
+keys.</p>
+</dd>
+</dl><div class="text">
+<p>The <a class="link" href="#SimpleHTTPRequestHandler"><code>
+SimpleHTTPRequestHandler</code></a> defines the following methods:</p>
+</div>
+<dl><dt class="method" id="SimpleHTTPRequestHandler.do_HEAD"><b>do_HEAD()</b> <tt class="nav"><a class="nav" href="SimpleHTTPServer.SimpleHTTPRequestHandler.do_HEAD" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>This method serves the <code>'HEAD'</code> request type: it
+sends the headers it would send for the equivalent <code>GET</code>
+request. See the <code>do_GET</code>
+method for a more complete explanation of the possible headers.</p>
+</dd>
+<dt class="method" id="SimpleHTTPRequestHandler.do_GET"><b>do_GET()</b> <tt class="nav"><a class="nav" href="SimpleHTTPServer.SimpleHTTPRequestHandler.do_GET" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>The request is mapped to a local file by interpreting the
+request as a path relative to the current working directory.</p>
+
+<p>If the request was mapped to a directory, the directory is
+checked for a file named <code>index.html</code> or <code>
+index.htm</code> (in that order). If found, the file's contents are
+returned; otherwise a directory listing is generated by calling the
+<code>list_directory</code>
+method. This method uses <code>
+os.listdir</code> to scan the directory, and returns a <code>
+404</code> error response if the <code>listdir</code> fails.</p>
+
+<p>If the request was mapped to a file, it is opened and the
+contents are returned. Any <code>exceptions.IOError</code> exception in
+opening the requested file is mapped to a <code>404</code>, <code>
+'File not found'</code> error. Otherwise, the content type is
+guessed by calling the <code>
+guess_type</code> method, which in turn uses the <var>
+extensions_map</var> variable.</p>
+
+<p>A <code>'Content-type:'</code> header with the guessed content
+type is output, followed by a blank line signifying the end of the
+headers, and then the contents of the file are output. If the
+file's MIME type starts with <code>text/</code> the file is opened
+in text mode; otherwise binary mode is used.</p>
+
+<p>For example usage, see the implementation of the <code>test</code> function.</p>
+</dd>
+</dl><div class="text"><span class="mark">@see</span> <code>Module BaseHTTPServer</code> Base class
+implementation for Web server and request handler.</div>
+</div></body></html>

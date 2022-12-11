@@ -1,0 +1,70 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>Parsing RSS Files with&nbsp;ElementTree</title> <script type="text/javascript">effbot_page_id=89;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> <!--
+<p style='color: #8f8f8f; background: #fff5bf; padding: 5px 10px;'> <b>2008-07-15:</b> Selected articles
+
+now have experimental "comment" links in the left column and at the bottom.
+You're welcome to use them for commenting and voting on articles.
+For a bit more on this, see <a
+href="http://effbot.slinkset.com/links/Welcome_to_discuss_effbot_org">this
+page</a>. /F
+</p>
+--> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <h1 class="maintitle">Parsing RSS Files with&nbsp;ElementTree</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p class="info">Fredrik Lundh | July 2003 | Originally posted to <a href="http://online.effbot.org">online.effbot.org</a></p><h2 id="part1">Part 1: RSS 0.9x and RSS 2.0&#160;<a class="nav" href="#part1" title="bookmark!">#</a></h2><p> Here&#8217;s a nifty little <a href="element.htm">Element</a> wrapper class that lets you use Python&#8217;s standard attribute access syntax to fetch character data from subelements:</p><pre class="python">
+<span class="pykeyword">class</span> <span class="pyclass">ElementWrapper</span>:
+    <span class="pykeyword">def</span> <span class="pyfunction">__init__</span>(self, element):
+        self._element = element
+    <span class="pykeyword">def</span> <span class="pyfunction">__getattr__</span>(self, tag):
+        <span class="pykeyword">if</span> tag.startswith(<span class="pystring">"__"</span>):
+            <span class="pykeyword">raise</span> AttributeError(tag)
+        <span class="pykeyword">return</span> self._element.findtext(tag)</pre><p> (note that the wrapper returns <b>None</b> for missing attributes/subelements, unless the attribute name starts with two underscores)
+
+</p><p> For example, if <b>feed</b> is an element containing an <a href="http://backend.userland.com/rss">RSS 2.0</a> tree,
+the following code prints the title and link values for all items:</p><pre class="python">
+<span class="pykeyword">for</span> item <span class="pykeyword">in</span> feed.findall(<span class="pystring">"channel/item"</span>):
+    item = ElementWrapper(item)
+    <span class="pykeyword">print</span> repr(item.title), item.link</pre><p> Here&#8217;s a subclass that wraps an entire RSS tree.  This class lets you
+iterate over the items, and use attribute access to fetch channel-level elements:</p><pre class="python">
+<span class="pykeyword">class</span> <span class="pyclass">RSSWrapper</span>(ElementWrapper):
+
+    <span class="pykeyword">def</span> <span class="pyfunction">__init__</span>(self, feed):
+        channel = feed.find(<span class="pystring">"channel"</span>)
+        ElementWrapper.__init__(self, channel)
+        self._items = channel.findall(<span class="pystring">"item"</span>)
+
+    <span class="pykeyword">def</span> <span class="pyfunction">__getitem__</span>(self, index):
+        <span class="pykeyword">return</span> ElementWrapper(self._items[index])</pre><p> Finally, here&#8217;s a short script that uses the wrappers, plus Python&#8217;s
+<b>urllib</b> module, to fetch and parse an RSS feed:</p><pre class="python">
+<span class="pykeyword">from</span> elementtree <span class="pykeyword">import</span> ElementTree
+<span class="pykeyword">from</span> urllib <span class="pykeyword">import</span> urlopen
+
+URL = <span class="pystring">"http://online.effbot.org/rss.xml"</span>
+
+tree = ElementTree.parse(urlopen(URL))
+
+feed = RSSWrapper(tree.getroot())
+
+<span class="pykeyword">print</span> <span class="pystring">"FEED"</span>, repr(feed.title)
+<span class="pykeyword">for</span> item <span class="pykeyword">in</span> feed:
+    <span class="pykeyword">print</span> <span class="pystring">"ITEM"</span>, repr(item.title), item.link</pre><h2 id="errata">Errata&#160;<a class="nav" href="#errata" title="bookmark!">#</a></h2><p> Tony Mcdonald noticed that the RSS test program from the first element
+trick post didn&#8217;t work on his Python 2.3 install.   The problem is that
+the <b>for item in feed</b> line gives a rather confusing attribute
+error:</p><pre>
+Traceback (most recent call last):
+  File "getfeed.py", line 50, in ?
+    for item in feed:
+TypeError: 'NoneType' object is not callable
+</pre><p> Adding a print statement to the <b>__getattr__</b> method reveals why;
+the <b>for-in</b> statement attempts to call <b>__iter__</b> to see if
+the sequence may be able to provide an iterator object.  The wrapper
+looks for an <b>__iter__</b> element in the RSS tree, notices that there
+is no such tree, and returns <b>None</b>.  The <b>for-in</b> statement,
+in turn, thinks it has found an iterator factory, and attempts to call
+the <b>None</b> object to create an iterator.
+
+</p><p> Fixing this is straightforward; you can either change the wrapper to
+raise AttributeError exceptions for all suspicious attributes&#8230;</p><pre class="python">
+<span class="pykeyword">class</span> <span class="pyclass">ElementWrapper</span>:
+    <span class="pykeyword">def</span> <span class="pyfunction">__init__</span>(self, element, ns=None):
+        self._element = element
+        self._ns = ns <span class="pykeyword">or</span> <span class="pystring">""</span>
+    <span class="pykeyword">def</span> <span class=

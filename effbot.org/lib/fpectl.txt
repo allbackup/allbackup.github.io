@@ -1,0 +1,99 @@
+
+@@module fpectl
+
+<h1>fpectl&#8212;Floating point exception control</h1>
+
+<p>Availability: Unix.
+
+<p>Most computers carry out floating point operations in conformance
+with the so-called IEEE-754 standard. On any real computer, some
+floating point operations produce results that cannot be expressed as a
+normal floating point value. For example, try
+
+<pre>
+&gt;&gt;&gt; import math
+&gt;&gt;&gt; math.exp(1000)
+inf
+&gt;&gt;&gt; math.exp(1000) / math.exp(1000)
+nan
+</pre>
+
+
+<p>(The example above will work on many platforms. DEC Alpha may be one
+exception.) "Inf" is a special, non-numeric value in IEEE-754 that
+stands for "infinity", and "nan" means "not a number." Note that, other
+than the non-numeric results, nothing special happened when you asked
+Python to carry out those calculations. That is in fact the default
+behaviour prescribed in the IEEE-754 standard, and if it works for you,
+stop reading now.
+
+<p>In some circumstances, it would be better to raise an exception and
+stop processing at the point where the faulty operation was attempted.
+The {@link fpectl} module is for use in that situation. It provides
+control over floating point units from several hardware manufacturers,
+allowing the user to turn on the generation of {@code SIGFPE} whenever
+any of the IEEE-754 exceptions Division by Zero, Overflow, or Invalid
+Operation occurs. In tandem with a pair of wrapper macros that are
+inserted into the C code comprising your python system, {@code SIGFPE}
+is trapped and converted into the Python {@link
+exceptions.FloatingPointError} exception.
+
+<p>The {@link fpectl} module defines the following functions and may
+raise the given exception:
+
+@@function turnon_sigfpe()
+
+<p>Turn on the generation of {@code SIGFPE}, and set up an appropriate
+signal handler.
+
+@@function turnoff_sigfpe()
+
+<p>Reset default handling of floating point exceptions.
+
+@@exception FloatingPointError
+
+<p>After {@link turnon_sigfpe} has been executed, a floating point
+operation that raises one of the IEEE-754 exceptions Division by Zero,
+Overflow, or Invalid operation will in turn raise this standard Python
+exception.
+
+@@text 
+
+<h2>Example</h2>
+
+<p>The following example demonstrates how to start up and test operation
+of the {@link fpectl} module.
+
+<pre>
+&gt;&gt;&gt; import fpectl
+&gt;&gt;&gt; import fpetest
+&gt;&gt;&gt; fpectl.turnon_sigfpe()
+&gt;&gt;&gt; fpetest.test()
+overflow        PASS
+FloatingPointError: Overflow
+
+div by 0        PASS
+FloatingPointError: Division by zero
+  [ more output from test elided ]
+&gt;&gt;&gt; import math
+&gt;&gt;&gt; math.exp(1000)
+Traceback (most recent call last):
+  File "&lt;stdin&gt;", line 1, in ?
+FloatingPointError: in math_1
+</pre>
+
+
+<h2>Limitations and other considerations</h2>
+
+<p>Setting up a given processor to trap IEEE-754 floating point errors
+currently requires custom code on a per-architecture basis. You may have
+to modify {@link fpectl} to control your particular hardware.
+
+<p>Conversion of an IEEE-754 exception to a Python exception requires
+that the wrapper macros {@code PyFPE_START_PROTECT} and {@code
+PyFPE_END_PROTECT} be inserted into your code in an appropriate fashion.
+Python itself has been modified to support the {@link fpectl} module,
+but many other codes of interest to numerical analysts have not.
+
+<p>The {@link fpectl} module is not thread-safe.
+

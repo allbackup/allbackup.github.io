@@ -1,0 +1,49 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>The errno&nbsp;module</title></head><body data-page-id="530"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">The errno&nbsp;module</h1></div><div class="yui-ge"><div class="yui-u first"><p>This module defines a number of symbolic error codes, such as
+<b>ENOENT</b> (<span>&#8220;no such directory entry&#8221;</span>),
+<b>EPERM</b> (<span>&#8220;permission denied&#8221;</span>), and others. It
+also provides a dictionary mapping from platform dependent
+numerical error codes to symbolic names.</p><p>In most cases, the <b>IOError</b> exception provides a 2-tuple
+with the numerical error code, and an explanatory string. If you
+need to distinguish between different error codes, use the symbolic
+names where possible.</p><div class="example">
+<b style="example">Example: Using the errno
+module</b>
+<pre>
+# File: <a href="errno/errno-example-1.py">errno-example-1.py</a>
+
+import errno
+
+try:
+    fp = open("no.such.file")
+except IOError, (error, message):
+    if error == errno.ENOENT:
+        print "no such file"
+    elif error == errno.EPERM:
+        print "permission denied"
+    else:
+        print message
+
+</pre><pre class="computeroutput" moreinfo="NONE">
+no such file
+</pre></div><p>The following example is a bit contrived, but it shows how to
+use the <b>errorcode</b> dictionary to map from a numerical error
+code to the symbolic name.</p><div class="example">
+<b style="example">Example: Using the
+errorcode dictionary</b>
+<pre>
+# File: <a href="errno/errno-example-2.py">errno-example-2.py</a>
+
+import errno
+
+try:
+    fp = open("no.such.file")
+except IOError, (error, message):
+    print error, repr(message)
+    print errno.errorcode[error]
+
+</pre><pre class="computeroutput" moreinfo="NONE">
+2 'No such file or directory'
+ENOENT
+</pre></div></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to librarybook index page.">::: librarybook :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

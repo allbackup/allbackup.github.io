@@ -1,0 +1,118 @@
+<html>
+<head>
+<title>tkinter3000-embed ::: www.effbot.org</title>
+<link rel='stylesheet' href='/effbot.css' type='text/css' media='screen' />
+</head>
+<body bgcolor='#ccffcc'>
+<div>[<a href='tkinter3000-embed.htm'>back</a>]</div>
+<h3>Welcome to the effbot.org user editor!</h3>
+
+
+<p><b>Note: This is not a contact form!  Support questions, spam, and
+other off-topic stuff will be ignored.</b></p>
+
+<p>To suggest changes, edit the HTML fragment in the text box below.
+You can use the 'update preview' button to check your changes (the
+preview is displayed beneath the text box).  When done, fill in the
+name and address fields (optional) and click 'submit patch' to mail
+the patch to me.  (I reserve the right to decide which patches to
+include, of course.)  Thanks! /F</p>
+
+<form method='post' id='useredit'>
+<input type='hidden' name='name' value='tkinter3000-embed'/>
+<p>
+<input type='submit' name='preview' value='update preview' style='background:#084; color:white; width:200px; font-weight:bold;' >
+&nbsp;&nbsp;&nbsp;
+<input type='submit' name='submit' value='submit patch'  style='background:#084; color:white; width:200px; font-weight:bold;' >
+</p>
+<textarea name='text' rows='30' cols='80'>Adding Custom C/C++ Drawing Code to Tkinter
+
+&lt;p class='info'&gt;March 19, 2002 | Fredrik Lundh&lt;/p&gt;
+
+&lt;p&gt;&lt;i&gt;
+Q. I have a C++ class that draws maps that I've been assigned to extend
+into Python.  The class uses X primitive calls (XDrawPoint, etc.) to
+do much of the work and I'm at a loss on how to integrate this as an
+extension to Python.
+&lt;/i&gt;&lt;/p&gt;
+
+&lt;p&gt;One way to implement this is to use &lt;a href="wck.htm"&gt;the Tkinter 3000
+WCK &lt;/a&gt; to take care of the Tkinter interface bit, and call your widget
+code from relevant &lt;b&gt;ui_handle&lt;/b&gt; methods, e.g:&lt;/p&gt;
+
+&lt;pre class='python'&gt;
+# &lt;i&gt;tkinter 3000 framework&lt;/i&gt;
+from WCK import Widget
+
+# &lt;i&gt;import map widget driver&lt;/i&gt;
+import _mapwidget
+
+class MapWidget(Widget):
+
+    def ui_handle_resize(self, width, height):
+        &lt;b&gt;_mapwidget.resize&lt;/b&gt;(self.winfo_id(), width, height)
+
+    def ui_handle_repair(self, draw, x0, y0, x1, y1):
+        &lt;b&gt;_mapwidget.redraw&lt;/b&gt;(self.winfo_id(), x0, y0, x1, y1)
+&lt;/pre&gt;
+
+&lt;p&gt;In the (hypothetical) &lt;b&gt;_mapwidget&lt;/b&gt; extension, use the window
+handle to get the display (etc) using standard Tk calls.&lt;/p&gt;</textarea>
+<table>
+<tr><td><label for='author'>Name:</label></td><td>
+<div><input name='author' value="" size=40></div>
+</td><td>(Optional)</td></tr>
+<tr><td><label for='email'>Mail:</label></td><td>
+<div><input name='email' value="" size=40></div>
+</td><td>(Optional)</td></tr>
+<tr><td><label for='note'>Comment:</label></td><td>
+<div><input name='note' value="" size=40></div>
+</td><td>(Optional)</td></tr>
+<tr><td><label for='password'>Password:</label></td><td>
+<div><input name='password' value="(replace with the sum of 7+4)" size=40></div>
+</td><td>(Required)</td></tr>
+</table>
+<p>
+<input type='submit' name='preview' value='update preview' style='background:#084; color:white; width:200px; font-weight:bold;' >
+&nbsp;&nbsp;&nbsp;
+<input type='submit' name='submit' value='submit patch'  style='background:#084; color:white; width:200px; font-weight:bold;' >
+</p>
+<p>&nbsp;</p>
+</form>
+<div style='background: white; border: 2px solid #084; padding: 0px 20px;'>
+<h2>Adding Custom C/C++ Drawing Code to Tkinter</h2>
+
+<p class='info'>March 19, 2002 | Fredrik Lundh</p>
+
+<p><i>
+Q. I have a C++ class that draws maps that I've been assigned to extend
+into Python.  The class uses X primitive calls (XDrawPoint, etc.) to
+do much of the work and I'm at a loss on how to integrate this as an
+extension to Python.
+</i></p>
+
+<p>One way to implement this is to use <a href="wck.htm">the Tkinter 3000
+WCK </a> to take care of the Tkinter interface bit, and call your widget
+code from relevant <b>ui_handle</b> methods, e.g:</p>
+
+<pre class='python'>
+# <i>tkinter 3000 framework</i>
+from WCK import Widget
+
+# <i>import map widget driver</i>
+import _mapwidget
+
+class MapWidget(Widget):
+
+    def ui_handle_resize(self, width, height):
+        <b>_mapwidget.resize</b>(self.winfo_id(), width, height)
+
+    def ui_handle_repair(self, draw, x0, y0, x1, y1):
+        <b>_mapwidget.redraw</b>(self.winfo_id(), x0, y0, x1, y1)
+</pre>
+
+<p>In the (hypothetical) <b>_mapwidget</b> extension, use the window
+handle to get the display (etc) using standard Tk calls.</p>
+</div>
+</body>
+</html>

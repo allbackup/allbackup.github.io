@@ -1,0 +1,47 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>The Tkinter Scale&nbsp;Widget</title> <script type="text/javascript">effbot_page_id=1960;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> <!--
+<p style='color: #8f8f8f; background: #fff5bf; padding: 5px 10px;'> <b>2008-07-15:</b> Selected articles
+ (including this one) 
+now have experimental "comment" links in the left column and at the bottom.
+You're welcome to use them for commenting and voting on articles.
+For a bit more on this, see <a
+href="http://effbot.slinkset.com/links/Welcome_to_discuss_effbot_org">this
+page</a>. /F
+</p>
+--> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <p><a href="radiobutton.htm">back</a> <a href="scrollbar.htm">next</a></p> <h1 class="maintitle">The Tkinter Scale&nbsp;Widget</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p>The <b>Scale</b> widget allows the user to select a numerical
+value by moving a &#8220;slider&#8221; knob along a scale. You can control the
+minimum and maximum values, as well as the resolution.</p><h2>When to use the Scale Widget</h2><p>You can use the <b>Scale</b> widget instead of an <a href="/tag/Tkinter.Entry">Entry</a> widget, when you want the user to
+input a bounded numerical value.</p><h2 id="patterns">Patterns&#160;<a class="nav" href="#patterns" title="bookmark!">#</a></h2><p>To create a scale with a specified range, use the <b>from</b>
+and <b>to</b> options. Note that to pass the <b>from</b> option as
+a keyword argument, you need to add a trailing underscore
+(<b>from</b> is a reserved keyword in Python).</p><pre class="python">
+<span class="pykeyword">from</span> Tkinter <span class="pykeyword">import</span> *
+
+master = Tk()
+
+w = Scale(master, from_=0, to=100)
+w.pack()
+
+w = Scale(master, from_=0, to=200, orient=HORIZONTAL)
+w.pack()
+
+mainloop()</pre><p>To query the widget, call the <b>get</b> method:</p><pre class="python">
+w = Scale(master, from_=0, to=100)
+w.pack()
+
+<span class="pykeyword">print</span> w.get()</pre><p>The default resolution is <b>1</b>, which causes the widget to
+round all values to the nearest integer value. You can use the
+<b>resolution</b> option to specify another resolution; use
+<b>-1</b> to disable rounding.</p><pre class="python">
+w = Scale(from_=0, to=100, resolution=0.1)</pre><h2 id="reference">Reference&#160;<a class="nav" href="#reference" title="bookmark!">#</a></h2><div class="zone:include"><dl><dt><b>Scale(master=None, **options)</b> (class) [<a href="#Tkinter.Scale-class">#</a>]</dt><dd>
+<p>A scale (slider).</p><dl><dt><i>master</i></dt><dd>
+Parent widget.</dd>
+<dt><i>**options</i></dt><dd>
+Widget options.  See the description of
+   the <a class="link" href="#scale.Scale.config-method"><b>config</b></a> method for a list of available
+   options.
+</dd>
+</dl><br />
+</dd>
+<dt><a id="Tkinter

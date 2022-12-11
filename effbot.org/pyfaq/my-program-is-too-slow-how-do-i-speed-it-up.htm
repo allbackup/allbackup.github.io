@@ -1,0 +1,80 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>My program is too slow. How do I speed it&nbsp;up?</title></head><body data-page-id="872"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><p class="note" style="text-align: center"><strong>
+This is an old copy of the Python FAQ.  The information here may be
+outdated.
+</strong></p><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">My program is too slow. How do I speed it&nbsp;up?</h1></div><div class="yui-ge"><div class="yui-u first"><p>That&#8217;s a tough one, in general. There are many tricks to speed up
+Python code; consider rewriting parts in C as a last resort.</p><p>In some cases it&#8217;s possible to automatically translate Python to C or
+x86 assembly language, meaning that you don&#8217;t have to modify your code
+to gain increased speed.</p><p><a href="http://www.cosc.canterbury.ac.nz/~greg/python/Pyrex/">Pyrex</a> can compile a slightly modified version of Python code into
+a C extension, and can be used on many different platforms.</p><p><a href="http://psyco.sourceforge.net">Psyco</a> is a just-in-time compiler that translates Python code into
+x86 machine code.  If you can use it, Psyco can provide dramatic
+speedups for critical functions.</p><p>The rest of this answer will discuss various tricks for squeezing a
+bit more speed out of Python code.  <em>Never</em> apply any optimization
+tricks unless you know you need them, after profiling has indicated
+that a particular function is the heavily executed hot spot in the
+code.  Optimizations almost always make the code less clear, and you
+shouldn&#8217;t pay the costs of reduced clarity (increased development
+time, greater likelihood of bugs) unless the resulting performance
+benefit is worth it.</p><p>There is a page on the wiki devoted to <a href="http://wiki.python.org/moin/PythonSpeed/PerformanceTips">performance tips</a>.</p><p>Guido van Rossum has written up an anecdote related to optimization at
+<s><a href="http://www.python.org/doc/essays/list2str.html">http://www.python.org/doc/essays/list2str.html</a></s> (dead link).</p><p>One thing to notice is that function and (especially) method calls are
+rather expensive; if you have designed a purely OO interface with lots
+of tiny functions that don&#8217;t do much more than get or set an instance
+variable or call another method, you might consider using a more
+direct way such as directly accessing instance variables.  Also see
+the standard module <a href="/pyref/profile.htm"><strong>profile</strong></a> which makes it possible to find
+out where your program is spending most of its time (if you have some
+patience &#8212; the profiling itself can slow your program down by an
+order of magnitude).</p><p>Remember that many standard optimization heuristics you may know from
+other programming experience may well apply to Python.  For example it
+may be faster to send output to output devices using larger writes
+rather than smaller ones in order to reduce the overhead of kernel
+system calls.  Thus CGI scripts that write all output in &#8220;one shot&#8221;
+may be faster than those that write lots of small pieces of output.</p><p>Also, be sure to use Python&#8217;s core features where appropriate.  For
+example, slicing allows programs to chop up lists and other sequence
+objects in a single tick of the interpreter&#8217;s mainloop using highly
+optimized C implementations.  Thus to get the same effect as:</p><pre class="python">L2 = []
+<span class="pykeyword">for</span> i <span class="pykeyword">in</span> range(3):
+     L2.append(L1[i])</pre><p>it is much shorter and far faster to use</p><pre class="python">L2 = list(L1[:3]) <span class="pycomment"># "list" is redundant if L1 is a list.</span></pre><p>Note that the functionally-oriented builtins such as <a href="/pyref/map.htm"><strong>map</strong></a>,
+<a href="/pyref/zip.htm"><strong>zip</strong></a>, and friends can be a convenient accelerator for loops
+that perform a single task.  For example to pair the elements of two
+lists together:</p><pre class="python">&gt;&gt;&gt; zip([1,2,3], [4,5,6])
+[(1, 4), (2, 5), (3, 6)]</pre><p>or to compute a number of sines:</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><pre class="python wide wide">&gt;&gt;&gt; map(math.sin, (1,2,3,4))
+[0.841470984808, 0.909297426826, 0.14112000806,   -0.756802495308]</pre></div><div class="yui-ge"><div class="yui-u first"><p>The operation completes very quickly in such cases.</p><p>Other examples include the <a href="/pyref/str.join.htm"><strong>join</strong></a> and <a href="/pyref/str.split.htm"><strong>split</strong></a> methods of string objects.  For example if s1..s7
+are large (10K+) strings then &#8220;&#8221;.join([s1,s2,s3,s4,s5,s6,s7])` may be
+a lot faster than the more direct s1+s2+s3+s4+s5+s6+s7, since the
+&#8220;summation&#8221; will compute many subexpressions, whereas <a href="/pyref/str.join.htm"><strong>join</strong></a> does all the copying in one pass.  For manipulating strings,
+use the <a href="/pyref/str.replace.htm"><strong>replace</strong></a> method on string objects.  Use
+regular expressions only when you&#8217;re not dealing with constant string
+patterns.  Consider using the string formatting operations string %
+tuple and string % dictionary.</p><p>Be sure to use the <a href="/pyref/list.sort.htm"><strong>sort</strong></a> builtin method or the
+<a href="/pyref/sorted.htm"><strong>sorted</strong></a> function to do sorting, and see the <a href="http://wiki.python.org/moin/HowTo/Sorting">sorting
+mini-HOWTO</a> for examples of moderately advanced usage.  <a href="/pyref/list.sort.htm"><strong>list.sort</strong></a> beats other techniques for sorting in all but the most
+extreme circumstances.</p><p>Another common trick is to &#8220;push loops into functions or methods.&#8221;
+For example suppose you have a program that runs slowly and you use
+the profiler to determine that a Python function ff() is being called
+lots of times. If you notice that ff ():</p><pre class="python"><span class="pykeyword">def</span> <span class="pyfunction">ff</span>(x):
+    ...do something <span class="pykeyword">with</span> x computing result...
+    <span class="pykeyword">return</span> result</pre><p>tends to be called in loops like:</p><pre class="python">list = map(ff, oldlist)</pre><p>or:</p><pre class="python"><span class="pykeyword">for</span> x <span class="pykeyword">in</span> sequence:
+    value = ff(x)
+    ...do something <span class="pykeyword">with</span> value...</pre><p>then you can often eliminate function call overhead by rewriting ff() to:</p><pre class="python"><span class="pykeyword">def</span> <span class="pyfunction">ffseq</span>(seq):
+    resultseq = []
+    <span class="pykeyword">for</span> x <span class="pykeyword">in</span> seq:
+        ...do something <span class="pykeyword">with</span> x computing result...
+        resultseq.append(result)
+    <span class="pykeyword">return</span> resultseq</pre><p>and rewrite the two examples to  list = ffseq(oldlist) and to:</p><pre class="python"><span class="pykeyword">for</span> value <span class="pykeyword">in</span> ffseq(sequence):
+    ...do something <span class="pykeyword">with</span> value...</pre><p>Single calls to ff(x) translate to ffseq([x])[0] with little penalty.
+Of course this technique is not always appropriate and there are other
+variants which you can figure out.</p><p>You can gain some performance by explicitly storing the results of a
+function or method lookup into a local variable.  A loop like:</p><pre class="python"><span class="pykeyword">for</span> key <span class="pykeyword">in</span> token:
+    D[key] = D.get(key, 0) + 1</pre><p>resolves D.get in every iteration.  If the method isn&#8217;t going to
+change, a slightly faster implementation is:</p><pre class="python">get = D.get  <span class="pycomment"># look up the method once</span>
+<span class="pykeyword">for</span> key <span class="pykeyword">in</span> token:
+    D[key] = get(key, 0) + 1</pre><p>Default arguments can be used to determine values once, at function
+creation time instead of at run time.  This can only be done for
+functions or objects which will not be changed during program
+execution, such as replacing</p><pre class="python"><span class="pykeyword">def</span> <span class="pyfunction">degree_sin</span>(deg):
+    <span class="pykeyword">return</span> math.sin(deg * math.pi / 180.0)</pre><p>with</p><pre class="python"><span class="pykeyword">def</span> <span class="pyfunction">degree_sin</span>(deg, factor=math.pi/180.0, sin=math.sin):
+    <span class="pykeyword">return</span> sin(deg * factor)</pre><p>Because this trick uses default arguments for terms which should not
+be changed, it should only be used when you are not concerned with
+presenting a possibly confusing API to your users.</p><p>CATEGORY: programming</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to pyfaq index page.">::: pyfaq :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

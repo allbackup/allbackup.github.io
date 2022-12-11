@@ -1,0 +1,135 @@
+
+@@module calendar
+
+<h1>calendar&#8212;General calendar-related functions</h1>
+
+<p>This module allows you to output calendars like the Unix cal program,
+and provides additional useful functions related to the calendar. By
+default, these calendars have Monday as the first day of the week, and
+Sunday as the last (the European convention). Use {@link
+setfirstweekday} to set the first day of the week to Sunday (6) or to
+any other weekday. Parameters that specify dates are given as integers.
+
+<p>Most of these functions rely on the {@link datetime} module which
+uses an idealized calendar, the current Gregorian calendar indefinitely
+extended in both directions. This matches the definition of the
+"proleptic Gregorian" calendar in Dershowitz and Reingold's book
+"Calendrical Calculations", where it's the base calendar for all
+computations.
+
+@@function setfirstweekday(weekday)
+
+<p>Sets the weekday ({@code 0} is Monday, {@code 6} is Sunday) to start
+each week. The values {@code MONDAY}, {@code TUESDAY}, {@code
+WEDNESDAY}, {@code THURSDAY}, {@code FRIDAY}, {@code SATURDAY}, and
+{@code SUNDAY} are provided for convenience. For example, to set the
+first weekday to Sunday:
+
+<pre>
+import calendar
+calendar.setfirstweekday(calendar.SUNDAY)
+</pre>
+
+<blockquote>
+@since New in version 2.0. <br />
+</blockquote>
+
+@@function firstweekday()
+
+<p>Returns the current setting for the weekday to start each week.
+<blockquote>
+@since New in version 2.0. <br />
+</blockquote>
+
+@@function isleap(year)
+
+<p>Returns {@code True} if {@var year} is a leap year, otherwise {@code
+False}.
+
+@@function leapdays(y1, y2)
+
+<p>Returns the number of leap years in the range [{@var y1}...{@var
+y2}), where {@var y1} and {@var y2} are years.
+<blockquote>
+@since Changed in version
+2.0: This function didn't work for ranges spanning a century change
+in Python 1.5.2. <br />
+</blockquote>
+
+@@function weekday(year, month, day)
+
+<p>Returns the day of the week ({@code 0} is Monday) for {@var year}
+({@code 1970}-...), {@var month} ({@code 1}-{@code 12}), {@var day}
+({@code 1}-{@code 31}).
+
+@@function weekheader(n)
+
+<p>Return a header containing abbreviated weekday names. {@var n}
+specifies the width in characters for one weekday.
+
+@@function monthrange(year, month)
+
+<p>Returns weekday of first day of the month and number of days in
+month, for the specified {@var year} and {@var month}.
+
+@@function monthcalendar(year, month)
+
+<p>Returns a matrix representing a month's calendar. Each row represents
+a week; days outside of the month a represented by zeros. Each week
+begins with Monday unless set by {@link setfirstweekday}.
+
+@@function prmonth(theyear, themonth[, w[, l]])
+
+<p>Prints a month's calendar as returned by {@link month}.
+
+@@function month(theyear, themonth[, w[, l]])
+
+<p>Returns a month's calendar in a multi-line string. If {@var w} is
+provided, it specifies the width of the date columns, which are
+centered. If {@var l} is given, it specifies the number of lines that
+each week will use. Depends on the first weekday as set by {@link
+setfirstweekday}.
+<blockquote>
+@since New in version 2.0. <br />
+</blockquote>
+
+@@function prcal(year[, w[, l[c]]])
+
+<p>Prints the calendar for an entire year as returned by {@link
+calendar}.
+
+@@function calendar(year[, w[, l[c]]])
+
+<p>Returns a 3-column calendar for an entire year as a multi-line
+string. Optional parameters {@var w}, {@var l}, and {@var c} are for
+date column width, lines per week, and number of spaces between month
+columns, respectively. Depends on the first weekday as set by {@link
+setfirstweekday}. The earliest year for which a calendar can be
+generated is platform-dependent.
+<blockquote>
+@since New in version
+2.0. <br />
+</blockquote>
+
+@@function timegm(tuple)
+
+<p>An unrelated but handy function that takes a time tuple such as
+returned by the {@link gmtime} function in the {@link time} module, and
+returns the corresponding Unix timestamp value, assuming an epoch of
+1970, and the POSIX encoding. In fact, {@link time.gmtime} and {@link
+timegm} are each others' inverse.
+<blockquote>
+@since New in version 2.0. <br />
+</blockquote>
+
+@@text 
+
+@see 
+{@link datetime Module datetime}
+
+Object-oriented interface to dates and times with similar functionality
+to the time module.
+@see 
+{@link time Module time}
+
+Low-level time related functions.

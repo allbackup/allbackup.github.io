@@ -1,0 +1,332 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>SocketServer</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-SocketServer.html'>original</a> :::
+<a href='SocketServer.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>SocketServer&#8212;A framework for network servers</h1>
+
+<div class="toc"><dl><dt>On this page:</dt><dd><a href="#server-creation-notes">Server Creation Notes</a></dd><dd><a href="#server-objects">Server Objects</a></dd><dd><a href="#requesthandler-objects">RequestHandler Objects</a></dd></dl></div><p>The <code>SocketServer</code>
+module simplifies the task of writing network servers.</p>
+
+<p>There are four basic server classes: <code>TCPServer</code> uses the Internet TCP protocol,
+which provides for continuous streams of data between the client
+and server. <code>UDPServer</code>
+uses datagrams, which are discrete packets of information that may
+arrive out of order or be lost while in transit. The more
+infrequently used <code>
+UnixStreamServer</code> and <code>UnixDatagramServer</code> classes are
+similar, but use Unix domain sockets; they're not available on
+non-Unix platforms. For more details on network programming,
+consult a book such as W. Richard Steven's <em>UNIX Network
+Programming</em> or Ralph Davis's <em>Win32 Network
+Programming</em>.</p>
+
+<p>These four classes process requests synchronously; each request
+must be completed before the next request can be started. This
+isn't suitable if each request takes a long time to complete,
+because it requires a lot of computation, or because it returns a
+lot of data which the client is slow to process. The solution is to
+create a separate process or thread to handle each request; the <code>ForkingMixIn</code> and <code>ThreadingMixIn</code> mix-in
+classes can be used to support asynchronous behaviour.</p>
+
+<p>Creating a server requires several steps. First, you must create
+a request handler class by subclassing the <code>BaseRequestHandler</code> class and
+overriding its <a class="link" href="#handle"><code>handle</code></a>
+method; this method will process incoming requests. Second, you
+must instantiate one of the server classes, passing it the server's
+address and the request handler class. Finally, call the <a class="link" href="#handle_request"><code>handle_request</code></a> or <a class="link" href="#serve_forever"><code>serve_forever</code></a> method of
+the server object to process one or many requests.</p>
+
+<p>When inheriting from <code>
+ThreadingMixIn</code> for threaded connection behavior, you should
+explicitly declare how you want your threads to behave on an abrupt
+shutdown. The <code>
+ThreadingMixIn</code> class defines an attribute <var>
+daemon_threads</var>, which indicates whether or not the server
+should wait for thread termination. You should set the flag
+explicitly if you would like threads to behave autonomously; the
+default is <code>False</code>, meaning that Python will not exit
+until all threads created by <code>ThreadingMixIn</code> have exited.</p>
+
+<p>Server classes have the same external methods and attributes, no
+matter what network protocol they use:</p>
+
+<h2 id="server-creation-notes">Server Creation Notes <a class="nav" href="#server-creation-notes">#</a></h2>
+
+<p>There are five classes in an inheritance diagram, four of which
+represent synchronous servers of four types:</p>
+
+<pre>
+        +------------+
+        | BaseServer |
+        +------------+
+              |
+              v
+        +-----------+        +------------------+
+        | TCPServer |-------&gt;| UnixStreamServer |
+        +-----------+        +------------------+
+              |
+              v
+        +-----------+        +--------------------+
+        | UDPServer |-------&gt;| UnixDatagramServer |
+        +-----------+        +--------------------+
+</pre>
+
+<p>Note that <code>
+UnixDatagramServer</code> derives from <code>UDPServer</code>, not from <code>UnixStreamServer</code> - the only
+difference between an IP and a Unix stream server is the address
+family, which is simply repeated in both unix server classes.</p>
+
+<p>Forking and threading versions of each type of server can be
+created using the <code>
+ForkingMixIn</code> and <code>
+ThreadingMixIn</code> mix-in classes. For instance, a threading UDP
+server class is created as follows:</p>
+
+<pre>
+    class ThreadingUDPServer(ThreadingMixIn, UDPServer): pass
+</pre>
+
+<p>The mix-in class must come first, since it overrides a method
+defined in <code>UDPServer</code>.
+Setting the various member variables also changes the behavior of
+the underlying server mechanism.</p>
+
+<p>To implement a service, you must derive a class from <code>BaseRequestHandler</code>
+and redefine its <a class="link" href="#handle"><code>handle</code></a>
+method. You can then run various versions of the service by
+combining one of the server classes with your request handler
+class. The request handler class must be different for datagram or
+stream services. This can be hidden by using the handler subclasses
+<code>
+StreamRequestHandler</code> or <code>DatagramRequestHandler</code>.</p>
+
+<p>Of course, you still have to use your head! For instance, it
+makes no sense to use a forking server if the service contains
+state in memory that can be modified by different requests, since
+the modifications in the child process would never reach the
+initial state kept in the parent process and passed to each child.
+In this case, you can use a threading server, but you will probably
+have to use locks to protect the integrity of the shared data.</p>
+
+<p>On the other hand, if you are building an HTTP server where all
+data is stored externally (for instance, in the file system), a
+synchronous class will essentially render the service "deaf" while
+one request is being handled - which may be for a very long time if
+a client is slow to receive all the data it has requested. Here a
+threading or forking server is appropriate.</p>
+
+<p>In some cases, it may be appropriate to process part of a
+request synchronously, but to finish processing in a forked child
+depending on the request data. This can be implemented by using a
+synchronous server and doing an explicit fork in the request
+handler class <a class="link" href="#handle"><code>handle</code></a>
+method.</p>
+
+<p>Another approach to handling multiple simultaneous requests in
+an environment that supports neither threads nor <code>fork</code> (or where these are too expensive or
+inappropriate for the service) is to maintain an explicit table of
+partially finished requests and to use <code>select</code> to decide which request to work on
+next (or whether to handle a new incoming request). This is
+particularly important for stream services where each client can
+potentially be connected for a long time (if threads or
+subprocesses cannot be used).</p>
+
+<h2 id="server-objects">Server Objects <a class="nav" href="#server-objects">#</a></h2>
+</div>
+<dl><dt class="function" id="fileno"><b>fileno()</b> <tt class="nav"><a class="nav" href="SocketServer.fileno" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return an integer file descriptor for the socket on which the
+server is listening. This function is most commonly passed to <code>select.select</code>, to allow
+monitoring multiple servers in the same process.</p>
+</dd>
+<dt class="function" id="handle_request"><b>handle_request()</b> <tt class="nav"><a class="nav" href="SocketServer.handle_request" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Process a single request. This function calls the following
+methods in order: <a class="link" href="#get_request"><code>
+get_request</code></a>, <a class="link" href="#verify_request"><code>
+verify_request</code></a>, and <a class="link" href="#process_request"><code>process_request</code></a>. If the
+user-provided <a class="link" href="#handle"><code>handle</code></a> method
+of the handler class raises an exception, the server's <a class="link" href="#handle_error"><code>handle_error</code></a> method will
+be called.</p>
+</dd>
+<dt class="function" id="serve_forever"><b>serve_forever()</b> <tt class="nav"><a class="nav" href="SocketServer.serve_forever" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Handle an infinite number of requests. This simply calls <a class="link" href="#handle_request"><code>handle_request</code></a> inside
+an infinite loop.</p>
+</dd>
+<dt class="variable" id="address_family"><b>address_family</b> <tt class="nav"><a class="nav" href="SocketServer.address_family" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>The family of protocols to which the server's socket belongs.
+<code>socket.AF_INET</code> and <code>socket.AF_UNIX</code> are two
+possible values.</p>
+</dd>
+<dt class="variable" id="RequestHandlerClass"><b>RequestHandlerClass</b> <tt class="nav"><a class="nav" href="SocketServer.RequestHandlerClass" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>The user-provided request handler class; an instance of this
+class is created for each request.</p>
+</dd>
+<dt class="variable" id="server_address"><b>server_address</b> <tt class="nav"><a class="nav" href="SocketServer.server_address" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>The address on which the server is listening. The format of
+addresses varies depending on the protocol family; see the
+documentation for the socket module for details. For Internet
+protocols, this is a tuple containing a string giving the address,
+and an integer port number: <code>('127.0.0.1', 80)</code>, for
+example.</p>
+</dd>
+<dt class="variable" id="socket"><b>socket</b> <tt class="nav"><a class="nav" href="SocketServer.socket" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>The socket object on which the server will listen for incoming
+requests.</p>
+</dd>
+</dl><div class="text">
+<p>The server classes support the following class variables:</p>
+</div>
+<dl><dt class="variable" id="allow_reuse_address"><b>allow_reuse_address</b> <tt class="nav"><a class="nav" href="SocketServer.allow_reuse_address" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Whether the server will allow the reuse of an address. This
+defaults to <code>False</code>, and can be set in subclasses to
+change the policy.</p>
+</dd>
+<dt class="variable" id="request_queue_size"><b>request_queue_size</b> <tt class="nav"><a class="nav" href="SocketServer.request_queue_size" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>The size of the request queue. If it takes a long time to
+process a single request, any requests that arrive while the server
+is busy are placed into a queue, up to <a class="link" href="#request_queue_size"><code>request_queue_size</code></a> requests.
+Once the queue is full, further requests from clients will get a
+&#8220;Connection denied&#8221; error. The default value is usually
+5, but this can be overridden by subclasses.</p>
+</dd>
+<dt class="variable" id="socket_type"><b>socket_type</b> <tt class="nav"><a class="nav" href="SocketServer.socket_type" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>The type of socket used by the server; <code>
+socket.SOCK_STREAM</code> and <code>socket.SOCK_DGRAM</code> are
+two possible values.</p>
+</dd>
+</dl><div class="text">
+<p>There are various server methods that can be overridden by
+subclasses of base server classes like <code>TCPServer</code>; these methods aren't useful to
+external users of the server object.</p>
+</div>
+<dl><dt class="function" id="finish_request"><b>finish_request()</b> <tt class="nav"><a class="nav" href="SocketServer.finish_request" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Actually processes the request by instantiating <a class="link" href="#RequestHandlerClass"><code>RequestHandlerClass</code></a> and calling
+its <a class="link" href="#handle"><code>handle</code></a> method.</p>
+</dd>
+<dt class="function" id="get_request"><b>get_request()</b> <tt class="nav"><a class="nav" href="SocketServer.get_request" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Must accept a request from the socket, and return a 2-tuple
+containing the <em>new</em> socket object to be used to communicate
+with the client, and the client's address.</p>
+</dd>
+<dt class="function" id="handle_error"><b>handle_error(request, client_address)</b> <tt class="nav"><a class="nav" href="SocketServer.handle_error" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>This function is called if the <a class="link" href="#RequestHandlerClass"><code>RequestHandlerClass</code></a>'s <a class="link" href="#handle"><code>handle</code></a> method raises an
+exception. The default action is to print the traceback to standard
+output and continue handling further requests.</p>
+</dd>
+<dt class="function" id="process_request"><b>process_request(request, client_address)</b> <tt class="nav"><a class="nav" href="SocketServer.process_request" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Calls <a class="link" href="#finish_request"><code>
+finish_request</code></a> to create an instance of the <a class="link" href="#RequestHandlerClass"><code>RequestHandlerClass</code></a>. If
+desired, this function can create a new process or thread to handle
+the request; the <code>
+ForkingMixIn</code> and <code>
+ThreadingMixIn</code> classes do this.</p>
+</dd>
+<dt class="function" id="server_activate"><b>server_activate()</b> <tt class="nav"><a class="nav" href="SocketServer.server_activate" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Called by the server's constructor to activate the server. The
+default behavior just <code>
+listen</code>s to the server's socket. May be overridden.</p>
+</dd>
+<dt class="function" id="server_bind"><b>server_bind()</b> <tt class="nav"><a class="nav" href="SocketServer.server_bind" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Called by the server's constructor to bind the socket to the
+desired address. May be overridden.</p>
+</dd>
+<dt class="function" id="verify_request"><b>verify_request(request, client_address)</b> <tt class="nav"><a class="nav" href="SocketServer.verify_request" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Must return a Boolean value; if the value is <code>True</code>,
+the request will be processed, and if it's <code>False</code>, the
+request will be denied. This function can be overridden to
+implement access controls for a server. The default implementation
+always returns <code>True</code>.</p>
+</dd>
+</dl><div class="text">
+<h2 id="requesthandler-objects">RequestHandler Objects <a class="nav" href="#requesthandler-objects">#</a></h2>
+
+<p>The request handler class must define a new <a class="link" href="#handle"><code>handle</code></a> method, and can override any of the
+following methods. A new instance is created for each request.</p>
+</div>
+<dl><dt class="function" id="finish"><b>finish()</b> <tt class="nav"><a class="nav" href="SocketServer.finish" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Called after the <a class="link" href="#handle"><code>handle</code></a>
+method to perform any clean-up actions required. The default
+implementation does nothing. If <a class="link" href="#setup"><code>
+setup</code></a> or <a class="link" href="#handle"><code>handle</code></a> raise an
+exception, this function will not be called.</p>
+</dd>
+<dt class="function" id="handle"><b>handle()</b> <tt class="nav"><a class="nav" href="SocketServer.handle" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>This function must do all the work required to service a
+request. The default implementation does nothing. Several instance
+attributes are available to it; the request is available as <code>self.request</code>; the client
+address as <code>
+self.client_address</code>; and the server instance as <code>self.server</code>, in case it needs access to
+per-server information.</p>
+
+<p>The type of <code>
+self.request</code> is different for datagram or stream services. For
+stream services, <code>
+self.request</code> is a socket object; for datagram services, <code>self.request</code> is a string.
+However, this can be hidden by using the request handler subclasses
+<code>
+StreamRequestHandler</code> or <code>DatagramRequestHandler</code>,
+which override the <a class="link" href="#setup"><code>setup</code></a> and
+<a class="link" href="#finish"><code>finish</code></a> methods, and provide
+<code>self.rfile</code> and <code>self.wfile</code> attributes. <code>self.rfile</code> and <code>self.wfile</code> can be read or
+written, respectively, to get the request data or return data to
+the client.</p>
+</dd>
+<dt class="function" id="setup"><b>setup()</b> <tt class="nav"><a class="nav" href="SocketServer.setup" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Called before the <a class="link" href="#handle"><code>handle</code></a>
+method to perform any initialization actions required. The default
+implementation does nothing.</p>
+</dd>
+</dl></div></body></html>

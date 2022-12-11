@@ -1,0 +1,67 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>Appendix A. Interactive Input Editing and History&nbsp;Substitution</title> <script type="text/javascript">effbot_page_id=1904;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <h1 class="maintitle">Appendix A. Interactive Input Editing and History&nbsp;Substitution</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p>COMMENT: <a href="http://docs.python.org/tut/node15.html">Original Source</a></p><p>Some versions of the Python interpreter support editing of the current input line and history substitution, similar to facilities found in the Korn shell and the GNU Bash shell. On Unix systems, this is implemented using the <em>GNU Readline</em> library, which supports Emacs-style and vi-style editing. This library has its own documentation which I won&#8217;t duplicate here; however, the basics are described below.</p><h2 id="line-editing-on-unix-systems">Line Editing on Unix Systems&#160;<a class="nav" href="#line-editing-on-unix-systems" title="bookmark!">#</a></h2><p>If supported, input line editing is active whenever the interpreter prints a primary or secondary prompt. The current line can be edited using the conventional Emacs control characters. The most important of these are: C-A (Control-A) moves the cursor to the beginning of the line, C-E to the end, C-B moves it one position to the left, C-F to the right. Backspace erases the character to the left of the cursor, C-D the character to its right. C-K kills (erases) the rest of the line to the right of the cursor, C-Y yanks back the last killed string. C-underscore undoes the last change you made; it can be repeated for cumulative effect.</p><h3 id="history-substitution">History Substitution&#160;<a class="nav" href="#history-substitution" title="bookmark!">#</a></h3><p>History substitution works as follows. All non-empty input lines issued are saved in a history buffer, and when a new prompt is given you are positioned on a new line at the bottom of this buffer. C-P moves one line up (back) in the history buffer, C-N moves one down. Any line in the history buffer can be edited; an asterisk appears in front of the prompt to mark a line as modified. Pressing the Return key passes the current line to the interpreter. C-R starts an incremental reverse search; C-S starts a forward search.</p><h3 id="key-bindings">Key Bindings&#160;<a class="nav" href="#key-bindings" title="bookmark!">#</a></h3><p>The key bindings and some other parameters of the Readline library can be customized by placing commands in an initialization file called ~/.inputrc. Key bindings have the form</p><pre><code>key-name: function-name
+</code></pre><p>or</p><pre><code>"string": function-name
+</code></pre><p>and options can be set with</p><pre><code>set option-name value
+</code></pre><p>For example:</p><pre><code># I prefer vi-style editing:
+set editing-mode vi
+
+# Edit using a single line:
+set horizontal-scroll-mode On
+
+# Rebind some keys:
+Meta-h: backward-kill-word
+"\C-u": universal-argument
+"\C-x\C-r": re-read-init-file
+</code></pre><p>Note that the default binding for Tab in Python is to insert a Tab character instead of Readline&#8217;s default filename completion function. If you insist, you can override this by putting</p><pre><code>Tab: complete
+</code></pre><p>in your ~/.inputrc. (Of course, this makes it harder to type indented continuation lines if you&#8217;re accustomed to using Tab for that purpose.)</p><p>Automatic completion of variable and module names is optionally available. To enable it in the interpreter&#8217;s interactive mode, add the following to your startup file:<a href="#foot1939">A.1</a></p><pre class="python"><span class="pykeyword">import</span> rlcompleter, readline
+readline.parse_and_bind(<span class="pystring">'tab: complete'</span>)</pre><p>This binds the Tab key to the completion function, so hitting the Tab key twice suggests completions; it looks at Python statement names, the current local variables, and the available module names. For dotted expressions such as <code>string.a</code>, it will evaluate the expression up to the final &#8220;.&#8221; and then suggest completions from the attributes of the resulting object. Note that this may execute application-defined code if an object with a __getattr__() method is part of the expression.</p><p>A more capable startup file might look like this example. Note that this deletes the names it creates once they are no longer needed; this is done since the startup file is executed in the same namespace as the interactive commands, and removing the names avoids creating side effects in the interactive environment. You may find it convenient to keep some of the imported modules, such as <a href="http://docs.python.org/lib/module-os.html">os</a>, which turn out to be needed in most sessions with the interpreter.</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><pre class="python wide wide"><span class="pycomment"># Add auto-completion and a stored history file of commands to your Python</span>
+<span class="pycomment"># interactive interpreter. Requires Python 2.0+, readline. Autocomplete is</span>
+<span class="pycomment"># bound to the Esc key by default (you can change it - see readline docs).</span>
+<span class="pycomment">#</span>
+<span class="pycomment"># Store the file in ~/.pystartup, and set an environment variable to point</span>
+<span class="pycomment"># to it:  "export PYTHONSTARTUP=/max/home/itamar/.pystartup" in bash.</span>
+<span class="pycomment">#</span>
+<span class="pycomment"># Note that PYTHONSTARTUP does *not* expand "~", so you have to put in the</span>
+<span class="pycomment"># full path to your home directory.</span>
+
+<span class="pykeyword">import</span> atexit
+<span class="pykeyword">import</span> os
+<span class="pykeyword">import</span> readline
+<span class="pykeyword">import</span> rlcompleter
+
+historyPath = os.path.expanduser(<span class="pystring">"~/.pyhistory"</span>)
+
+<span class="pykeyword">def</span> <span class="pyfunction">save_history</span>(historyPath=historyPath):
+    <span class="pykeyword">import</span> readline
+    readline.write_history_file(historyPath)
+
+<span class="pykeyword">if</span> os.path.exists(historyPath):
+    readline.read_history_file(historyPath)
+
+atexit.register(save_history)
+<span class="pykeyword">del</span> os, atexit, readline, rlcompleter, save_history, historyPath</pre></div><div class="yui-ge"><div class="yui-u first"><h2 id="line-editing-on-windows">Line Editing on Windows&#160;<a class="nav" href="#line-editing-on-windows" title="bookmark!">#</a></h2><p>On Windows, you can use <q>doskey</q>-style line editing.  Use the arrow keys to move around on the line, and to bring back commands from the history buffer.  The Escape key clears the current line, F7 displays the history buffer, and F8 can be used to search in the buffer.</p><h2 id="ipython">IPython&#160;<a class="nav" href="#ipython" title="bookmark!">#</a></h2><p>While the standard interactive interpreter can do a lot of nice things, there&#8217;s a great replacement available, <a href="http://ipython.scipy.org/">IPython</a>.</p><p>Some of the key IPython features include:</p><ul><li>Auto-complete (without having to muck about with PYTHONSTARTUP)</li><li>Fantastic introspection capabilities</li><li>Magic commands, including commands for mixing shell access with Python scripting</li><li>Jump-to-editor availability</li><li>Built-in macro system</li><li>Integration with matplotlib, and other mathematics/scientific libraries</li><li>Lots more!</li></ul><p>The <a href="http://ipython.scipy.org/">webpage</a> has plenty of documentation and other feature listings, and it is highly recommended you check it out.</p><hr /><h4>Footnotes</h4><p>&#8230; file:<a href="node15.html#tex2html6">A.1</a>
+     Python will execute the contents of a file identified by the PYTHONSTARTUP environment variable when you start an interactive interpreter.</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><div class='comment'>
+<p><b>Comment:</b></p>
+<p>
+I threw together a quick IPython intro. Don't know how much more is needed (maybe an example to show the real power of it), but at least the reader will now know about it.
+
+Jay P.</p>
+<p>Posted by <b class='author'><a href='http://pytut.infogami.com/node15.html/_comments/3p65/_comments/3xb5/_comments/3xnv'>infogami</a></b></p>
+</div>
+
+<div class='comment'>
+<p><b>Comment:</b></p>
+<p>
+I've added a paragraph on doskey-style editing for windows.  If someone wants to add some text about IDLE and/or IPython, be my guest!</p>
+<p>Posted by <b class='author'><a href='http://pytut.infogami.com/node15.html/_comments/3p65/_comments/3xb5'>infogami</a></b></p>
+</div>
+
+<div class='comment'>
+<p><b>Comment:</b></p>
+<p>
+This page is really outdated (it looks more like a release note for the 1.X release where readline support was first added than something else).  However, the information is useful, so I suggest restructuring the page somewhat, adding a Windows section (describing the default "doskey" arrow/F8 mechanisms), and perhaps a brief overview of the IDLE console and IPython.</p>
+<p>Posted by <b class='author'><a href='http://pytut.infogami.com/node15.html/_comments/3p65'>infogami</a></b></p>
+</div>
+</div> <!-- yui-g --></div> <!-- content --> </div> <!-- yui-b --> </div> <!-- yui-main --> <div class="yui-b"> <div id='menu'> <ul> <li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li> <li><b><a href="." title="Go to pytut index page.">::: pytut :::</a></b></li> </ul> <ul><li><b>::: contents</b></li></ul> <ul><li><ul><li><a href="#line-editing-on-unix-systems">Line Editing on Unix Systems</a></li><li><ul><li><a href="#history-substitution">History Substitution</a></li><li><a href="#key-bindings">Key Bindings</a></li></ul></li><li><a href="#line-editing-on-windows">Line Editing on Windows</a></li><li><a href="#ipython">IPython</a></li></ul></li></ul> </div> <!-- menu --> </div> <!-- yui-b --> </div> <!-- bd --> <div id="ft"> <!-- footer --> <p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;"></a>
+this page was rendered by a <a href="http://www.djangoproject.com/">django</a> application in 0.01s 2013-01-28 12:07:02.835559.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p> </div> <!-- ft --> </div> <!-- doc --> <script src="/media/js/effbot-min.js" type="text/javascript"> </script> </body> </html>

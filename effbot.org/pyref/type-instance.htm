@@ -1,0 +1,26 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>type-instance</title> <script type="text/javascript">effbot_page_id=1716;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <h1 class="maintitle">type-instance</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p><strong>Class instances</strong></p><p>A class instance is created by calling a class object (see <a href="type-class.htm"><strong>type-class</strong></a>).
+A class instance has a namespace implemented as a dictionary which is
+the first place in which attribute references are searched. When an
+attribute is not found there, and the instance&#8217;s class has an
+attribute by that name, the search continues with the class
+attributes. If a class attribute is found that is a user-defined
+function object or an unbound user-defined method object whose
+associated class is the class (call it C) of the instance for
+which the attribute reference was initiated or one of its bases, it is
+transformed into a bound user-defined method object whose im_class
+attribute is C and whose im_self attribute is the instance. Static
+method and class method objects are also transformed, as if they had
+been retrieved from class C; see <a href="type-class.htm"><strong>type-class</strong></a>. See
+section&#160;[3.4.2][7] for another way in which attributes of a class
+retrieved via its instances may differ from the objects actually
+stored in the class&#8217;s __dict__. If no class attribute is found,
+and the object&#8217;s class has a __getattr__ method, that is called
+to satisfy the lookup.</p><p>Attribute assignments and deletions update the instance&#8217;s dictionary,
+never a class&#8217;s dictionary. If the class has a __setattr__() or
+__delattr__() method, this is called instead of updating the
+instance dictionary directly.</p><p>Class instances can pretend to be numbers, sequences, or mappings if
+they have methods with certain special names.
+See <a href="special-method-names.htm"><strong>special-method-names</strong></a>.</p><p>Special attributes:</p><ul><li><a href="attribute-dict">__dict__</a> is the attribute dictionary.</li><li><a href="attribute-class">__class__</a> is the instance&#8217;s class.</li></ul></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div> <!-- yui-g --></div> <!-- content --> </div> <!-- yui-b --> </div> <!-- yui-main --> <div class="yui-b"> <div id='menu'> <ul> <li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li> <li><b><a href="." title="Go to pyref index page.">::: pyref :::</a></b></li> </ul> </div> <!-- menu --> </div> <!-- yui-b --> </div> <!-- bd --> <div id="ft"> <!-- footer --> <p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;"></a>
+this page was rendered by a <a href="http://www.djangoproject.com/">django</a> application in 0.01s 2011-06-21 21:00:43.650198.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p> </div> <!-- ft --> </div> <!-- doc --> <script src="/media/js/effbot-min.js" type="text/javascript"> </script> </body> </html>

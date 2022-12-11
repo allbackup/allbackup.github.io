@@ -1,0 +1,257 @@
+
+@@module asyncore
+
+<h1>asyncore&#8212;Asynchronous socket handler</h1>
+
+<p>This module provides the basic infrastructure for writing
+asynchronous socket service clients and servers.
+
+<p>There are only two ways to have a program on a single processor do
+&#8220;more than one thing at a time.&#8221; Multi-threaded programming
+is the simplest and most popular way to do it, but there is another very
+different technique, that lets you have nearly all the advantages of
+multi-threading, without actually using multiple threads. It's really
+only practical if your program is largely I/O bound. If your program is
+processor bound, then pre-emptive scheduled threads are probably what
+you really need. Network servers are rarely processor bound, however.
+
+<p>If your operating system supports the {@link c:select} system call in
+its I/O library (and nearly all do), then you can use it to juggle
+multiple communication channels at once; doing other work while your I/O
+is taking place in the &#8220;background.&#8221; Although this strategy
+can seem strange and complex, especially at first, it is in many ways
+easier to understand and control than multi-threaded programming. The
+{@link asyncore} module solves many of the difficult problems for you,
+making the task of building sophisticated high-performance network
+servers and clients a snap. For &#8220;conversational&#8221;
+applications and protocols the companion {@link asynchat} module is
+invaluable.
+
+<p>The basic idea behind both modules is to create one or more network
+{@em channels}, instances of class {@link asyncore.dispatcher} and
+{@link asynchat.async_chat}. Creating the channels adds them to a global
+map, used by the {@link loop} function if you do not provide it with
+your own {@var map}.
+
+<p>Once the initial channel(s) is(are) created, calling the {@link loop}
+function activates channel service, which continues until the last
+channel (including any that have been added to the map during
+asynchronous service) is closed.
+
+@@function loop([timeout[, use_poll[, map[,count]]]])
+
+<p>Enter a polling loop that terminates after count passes or all open
+channels have been closed. All arguments are optional. The {@var
+(}count) parameter defaults to None, resulting in the loop terminating
+only when all channels have been closed. The {@var timeout} argument
+sets the timeout parameter for the appropriate {@link select} or {@link
+poll} call, measured in seconds; the default is 30 seconds. The {@var
+use_poll} parameter, if true, indicates that {@link poll} should be used
+in preference to {@link select} (the default is {@link False}). The
+{@var map} parameter is a dictionary whose items are the channels to
+watch. As channels are closed they are deleted from their map. If {@var
+map} is omitted, a global map is used (this map is updated by the
+default class {@link __init__} - make sure you extend, rather than
+override, {@link __init__} if you want to retain this behavior).
+
+<p>Channels (instances of {@link asyncore.dispatcher}, {@link
+asynchat.async_chat} and subclasses thereof) can freely be mixed in the
+map.
+
+@@class dispatcher()
+
+<p>The {@link dispatcher} class is a thin wrapper around a low-level
+socket object. To make it more useful, it has a few methods for
+event-handling which are called from the asynchronous loop. Otherwise,
+it can be treated as a normal non-blocking socket object.
+
+<p>Two class attributes can be modified, to improve performance, or
+possibly even to conserve memory.
+@@attribute ac_in_buffer_size
+
+<p>The asynchronous input buffer size (default {@code 4096}).
+@@attribute ac_out_buffer_size
+
+<p>The asynchronous output buffer size (default {@code 4096}).
+
+<p>The firing of low-level events at certain times or in certain
+connection states tells the asynchronous loop that certain higher-level
+events have taken place. For example, if we have asked for a socket to
+connect to another host, we know that the connection has been made when
+the socket becomes writable for the first time (at this point you know
+that you may write to it with the expectation of success). The implied
+higher-level events are:
+
+<p><table border=1>
+<tr> <th>
+<p>Event
+<th>
+<p>Description
+<tr> <td>
+<p>{@code handle_connect()}
+<td>
+<p>Implied by the first write event
+<tr> <td>
+<p>{@code handle_close()}
+<td>
+<p>Implied by a read event with no data available
+<tr> <td>
+<p>{@code handle_accept()}
+<td>
+<p>Implied by a read event on a listening socket
+</table></p>
+
+<p>During asynchronous processing, each mapped channel's {@link
+readable} and {@link writable} methods are used to determine whether the
+channel's socket should be added to the list of channels {@link
+c:select}ed or {@link c:poll}ed for read and write events.
+
+@@text 
+
+<p>Thus, the set of channel events is larger than the basic socket
+events. The full set of methods that can be overridden in your subclass
+follows:
+
+@@method dispatcher.handle_read()
+
+<p>Called when the asynchronous loop detects that a {@link read} call on
+the channel's socket will succeed.
+
+@@method dispatcher.handle_write()
+
+<p>Called when the asynchronous loop detects that a writable socket can
+be written. Often this method will implement the necessary buffering for
+performance. For example:
+
+<pre>
+def handle_write(self):
+    sent = self.send(self.buffer)
+    self.buffer = self.buffer[sent:]
+</pre>
+
+
+@@method dispatcher.handle_expt()
+
+<p>Called when there is out of band (OOB) data for a socket connection.
+This will almost never happen, as OOB is tenuously supported and rarely
+used.
+
+@@method dispatcher.handle_connect()
+
+<p>Called when the active opener's socket actually makes a connection.
+Might send a &#8220;welcome&#8221; banner, or initiate a protocol
+negotiation with the remote endpoint, for example.
+
+@@method dispatcher.handle_close()
+
+<p>Called when the socket is closed.
+
+@@method dispatcher.handle_error()
+
+<p>Called when an exception is raised and not otherwise handled. The
+default version prints a condensed traceback.
+
+@@method dispatcher.handle_accept()
+
+<p>Called on listening channels (passive openers) when a connection can
+be established with a new remote endpoint that has issued a {@link
+connect} call for the local endpoint.
+
+@@method dispatcher.readable()
+
+<p>Called each time around the asynchronous loop to determine whether a
+channel's socket should be added to the list on which read events can
+occur. The default method simply returns {@code True}, indicating that
+by default, all channels will be interested in read events.
+
+@@method dispatcher.writable()
+
+<p>Called each time around the asynchronous loop to determine whether a
+channel's socket should be added to the list on which write events can
+occur. The default method simply returns {@code True}, indicating that
+by default, all channels will be interested in write events.
+
+@@text 
+
+<p>In addition, each channel delegates or extends many of the socket
+methods. Most of these are nearly identical to their socket partners.
+
+@@method dispatcher.create_socket(family, type)
+
+<p>This is identical to the creation of a normal socket, and will use
+the same options for creation. Refer to the {@link }{@link socket}
+documentation for information on creating sockets.
+
+@@method dispatcher.connect(address)
+
+<p>As with the normal socket object, {@var address} is a tuple with the
+first element the host to connect to, and the second the port number.
+
+@@method dispatcher.send(data)
+
+<p>Send {@var data} to the remote end-point of the socket.
+
+@@method dispatcher.recv(buffer_size)
+
+<p>Read at most {@var buffer_size} bytes from the socket's remote
+end-point. An empty string implies that the channel has been closed from
+the other end.
+
+@@method dispatcher.listen(backlog)
+
+<p>Listen for connections made to the socket. The {@var backlog}
+argument specifies the maximum number of queued connections and should
+be at least 1; the maximum value is system-dependent (usually 5).
+
+@@method dispatcher.bind(address)
+
+<p>Bind the socket to {@var address}. The socket must not already be
+bound. (The format of {@var address} depends on the address family --
+see above.)
+
+@@method dispatcher.accept()
+
+<p>Accept a connection. The socket must be bound to an address and
+listening for connections. The return value is a pair {@code (}{@var
+conn}, {@var address}) where {@var conn} is a {@em new} socket object
+usable to send and receive data on the connection, and {@var address} is
+the address bound to the socket on the other end of the connection.
+
+@@method dispatcher.close()
+
+<p>Close the socket. All future operations on the socket object will
+fail. The remote end-point will receive no more data (after queued data
+is flushed). Sockets are automatically closed when they are
+garbage-collected.
+
+@@text 
+
+<h2>asyncore Example basic HTTP client</h2>
+
+<p>As a basic example, below is a very basic HTTP client that uses the
+{@link dispatcher} class to implement its socket handling:
+
+<pre>
+class http_client(asyncore.dispatcher):
+    def __init__(self, host,path):
+        asyncore.dispatcher.__init__(self)
+        self.path = path
+        self.create_socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.connect( (host, 80) )
+        self.buffer = 'GET %s HTTP/1.0\r\n\r\n' % self.path
+        
+    def handle_connect(self):
+        pass
+        
+    def handle_read(self):
+        data = self.recv(8192)
+        print data
+        
+    def writable(self):
+        return (len(self.buffer) &gt; 0)
+    
+    def handle_write(self):
+        sent = self.send(self.buffer)
+        self.buffer = self.buffer[sent:]
+</pre>
+

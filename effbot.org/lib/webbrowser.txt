@@ -1,0 +1,161 @@
+
+@@module webbrowser
+
+<h1>webbrowser&#8212;Convenient Web-browser controller</h1>
+
+<p>The {@link webbrowser} module provides a very high-level interface to
+allow displaying Web-based documents to users. The controller objects
+are easy to use and are platform-independent. Under most circumstances,
+simply calling the {@link open} function from this module will do the
+right thing.
+
+<p>Under Unix, graphical browsers are preferred under X11, but text-mode
+browsers will be used if graphical browsers are not available or an X11
+display isn't available. If text-mode browsers are used, the calling
+process will block until the user exits the browser.
+
+<p>Under Unix, if the environment variable BROWSER exists, it is
+interpreted to override the platform default list of browsers, as a
+colon-separated list of browsers to try in order. When the value of a
+list part contains the string {@code %s}, then it is interpreted as a
+literal browser command line to be used with the argument URL
+substituted for the {@code %s}; if the part does not contain {@code %s},
+it is simply interpreted as the name of the browser to launch.
+
+<p>For non-Unix platforms, or when X11 browsers are available on Unix,
+the controlling process will not wait for the user to finish with the
+browser, but allow the browser to maintain its own window on the
+display.
+
+<p>The following exception is defined:
+
+@@exception Error
+
+<p>Exception raised when a browser control error occurs.
+
+@@text 
+
+<p>The following functions are defined:
+
+@@function open(url[, new=0][, autoraise=1])
+
+<p>Display {@var url} using the default browser. If {@var new} is true,
+a new browser window is opened if possible. If {@var autoraise} is true,
+the window is raised if possible (note that under many window managers
+this will occur regardless of the setting of this variable).
+
+@@function open_new(url)
+
+<p>Open {@var url} in a new window of the default browser, if possible,
+otherwise, open {@var url} in the only browser window.
+
+@@function get([name])
+
+<p>Return a controller object for the browser type {@var name}. If {@var
+name} is empty, return a controller for a default browser appropriate to
+the caller's environment.
+
+@@function register(name, constructor[, instance])
+
+<p>Register the browser type {@var name}. Once a browser type is
+registered, the {@link get} function can return a controller for that
+browser type. If {@var instance} is not provided, or is {@link None},
+{@var constructor} will be called without parameters to create an
+instance when needed. If {@var instance} is provided, {@var constructor}
+will never be called, and may be {@link None}.
+
+<p>This entry point is only useful if you plan to either set the BROWSER
+variable or call {@link get} with a nonempty argument matching the name
+of a handler you declare.
+
+@@text 
+
+<p>A number of browser types are predefined. This table gives the type
+names that may be passed to the {@link get} function and the
+corresponding instantiations for the controller classes, all defined in
+this module.
+
+<p><table border=1>
+<tr> <th>
+<p>Type Name
+<th>
+<p>Class Name
+<th>
+<p>Notes
+<tr> <td>
+<p>{@code 'mozilla'}
+<td>
+<p>{@link Netscape('mozilla')}
+<td> <tr> <td>
+<p>{@code 'netscape'}
+<td>
+<p>{@link Netscape('netscape')}
+<td> <tr> <td>
+<p>{@code 'mosaic'}
+<td>
+<p>{@link GenericBrowser('mosaic %s &amp;')}
+<td> <tr> <td>
+<p>{@code 'kfm'}
+<td>
+<p>{@link Konqueror}
+<td>
+<p>(1)
+<tr> <td>
+<p>{@code 'grail'}
+<td>
+<p>{@link Grail}
+<td> <tr> <td>
+<p>{@code 'links'}
+<td>
+<p>{@link GenericBrowser('links %s')}
+<td> <tr> <td>
+<p>{@code 'lynx'}
+<td>
+<p>{@link GenericBrowser('lynx %s')}
+<td> <tr> <td>
+<p>{@code 'w3m'}
+<td>
+<p>{@link GenericBrowser('w3m %s')}
+<td> <tr> <td>
+<p>{@code 'windows-default'}
+<td>
+<p>{@link WindowsDefault}
+<td>
+<p>(2)
+<tr> <td>
+<p>{@code 'internet-config'}
+<td>
+<p>{@link InternetConfig}
+<td>
+<p>(3)
+</table></p>
+
+<p>Notes:
+
+@@variable (1)
+@@unknown ``Konqueror'' is the file manager for the KDE desktop environment for UNIX, and only makes sense to use if KDE is running. Some way of reliably detecting KDE would be nice; the KDEDIR variable is not sufficient. Note also that the name ``kfm'' is used even when using the konqueror command with KDE 2 -- the implementation selects the best strategy for running Konqueror.
+@@variable (2)
+@@unknown Only on Windows platforms; requires the common extension modules win32api and win32con.
+@@variable (3)
+
+<p>Only on MacOS platforms; requires the standard MacPython {@link ic}
+module, described in the {@link ../mac/module-ic.html Macintosh Library
+Modules} manual.
+
+@@text 
+
+<h2>Browser Controller Objects</h2>
+
+<p>Browser controllers provide two methods which parallel two of the
+module-level convenience functions:
+
+@@function open(url[, new])
+
+<p>Display {@var url} using the browser handled by this controller. If
+{@var new} is true, a new browser window is opened if possible.
+
+@@function open_new(url)
+
+<p>Open {@var url} in a new window of the browser handled by this
+controller, if possible, otherwise, open {@var url} in the only browser
+window.

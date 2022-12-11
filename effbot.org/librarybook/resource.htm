@@ -1,0 +1,42 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>The resource&nbsp;module</title></head><body data-page-id="639"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">The resource&nbsp;module</h1></div><div class="yui-ge"><div class="yui-u first"><p>(Unix only, Optional). This module is used to query or modify
+the system resource limits.</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><div class="example wide">
+<b style="example">Example: Using the resource
+module to query current settings</b>
+<pre class="wide">
+# File: <a href="resource/resource-example-1.py">resource-example-1.py</a>
+
+import resource
+
+print "usage stats", "=&gt;", resource.getrusage(resource.RUSAGE_SELF)
+print "max cpu", "=&gt;", resource.getrlimit(resource.RLIMIT_CPU)
+print "max data", "=&gt;", resource.getrlimit(resource.RLIMIT_DATA)
+print "max processes", "=&gt;", resource.getrlimit(resource.RLIMIT_NPROC)
+print "page size", "=&gt;", resource.getpagesize()
+
+</pre><pre class="computeroutput wide" moreinfo="NONE">
+usage stats =&gt; (0.03, 0.02, 0, 0, 0, 0, 75, 168, 0, 0, 0, 0, 0, 0, 0, 0)
+max cpu =&gt; (2147483647, 2147483647)
+max data =&gt; (2147483647, 2147483647)
+max processes =&gt; (256, 256)
+page size =&gt; 4096
+</pre></div></div><div class="yui-ge"><div class="yui-u first"><div class="example">
+<b style="example">Example: Using the resource
+module to limit resources</b>
+<pre>
+# File: <a href="resource/resource-example-2.py">resource-example-2.py</a>
+
+import resource
+
+resource.setrlimit(resource.RLIMIT_CPU, (0, 1))
+
+# pretend we're busy
+for i in range(1000):
+    for j in range(1000):
+        for k in range(1000):
+            pass
+
+</pre><pre class="computeroutput" moreinfo="NONE">
+CPU time limit exceeded
+</pre></div></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to librarybook index page.">::: librarybook :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

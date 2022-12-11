@@ -1,0 +1,43 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>Creating Palette&nbsp;Images</title> <script type="text/javascript">effbot_page_id=34;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> <!--
+<p style='color: #8f8f8f; background: #fff5bf; padding: 5px 10px;'> <b>2008-07-15:</b> Selected articles
+
+now have experimental "comment" links in the left column and at the bottom.
+You're welcome to use them for commenting and voting on articles.
+For a bit more on this, see <a
+href="http://effbot.slinkset.com/links/Welcome_to_discuss_effbot_org">this
+page</a>. /F
+</p>
+--> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <h1 class="maintitle">Creating Palette&nbsp;Images</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p class="info">February 05, 1999 | Fredrik Lundh | Previously published
+as &#8220;<cite>fyi #53: creating palette images</cite>&#8221;</p><h2>Introduction</h2><p>One of the weak spots in the current release of PIL is that it&#8217;s
+quite difficult to create a 8-bit palette image from scratch. The
+obvious way to create a palette, by using the <i>ImagePalette</i>
+class, simply doesn&#8217;t behave like one would expect.</p><h2>Creating the Image</h2><p>To create a new palette image, use the &#8220;P&#8221; mode with the <i>
+new</i> function:</p><blockquote><b>Image.new(&#8220;P&#8221;</b><i>, size, fill</i><b>)</b> where
+<i>size</i> is the the size in pixels given as (<i>width,
+height</i>), and <i>fill</i> is the background pixel
+value.</blockquote><p>If <i>fill</i> is omitted, it defaults to 0. To prevent PIL from
+filling the image at all (e.g. if you&#8217;re going to draw over the
+entire image anyway), use <i>None</i>.</p><h2>Changing the Palette</h2><p>PIL assigns a greyscale palette to the new image. In other
+words, for each colour index <i>i</i>, the corresponding palette
+entry is (<i>i, i, i</i>).</p><p>But how do we modify the contents of this palette? There&#8217;s not
+much on this in the documentation, but maybe we can use <i>dir</i>
+to see if there&#8217;s some attribute we could modify:</p><pre class="python">
+&gt;&gt;&gt; <span class="pykeyword">import</span> Image
+&gt;&gt;&gt; i = Image.new(<span class="pystring">"P"</span>, (512, 512))
+&gt;&gt;&gt; dir(i)
+[<span class="pystring">'category'</span>, <span class="pystring">'im'</span>, <span class="pystring">'info'</span>, <span class="pystring">'mode'</span>, <span class="pystring">'palette'</span>, <span class="pystring">'size'</span>]</pre><p>Cool. There&#8217;s a <i>palette</i> attribute in there. If we can
+figure out what it is, maybe we can modify the palette via that
+attribute.</p><pre class="python">
+&gt;&gt;&gt; <span class="pykeyword">print</span> i.palette
+None</pre><p>Oops. That wasn&#8217;t really what we expected, was it?</p><p>In fact, the <i>palette</i> attribute is used to store the
+palette in some situations. But that&#8217;s not always the case, since
+PIL also maintains an internal palette structure (the <i>
+ImagingPalette</i> structure) which is attached to the internal
+image representation.</p><p>Unfortunately, the current version of PIL doesn&#8217;t do what it
+takes to keep the externally visible <i>palette</i> attribute in
+sync with the internal one (this will most likely change in a
+future version). For example, when we created a new image, PIL
+properly set the internal palette structure to a greyscale palette,
+but it didn&#8217;t set the public <i>palette</i> attrib

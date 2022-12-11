@@ -1,0 +1,18 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>Including Element Trees in Django&nbsp;Templates</title> <script type="text/javascript">effbot_page_id=41;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> <!--
+<p style='color: #8f8f8f; background: #fff5bf; padding: 5px 10px;'> <b>2008-07-15:</b> Selected articles
+
+now have experimental "comment" links in the left column and at the bottom.
+You're welcome to use them for commenting and voting on articles.
+For a bit more on this, see <a
+href="http://effbot.slinkset.com/links/Welcome_to_discuss_effbot_org">this
+page</a>. /F
+</p>
+--> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <h1 class="maintitle">Including Element Trees in Django&nbsp;Templates</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p> Jason Huggins: <a href="http://www.jrandolph.com/blog/?p=23">&#8220;<i>To me, Django feels like just another Python library&#8230; and I can plug in additional libraries (like ElementTree for XML or the python ldap library) with no pain or bondage required. The things I&#8217;ve seen of Zope 3 do say &#8216;its more pythonic&#8217;, but I don&#8217;t buy it when the next step says &#8216;now go edit this XML file&#8217;&#8230; and &#8220;now let&#8217;s write a Python interface class&#8221;.  Yuck. Just let me import my little Python library and be done with it.</i>&#8221;</a>
+</p><p> Here&#8217;s an ultrasimple <a href="element-index.htm">elementtree</a> serialization filter for Django::
+
+<pre class="python">
+<span class="pycomment"># File: templatetags/elementtree_extras.py</span>
+
+<span class="p

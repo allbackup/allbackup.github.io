@@ -1,0 +1,23 @@
+
+@@module getpass
+
+<h1>getpass&#8212;Portable password input</h1>
+
+<p>The {@link getpass} module provides two functions:
+
+@@function getpass([prompt])
+
+<p>Prompt the user for a password without echoing. The user is prompted
+using the string {@var prompt}, which defaults to {@code 'Password: '}.
+Availability: Macintosh, Unix, Windows.
+
+@@function getuser()
+
+<p>Return the &#8220;login name&#8221; of the user. Availability: Unix,
+Windows.
+
+<p>This function checks the environment variables LOGNAME, USER, LNAME
+and USERNAME, in order, and returns the value of the first one which is
+set to a non-empty string. If none are set, the login name from the
+password database is returned on systems which support the {@link pwd}
+module, otherwise, an exception is raised.

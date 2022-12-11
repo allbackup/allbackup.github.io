@@ -1,0 +1,58 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>How do I write a function with output parameters (call by&nbsp;reference)?</title></head><body data-page-id="828"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><p class="note" style="text-align: center"><strong>
+This is an old copy of the Python FAQ.  The information here may be
+outdated.
+</strong></p><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">How do I write a function with output parameters (call by&nbsp;reference)?</h1></div><div class="yui-ge"><div class="yui-u first"><p>Python doesn&#8217;t support call by reference; a called function only has
+access to the argument <em>values</em> (the actual objects), not the variables
+in the calling scope.</p><p>To return multiple values, you can simply return a tuple, and use
+sequence unpacking at the call site:</p><pre class="python"><span class="pykeyword">def</span> <span class="pyfunction">func</span>(a, b):
+    a = <span class="pystring">'new-value'</span>        <span class="pycomment"># a and b are local names</span>
+    b = b + 1              <span class="pycomment"># assigned to new objects</span>
+    <span class="pykeyword">return</span> a, b            <span class="pycomment"># return new values</span>
+
+x, y = <span class="pystring">'old-value'</span>, 99
+x, y = func(x, y)
+<span class="pykeyword">print</span> x, y                 <span class="pycomment"># output: new-value 100</span></pre><p>This is almost always the clearest solution, but can cause problems if
+you find that need to add more return values.</p><p>A more flexible approach is to return either a dictionary or a custom
+class instance.  Dictionaries are easy to create, but can be a bit
+unwieldy to unpack:</p><pre class="python"><span class="pykeyword">def</span> <span class="pyfunction">func</span>(a, b):
+    <span class="pykeyword">return</span> dict(a=<span class="pystring">'new-value'</span>, b=b+1)
+
+result = func(x, y)
+<span class="pykeyword">print</span> result[<span class="pystring">"a"</span>], result[<span class="pystring">"b"</span>]</pre><p>Custom classes require a bit more typing, but are easier to use at the
+call site:</p><pre><code>class result_container:
+    pass
+
+def func(a, b):
+    result = result_container()
+    result.a = 'new-value'
+    result.b = b + 1
+return result
+
+result = func(x, y)
+print result.a, result.b
+</code></pre><p>Extending the container class to support dictionary-style creation is
+also easy:</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><pre class="python wide wide"><span class="pykeyword">class</span> <span class="pyclass">result_container</span>:
+    <span class="pykeyword">def</span> <span class="pyfunction">__init__</span>(self, **kwargs):
+        self.__dict__.update(kwargs) <span class="pycomment"># copy arguments to attributes</span>
+
+<span class="pykeyword">def</span> <span class="pyfunction">func</span>(a, b):
+    <span class="pykeyword">return</span> result_container(a=<span class="pystring">'new-value'</span>, b=b+1)
+
+result = func(x, y)
+<span class="pykeyword">print</span> result.a, result.b</pre></div><div class="yui-ge"><div class="yui-u first"><p>Finally, you can return multiple values from a function by passing in
+a mutable object, such as a list, a dictionary, or a custom object.
+This example uses a list:</p><pre class="python"><span class="pykeyword">def</span> <span class="pyfunction">func</span>(a):
+    a[0] = <span class="pystring">'new-value'</span>     <span class="pycomment"># 'a' references a mutable list</span>
+    a[1] = a[1] + 1        <span class="pycomment"># changes a shared object</span>
+
+args = [<span class="pystring">'old-value'</span>, 99]
+func(args)
+<span class="pykeyword">print</span> args[0], args[1]     <span class="pycomment"># output: new-value 100</span></pre><p>And this uses a dictionary:</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><pre class="python wide wide"><span class="pykeyword">def</span> <span class="pyfunction">func</span>(args):
+    args[<span class="pystring">'a'</span>] = <span class="pystring">'new-value'</span>     <span class="pycomment"># args is a mutable dictionary</span>
+    args[<span class="pystring">'b'</span>] = args[<span class="pystring">'b'</span>] + 1   <span class="pycomment"># change it in-place</span>
+
+args = {<span class="pystring">'a'</span>:<span class="pystring">' old-value'</span>, <span class="pystring">'b'</span>: 99}
+func(args)
+<span class="pykeyword">print</span> args[<span class="pystring">'a'</span>], args[<span class="pystring">'b'</span>]</pre></div><div class="yui-ge"><div class="yui-u first"><p>CATEGORY: programming</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to pyfaq index page.">::: pyfaq :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

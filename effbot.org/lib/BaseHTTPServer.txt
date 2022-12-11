@@ -1,0 +1,230 @@
+
+@@module BaseHTTPServer
+
+<h1>BaseHTTPServer&#8212;Basic HTTP server</h1>
+
+<p>This module defines two classes for implementing HTTP servers (Web
+servers). Usually, this module isn't used directly, but is used as a
+basis for building functioning Web servers. See the {@link
+SimpleHTTPServer} and {@link CGIHTTPServer} modules.
+
+<p>The first class, {@link HTTPServer}, is a {@link
+SocketServer.TCPServer} subclass. It creates and listens at the HTTP
+socket, dispatching the requests to a handler. Code to create and run
+the server looks like this:
+
+<pre>
+def run(server_class=BaseHTTPServer.HTTPServer,
+        handler_class=BaseHTTPServer.BaseHTTPRequestHandler):
+    server_address = ('', 8000)
+    httpd = server_class(server_address, handler_class)
+    httpd.serve_forever()
+</pre>
+
+
+@@class HTTPServer(server_address, RequestHandlerClass)
+
+<p>This class builds on the {@link TCPServer} class by storing the
+server address as instance variables named {@link server_name} and
+{@link server_port}. The server is accessible by the handler, typically
+through the handler's {@link server} instance variable.
+
+@@class BaseHTTPRequestHandler(request, client_address, server)
+
+<p>This class is used to handle the HTTP requests that arrive at the
+server. By itself, it cannot respond to any actual HTTP requests; it
+must be subclassed to handle each request method (e.g. GET or POST).
+{@link BaseHTTPRequestHandler} provides a number of class and instance
+variables, and methods for use by subclasses.
+
+<p>The handler will parse the request and the headers, then call a
+method specific to the request type. The method name is constructed from
+the request. For example, for the request method "{@code SPAM}", the
+{@link do_SPAM} method will be called with no arguments. All of the
+relevant information is stored in instance variables of the handler.
+Subclasses should not need to override or extend the {@link __init__}
+method.
+
+@@text 
+
+<p>{@link BaseHTTPRequestHandler} has the following instance variables:
+
+@@attribute BaseHTTPRequestHandler.client_address
+
+<p>Contains a tuple of the form {@code (}{@var host}, {@var port})
+referring to the client's address.
+
+@@attribute BaseHTTPRequestHandler.command
+
+<p>Contains the command (request type). For example, {@code 'GET'}.
+
+@@attribute BaseHTTPRequestHandler.path
+
+<p>Contains the request path.
+
+@@attribute BaseHTTPRequestHandler.request_version
+
+<p>Contains the version string from the request. For example, {@code
+'HTTP/1.0'}.
+
+@@attribute BaseHTTPRequestHandler.headers
+
+<p>Holds an instance of the class specified by the {@link MessageClass}
+class variable. This instance parses and manages the headers in the HTTP
+request.
+
+@@attribute BaseHTTPRequestHandler.rfile
+
+<p>Contains an input stream, positioned at the start of the optional
+input data.
+
+@@attribute BaseHTTPRequestHandler.wfile
+
+<p>Contains the output stream for writing a response back to the client.
+Proper adherence to the HTTP protocol must be used when writing to this
+stream.
+
+@@text 
+
+<p>{@link BaseHTTPRequestHandler} has the following class variables:
+
+@@attribute BaseHTTPRequestHandler.server_version
+
+<p>Specifies the server software version. You may want to override this.
+The format is multiple whitespace-separated strings, where each string
+is of the form name[/version]. For example, {@code 'BaseHTTP/0.2'}.
+
+@@attribute BaseHTTPRequestHandler.sys_version
+
+<p>Contains the Python system version, in a form usable by the {@link
+version_string} method and the {@link server_version} class variable.
+For example, {@code 'Python/1.4'}.
+
+@@attribute BaseHTTPRequestHandler.error_message_format
+
+<p>Specifies a format string for building an error response to the
+client. It uses parenthesized, keyed format specifiers, so the format
+operand must be a dictionary. The {@var code} key should be an integer,
+specifying the numeric HTTP error code value. {@var message} should be a
+string containing a (detailed) error message of what occurred, and {@var
+explain} should be an explanation of the error code number. Default
+{@var message} and {@var explain} values can found in the {@var
+responses} class variable.
+
+@@attribute BaseHTTPRequestHandler.protocol_version
+
+<p>This specifies the HTTP protocol version used in responses. If set to
+{@code 'HTTP/1.1'}, the server will permit HTTP persistent connections;
+however, your server {@em must} then include an accurate {@code
+Content-Length} header (using {@link send_header}) in all of its
+responses to clients. For backwards compatibility, the setting defaults
+to {@code 'HTTP/1.0'}.
+
+@@attribute BaseHTTPRequestHandler.MessageClass
+
+<p>Specifies a {@link rfc822.Message}-like class to parse HTTP headers.
+Typically, this is not overridden, and it defaults to {@link
+mimetools.Message}.
+
+@@attribute BaseHTTPRequestHandler.responses
+
+<p>This variable contains a mapping of error code integers to
+two-element tuples containing a short and long message. For example,
+{@code {}{@var code}: ({@var shortmessage}, {@var longmessage})}. The
+{@var shortmessage} is usually used as the {@var message} key in an
+error response, and {@var longmessage} as the {@var explain} key (see
+the {@link error_message_format} class variable).
+
+@@text 
+
+<p>A {@link BaseHTTPRequestHandler} instance has the following methods:
+
+@@method BaseHTTPRequestHandler.handle()
+
+<p>Calls {@link handle_one_request} once (or, if persistent connections
+are enabled, multiple times) to handle incoming HTTP requests. You
+should never need to override it; instead, implement appropriate {@link
+do_*} methods.
+
+@@method BaseHTTPRequestHandler.handle_one_request()
+
+<p>This method will parse and dispatch the request to the appropriate
+{@link do_*} method. You should never need to override it.
+
+@@method BaseHTTPRequestHandler.send_error(code[, message])
+
+<p>Sends and logs a complete error reply to the client. The numeric
+{@var code} specifies the HTTP error code, with {@var message} as
+optional, more specific text. A complete set of headers is sent,
+followed by text composed using the {@link error_message_format} class
+variable.
+
+@@method BaseHTTPRequestHandler.send_response(code[, message])
+
+<p>Sends a response header and logs the accepted request. The HTTP
+response line is sent, followed by {@em Server} and {@em Date} headers.
+The values for these two headers are picked up from the {@link
+version_string} and {@link date_time_string} methods, respectively.
+
+@@method BaseHTTPRequestHandler.send_header(keyword, value)
+
+<p>Writes a specific HTTP header to the output stream. {@var keyword}
+should specify the header keyword, with {@var value} specifying its
+value.
+
+@@method BaseHTTPRequestHandler.end_headers()
+
+<p>Sends a blank line, indicating the end of the HTTP headers in the
+response.
+
+@@method BaseHTTPRequestHandler.log_request([code[, size]])
+
+<p>Logs an accepted (successful) request. {@var code} should specify the
+numeric HTTP code associated with the response. If a size of the
+response is available, then it should be passed as the {@var size}
+parameter.
+
+@@method BaseHTTPRequestHandler.log_error(...)
+
+<p>Logs an error when a request cannot be fulfilled. By default, it
+passes the message to {@link log_message}, so it takes the same
+arguments ({@var format} and additional values).
+
+@@method BaseHTTPRequestHandler.log_message(format, ...)
+
+<p>Logs an arbitrary message to {@code sys.stderr}. This is typically
+overridden to create custom error logging mechanisms. The {@var format}
+argument is a standard printf-style format string, where the additional
+arguments to {@link log_message} are applied as inputs to the
+formatting. The client address and current date and time are prefixed to
+every message logged.
+
+@@method BaseHTTPRequestHandler.version_string()
+
+<p>Returns the server software's version string. This is a combination
+of the {@link server_version} and {@link sys_version} class variables.
+
+@@method BaseHTTPRequestHandler.date_time_string()
+
+<p>Returns the current date and time, formatted for a message header.
+
+@@method BaseHTTPRequestHandler.log_data_time_string()
+
+<p>Returns the current date and time, formatted for logging.
+
+@@method BaseHTTPRequestHandler.address_string()
+
+<p>Returns the client address, formatted for logging. A name lookup is
+performed on the client's IP address.
+
+@@text 
+
+@see 
+{@link CGIHTTPServer Module CGIHTTPServer}
+
+Extended request handler that supports CGI scripts.
+@see 
+{@link SimpleHTTPServer Module SimpleHTTPServer}
+
+Basic request handler that limits response to files actually under the
+document root.

@@ -1,0 +1,493 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>EffNews Part 1: Fetching RSS&nbsp;Files</title> <script type="text/javascript">effbot_page_id=59;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <p><a href="effnews.htm">back</a> <a href="effnews-2.htm">next</a></p> <h1 class="maintitle">EffNews Part 1: Fetching RSS&nbsp;Files</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p class="info">September 5, 2002 | Updated September 8, 2002 | Fredrik Lundh</p><h2 id="rss-files">RSS Files&#160;<a class="nav" href="#rss-files" title="bookmark!">#</a></h2><p>The RSS file format is <a href="http://www.mnot.net/rss/tutorial/">an
+XML-based file format that provides a &#8220;site summary&#8221;</a>, that is, a brief
+summary of information published on a site.  It&#8217;s usually used to provide
+a machine readable version of the contents on a news site or a weblog.</p><p>Depending on who you talk to, RSS means &#8220;<a href="http://my.netscape.com/publish/formats/rss-spec-0.91.html">Rich Site Summary</a>&#8220;, &#8220;<a href="http://purl.org/rss/1.0">RDF Site Summary</a>&#8221; or
+&#8220;<a href="http://backend.userland.com/">Really Simple Syndication</a>&#8221;
+(or perhaps
+&#8220;<a href="http://www.kottke.org/02/09/really-small-something">Really
+Small Something</a>&#8220;).
+It was originally created by Netscape for use on their
+<a href="http://my.netscape.com">my.netscape.com</a>
+site, and was later developed into two similar but slightly differing
+versions, <a href="http://backend.userland.com/">RSS 0.9x/2.0</a>
+and <a href="http://purl.org/rss/1.0">RSS 1.0</a>.</p><p>An RSS 0.9x file might look something like this:</p><pre class="xml">
+&lt;<span class="pyfunction">?xml</span> version="1.0"?&gt;
+&lt;<span class="pyfunction">rss</span> version="0.91"&gt;
+  &lt;<span class="pyfunction">channel</span>&gt;
+    &lt;<span class="pyfunction">title</span>&gt;the eff-bot online&lt;/<span class="pyfunction">title</span>&gt;
+    &lt;<span class="pyfunction">link</span>&gt;http://online.effbot.org&lt;/<span class="pyfunction">link</span>&gt;
+    &lt;<span class="pyfunction">description</span>&gt;Fredrik Lundh's clipbook.&lt;/<span class="pyfunction">description</span>&gt;
+    &lt;<span class="pyfunction">language</span>&gt;en-us&lt;/<span class="pyfunction">language</span>&gt;
+    ...
+    &lt;<span class="pyfunction">item</span>&gt;
+      &lt;<span class="pyfunction">title</span>&gt;spam, spam, spam&lt;/<span class="pyfunction">title</span>&gt;
+      &lt;<span class="pyfunction">link</span>&gt;http://online.effbot.org#85292735&lt;/<span class="pyfunction">link</span>&gt;
+      &lt;<span class="pyfunction">description</span>&gt;for the first seven months of 2002, the spam
+      filters watching fredrik@pythonware.com has&lt;/<span class="pyfunction">description</span>&gt;
+    &lt;/<span class="pyfunction">item</span>&gt;
+    ...
+  &lt;/<span class="pyfunction">channel</span>&gt;
+&lt;/<span class="pyfunction">rss</span>&gt;</pre><p>The content consists of some descriptive information (the site&#8217;s
+<b>title</b>, a <b>link</b> to an HTML rendering of the content, etc)
+and a number of <b>item</b> elements, each of which contains an item
+<b>title</b>, a <b>link</b>, and a (usually brief)
+<b>description</b>.</p><p>We&#8217;ll look into <a href="effnews-2.htm">RSS parsing</a> and
+<a href="effnews-4.htm">other RSS formats</a> in later articles.
+For now, we&#8217;re more interested in getting our hands on some RSS
+files to parse&#8230;</p><h2 id="using-http-to-download-files">Using HTTP to Download Files&#160;<a class="nav" href="#using-http-to-download-files" title="bookmark!">#</a></h2><p>Like all other resources on a web, an RSS file is identified by a
+<b>uniform resource locator</b> (URI).  A typical RSS URI might look
+something like:</p><blockquote>
+<a href="http://online.effbot.org/rss.xml">http://online.effbot.org/rss.xml</a>
+</blockquote><p>To fetch this RSS file, the aggregator connects to the computer
+named <b>online.effbot.org</b> and issues an HTTP request, asking the
+server to return the document identified as <b>/rss.xml</b>.</p><p>Here&#8217;s a minimal HTTP request message that does exactly this:</p><pre>
+GET /rss.xml HTTP/1.0
+Host: online.effbot.org
+</pre><p>The message should be followed by an empty line.</p><p>If everything goes well, the HTTP server responds with a status
+line, followed by a number of header lines, an empty line, and the RSS
+file itself:</p><pre>
+HTTP/1.1 200 OK
+Last-Modified: Tue, 03 Sep 2002 11:04:09 GMT
+ETag: "1e49dc-dfa-3d749729"
+Content-Length: 3578
+Content-Type: text/xml
+Connection: close
+
+...RSS data...
+</pre><h3 id="sending-an-http-request">Sending an HTTP request&#160;<a class="nav" href="#sending-an-http-request" title="bookmark!">#</a></h3><p>Python makes it easy to issue HTTP requests.  Here&#8217;s an example
+that uses the <b>socket</b> module, which is a low-level interface for
+network communication:</p><div class="example"><pre class="python">
+HOST = <span class="pystring">"online.effbot.org"</span>
+PATH = <span class="pystring">"/rss.xml"</span>
+
+<span class="pykeyword">import</span> socket
+
+sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+sock.connect((HOST, 80))
+
+sock.send(<span class="pystring">"GET %s HTTP/1.0\r\nHost: %s\r\n\r\n"</span> % (PATH, HOST))
+
+<span class="pykeyword">while</span> 1:
+    text = sock.recv(2048)
+    <span class="pykeyword">if</span> <span class="pykeyword">not</span> text:
+        <span class="pykeyword">break</span>
+    <span class="pykeyword">print</span> <span class="pystring">"read"</span>, len(text), <span class="pystring">"bytes"</span>
+
+s.close()</pre></div><p>The <b>socket.socket</b> call creates a socket for the INET
+(internet) network, and of the STREAM (reliable byte stream) type.
+This is more commonly known as a <b>TCP connection</b>.</p><p>The <b>connect</b> method is used to connect to a remote computer.
+The method takes a tuple containing two values; the computer name and
+the port number to use on that computer.  In this example, we&#8217;re using
+port 80 which is the standard port for HTTP.</p><p>The <b>send</b> method is used to send the HTTP request to the
+server.  Note that lines are separated by both a carriage return (\r)
+and a newline (\n), and that there&#8217;s an extra empty line at the end of
+the request.</p><p>The <b>recv</b> method, finally, is used to read data from the
+socket.  Like the standard read method, it returns an empty string
+when there&#8217;s no more data to read.</p><h3 id="using-an-http-support-library">Using an HTTP support library&#160;<a class="nav" href="#using-an-http-support-library" title="bookmark!">#</a></h3><p>In addition to the low-level <b>socket</b> module, Python&#8217;s
+standard library comes with modules that support common network
+protocols, including HTTP.  The most obvious choice, <b>httplib</b> is
+an intermediate-level library which provides only a thin layer on top
+of the socket library.</p><p>The <b>urllib</b> module provides a higher-level interface.  It
+takes an URL, generates a full HTTP request, parses the response
+header, and returns a file-like object that can be used to read the
+rest of the response right off the server:</p><pre class="python">
+<span class="pykeyword">import</span> urllib
+
+file = urllib.urlopen(<span class="pystring">"http://"</span> + HOST + PATH)
+text = file.read()
+
+<span class="pykeyword">print</span> <span class="pystring">"read"</span>, len(text), <span class="pystring">"bytes"</span></pre><h3 id="asynchronous-http">Asynchronous HTTP&#160;<a class="nav" href="#asynchronous-http" title="bookmark!">#</a></h3><p>A problem with both the low-level socket library and <b>urllib</b>
+is that you can only read data from one site at a time.  If you use
+sockets, the <b>connect</b> and <b>recv</b> calls may block, waiting
+for the server to respond.  If you use urllib, both the <b>urlopen</b>
+and the <b>read</b> methods may block for the same reason.</p><p>If the task here was to create some kind of batch RSS aggregator,
+the easiest solution would probably be to ignore this problem, and
+read one site at a time.  Who cares if it takes one second or ten
+minutes to check all channels; it would take much longer to visit all
+the sites by hand anyway.</p><p>However, in an interactive application, it&#8217;s rather bad style to
+block for an unknown amount of time.  The application must be able to
+download things in the background, without locking up the user
+interface.</p><p>There are a number of ways to address this (including background
+processes and threads), but in this project, we&#8217;ll use something
+called <b>asynchronous sockets</b>, as provided by Python&#8217;s
+<b>asyncore</b> module.</p><p>The <b>asyncore</b> module provides &#8220;reactive&#8221; sockets, meaning
+that instead of creating socket objects, and calling methods on them
+to do things, your code is called by the socket framework when
+something can be done.  This approach is known as <b>event-driven
+programming</b>.</p><p>The asyncore module contains a basic <b>dispatcher</b> class that
+represents a reactive socket.  There&#8217;s also an extension to that class
+called <b>dispatcher_with_send</b>, which adds buffered output.</p><p>For the HTTP client, all you have to do is to subclass the
+<b>dispatcher_with_send</b> class, and implement the following
+methods:</p><ul><li><p>
+<b>handle_connect</b> is called when a connection is
+successfully established.
+</p></li><li><p>
+<b>handle_expt</b> is called when a connection fails (Windows only.
+On most other platforms, connection failures are indicated by errors
+when writing to, or reading from the socket).
+</p></li><li><p>
+<b>handle_read</b> is called when there are data waiting to
+be read from the socket.  The callback should call the
+<b>recv</b> method to get the data.
+</p></li><li><p>
+<b>handle_close</b> is called when the socket is closed or
+reset.
+</p></li></ul><p>Here&#8217;s a first version:</p><div class="example">
+<b>Example: a minimal asynchronous HTTP client (File: minimal_http_client.py)</b>
+<pre class="python">
+<span class="pykeyword">import</span> asyncore
+<span class="pykeyword">import</span> string, socket
+
+<span class="pykeyword">class</span> <span class="pyclass">async_http</span>(asyncore.dispatcher_with_send):
+    <span class="pycomment"># asynchronous http client</span>
+
+    <span class="pykeyword">def</span> <span class="pyfunction">__init__</span>(self, host, path):
+        asyncore.dispatcher_with_send.__init__(self)
+
+        self.host = host
+        self.path = path
+
+        self.header = None
+
+        self.data = <span class="pystring">""</span>
+
+        self.create_socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.connect((host, 80))
+
+    <span class="pykeyword">def</span> <span class="pyfunction">handle_connect</span>(self):
+        <span class="pycomment"># connection succeeded; send request</span>
+        self.send(
+            <span class="pystring">"GET %s HTTP/1.0\r\nHost: %s\r\n\r\n"</span> %
+                (self.path, self.host)
+            )
+
+    <span class="pykeyword">def</span> <span class="pyfunction">handle_expt</span>(self):
+        <span class="pycomment"># connection failed</span>
+        self.close()
+
+    <span class="pykeyword">def</span> <span class="pyfunction">handle_read</span>(self):
+        <span class="pycomment"># deal with incoming data</span>
+        data = self.recv(2048)
+
+        <span class="pykeyword">if</span> <span class="pykeyword">not</span> self.header:
+            <span class="pycomment"># check if we have a full header</span>
+            self.data = self.data + data
+            <span class="pykeyword">try</span>:
+                i = string.index(self.data, <span class="pystring">"\r\n\r\n"</span>)
+            <span class="pykeyword">except</span> ValueError:
+                <span class="pykeyword">return</span> <span class="pycomment"># no empty line; continue</span>
+            self.header = self.data[:i+2]
+            <span class="pykeyword">print</span> self.host, <span class="pystring">"HEADER"</span>
+            <span class="pykeyword">print</span>
+            <span class="pykeyword">print</span> self.header
+            data = self.data[i+4:]
+            self.data = <span class="pystring">""</span>
+
+        <span class="pykeyword">if</span> data:
+            <span class="pykeyword">print</span> self.host, <span class="pystring">"DATA"</span>, len(data)
+
+    <span class="pykeyword">def</span> <span class="pyfunction">handle_close</span>(self):
+        self.close()</pre></div><p>The constructor creates a socket, and issues a connection request.
+Unlike ordinary sockets, the asynchronous <b>connect</b> method
+returns immediately; the framework calls the <b>handle_connect</b>
+method once it&#8217;s finished.  When this method is called, our class
+immediately issues an HTTP request for the given RSS file.  The
+framework makes sure that the request is sent as soon as the network
+is ready.</p><p>When the remote computer gets the request, it returns a response
+message.  As data arrives, the <b>handle_read</b> method is called
+over and over again, until there&#8217;s no more data to read.  Our
+<b>handle_read</b> method starts by looking for the header section (or
+rather, the empty line that identifies the end of the header).  After
+that, it simply prints DATA messages to standard output.</p><p>Let&#8217;s try this one out on a real site:</p><pre>
+$ <b>python</b>
+&gt;&gt;&gt; <b>from minimal_http_client import async_http</b>
+&gt;&gt;&gt; <b>async_http("online.effbot.org", "/rss.xml")</b>
+&lt;async_http at 880294&gt;
+&gt;&gt;&gt; <b>import asyncore</b>
+&gt;&gt;&gt; <b>asyncore.loop()</b>
+online.effbot.org HEADER
+
+HTTP/1.1 200 OK
+Server: Apache/1.3.22 (Unix)
+Last-Modified: Tue, 03 Sep 2002 11:04:09 GMT
+ETag: "1e49dc-dfa-3d749729"
+Content-Length: 3578
+Content-Type: text/xml
+Connection: close
+
+online.effbot.org DATA 1139
+online.effbot.org DATA 2048
+online.effbot.org DATA 391
+</pre><p>To issue a request, just create an instance of the
+<b>async_http</b> class.  The instance registers itself with the
+asyncore framework, and all you have to do to run it is to call the
+<b>asyncore.loop</b> function.</p><p>The real advantage here is that you can issue multiple requests at
+once&#8230;</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><pre class="wide wide">
+&gt;&gt;&gt; <b>async_http("www.scripting.com", "/rss.xml")</b>
+&lt;async_http at 8da7a4&gt;
+&gt;&gt;&gt; <b>async_http("online.effbot.org", "/rss.xml")</b>
+&lt;async_http at 8daf34&gt;
+&gt;&gt;&gt; <b>async_http("www.bbc.co.uk",</b>
+... <b>    "/syndication/feeds/news/ukfs_news/front_page/rss091.xml")</b>
+&lt;async_http at 8db364&gt;
+&gt;&gt;&gt; <b>asyncore.loop()</b>
+</pre></div><div class="yui-ge"><div class="yui-u first"><p>&#8230;and have the framework process all requests in parallel:</p><pre>
+online.effbot.org HEADER
+...
+online.effbot.org DATA 1139
+online.effbot.org DATA 2048
+online.effbot.org DATA 391
+www.scripting.com HEADER
+...
+www.scripting.com DATA 1189
+www.scripting.com DATA 1460
+www.bbc.co.uk HEADER
+...
+www.bbc.co.uk DATA 1766
+www.bbc.co.uk DATA 712
+www.scripting.com DATA 1460
+www.scripting.com DATA 1460
+www.scripting.com DATA 1158
+</pre><p>(Actual headers omitted.)</p><p>The actual output may vary depending on your network connection,
+the servers, and the phase of the moon.</p><p>To get a bit more variation, put the above statements in a script
+and run the script a couple of times.</p><h3 id="storing-the-rss-data">Storing the RSS Data&#160;<a class="nav" href="#storing-the-rss-data" title="bookmark!">#</a></h3><p>The code we&#8217;ve used this far simply prints information to the
+screen.  Before moving on to parsing and display issues, let&#8217;s add
+some code to store the RSS data on disk.</p><p>The following version adds support for a <b>consumer</b> object,
+which is called when we&#8217;ve read the header, when data is arriving, and
+when there is no more data.  A consumer should implement the following
+methods:</p><ul><li><p><b>http_header(client)</b> is called when we&#8217;ve read the HTTP
+header.  It&#8217;s called with a reference to the client object, and can
+use attributes like <b>status</b> and <b>header</b> to inspect the
+response header.</p></li><li><p><b>http_failed(client)</b> is similar to http_header, but is
+called if the framework fails to connect to the remote
+computer.</p></li><li><p><b>feed(data)</b> is called when a number of bytes has been
+read from the remote computer, after the header has been
+read.</p></li><li><p><b>close()</b> is called when there is no more data.</p></li></ul><p>In addition to consumer support, the following code uses the
+<b>mimetools</b> module to parse the header into a dictionary-like
+structure, adds counters for incoming and outgoing data, and uses a
+factory method that knows how to pull an URL into pieces.</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><div class="example wide">
+<b>Example: an asynchronous HTTP client with consumer support (File: http_client.py)</b>
+<pre class="python wide">
+<span class="pykeyword">import</span> asyncore
+<span class="pykeyword">import</span> socket, time
+<span class="pykeyword">import</span> StringIO
+<span class="pykeyword">import</span> mimetools, urlparse
+
+<span class="pykeyword">class</span> <span class="pyclass">async_http</span>(asyncore.dispatcher_with_send):
+    <span class="pycomment"># asynchronous http client</span>
+
+    <span class="pykeyword">def</span> <span class="pyfunction">__init__</span>(self, host, port, path, consumer):
+        asyncore.dispatcher_with_send.__init__(self)
+
+        self.host = host
+        self.port = port
+        self.path = path
+
+        self.consumer = consumer
+
+        self.status = None
+        self.header = None
+
+        self.bytes_in = 0
+        self.bytes_out = 0
+
+        self.data = <span class="pystring">""</span>
+
+        self.create_socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.connect((host, port))
+
+    <span class="pykeyword">def</span> <span class="pyfunction">handle_connect</span>(self):
+        <span class="pycomment"># connection succeeded</span>
+        text = <span class="pystring">"GET %s HTTP/1.0\r\nHost: %s\r\n\r\n"</span> % (self.path, self.host)
+        self.send(text)
+        self.bytes_out = self.bytes_out + len(text)
+
+    <span class="pykeyword">def</span> <span class="pyfunction">handle_expt</span>(self):
+        <span class="pycomment"># connection failed; notify consumer</span>
+        self.close()
+        self.consumer.http_failed(self)
+
+    <span class="pykeyword">def</span> <span class="pyfunction">handle_read</span>(self):
+
+        data = self.recv(2048)
+        self.bytes_in = self.bytes_in + len(data)
+
+        <span class="pykeyword">if</span> <span class="pykeyword">not</span> self.header:
+            <span class="pycomment"># check if we've seen a full header</span>
+
+            self.data = self.data + data
+
+            header = self.data.split(<span class="pystring">"\r\n\r\n"</span>, 1)
+            <span class="pykeyword">if</span> len(header) &lt;= 1:
+                <span class="pykeyword">return</span>
+            header, data = header
+
+            <span class="pycomment"># parse header</span>
+            fp = StringIO.StringIO(header)
+            self.status = fp.readline().split(<span class="pystring">" "</span>, 2)
+            self.header = mimetools.Message(fp)
+
+            self.data = <span class="pystring">""</span>
+
+            self.consumer.http_header(self)
+
+            <span class="pykeyword">if</span> <span class="pykeyword">not</span> self.connected:
+                <span class="pykeyword">return</span> <span class="pycomment"># channel was closed by consumer</span>
+
+        <span class="pykeyword">if</span> data:
+            self.consumer.feed(data)
+
+    <span class="pykeyword">def</span> <span class="pyfunction">handle_close</span>(self):
+        self.consumer.close()
+        self.close()
+
+<span class="pykeyword">def</span> <span class="pyfunction">do_request</span>(uri, consumer):
+
+    <span class="pycomment"># turn the uri into a valid request</span>
+    scheme, host, path, params, query, fragment = urlparse.urlparse(uri)
+    <span class="pykeyword">assert</span> scheme == <span class="pystring">"http"</span>, <span class="pystring">"only supports HTTP requests"</span>
+    <span class="pykeyword">try</span>:
+        host, port = host.split(<span class="pystring">":"</span>, 1)
+        port = int(port)
+    <span class="pykeyword">except</span> (TypeError, ValueError):
+        port = 80 <span class="pycomment"># default port</span>
+    <span class="pykeyword">if</span> <span class="pykeyword">not</span> path:
+        path = <span class="pystring">"/"</span>
+    <span class="pykeyword">if</span> params:
+        path = path + <span class="pystring">";"</span> + params
+    <span class="pykeyword">if</span> query:
+        path = path + <span class="pystring">"?"</span> + query
+
+    <span class="pykeyword">return</span> async_http(host, port, path, consumer)</pre></div></div><div class="yui-ge"><div class="yui-u first"><p>Here&#8217;s a small test program that uses the enhanced client and a
+&#8220;dummy&#8221; consumer class:</p><pre class="python">
+<span class="pykeyword">import</span> http_client, asyncore
+
+<span class="pykeyword">class</span> <span class="pyclass">dummy_consumer</span>:
+    <span class="pykeyword">def</span> <span class="pyfunction">http_header</span>(self, client):
+        self.host = client.host
+        <span class="pykeyword">print</span> self.host, repr(client.status)
+    <span class="pykeyword">def</span> <span class="pyfunction">http_failed</span>(self, client):
+        <span class="pykeyword">print</span> self.host, <span class="pystring">"failed"</span>
+    <span class="pykeyword">def</span> <span class="pyfunction">feed</span>(self, data):
+        <span class="pykeyword">print</span> self.host, len(data)
+    <span class="pykeyword">def</span> <span class="pyfunction">close</span>(self):
+        <span class="pykeyword">print</span> self.host, <span class="pystring">"CLOSE"</span>
+
+URLS = (
+    <span class="pystring">"http://online.effbot.org/rss.xml"</span>,
+    <span class="pystring">"http://www.scripting.com/rss.xml"</span>,
+    <span class="pystring">"http://www.bbc.co.uk/syndication/feeds"</span> +
+        <span class="pystring">"/news/ukfs_news/front_page/rss091.xml"</span>,
+    <span class="pystring">"http://www.example.com/rss.xml"</span>,
+    )
+
+<span class="pykeyword">for</span> url <span class="pykeyword">in</span> URLS:
+    http_client.do_request(url, dummy_consumer())
+
+asyncore.loop()</pre><p>Here&#8217;s some sample output from this test program.  Note the 404 error
+code from the <b>example.com</b> site.</p><pre>
+online.effbot.org ['HTTP/1.1', '200', 'OK\r\n']
+online.effbot.org 1139
+online.effbot.org 1460
+online.effbot.org 979
+online.effbot.org CLOSE
+www.bbc.co.uk ['HTTP/1.1', '200', 'OK\r\n']
+www.bbc.co.uk 1766
+www.bbc.co.uk 711
+www.scripting.com ['HTTP/1.1', '200', 'OK\r\n']
+www.scripting.com 1189
+www.bbc.co.uk CLOSE
+www.scripting.com 1460
+www.example.com ['HTTP/1.1', '404', 'Not Found\r\n']
+www.example.com 269
+www.example.com CLOSE
+www.scripting.com 1460
+www.scripting.com 1460
+www.scripting.com 1158
+www.scripting.com CLOSE
+</pre><p>To store things on disk, replace the dummy with a version that
+writes data to a file:</p><pre class="python">
+<span class="pykeyword">class</span> <span class="pyclass">file_consumer</span>:
+
+    <span class="pykeyword">def</span> <span class="pyfunction">http_header</span>(self, client):
+        self.host = client.host
+        self.file = None
+
+    <span class="pykeyword">def</span> <span class="pyfunction">http_failed</span>(self, client):
+        <span class="pykeyword">pass</span>
+
+    <span class="pykeyword">def</span> <span class="pyfunction">feed</span>(self, data):
+        <span class="pykeyword">if</span> self.file <span class="pykeyword">is</span> None:
+            self.file = open(self.host + <span class="pystring">".rss"</span>, <span class="pystring">"w"</span>)
+        self.file.write(data)
+
+    <span class="pykeyword">def</span> <span class="pyfunction">close</span>(self):
+        <span class="pykeyword">if</span> self.file <span class="pykeyword">is</span> <span class="pykeyword">not</span> None:
+            <span class="pykeyword">print</span> self.host + <span class="pystring">".rss ok"</span>
+            self.file.close()
+        self.file = None</pre><p>If you modify the test program to use this consumer instead of the
+dummy version, it&#8217;ll print something like this:</p><pre>
+online.effbot.org.rss ok
+www.example.com.rss ok
+www.bbc.co.uk.rss ok
+www.scripting.com.rss ok
+</pre><p>Three of the four files contain current RSS data.  The fourth
+(from example.com) contains an HTML error message.  To avoid storing
+error messages, it&#8217;s probably a good idea to let the consumer check
+the status field as well as the <b>Content-Type</b> header field.
+You can do this in the <b>http_header</b> method:</p><pre class="python">
+<span class="pykeyword">class</span> <span class="pyclass">file_consumer</span>:
+
+    <span class="pykeyword">def</span> <span class="pyfunction">http_header</span>(self, client):
+        <span class="pykeyword">if</span> (client.status[1] != <span class="pystring">"200"</span> <span class="pykeyword">or</span>
+            client.header[<span class="pystring">"content-type"</span>] != <span class="pystring">"text/xml"</span>):
+            <span class="pykeyword">print</span> client.host, <span class="pystring">"failed"</span>
+            client.close() <span class="pycomment"># bail out</span>
+            client.connected = 0
+            <span class="pykeyword">return</span>
+        self.host = client.host
+        self.file = None
+
+    ...</pre><p>Note that consumer can simply call the client&#8217;s <b>close</b>
+method to shut down the connection.  The client contains code that
+checks that it&#8217;s still connected after the <b>http_header</b> call,
+and avoids calling other consumer methods if it&#8217;s not.</p><p class="note"><b>Update 2002-09-08:</b> not all versions of asyncore
+clears the <b>connected</b> attribute when the socket is closed.  For
+example, the version shipped with Python 1.5.2 does, the version
+shipped with 2.1 doesn&#8217;t.  To be on the safe side, you have to clear
+the flag yourself in the consumer.</p><p align="center" class="mark">:::</p><p>That&#8217;s all for today.  In the next article, we&#8217;ll look at how
+to parse at least some variant of the RSS format into a more useful
+data format.</p><p>While waiting, feel free to play with the code we&#8217;ve produced this
+far.  Also, don&#8217;t forget to take a look at the RSS data files we just
+downloaded.  Mark Nottingham&#8217;s <a href="http://www.mnot.net/rss/tutorial/">RSS
+tutorial</a> contains links to more information on various RSS formats.</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"> <p><a href="effnews.htm">back</a> <a href="effnews-2.htm">next</a></p> <div class='adsense'> <script type="text/javascript"><!--
+google_ad_client = "pub-0985106753436081";
+google_ad_width = 728;
+google_ad_height = 90;
+google_ad_format = "728x90_as";
+google_ad_type = "text_image";
+google_ad_channel = "";
+google_color_border = "CCFFCC";
+google_color_bg = "FFFFFF";
+google_color_link = "008040";
+google_color_url = "40cc80";
+google_color_text = "404040";
+google_ui_features = "rc:0";
+//--> </script> <script type="text/javascript"
+  src="http://pagead2.googlesyndication.com/pagead/show_ads.js"> </script> </div></div> <!-- yui-g --></div> <!-- content --> </div> <!-- yui-b --> </div> <!-- yui-main --> <div class="yui-b"> <div id='menu'> <ul> <li><b><a href="/">::: effbot.org</a></b></li> <li><b><a href=".">::: zone :::</a></b></li> </ul> <ul><li><b>contents :::</b></li></ul> <ul><li><a href="#rss-files">RSS Files</a></li><li><a href="#using-http-to-download-files">Using HTTP to Download Files</a></li><li><ul><li><a href="#sending-an-http-request">Sending an HTTP request</a></li><li><a href="#using-an-http-support-library">Using an HTTP support library</a></li><li><a href="#asynchronous-http">Asynchronous HTTP</a></li><li><a href="#storing-the-rss-data">Storing the RSS Data</a></li></ul></li></ul> </div> <!-- menu --> <div class='adsense'> <script type="text/javascript"><!--
+google_ad_client = 'pub-0985106753436081';
+google_ad_width = 160;
+google_ad_height = 600;
+google_ad_format = '160x600_as';
+google_ad_channel ="6557156704";
+google_color_border = "CCFFCC";
+google_color_bg = "FFFFFF";
+google_color_link = "008040";
+google_color_url = "40cc80";
+google_color_text = "404040";
+// --> </script> <script type="text/javascript"
+  src="http://pagead2.googlesyndication.com/pagead/show_ads.js"> </script> </div> <!-- adsense --> </div> <!-- yui-b --> </div> <!-- bd --> <div id="ft"> <!-- footer --> <p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15_grey.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;"></a>
+this page was rendered by a <a href="http://www.djangoproject.com/">django</a> application in 0.19s 2007-09-23 04:04:17.339438.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p> </div> <!-- ft --> </div> <!-- doc --> <script src="/media/js/effbot-min.js" type="text/javascript"> </script> </body> </html>

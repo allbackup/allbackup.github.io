@@ -1,0 +1,129 @@
+
+@@module urlparse
+
+<h1>urlparse&#8212;Parse URLs into components</h1>
+
+<p>This module defines a standard interface to break Uniform Resource
+Locator (URL) strings up in components (addressing scheme, network
+location, path etc.), to combine the components back into a URL string,
+and to convert a &#8220;relative URL&#8221; to an absolute URL given a
+&#8220;base URL.&#8221;
+
+<p>The module has been designed to match the Internet RFC on Relative
+Uniform Resource Locators (and discovered a bug in an earlier draft!).
+
+<p>It defines the following functions:
+
+@@function urlparse(urlstring[, default_scheme[, allow_fragments]])
+
+<p>Parse a URL into 6 components, returning a 6-tuple: (addressing
+scheme, network location, path, parameters, query, fragment identifier).
+This corresponds to the general structure of a URL: {@var
+scheme}://{@var netloc}/{@var path};{@var parameters}?{@var query}#{@var
+fragment}. Each tuple item is a string, possibly empty. The components
+are not broken up in smaller parts (e.g. the network location is a
+single string), and % escapes are not expanded. The delimiters as shown
+above are not part of the tuple items, except for a leading slash in the
+{@var path} component, which is retained if present.
+
+<p>Example:
+
+<pre>
+urlparse('http://www.cwi.nl:80/%7Eguido/Python.html')
+</pre>
+
+
+<p>yields the tuple
+
+<pre>
+('http', 'www.cwi.nl:80', '/%7Eguido/Python.html', '', '', '')
+</pre>
+
+
+<p>If the {@var default_scheme} argument is specified, it gives the
+default addressing scheme, to be used only if the URL string does not
+specify one. The default value for this argument is the empty string.
+
+<p>If the {@var allow_fragments} argument is zero, fragment identifiers
+are not allowed, even if the URL's addressing scheme normally does
+support them. The default value for this argument is {@code 1}.
+
+@@function urlunparse(tuple)
+
+<p>Construct a URL string from a tuple as returned by {@code
+urlparse()}. This may result in a slightly different, but equivalent
+URL, if the URL that was parsed originally had redundant delimiters,
+e.g. a ? with an empty query (the draft states that these are
+equivalent).
+
+@@function urlsplit(urlstring[, default_scheme[, allow_fragments]])
+
+<p>This is similar to {@link urlparse}, but does not split the params
+from the URL. This should generally be used instead of {@link urlparse}
+if the more recent URL syntax allowing parameters to be applied to each
+segment of the {@var path} portion of the URL (see {@link
+http://www.faqs.org/rfcs/rfc2396.html RFC 2396}) is wanted. A separate
+function is needed to separate the path segments and parameters. This
+function returns a 5-tuple: (addressing scheme, network location, path,
+query, fragment identifier).
+<blockquote>
+@since New in version 2.2. <br />
+</blockquote>
+
+@@function urlunsplit(tuple)
+
+<p>Combine the elements of a tuple as returned by {@link urlsplit} into
+a complete URL as a string.
+<blockquote>
+@since New in version 2.2. <br />
+</blockquote>
+
+@@function urljoin(base, url[, allow_fragments])
+
+<p>Construct a full (&#8220;absolute&#8221;) URL by combining a
+&#8220;base URL&#8221; ({@var base}) with a &#8220;relative URL&#8221;
+({@var url}). Informally, this uses components of the base URL, in
+particular the addressing scheme, the network location and (part of) the
+path, to provide missing components in the relative URL.
+
+<p>Example:
+
+<pre>
+urljoin('http://www.cwi.nl/%7Eguido/Python.html', 'FAQ.html')
+</pre>
+
+
+<p>yields the string
+
+<pre>
+'http://www.cwi.nl/%7Eguido/FAQ.html'
+</pre>
+
+
+<p>The {@var allow_fragments} argument has the same meaning as for
+{@code urlparse()}.
+
+@@function urldefrag(url)
+
+<p>If {@var url} contains a fragment identifier, returns a modified
+version of {@var url} with no fragment identifier, and the fragment
+identifier as a separate string. If there is no fragment identifier in
+{@var url}, returns {@var url} unmodified and an empty string.
+
+@@text 
+
+@see 
+{@link http://www.faqs.org/rfcs/rfc1738.html RFC 1738, Uniform Resource Locators (URL)}
+
+This specifies the formal syntax and semantics of absolute URLs.
+@see 
+{@link http://www.faqs.org/rfcs/rfc1808.html RFC 1808, Relative Uniform Resource Locators}
+
+This Request For Comments includes the rules for joining an absolute and
+a relative URL, including a fair number of &#8220;Abnormal
+Examples&#8221; which govern the treatment of border cases.
+@see 
+{@link http://www.faqs.org/rfcs/rfc2396.html RFC 2396, Uniform Resource Identifiers (URI): Generic Syntax}
+
+Document describing the generic syntactic requirements for both Uniform
+Resource Names (URNs) and Uniform Resource Locators (URLs).

@@ -1,0 +1,18 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>Where is the math.py (socket.py, regex.py, etc.) source&nbsp;file?</title></head><body data-page-id="924"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><p class="note" style="text-align: center"><strong>
+This is an old copy of the Python FAQ.  The information here may be
+outdated.
+</strong></p><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">Where is the math.py (socket.py, regex.py, etc.) source&nbsp;file?</h1></div><div class="yui-ge"><div class="yui-u first"><p>If you can&#8217;t find a source file for a module it may be a builtin or
+dynamically loaded module implemented in C, C++ or other compiled
+language.  In this case you may not have the source file or it may be
+something like <a href="http://svn.python.org/view/python/trunk/Modules/mathmodule.c"><strong>mathmodule.c</strong></a>,
+somewhere in a C source directory (not on the Python Path).</p><p>There are (at least) three kinds of modules in Python:</p><ol><li><p>modules written in Python (.py);</p></li><li><p>modules written in C and dynamically loaded (.dll, .pyd, .so, .sl, etc);</p></li><li><p>modules written in C and linked with the interpreter; to get a list of these, type:</p><pre class="python"><span class="pykeyword">import</span> sys
+<span class="pykeyword">print</span> sys.builtin_module_names</pre></li></ol><p>To quickly check where a module is located, import it and check the
+module&#8217;s <a href="/pyref/__file__.htm"><strong>__file__</strong></a> attribute:</p><pre class="python">&gt;&gt;&gt; <span class="pykeyword">import</span> math
+&gt;&gt;&gt; math.__file__
+<span class="pystring">'/usr/lib/python2.4/lib-dynload/math.so'</span>
+&gt;&gt;&gt; <span class="pykeyword">import</span> random
+&gt;&gt;&gt; random.__file__
+<span class="pystring">'/usr/lib/python2.4/random.pyc'</span></pre><p>If this gives you an <a href="/pyref/AttributeError.htm"><strong>AttributeError</strong></a> exception, the module is
+built into the interpreter.</p><p>CATEGORY: library</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to pyfaq index page.">::: pyfaq :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

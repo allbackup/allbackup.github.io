@@ -1,0 +1,29 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>Why must dictionary keys be&nbsp;immutable?</title> <script type="text/javascript">effbot_page_id=953;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> <!--
+<p style='color: #8f8f8f; background: #fff5bf; padding: 5px 10px;'> <b>2008-07-15:</b> Selected articles
+
+now have experimental "comment" links in the left column and at the bottom.
+You're welcome to use them for commenting and voting on articles.
+For a bit more on this, see <a
+href="http://effbot.slinkset.com/links/Welcome_to_discuss_effbot_org">this
+page</a>. /F
+</p>
+--> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <h1 class="maintitle">Why must dictionary keys be&nbsp;immutable?</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p>The hash table implementation of dictionaries uses a <a href="/pyref/hash.htm"><strong>hash</strong></a>
+value calculated from the key value to find the key. If the key were a
+mutable object, its value could change, and thus its hash could also
+change. But since whoever changes the key object can&#8217;t tell that it
+was being used as a dictionary key, it can&#8217;t move the entry around in
+the dictionary. Then, when you try to look up the same object in the
+dictionary it won&#8217;t be found because its hash value is different. If
+you tried to look up the old value it wouldn&#8217;t be found either,
+because the value of the object found in that hash bin would be
+different.</p><p>If you want a dictionary indexed with a list, simply convert the list
+to a tuple first; the function <a href="/pyref/tuple.htm"><strong>tuple(L)</strong></a> creates a
+tuple with the same entries as the list L. Tuples are immutable and
+can therefore be used as dictionary keys.</p><p>Some ideas for alternative implementations have been proposed:</p><p><strong>Hash lists by their address (object ID).</strong> This doesn&#8217;t work because
+if you construct a new list with the same value it won&#8217;t be found;
+e.g.:</p><pre class="python">d = {[1,2]: <span class="pystring">'12'</span>}
+<span class="pykeyword">print</span> d[ [1,2] ]</pre><p>would raise a <a href="/pyref/KeyError.htm"><strong>KeyError</strong></a> exception because the <a href="/pyref/id.htm"><strong>id</strong></a> of the
+[1,2] used in the second line differs from that in the first line. In other
+words, dictionary keys should be compared usin

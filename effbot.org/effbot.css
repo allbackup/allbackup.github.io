@@ -1,0 +1,113 @@
+BODY {
+    font: 100% Georgia, Times, serif;
+    color: #000000;
+    margin: 0px 20px 0px 20px;
+}
+
+#effbot-body {
+    background: #fefefe;
+    padding: 10px 40px 10px 40px;
+    max-width: 50em;
+}
+
+#effbot-menu {
+    display: none;
+}
+
+.adsense {
+    background: #fbfbfb;
+    border: 1px solid #565656; 
+    padding: 10px 4px 4px 4px;
+}
+
+.sidebar {
+    border: 1px solid #000000; 
+    float: right; clear: right;
+    width: 200px;
+    background: #fefefe;
+    padding: 10px;
+    margin: 0px -25px 10px 0px;
+}
+
+P {
+    line-height: 1.3em;
+}
+
+CODE, PRE {
+    font: 100% "Courier New", Courier, Monaco, monospace;
+    color: #2a2a2a; margin-left: 20px; 
+}
+
+H1, H2, H3 {
+    font-family: Georgia, Times, serif;
+    color: #565656; margin-top: 30px;
+}
+
+H1, H2, { border-top: 1px solid #565656; }
+
+H4, H5, H6 {
+    font-family: Georgia, Times, serif;
+    color: #565656; margin-top: 15px;
+}
+
+A:link, A:hover { color: #565656; }
+A:visited { color: #3f3f3f; }
+
+UL LI { list-style-type: square; }
+
+.title { margin-bottom: 2px; color: #565656; }
+.info { font-size: 80%; color: #565656; margin-top: 0px; }
+
+.bluebox { color: #565656; margin-top: 10px; }
+
+.highlight { background: #e8e8e8; }
+.mark { color: #565656; }
+.small { font-size: 80%; }
+.display { background: #ededed; padding: 20px; }
+
+.note { 
+    background: #f7f7f7;
+    border-top: 1px solid #565656;
+    border-bottom: 1px solid #565656;
+    padding: 2px 20px;
+}
+
+.example {
+    border-top: medium solid #565656;
+    border-bottom: medium solid #565656;
+    padding: 5px;
+}
+
+.figure {
+    border-top: medium solid #565656;
+    border-bottom: medium solid #565656;
+    padding: 5px;
+}
+
+.fixme {
+    background: #ededed;
+    border: 1px solid #565656;
+    padding: 2x 20px;
+}
+
+.simpletable {
+    border: 1px solid #565656;
+    border-collapse: collapse;
+}
+
+.simpletable TH {
+    text-align: left;
+    background: #e8e8e8;
+    border: 1px solid #565656;
+    margin: 0px;
+    padding: 1px 5px;
+}
+
+.simpletable TD {
+    border: 1px solid #565656;
+    margin: 0px;
+    padding: 5px;
+}
+
+.new { text-decoration: underline; color: #4c4c4c; background: #f3f3f3; }
+.old { text-decoration: line-through; color: #1d1d1d; background: #f0f0f0; }

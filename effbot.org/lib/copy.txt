@@ -1,0 +1,78 @@
+
+@@module copy
+
+<h1>copy&#8212;Shallow and deep copy operations</h1>
+
+<p>This module provides generic (shallow and deep) copying operations.
+
+<p>Interface summary:
+
+<pre>
+import copy
+
+x = copy.copy(y)        # make a shallow copy of y
+x = copy.deepcopy(y)    # make a deep copy of y
+</pre>
+
+
+<p>For module specific errors, {@link copy.error} is raised.
+
+<p>The difference between shallow and deep copying is only relevant for
+compound objects (objects that contain other objects, like lists or
+class instances):
+<ul>
+<li>
+<p>A {@em shallow copy} constructs a new compound object and then (to
+the extent possible) inserts {@em references} into it to the objects
+found in the original.
+<li>
+<p>A {@em deep copy} constructs a new compound object and then,
+recursively, inserts {@em copies} into it of the objects found in the
+original.
+</ul>
+
+<p>Two problems often exist with deep copy operations that don't exist
+with shallow copy operations:
+<ul>
+<li>
+<p>Recursive objects (compound objects that, directly or indirectly,
+contain a reference to themselves) may cause a recursive loop.
+<li>
+<p>Because deep copy copies {@em everything} it may copy too much, e.g.,
+administrative data structures that should be shared even between
+copies.
+</ul>
+
+<p>The {@link deepcopy} function avoids these problems by:
+<ul>
+<li>
+<p>keeping a &#8220;memo&#8221; dictionary of objects already copied
+during the current copying pass; and
+<li>
+<p>letting user-defined classes override the copying operation or the
+set of components copied.
+</ul>
+
+<p>This version does not copy types like module, class, function,
+method, stack trace, stack frame, file, socket, window, array, or any
+similar types.
+
+<p>Classes can use the same interfaces to control copying that they use
+to control pickling. See the description of module {@link pickle} for
+information on these methods. The {@link copy} module does not use the
+{@link copyreg copy_reg} registration module.
+
+<p>In order for a class to define its own copy implementation, it can
+define special methods {@link __copy__} and {@link __deepcopy__}. The
+former is called to implement the shallow copy operation; no additional
+arguments are passed. The latter is called to implement the deep copy
+operation; it is passed one argument, the memo dictionary. If the {@link
+__deepcopy__} implementation needs to make a deep copy of a component,
+it should call the {@link deepcopy} function with the component as first
+argument and the memo dictionary as second argument.
+
+@see 
+{@link pickle Module pickle}
+
+Discussion of the special methods used to support object state retrieval
+and restoration.

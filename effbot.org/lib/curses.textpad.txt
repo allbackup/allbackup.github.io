@@ -1,0 +1,169 @@
+
+@@module curses.textpad
+
+<h1>curses.textpad&#8212;Text input widget for curses programs</h1>
+
+<p>New in version 1.6.
+
+<p>The {@link curses.textpad} module provides a {@link Textbox} class
+that handles elementary text editing in a curses window, supporting a
+set of keybindings resembling those of Emacs (thus, also of Netscape
+Navigator, BBedit 6.x, FrameMaker, and many other programs). The module
+also provides a rectangle-drawing function useful for framing text boxes
+or for other purposes.
+
+<p>The module {@link curses.textpad} defines the following function:
+
+@@function rectangle(win, uly, ulx, lry, lrx)
+
+<p>Draw a rectangle. The first argument must be a window object; the
+remaining arguments are coordinates relative to that window. The second
+and third arguments are the y and x coordinates of the upper left hand
+corner of the rectangle to be drawn; the fourth and fifth arguments are
+the y and x coordinates of the lower right hand corner. The rectangle
+will be drawn using VT100/IBM PC forms characters on terminals that make
+this possible (including xterm and most other software terminal
+emulators). Otherwise it will be drawn with ASCII dashes, vertical bars,
+and plus signs.
+
+@@text 
+
+<h2>Textbox objects</h2>
+
+<p>You can instantiate a {@link Textbox} object as follows:
+
+@@class Textbox(win)
+
+<p>Return a textbox widget object. The {@var win} argument should be a
+curses {@link WindowObject} in which the textbox is to be contained. The
+edit cursor of the textbox is initially located at the upper left hand
+corner of the containing window, with coordinates {@code (0, 0)}. The
+instance's {@link stripspaces} flag is initially on.
+
+@@text 
+
+<p>{@link Textbox} objects have the following methods:
+
+@@method Textbox.edit([validator])
+
+<p>This is the entry point you will normally use. It accepts editing
+keystrokes until one of the termination keystrokes is entered. If {@var
+validator} is supplied, it must be a function. It will be called for
+each keystroke entered with the keystroke as a parameter; command
+dispatch is done on the result. This method returns the window contents
+as a string; whether blanks in the window are included is affected by
+the {@link stripspaces} member.
+
+@@method Textbox.do_command(ch)
+
+<p>Process a single command keystroke. Here are the supported special
+keystrokes:
+
+<p><table border=1>
+<tr> <th>
+<p>Keystroke
+<th>
+<p>Action
+<tr> <td>
+<p>{@code Control-A}
+<td>
+<p>Go to left edge of window.
+<tr> <td>
+<p>{@code Control-B}
+<td>
+<p>Cursor left, wrapping to previous line if appropriate.
+<tr> <td>
+<p>{@code Control-D}
+<td>
+<p>Delete character under cursor.
+<tr> <td>
+<p>{@code Control-E}
+<td>
+<p>Go to right edge (stripspaces off) or end of line (stripspaces on).
+<tr> <td>
+<p>{@code Control-F}
+<td>
+<p>Cursor right, wrapping to next line when appropriate.
+<tr> <td>
+<p>{@code Control-G}
+<td>
+<p>Terminate, returning the window contents.
+<tr> <td>
+<p>{@code Control-H}
+<td>
+<p>Delete character backward.
+<tr> <td>
+<p>{@code Control-J}
+<td>
+<p>Terminate if the window is 1 line, otherwise insert newline.
+<tr> <td>
+<p>{@code Control-K}
+<td>
+<p>If line is blank, delete it, otherwise clear to end of line.
+<tr> <td>
+<p>{@code Control-L}
+<td>
+<p>Refresh screen.
+<tr> <td>
+<p>{@code Control-N}
+<td>
+<p>Cursor down; move down one line.
+<tr> <td>
+<p>{@code Control-O}
+<td>
+<p>Insert a blank line at cursor location.
+<tr> <td>
+<p>{@code Control-P}
+<td>
+<p>Cursor up; move up one line.
+</table></p>
+
+<p>Move operations do nothing if the cursor is at an edge where the
+movement is not possible. The following synonyms are supported where
+possible:
+
+<p><table border=1>
+<tr> <th>
+<p>Constant
+<th>
+<p>Keystroke
+<tr> <td>
+<p>{@code KEY_LEFT}
+<td>
+<p>Control-B
+<tr> <td>
+<p>{@code KEY_RIGHT}
+<td>
+<p>Control-F
+<tr> <td>
+<p>{@code KEY_UP}
+<td>
+<p>Control-P
+<tr> <td>
+<p>{@code KEY_DOWN}
+<td>
+<p>Control-N
+<tr> <td>
+<p>{@code KEY_BACKSPACE}
+<td>
+<p>Control-h
+</table></p>
+
+<p>All other keystrokes are treated as a command to insert the given
+character and move right (with line wrapping).
+
+@@method Textbox.gather()
+
+<p>This method returns the window contents as a string; whether blanks
+in the window are included is affected by the {@link stripspaces}
+member.
+
+@@attribute Textbox.stripspaces
+
+<p>This data member is a flag which controls the interpretation of
+blanks in the window. When it is on, trailing blanks on each line are
+ignored; any cursor motion that would land the cursor on a trailing
+blank goes to the end of that line instead, and trailing blanks are
+stripped when the window contents are gathered.
+
+@@text 

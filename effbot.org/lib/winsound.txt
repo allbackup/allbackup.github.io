@@ -1,0 +1,164 @@
+
+@@module winsound
+
+<h1>winsound&#8212;Sound-playing interface for Windows</h1>
+
+<p>Availability: Windows.
+
+<p>New in version 1.5.2.
+
+<p>The {@link winsound} module provides access to the basic
+sound-playing machinery provided by Windows platforms. It includes
+functions and several constants.
+
+@@function Beep(frequency, duration)
+
+<p>Beep the PC's speaker. The {@var frequency} parameter specifies
+frequency, in hertz, of the sound, and must be in the range 37 through
+32,767. The {@var duration} parameter specifies the number of
+milliseconds the sound should last. If the system is not able to beep
+the speaker, {@link exceptions.RuntimeError} is raised. Note: Under
+Windows 95 and 98, the Windows {@link c:Beep} function exists but is
+useless (it ignores its arguments). In that case Python simulates it via
+direct port manipulation (added in version 2.1). It's unknown whether
+that will work on all systems.
+<blockquote>
+@since New in
+version 1.6. <br />
+</blockquote>
+
+@@function PlaySound(sound, flags)
+
+<p>Call the underlying {@link c:PlaySound} function from the Platform
+API. The {@var sound} parameter may be a filename, audio data as a
+string, or {@link None}. Its interpretation depends on the value of
+{@var flags}, which can be a bit-wise ORed combination of the constants
+described below. If the system indicates an error, {@link
+exceptions.RuntimeError} is raised.
+
+@@function MessageBeep([type=MB_OK])
+
+<p>Call the underlying {@link c:MessageBeep} function from the Platform
+API. This plays a sound as specified in the registry. The {@var type}
+argument specifies which sound to play; possible values are {@code -1},
+{@code MB_ICONASTERISK}, {@code MB_ICONEXCLAMATION}, {@code
+MB_ICONHAND}, {@code MB_ICONQUESTION}, and {@code MB_OK}, all described
+below. The value {@code -1} produces a &#8220;simple beep&#8221;; this
+is the final fallback if a sound cannot be played otherwise.
+<blockquote>
+@since New in
+version 2.3. <br />
+</blockquote>
+
+@@variable SND_FILENAME
+
+<p>The {@var sound} parameter is the name of a WAV file. Do not use with
+{@code SND_ALIAS}.
+
+@@variable SND_ALIAS
+
+<p>The {@var sound} parameter is a sound association name from the
+registry. If the registry contains no such name, play the system default
+sound unless {@code SND_NODEFAULT} is also specified. If no default
+sound is registered, raise {@link exceptions.RuntimeError}. Do not use
+with {@code SND_FILENAME}.
+
+<p>All Win32 systems support at least the following; most systems
+support many more:
+
+<p><table border=1>
+<tr> <th>
+<p>{@link PlaySound} {@var name}
+<th>
+<p>Corresponding Control Panel Sound name
+<tr> <td>
+<p>{@code 'SystemAsterisk'}
+<td>
+<p>Asterisk
+<tr> <td>
+<p>{@code 'SystemExclamation'}
+<td>
+<p>Exclamation
+<tr> <td>
+<p>{@code 'SystemExit'}
+<td>
+<p>Exit Windows
+<tr> <td>
+<p>{@code 'SystemHand'}
+<td>
+<p>Critical Stop
+<tr> <td>
+<p>{@code 'SystemQuestion'}
+<td>
+<p>Question
+</table></p>
+
+<p>For example:
+
+<pre>
+import winsound
+# Play Windows exit sound.
+winsound.PlaySound("SystemExit", winsound.SND_ALIAS)
+
+# Probably play Windows default sound, if any is registered (because
+# "*" probably isn't the registered name of any sound).
+winsound.PlaySound("*", winsound.SND_ALIAS)
+</pre>
+
+
+@@variable SND_LOOP
+
+<p>Play the sound repeatedly. The {@code SND_ASYNC} flag must also be
+used to avoid blocking. Cannot be used with {@code SND_MEMORY}.
+
+@@variable SND_MEMORY
+
+<p>The {@var sound} parameter to {@link PlaySound} is a memory image of
+a WAV file, as a string.
+
+<p class='note'><b>Note:</b> This module does not support playing from a
+memory image asynchronously, so a combination of this flag and {@code
+SND_ASYNC} will raise {@link exceptions.RuntimeError}.
+
+@@variable SND_PURGE
+
+<p>Stop playing all instances of the specified sound.
+
+@@variable SND_ASYNC
+
+<p>Return immediately, allowing sounds to play asynchronously.
+
+@@variable SND_NODEFAULT
+
+<p>If the specified sound cannot be found, do not play the system
+default sound.
+
+@@variable SND_NOSTOP
+
+<p>Do not interrupt sounds currently playing.
+
+@@variable SND_NOWAIT
+
+<p>Return immediately if the sound driver is busy.
+
+@@variable MB_ICONASTERISK
+
+<p>Play the {@code SystemDefault} sound.
+
+@@variable MB_ICONEXCLAMATION
+
+<p>Play the {@code SystemExclamation} sound.
+
+@@variable MB_ICONHAND
+
+<p>Play the {@code SystemHand} sound.
+
+@@variable MB_ICONQUESTION
+
+<p>Play the {@code SystemQuestion} sound.
+
+@@variable MB_OK
+
+<p>Play the {@code SystemDefault} sound.
+
+@@text 

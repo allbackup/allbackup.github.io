@@ -1,0 +1,66 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>pty</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-pty.html'>original</a> :::
+<a href='pty.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>pty&#8212;Pseudo-terminal utilities</h1>
+
+<p>Availability: IRIX, Linux.</p>
+
+<p>The <code>pty</code> module defines
+operations for handling the pseudo-terminal concept: starting
+another process and being able to write to and read from its
+controlling terminal programmatically.</p>
+
+<p>Because pseudo-terminal handling is highly platform dependant,
+there is code to do it only for SGI and Linux. (The Linux code is
+supposed to work on other platforms, but hasn't been tested
+yet.)</p>
+
+<p>The <code>pty</code> module defines the
+following functions:</p>
+</div>
+<dl><dt class="function" id="fork"><b>fork()</b> <tt class="nav"><a class="nav" href="pty.fork" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Fork. Connect the child's controlling terminal to a
+pseudo-terminal. Return value is <code>(</code><var>pid</var>,
+<var>fd</var>). Note that the child gets <var>pid</var> 0, and the
+<var>fd</var> is <em>invalid</em>. The parent's return value is the
+<var>pid</var> of the child, and <var>fd</var> is a file descriptor
+connected to the child's controlling terminal (and also to the
+child's standard input and output).</p>
+</dd>
+<dt class="function" id="openpty"><b>openpty()</b> <tt class="nav"><a class="nav" href="pty.openpty" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Open a new pseudo-terminal pair, using <code>os.openpty</code> if possible, or emulation
+code for SGI and generic Unix systems. Return a pair of file
+descriptors <code>(</code><var>master</var>, <var>slave</var>), for
+the master and the slave end, respectively.</p>
+</dd>
+<dt class="function" id="spawn"><b>spawn(argv[, master_read[, stdin_read]])</b> <tt class="nav"><a class="nav" href="pty.spawn" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Spawn a process, and connect its controlling terminal with the
+current process's standard io. This is often used to baffle
+programs which insist on reading from the controlling terminal.</p>
+
+<p>The functions <var>master_read</var> and <var>stdin_read</var>
+should be functions which read from a file-descriptor. The defaults
+try to read 1024 bytes each time they are called.</p>
+</dd>
+</dl></div></body></html>

@@ -1,0 +1,163 @@
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>downloads.effbot.org ::: www.effbot.org</title>
+<link rel="stylesheet" href="/effbot2.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="/effbotprint.css" type="text/css" media="print" />
+</head>
+
+<body bgcolor="white">
+
+<script src="/effbot.js" type="text/javascript"></script>
+<script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-578832-1";
+urchinTracker();
+</script>
+
+<div id="effbot-page">
+
+<div id="effbot-nav">
+<div><a href="/"><b>effbot.org</b></a></div>
+<div style="margin-left: 5px;"><a href="/zone/"><b>zone</b></a></div>
+<div style="margin-left: 10px;"><b>downloads.effbot.org</b></div>
+
+<div style="margin-top: 10px;" class='small'>Think this article can be improved? <a href='#add-comment'>Check</a> for comments, or <a href='/comment/zone/zone-template-downloads.htm'>add your own</a>!</div>
+
+</div>
+
+<div id="effbot-body">
+
+
+<h1 class="title">downloads.effbot.org</h1>
+<p>
+[<a href="/">home</a>]
+[<a href="/zone">zone</a>]
+[<a href="http://online.effbot.org">blog</a>]
+
+</p><p>Assorted software, most of it shipped under an OSI-compatible <a href="/zone/copyright.htm">old-style Python license</a>.  If you want
+to support development, you can always <a href="http://www.amazon.co.uk/gp/registry/2QZDLLDVBENMC">buy me some refreshments</a>.
+
+<h3>Contents:</h3>
+
+
+<p>
+Contents of <b>downloads/PIL-1.1.5.win32-py2.2.exe</b> [<a href='/downloads/PIL-1.1.5.win32-py2.2.exe'>download</a>]:
+</p>
+<pre>
+PLATLIB/ [1k]
+PLATLIB/PIL/ [1k]
+PLATLIB/PIL/ArgImagePlugin.py [13k]
+PLATLIB/PIL/BdfFontFile.py [3k]
+PLATLIB/PIL/BmpImagePlugin.py [7k]
+PLATLIB/PIL/BufrStubImagePlugin.py [2k]
+PLATLIB/PIL/ContainerIO.py [3k]
+PLATLIB/PIL/CurImagePlugin.py [2k]
+PLATLIB/PIL/DcxImagePlugin.py [2k]
+PLATLIB/PIL/EpsImagePlugin.py [10k]
+PLATLIB/PIL/ExifTags.py [4k]
+PLATLIB/PIL/FitsStubImagePlugin.py [2k]
+PLATLIB/PIL/FliImagePlugin.py [4k]
+PLATLIB/PIL/FontFile.py [4k]
+PLATLIB/PIL/FpxImagePlugin.py [6k]
+PLATLIB/PIL/GbrImagePlugin.py [2k]
+PLATLIB/PIL/GdImageFile.py [2k]
+PLATLIB/PIL/GifImagePlugin.py [11k]
+PLATLIB/PIL/GimpGradientFile.py [3k]
+PLATLIB/PIL/GimpPaletteFile.py [1k]
+PLATLIB/PIL/GribStubImagePlugin.py [2k]
+PLATLIB/PIL/Hdf5StubImagePlugin.py [2k]
+PLATLIB/PIL/IcnsImagePlugin.py [6k]
+PLATLIB/PIL/IcoImagePlugin.py [2k]
+PLATLIB/PIL/Image.py [63k]
+PLATLIB/PIL/ImageChops.py [8k]
+PLATLIB/PIL/ImageColor.py [8k]
+PLATLIB/PIL/ImageDraw.py [9k]
+PLATLIB/PIL/ImageEnhance.py [3k]
+PLATLIB/PIL/ImageFile.py [16k]
+PLATLIB/PIL/ImageFileIO.py [1k]
+PLATLIB/PIL/ImageFilter.py [6k]
+PLATLIB/PIL/ImageFont.py [17k]
+PLATLIB/PIL/ImageGL.py [1k]
+PLATLIB/PIL/ImageGrab.py [2k]
+PLATLIB/PIL/ImageOps.py [13k]
+PLATLIB/PIL/ImagePalette.py [5k]
+PLATLIB/PIL/ImagePath.py [1k]
+PLATLIB/PIL/ImageSequence.py [1k]
+PLATLIB/PIL/ImageStat.py [5k]
+PLATLIB/PIL/ImageTk.py [10k]
+PLATLIB/PIL/ImageTransform.py [3k]
+PLATLIB/PIL/ImageWin.py [7k]
+PLATLIB/PIL/ImImagePlugin.py [10k]
+PLATLIB/PIL/ImtImagePlugin.py [2k]
+PLATLIB/PIL/IptcImagePlugin.py [8k]
+PLATLIB/PIL/JpegImagePlugin.py [14k]
+PLATLIB/PIL/McIdasImagePlugin.py [2k]
+PLATLIB/PIL/MicImagePlugin.py [2k]
+PLATLIB/PIL/MpegImagePlugin.py [2k]
+PLATLIB/PIL/MspImagePlugin.py [2k]
+PLATLIB/PIL/OleFileIO.py [17k]
+PLATLIB/PIL/PaletteFile.py [1k]
+PLATLIB/PIL/PalmImagePlugin.py [10k]
+PLATLIB/PIL/PcdImagePlugin.py [2k]
+PLATLIB/PIL/PcfFontFile.py [7k]
+PLATLIB/PIL/PcxImagePlugin.py [5k]
+PLATLIB/PIL/PdfImagePlugin.py [6k]
+PLATLIB/PIL/PixarImagePlugin.py [2k]
+PLATLIB/PIL/PngImagePlugin.py [15k]
+PLATLIB/PIL/PpmImagePlugin.py [3k]
+PLATLIB/PIL/PsdImagePlugin.py [7k]
+PLATLIB/PIL/PSDraw.py [6k]
+PLATLIB/PIL/SgiImagePlugin.py [2k]
+PLATLIB/PIL/SpiderImagePlugin.py [6k]
+PLATLIB/PIL/SunImagePlugin.py [2k]
+PLATLIB/PIL/TarIO.py [1k]
+PLATLIB/PIL/TgaImagePlugin.py [4k]
+PLATLIB/PIL/TiffImagePlugin.py [24k]
+PLATLIB/PIL/TiffTags.py [5k]
+PLATLIB/PIL/WalImageFile.py [6k]
+PLATLIB/PIL/WbmpImagePlugin.py [3k]
+PLATLIB/PIL/WmfImagePlugin.py [4k]
+PLATLIB/PIL/XbmImagePlugin.py [3k]
+PLATLIB/PIL/XpmImagePlugin.py [3k]
+PLATLIB/PIL/XVThumbImagePlugin.py [2k]
+PLATLIB/PIL/_imaging.pyd [311k]
+PLATLIB/PIL/_imagingft.pyd [287k]
+PLATLIB/PIL/_imagingtk.pyd [20k]
+PLATLIB/PIL/__init__.py [1k]
+PLATLIB/PIL.pth [1k]
+SCRIPTS/ [1k]
+SCRIPTS/pilconvert.py [2k]
+SCRIPTS/pildriver.py [16k]
+SCRIPTS/pilfile.py [3k]
+SCRIPTS/pilfont.py [1k]
+SCRIPTS/pilprint.py [2k]
+SCRIPTS/pilview.py [1k]
+</pre>
+
+
+
+
+
+</p>
+
+
+<hr />
+
+<div class='navigate'>
+[<a id="add-comment" href='/comment/zone/zone-template-downloads.htm'><b>add a comment!</b></a>]
+[<a href='/zone/edit/?name=zone-template-downloads'>edit</a>]
+[<a href='/zone/edit/?action=new'>new</a>]
+[<a href='http://validator.w3.org/check?uri=http://effbot.org/zone/zone-template-downloads.htm'>validate</a>]
+</div>
+
+<p class='small'>Copyright &copy; 2002-2006 by Fredrik Lundh.</p>
+
+</div> <!-- effbot-body -->
+</div> <!-- effbot-page -->
+
+</body>
+</html>

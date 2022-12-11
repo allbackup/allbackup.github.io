@@ -1,0 +1,197 @@
+
+@@module aifc
+
+<h1>aifc&#8212;Read and write AIFF and AIFC files</h1>
+
+<p>This module provides support for reading and writing AIFF and AIFF-C
+files. AIFF is Audio Interchange File Format, a format for storing
+digital audio samples in a file. AIFF-C is a newer version of the format
+that includes the ability to compress the audio data.
+
+<p>Caveat: Some operations may only work under IRIX; these will raise
+{@link exceptions.ImportError} when attempting to import the {@link cl}
+module, which is only available on IRIX.
+
+<p>Audio files have a number of parameters that describe the audio data.
+The sampling rate or frame rate is the number of times per second the
+sound is sampled. The number of channels indicate if the audio is mono,
+stereo, or quadro. Each frame consists of one sample per channel. The
+sample size is the size in bytes of each sample. Thus a frame consists
+of {@var nchannels}*{@var samplesize} bytes, and a second's worth of
+audio consists of {@var nchannels}*{@var samplesize}*{@var framerate}
+bytes.
+
+<p>For example, CD quality audio has a sample size of two bytes (16
+bits), uses two channels (stereo) and has a frame rate of 44,100
+frames/second. This gives a frame size of 4 bytes (2*2), and a second's
+worth occupies 2*2*44100 bytes (176,400 bytes).
+
+<p>Module {@link aifc} defines the following function:
+
+@@function open(file[, mode])
+
+<p>Open an AIFF or AIFF-C file and return an object instance with
+methods that are described below. The argument {@var file} is either a
+string naming a file or a file object. {@var mode} must be {@code 'r'}
+or {@code 'rb'} when the file must be opened for reading, or {@code 'w'}
+or {@code 'wb'} when the file must be opened for writing. If omitted,
+{@var file}.mode is used if it exists, otherwise {@code 'rb'} is used.
+When used for writing, the file object should be seekable, unless you
+know ahead of time how many samples you are going to write in total and
+use {@link writeframesraw} and {@link setnframes}.
+
+@@text 
+
+<p>Objects returned by {@link open} when a file is opened for reading
+have the following methods:
+
+@@method getnchannels()
+
+<p>Return the number of audio channels (1 for mono, 2 for stereo).
+
+@@method getsampwidth()
+
+<p>Return the size in bytes of individual samples.
+
+@@method getframerate()
+
+<p>Return the sampling rate (number of audio frames per second).
+
+@@method getnframes()
+
+<p>Return the number of audio frames in the file.
+
+@@method getcomptype()
+
+<p>Return a four-character string describing the type of compression
+used in the audio file. For AIFF files, the returned value is {@code
+'NONE'}.
+
+@@method getcompname()
+
+<p>Return a human-readable description of the type of compression used
+in the audio file. For AIFF files, the returned value is {@code 'not
+compressed'}.
+
+@@method getparams()
+
+<p>Return a tuple consisting of all of the above values in the above
+order.
+
+@@method getmarkers()
+
+<p>Return a list of markers in the audio file. A marker consists of a
+tuple of three elements. The first is the mark ID (an integer), the
+second is the mark position in frames from the beginning of the data (an
+integer), the third is the name of the mark (a string).
+
+@@method getmark(id)
+
+<p>Return the tuple as described in {@link getmarkers} for the mark with
+the given {@var id}.
+
+@@method readframes(nframes)
+
+<p>Read and return the next {@var nframes} frames from the audio file.
+The returned data is a string containing for each frame the uncompressed
+samples of all channels.
+
+@@method rewind()
+
+<p>Rewind the read pointer. The next {@link readframes} will start from
+the beginning.
+
+@@method setpos(pos)
+
+<p>Seek to the specified frame number.
+
+@@method tell()
+
+<p>Return the current frame number.
+
+@@method close()
+
+<p>Close the AIFF file. After calling this method, the object can no
+longer be used.
+
+@@text 
+
+<p>Objects returned by {@link open} when a file is opened for writing
+have all the above methods, except for {@link readframes} and {@link
+setpos}. In addition the following methods exist. The {@link get*}
+methods can only be called after the corresponding {@link set*} methods
+have been called. Before the first {@link writeframes} or {@link
+writeframesraw}, all parameters except for the number of frames must be
+filled in.
+
+@@method aiff()
+
+<p>Create an AIFF file. The default is that an AIFF-C file is created,
+unless the name of the file ends in {@code '.aiff'} in which case the
+default is an AIFF file.
+
+@@method aifc()
+
+<p>Create an AIFF-C file. The default is that an AIFF-C file is created,
+unless the name of the file ends in {@code '.aiff'} in which case the
+default is an AIFF file.
+
+@@method setnchannels(nchannels)
+
+<p>Specify the number of channels in the audio file.
+
+@@method setsampwidth(width)
+
+<p>Specify the size in bytes of audio samples.
+
+@@method setframerate(rate)
+
+<p>Specify the sampling frequency in frames per second.
+
+@@method setnframes(nframes)
+
+<p>Specify the number of frames that are to be written to the audio
+file. If this parameter is not set, or not set correctly, the file needs
+to support seeking.
+
+@@method setcomptype(type, name)
+
+<p>Specify the compression type. If not specified, the audio data will
+not be compressed. In AIFF files, compression is not possible. The name
+parameter should be a human-readable description of the compression
+type, the type parameter should be a four-character string. Currently
+the following compression types are supported: NONE, ULAW, ALAW, G722.
+
+@@method setparams(nchannels, sampwidth, framerate, comptype, compname)
+
+<p>Set all the above parameters at once. The argument is a tuple
+consisting of the various parameters. This means that it is possible to
+use the result of a {@link getparams} call as argument to {@link
+setparams}.
+
+@@method setmark(id, pos, name)
+
+<p>Add a mark with the given id (larger than 0), and the given name at
+the given position. This method can be called at any time before {@link
+close}.
+
+@@method tell()
+
+<p>Return the current write position in the output file. Useful in
+combination with {@link setmark}.
+
+@@method writeframes(data)
+
+<p>Write data to the output file. This method can only be called after
+the audio file parameters have been set.
+
+@@method writeframesraw(data)
+
+<p>Like {@link writeframes}, except that the header of the audio file is
+not updated.
+
+@@method close()
+
+<p>Close the AIFF file. The header of the file is updated to reflect the
+actual size of the audio data. After calling this method, the object can
+no longer be used.

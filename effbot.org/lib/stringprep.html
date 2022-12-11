@@ -1,0 +1,172 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>stringprep</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-stringprep.html'>original</a> :::
+<a href='stringprep.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>stringprep&#8212;Internet String Preparation</h1>
+
+<p>When identifying things (such as host names) in the internet, it
+is often necessary to compare such identifications for
+&#8220;equality&#8221;. Exactly how this comparison is executed may
+depend on the application domain, e.g. whether it should be
+case-insensitive or not. It may be also necessary to restrict the
+possible identifications, to allow only identifications consisting
+of &#8220;printable&#8221; characters.</p>
+
+<p><a class="link" href="http://www.faqs.org/rfcs/rfc3454.html">RFC
+3454</a> defines a procedure for &#8220;preparing&#8221; Unicode
+strings in internet protocols. Before passing strings onto the
+wire, they are processed with the preparation procedure, after
+which they have a certain normalized form. The RFC defines a set of
+tables, which can be combined into profiles. Each profile must
+define which tables it uses, and what other optional parts of the
+<code>stringprep</code> procedure are part of the profile. One
+example of a <code>stringprep</code> profile is <code>
+nameprep</code>, which is used for internationalized domain
+names.</p>
+
+<p>The module <code>stringprep</code>
+only exposes the tables from RFC 3454. As these tables would be
+very large to represent them as dictionaries or lists, the module
+uses the Unicode character database internally. The module source
+code itself was generated using the <code>mkstringprep.py</code>
+utility.</p>
+
+<p>As a result, these tables are exposed as functions, not as data
+structures. There are two kinds of tables in the RFC: sets and
+mappings. For a set, <code>
+stringprep</code> provides the &#8220;characteristic function&#8221;,
+i.e. a function that returns true if the parameter is part of the
+set. For mappings, it provides the mapping function: given the key,
+it returns the associated value. Below is a list of all functions
+available in the module.</p>
+</div>
+<dl><dt class="function" id="in_table_a1"><b>in_table_a1(code)</b> <tt class="nav"><a class="nav" href="stringprep.in_table_a1" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Determine whether <var>code</var> is in tableA.1 (Unassigned
+code points in Unicode 3.2).</p>
+</dd>
+<dt class="function" id="in_table_b1"><b>in_table_b1(code)</b> <tt class="nav"><a class="nav" href="stringprep.in_table_b1" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Determine whether <var>code</var> is in tableB.1 (Commonly
+mapped to nothing).</p>
+</dd>
+<dt class="function" id="map_table_b2"><b>map_table_b2(code)</b> <tt class="nav"><a class="nav" href="stringprep.map_table_b2" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return the mapped value for <var>code</var> according to
+tableB.2 (Mapping for case-folding used with NFKC).</p>
+</dd>
+<dt class="function" id="map_table_b3"><b>map_table_b3(code)</b> <tt class="nav"><a class="nav" href="stringprep.map_table_b3" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return the mapped value for <var>code</var> according to
+tableB.3 (Mapping for case-folding used with no normalization).</p>
+</dd>
+<dt class="function" id="in_table_c11"><b>in_table_c11(code)</b> <tt class="nav"><a class="nav" href="stringprep.in_table_c11" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Determine whether <var>code</var> is in tableC.1.1 (ASCII space
+characters).</p>
+</dd>
+<dt class="function" id="in_table_c12"><b>in_table_c12(code)</b> <tt class="nav"><a class="nav" href="stringprep.in_table_c12" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Determine whether <var>code</var> is in tableC.1.2 (Non-ASCII
+space characters).</p>
+</dd>
+<dt class="function" id="in_table_c11_c12"><b>in_table_c11_c12(code)</b> <tt class="nav"><a class="nav" href="stringprep.in_table_c11_c12" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Determine whether <var>code</var> is in tableC.1 (Space
+characters, union of C.1.1 and C.1.2).</p>
+</dd>
+<dt class="function" id="in_table_c21"><b>in_table_c21(code)</b> <tt class="nav"><a class="nav" href="stringprep.in_table_c21" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Determine whether <var>code</var> is in tableC.2.1 (ASCII
+control characters).</p>
+</dd>
+<dt class="function" id="in_table_c22"><b>in_table_c22(code)</b> <tt class="nav"><a class="nav" href="stringprep.in_table_c22" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Determine whether <var>code</var> is in tableC.2.2 (Non-ASCII
+control characters).</p>
+</dd>
+<dt class="function" id="in_table_c21_c22"><b>in_table_c21_c22(code)</b> <tt class="nav"><a class="nav" href="stringprep.in_table_c21_c22" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Determine whether <var>code</var> is in tableC.2 (Control
+characters, union of C.2.1 and C.2.2).</p>
+</dd>
+<dt class="function" id="in_table_c3"><b>in_table_c3(code)</b> <tt class="nav"><a class="nav" href="stringprep.in_table_c3" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Determine whether <var>code</var> is in tableC.3 (Private
+use).</p>
+</dd>
+<dt class="function" id="in_table_c4"><b>in_table_c4(code)</b> <tt class="nav"><a class="nav" href="stringprep.in_table_c4" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Determine whether <var>code</var> is in tableC.4 (Non-character
+code points).</p>
+</dd>
+<dt class="function" id="in_table_c5"><b>in_table_c5(code)</b> <tt class="nav"><a class="nav" href="stringprep.in_table_c5" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Determine whether <var>code</var> is in tableC.5 (Surrogate
+codes).</p>
+</dd>
+<dt class="function" id="in_table_c6"><b>in_table_c6(code)</b> <tt class="nav"><a class="nav" href="stringprep.in_table_c6" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Determine whether <var>code</var> is in tableC.6 (Inappropriate
+for plain text).</p>
+</dd>
+<dt class="function" id="in_table_c7"><b>in_table_c7(code)</b> <tt class="nav"><a class="nav" href="stringprep.in_table_c7" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Determine whether <var>code</var> is in tableC.7 (Inappropriate
+for canonical representation).</p>
+</dd>
+<dt class="function" id="in_table_c8"><b>in_table_c8(code)</b> <tt class="nav"><a class="nav" href="stringprep.in_table_c8" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Determine whether <var>code</var> is in tableC.8 (Change display
+properties or are deprecated).</p>
+</dd>
+<dt class="function" id="in_table_c9"><b>in_table_c9(code)</b> <tt class="nav"><a class="nav" href="stringprep.in_table_c9" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Determine whether <var>code</var> is in tableC.9 (Tagging
+characters).</p>
+</dd>
+<dt class="function" id="in_table_d1"><b>in_table_d1(code)</b> <tt class="nav"><a class="nav" href="stringprep.in_table_d1" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Determine whether <var>code</var> is in tableD.1 (Characters
+with bidirectional property &#8220;R&#8221; or
+&#8220;AL&#8221;).</p>
+</dd>
+<dt class="function" id="in_table_d2"><b>in_table_d2(code)</b> <tt class="nav"><a class="nav" href="stringprep.in_table_d2" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Determine whether <var>code</var> is in tableD.2 (Characters
+with bidirectional property &#8220;L&#8221;).</p>
+</dd>
+</dl></div></body></html>

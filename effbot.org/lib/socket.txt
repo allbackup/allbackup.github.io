@@ -1,0 +1,816 @@
+
+@@module socket
+
+<h1>socket&#8212;Low-level networking interface</h1>
+
+<p>This module provides access to the BSD {@em socket} interface. It is
+available on all modern Unix systems, Windows, MacOS, BeOS, OS/2, and
+probably additional platforms.
+
+<p>For an introduction to socket programming (in C), see the following
+papers: {@em An Introductory 4.3BSD Interprocess Communication
+Tutorial}, by Stuart Sechrest and {@em An Advanced 4.3BSD Interprocess
+Communication Tutorial}, by Samuel J. Leffler et al, both in the Unix
+Programmer's Manual, Supplementary Documents 1 (sections PS1:7 and
+PS1:8). The platform-specific reference material for the various
+socket-related system calls are also a valuable source of information on
+the details of socket semantics. For Unix, refer to the manual pages;
+for Windows, see the WinSock (or Winsock 2) specification. For
+IPv6-ready APIs, readers may want to refer to {@link
+http://www.faqs.org/rfcs/rfc2553.html RFC 2553} titled {@em Basic Socket
+Interface Extensions for IPv6}.
+
+<p>The Python interface is a straightforward transliteration of the Unix
+system call and library interface for sockets to Python's
+object-oriented style: the {@link socket} function returns a socket
+object whose methods implement the various socket system calls.
+Parameter types are somewhat higher-level than in the C interface: as
+with {@link read} and {@link write} operations on Python files, buffer
+allocation on receive operations is automatic, and buffer length is
+implicit on send operations.
+
+<p>Socket addresses are represented as follows: A single string is used
+for the {@code AF_UNIX} address family. A pair {@code (}{@var host},
+{@var port}) is used for the {@code AF_INET} address family, where {@var
+host} is a string representing either a hostname in Internet domain
+notation like {@code 'daring.cwi.nl'} or an IPv4 address like {@code
+'100.50.200.5'}, and {@var port} is an integral port number. For {@code
+AF_INET6} address family, a four-tuple {@code (}{@var host}, {@var
+port}, {@var flowinfo}, {@var scopeid}) is used, where {@var flowinfo}
+and {@var scopeid} represents {@code sin6_flowinfo} and {@code
+sin6_scope_id} member in {@code struct sockaddr_in6} in C. For {@link
+socket} module methods, {@var flowinfo} and {@var scopeid} can be
+omitted just for backward compatibility. Note, however, omission of
+{@var scopeid} can cause problems in manipulating scoped IPv6 addresses.
+Other address families are currently not supported. The address format
+required by a particular socket object is automatically selected based
+on the address family specified when the socket object was created.
+
+<p>For IPv4 addresses, two special forms are accepted instead of a host
+address: the empty string represents {@code INADDR_ANY}, and the string
+{@code '&ltbroadcast>'} represents {@code INADDR_BROADCAST}. The
+behavior is not available for IPv6 for backward compatibility,
+therefore, you may want to avoid these if you intend to support IPv6
+with your Python programs.
+
+<p>If you use a hostname in the {@var host} portion of IPv4/v6 socket
+address, the program may show a nondeterministic behavior, as Python
+uses the first address returned from the DNS resolution. The socket
+address will be resolved differently into an actual IPv4/v6 address,
+depending on the results from DNS resolution and/or the host
+configuration. For deterministic behavior use a numeric address in {@var
+host} portion.
+
+<p>All errors raise exceptions. The normal exceptions for invalid
+argument types and out-of-memory conditions can be raised; errors
+related to socket or address semantics raise the error {@link
+socket.error}.
+
+<p>Non-blocking mode is supported through {@link setblocking}. A
+generalization of this based on timeouts is supported through {@link
+settimeout}.
+
+<p>The module {@link socket} exports the following constants and
+functions:
+
+@@exception error
+
+<p>This exception is raised for socket-related errors. The accompanying
+value is either a string telling what went wrong or a pair {@code
+(}{@var errno}, {@var string}) representing an error returned by a
+system call, similar to the value accompanying {@link os.error}. See the
+module {@link errno}, which contains names for the error codes defined
+by the underlying operating system.
+
+@@exception herror
+
+<p>This exception is raised for address-related errors, i.e. for
+functions that use {@var h_errno} in the C API, including {@link
+gethostbyname_ex} and {@link gethostbyaddr}.
+
+<p>The accompanying value is a pair {@code (}{@var h_errno}, {@var
+string}) representing an error returned by a library call. {@var string}
+represents the description of {@var h_errno}, as returned by the {@link
+c:hstrerror} C function.
+
+@@exception gaierror
+
+<p>This exception is raised for address-related errors, for {@link
+getaddrinfo} and {@link getnameinfo}. The accompanying value is a pair
+{@code (}{@var error}, {@var string}) representing an error returned by
+a library call. {@var string} represents the description of {@var
+error}, as returned by the {@link c:gai_strerror} C function. The {@var
+error} value will match one of the {@code EAI_*} constants defined in
+this module.
+
+@@exception timeout
+
+<p>This exception is raised when a timeout occurs on a socket which has
+had timeouts enabled via a prior call to {@link settimeout}. The
+accompanying value is a string whose value is currently always
+&#8220;timed out&#8221;.
+<blockquote>
+@since New in version 2.3. <br />
+</blockquote>
+
+@@variable AF_UNIX
+@@variable AF_INET
+@@variable AF_INET6
+
+<p>These constants represent the address (and protocol) families, used
+for the first argument to {@link socket}. If the {@code AF_UNIX}
+constant is not defined then this protocol is unsupported.
+
+@@variable SOCK_STREAM
+@@variable SOCK_DGRAM
+@@variable SOCK_RAW
+@@variable SOCK_RDM
+@@variable SOCK_SEQPACKET
+
+<p>These constants represent the socket types, used for the second
+argument to {@link socket}. (Only {@code SOCK_STREAM} and {@code
+SOCK_DGRAM} appear to be generally useful.)
+
+@@variable SO_*
+@@variable SOMAXCONN
+@@variable MSG_*
+@@variable SOL_*
+@@variable IPPROTO_*
+@@variable IPPORT_*
+@@variable INADDR_*
+@@variable IP_*
+@@variable IPV6_*
+@@variable EAI_*
+@@variable AI_*
+@@variable NI_*
+@@variable TCP_*
+
+<p>Many constants of these forms, documented in the Unix documentation
+on sockets and/or the IP protocol, are also defined in the socket
+module. They are generally used in arguments to the {@link setsockopt}
+and {@link getsockopt} methods of socket objects. In most cases, only
+those symbols that are defined in the Unix header files are defined; for
+a few symbols, default values are provided.
+
+@@variable has_ipv6
+
+<p>This constant contains a boolean value which indicates if IPv6 is
+supported on this platform.
+<blockquote>
+@since New in
+version 2.3. <br />
+</blockquote>
+
+@@function getaddrinfo(host, port[, family[, socktype[, proto[, flags]]]])
+
+<p>Resolves the {@var host}/{@var port} argument, into a sequence of
+5-tuples that contain all the necessary argument for the sockets
+manipulation. {@var host} is a domain name, a string representation of
+IPv4/v6 address or {@link None}. {@var port} is a string service name
+(like {@code 'http'}), a numeric port number or {@link None}.
+
+<p>The rest of the arguments are optional and must be numeric if
+specified. For {@var host} and {@var port}, by passing either an empty
+string or {@link None}, you can pass {@code NULL} to the C API. The
+{@link getaddrinfo} function returns a list of 5-tuples with the
+following structure:
+
+<p>{@code (}{@var family}, {@var socktype}, {@var proto}, {@var
+canonname}, {@var sockaddr})
+
+<p>{@var family}, {@var socktype}, {@var proto} are all integer and are
+meant to be passed to the {@link socket} function. {@var canonname} is a
+string representing the canonical name of the {@var host}. It can be a
+numeric IPv4/v6 address when {@code AI_CANONNAME} is specified for a
+numeric {@var host}. {@var sockaddr} is a tuple describing a socket
+address, as described above. See the source for the {@link httplib} and
+other library modules for a typical usage of the function.
+<blockquote>
+@since New in version
+2.2. <br />
+</blockquote>
+
+@@function getfqdn([name])
+
+<p>Return a fully qualified domain name for {@var name}. If {@var name}
+is omitted or empty, it is interpreted as the local host. To find the
+fully qualified name, the hostname returned by {@link gethostbyaddr} is
+checked, then aliases for the host, if available. The first name which
+includes a period is selected. In case no fully qualified domain name is
+available, the hostname as returned by {@link gethostname} is returned.
+<blockquote>
+@since New in version
+2.0. <br />
+</blockquote>
+
+@@function gethostbyname(hostname)
+
+<p>Translate a host name to IPv4 address format. The IPv4 address is
+returned as a string, such as {@code '100.50.200.5'}. If the host name
+is an IPv4 address itself it is returned unchanged. See {@link
+gethostbyname_ex} for a more complete interface. {@link gethostbyname}
+does not support IPv6 name resolution, and {@link getaddrinfo} should be
+used instead for IPv4/v6 dual stack support.
+
+@@function gethostbyname_ex(hostname)
+
+<p>Translate a host name to IPv4 address format, extended interface.
+Return a triple {@code (}{@var hostname}, {@var aliaslist}, {@var
+ipaddrlist}) where {@var hostname} is the primary host name responding
+to the given {@var ip_address}, {@var aliaslist} is a (possibly empty)
+list of alternative host names for the same address, and {@var
+ipaddrlist} is a list of IPv4 addresses for the same interface on the
+same host (often but not always a single address). {@link
+gethostbyname_ex} does not support IPv6 name resolution, and {@link
+getaddrinfo} should be used instead for IPv4/v6 dual stack support.
+
+@@function gethostname()
+
+<p>Return a string containing the hostname of the machine where the
+Python interpreter is currently executing. If you want to know the
+current machine's IP address, you may want to use {@code
+gethostbyname(gethostname())}. This operation assumes that there is a
+valid address-to-host mapping for the host, and the assumption does not
+always hold. Note: {@link gethostname} doesn't always return the fully
+qualified domain name; use {@code gethostbyaddr(gethostname())} (see
+below).
+
+@@function gethostbyaddr(ip_address)
+
+<p>Return a triple {@code (}{@var hostname}, {@var aliaslist}, {@var
+ipaddrlist}) where {@var hostname} is the primary host name responding
+to the given {@var ip_address}, {@var aliaslist} is a (possibly empty)
+list of alternative host names for the same address, and {@var
+ipaddrlist} is a list of IPv4/v6 addresses for the same interface on the
+same host (most likely containing only a single address). To find the
+fully qualified domain name, use the function {@link getfqdn}. {@link
+gethostbyaddr} supports both IPv4 and IPv6.
+
+@@function getnameinfo(sockaddr, flags)
+
+<p>Translate a socket address {@var sockaddr} into a 2-tuple {@code
+(}{@var host}, {@var port}). Depending on the settings of {@var flags},
+the result can contain a fully-qualified domain name or numeric address
+representation in {@var host}. Similarly, {@var port} can contain a
+string port name or a numeric port number.
+<blockquote>
+@since New
+in version 2.2. <br />
+</blockquote>
+
+@@function getprotobyname(protocolname)
+
+<p>Translate an Internet protocol name (for example, {@code 'icmp'}) to
+a constant suitable for passing as the (optional) third argument to the
+{@link socket} function. This is usually only needed for sockets opened
+in &#8220;raw&#8221; mode ({@code SOCK_RAW}); for the normal socket
+modes, the correct protocol is chosen automatically if the protocol is
+omitted or zero.
+
+@@function getservbyname(servicename[, protocolname])
+
+<p>Translate an Internet service name and protocol name to a port number
+for that service. The optional protocol name, if given, should be {@code
+'tcp'} or {@code 'udp'}, otherwise any protocol will match.
+
+@@function getservbyport(port[, protocolname])
+
+<p>Translate an Internet port number and protocol name to a service name
+for that service. The optional protocol name, if given, should be {@code
+'tcp'} or {@code 'udp'}, otherwise any protocol will match.
+
+@@function socket([family[, type[, proto]]])
+
+<p>Create a new socket using the given address family, socket type and
+protocol number. The address family should be {@code AF_INET} (the
+default), {@code AF_INET6} or {@code AF_UNIX}. The socket type should be
+{@code SOCK_STREAM} (the default), {@code SOCK_DGRAM} or perhaps one of
+the other "{@code SOCK_}" constants. The protocol number is usually zero
+and may be omitted in that case.
+
+@@function ssl(sock[, keyfile, certfile])
+
+<p>Initiate a SSL connection over the socket {@var sock}. {@var keyfile}
+is the name of a PEM formatted file that contains your private key.
+{@var certfile} is a PEM formatted certificate chain file. On success, a
+new {@link SSLObject} is returned.
+
+<p class='warning'><b>Warning:</b> This does not do any certificate
+verification!
+
+@@function socketpair([family[, type[, proto]]])
+
+<p>Build a pair of connected socket objects using the given address
+family, socket type, and protocol number. Address family, socket type,
+and protocol number are as for the {@link socket} function above. The
+default family is {@code AF_UNIX} if defined on the platform; otherwise,
+the default is {@code AF_INET}. Availability: Unix.
+<blockquote>
+@since New in version 2.4. <br />
+</blockquote>
+
+@@function fromfd(fd, family, type[, proto])
+
+<p>Build a socket object from an existing file descriptor (an integer as
+returned by a file object's {@link fileno} method). Address family,
+socket type and protocol number are as for the {@link socket} function
+above. The file descriptor should refer to a socket, but this is not
+checked -- subsequent operations on the object may fail if the file
+descriptor is invalid. This function is rarely needed, but can be used
+to get or set socket options on a socket passed to a program as standard
+input or output (such as a server started by the Unix inet daemon). The
+socket is assumed to be in blocking mode. Availability: Unix.
+
+@@function ntohl(x)
+
+<p>Convert 32-bit integers from network to host byte order. On machines
+where the host byte order is the same as network byte order, this is a
+no-op; otherwise, it performs a 4-byte swap operation.
+
+@@function ntohs(x)
+
+<p>Convert 16-bit integers from network to host byte order. On machines
+where the host byte order is the same as network byte order, this is a
+no-op; otherwise, it performs a 2-byte swap operation.
+
+@@function htonl(x)
+
+<p>Convert 32-bit integers from host to network byte order. On machines
+where the host byte order is the same as network byte order, this is a
+no-op; otherwise, it performs a 4-byte swap operation.
+
+@@function htons(x)
+
+<p>Convert 16-bit integers from host to network byte order. On machines
+where the host byte order is the same as network byte order, this is a
+no-op; otherwise, it performs a 2-byte swap operation.
+
+@@function inet_aton(ip_string)
+
+<p>Convert an IPv4 address from dotted-quad string format (for example,
+'123.45.67.89') to 32-bit packed binary format, as a string four
+characters in length. This is useful when conversing with a program that
+uses the standard C library and needs objects of type {@link c:struct
+in_addr}, which is the C type for the 32-bit packed binary this function
+returns.
+
+<p>If the IPv4 address string passed to this function is invalid, {@link
+socket.error} will be raised. Note that exactly what is valid depends on
+the underlying C implementation of {@link c:inet_aton}.
+
+<p>{@link inet_aton} does not support IPv6, and {@link getnameinfo}
+should be used instead for IPv4/v6 dual stack support.
+
+@@function inet_ntoa(packed_ip)
+
+<p>Convert a 32-bit packed IPv4 address (a string four characters in
+length) to its standard dotted-quad string representation (for example,
+'123.45.67.89'). This is useful when conversing with a program that uses
+the standard C library and needs objects of type {@link c:struct
+in_addr}, which is the C type for the 32-bit packed binary data this
+function takes as an argument.
+
+<p>If the string passed to this function is not exactly 4 bytes in
+length, {@link socket.error} will be raised. {@link inet_ntoa} does not
+support IPv6, and {@link getnameinfo} should be used instead for IPv4/v6
+dual stack support.
+
+@@function inet_pton(address_family, ip_string)
+
+<p>Convert an IP address from its family-specific string format to a
+packed, binary format. {@link inet_pton} is useful when a library or
+network protocol calls for an object of type {@link c:struct in_addr}
+(similar to {@link inet_aton}) or {@link c:struct in6_addr}.
+
+<p>Supported values for {@var address_family} are currently {@code
+AF_INET} and {@code AF_INET6}. If the IP address string {@var ip_string}
+is invalid, {@link socket.error} will be raised. Note that exactly what
+is valid depends on both the value of {@var address_family} and the
+underlying implementation of {@link c:inet_pton}.
+
+<p>Availability: Unix (maybe not all platforms).
+<blockquote>
+@since New in version
+2.3. <br />
+</blockquote>
+
+@@function inet_ntop(address_family, packed_ip)
+
+<p>Convert a packed IP address (a string of some number of characters)
+to its standard, family-specific string representation (for example,
+{@code '7.10.0.5'} or {@code '5aef:2b::8'}) {@link inet_ntop} is useful
+when a library or network protocol returns an object of type {@link
+c:struct in_addr} (similar to {@link inet_ntoa}) or {@link c:struct
+in6_addr}.
+
+<p>Supported values for {@var address_family} are currently {@code
+AF_INET} and {@code AF_INET6}. If the string {@var packed_ip} is not the
+correct length for the specified address family, {@link
+exceptions.ValueError} will be raised. A {@link socket.error} is raised
+for errors from the call to {@link inet_ntop}.
+
+<p>Availability: Unix (maybe not all platforms).
+<blockquote>
+@since New in version
+2.3. <br />
+</blockquote>
+
+@@function getdefaulttimeout()
+
+<p>Return the default timeout in floating seconds for new socket
+objects. A value of {@link None} indicates that new socket objects have
+no timeout. When the socket module is first imported, the default is
+{@link None}.
+<blockquote>
+@since New in
+version 2.3. <br />
+</blockquote>
+
+@@function setdefaulttimeout(timeout)
+
+<p>Set the default timeout in floating seconds for new socket objects. A
+value of {@link None} indicates that new socket objects have no timeout.
+When the socket module is first imported, the default is {@link None}.
+<blockquote>
+@since New in
+version 2.3. <br />
+</blockquote>
+
+@@variable SocketType
+
+<p>This is a Python type object that represents the socket object type.
+It is the same as {@code type(socket(...))}.
+
+@@text 
+
+@see 
+{@link SocketServer Module SocketServer}
+
+Classes that simplify writing network servers.
+
+<h2>Socket Objects</h2>
+
+<p>Socket objects have the following methods. Except for {@link
+makefile} these correspond to Unix system calls applicable to sockets.
+
+@@method Socket.accept()
+
+<p>Accept a connection. The socket must be bound to an address and
+listening for connections. The return value is a pair {@code (}{@var
+conn}, {@var address}) where {@var conn} is a {@em new} socket object
+usable to send and receive data on the connection, and {@var address} is
+the address bound to the socket on the other end of the connection.
+
+@@method Socket.bind(address)
+
+<p>Bind the socket to {@var address}. The socket must not already be
+bound. (The format of {@var address} depends on the address family --
+see above.) Note: This method has historically accepted a pair of
+parameters for {@code AF_INET} addresses instead of only a tuple. This
+was never intentional and is no longer available in Python 2.0 and
+later.
+
+@@method Socket.close()
+
+<p>Close the socket. All future operations on the socket object will
+fail. The remote end will receive no more data (after queued data is
+flushed). Sockets are automatically closed when they are
+garbage-collected.
+
+@@method Socket.connect(address)
+
+<p>Connect to a remote socket at {@var address}. (The format of {@var
+address} depends on the address family -- see above.) Note: This method
+has historically accepted a pair of parameters for {@code AF_INET}
+addresses instead of only a tuple. This was never intentional and is no
+longer available in Python 2.0 and later.
+
+@@method Socket.connect_ex(address)
+
+<p>Like {@code connect(}{@var address}), but return an error indicator
+instead of raising an exception for errors returned by the C-level
+{@link c:connect} call (other problems, such as &#8220;host not
+found,&#8221; can still raise exceptions). The error indicator is {@code
+0} if the operation succeeded, otherwise the value of the errno
+variable. This is useful to support, for example, asynchronous connects.
+Note: This method has historically accepted a pair of parameters for
+{@code AF_INET} addresses instead of only a tuple. This was never
+intentional and is no longer available in Python 2.0 and later.
+
+@@method Socket.fileno()
+
+<p>Return the socket's file descriptor (a small integer). This is useful
+with {@link select.select}.
+
+<p>Under Windows the small integer returned by this method cannot be
+used where a file descriptor can be used (such as {@link os.fdopen}).
+Unix does not have this limitation.
+
+@@method Socket.getpeername()
+
+<p>Return the remote address to which the socket is connected. This is
+useful to find out the port number of a remote IPv4/v6 socket, for
+instance. (The format of the address returned depends on the address
+family -- see above.) On some systems this function is not supported.
+
+@@method Socket.getsockname()
+
+<p>Return the socket's own address. This is useful to find out the port
+number of an IPv4/v6 socket, for instance. (The format of the address
+returned depends on the address family -- see above.)
+
+@@method Socket.getsockopt(level, optname[, buflen])
+
+<p>Return the value of the given socket option (see the Unix man page
+getsockopt(2)). The needed symbolic constants ({@code SO_*} etc.) are
+defined in this module. If {@var buflen} is absent, an integer option is
+assumed and its integer value is returned by the function. If {@var
+buflen} is present, it specifies the maximum length of the buffer used
+to receive the option in, and this buffer is returned as a string. It is
+up to the caller to decode the contents of the buffer (see the optional
+built-in module {@link struct} for a way to decode C structures encoded
+as strings).
+
+@@method Socket.listen(backlog)
+
+<p>Listen for connections made to the socket. The {@var backlog}
+argument specifies the maximum number of queued connections and should
+be at least 1; the maximum value is system-dependent (usually 5).
+
+@@method Socket.makefile([mode[, bufsize]])
+
+<p>Return a file object associated with the socket. (File objects are
+described in {@link bltin-file-objects.html#bltin-file-objects},
+&#8220;File Objects.&#8221;) The file object references a {@link
+c:dup}ped version of the socket file descriptor, so the file object and
+socket object may be closed or garbage-collected independently. The
+socket should be in blocking mode. The optional {@var mode} and {@var
+bufsize} arguments are interpreted the same way as by the built-in
+{@link file} function; see &#8220;Built-in Functions&#8221; (section
+{@link built-in-funcs.html#built-in-funcs}) for more information.
+
+@@method Socket.recv(bufsize[, flags])
+
+<p>Receive data from the socket. The return value is a string
+representing the data received. The maximum amount of data to be
+received at once is specified by {@var bufsize}. See the Unix manual
+page recv(2) for the meaning of the optional argument {@var flags}; it
+defaults to zero.
+
+@@method Socket.recvfrom(bufsize[, flags])
+
+<p>Receive data from the socket. The return value is a pair {@code
+(}{@var string}, {@var address}) where {@var string} is a string
+representing the data received and {@var address} is the address of the
+socket sending the data. The optional {@var flags} argument has the same
+meaning as for {@link recv} above. (The format of {@var address} depends
+on the address family -- see above.)
+
+@@method Socket.send(string[, flags])
+
+<p>Send data to the socket. The socket must be connected to a remote
+socket. The optional {@var flags} argument has the same meaning as for
+{@link recv} above. Returns the number of bytes sent. Applications are
+responsible for checking that all data has been sent; if only some of
+the data was transmitted, the application needs to attempt delivery of
+the remaining data.
+
+@@method Socket.sendall(string[, flags])
+
+<p>Send data to the socket. The socket must be connected to a remote
+socket. The optional {@var flags} argument has the same meaning as for
+{@link recv} above. Unlike {@link send}, this method continues to send
+data from {@var string} until either all data has been sent or an error
+occurs. {@link None} is returned on success. On error, an exception is
+raised, and there is no way to determine how much data, if any, was
+successfully sent.
+
+@@method Socket.sendto(string[, flags], address)
+
+<p>Send data to the socket. The socket should not be connected to a
+remote socket, since the destination socket is specified by {@var
+address}. The optional {@var flags} argument has the same meaning as for
+{@link recv} above. Return the number of bytes sent. (The format of
+{@var address} depends on the address family -- see above.)
+
+@@method Socket.setblocking(flag)
+
+<p>Set blocking or non-blocking mode of the socket: if {@var flag} is 0,
+the socket is set to non-blocking, else to blocking mode. Initially all
+sockets are in blocking mode. In non-blocking mode, if a {@link recv}
+call doesn't find any data, or if a {@link send} call can't immediately
+dispose of the data, a {@link error} exception is raised; in blocking
+mode, the calls block until they can proceed. {@code s.setblocking(0)}
+is equivalent to {@code s.settimeout(0)}; {@code s.setblocking(1)} is
+equivalent to {@code s.settimeout(None)}.
+
+@@method Socket.settimeout(value)
+
+<p>Set a timeout on blocking socket operations. The {@var value}
+argument can be a nonnegative float expressing seconds, or {@link None}.
+If a float is given, subsequent socket operations will raise an {@link
+timeout} exception if the timeout period {@var value} has elapsed before
+the operation has completed. Setting a timeout of {@link None} disables
+timeouts on socket operations. {@code s.settimeout(0.0)} is equivalent
+to {@code s.setblocking(0)}; {@code s.settimeout(None)} is equivalent to
+{@code s.setblocking(1)}.
+<blockquote>
+@since New in version 2.3. <br />
+</blockquote>
+
+@@method Socket.gettimeout()
+
+<p>Returns the timeout in floating seconds associated with socket
+operations, or {@link None} if no timeout is set. This reflects the last
+call to {@link setblocking} or {@link settimeout}.
+<blockquote>
+@since New
+in version 2.3. <br />
+</blockquote>
+
+@@text 
+
+<p>Some notes on socket blocking and timeouts: A socket object can be in
+one of three modes: blocking, non-blocking, or timeout. Sockets are
+always created in blocking mode. In blocking mode, operations block
+until complete. In non-blocking mode, operations fail (with an error
+that is unfortunately system-dependent) if they cannot be completed
+immediately. In timeout mode, operations fail if they cannot be
+completed within the timeout specified for the socket. The {@link
+setblocking} method is simply a shorthand for certain {@link settimeout}
+calls.
+
+<p>Timeout mode internally sets the socket in non-blocking mode. The
+blocking and timeout modes are shared between file descriptors and
+socket objects that refer to the same network endpoint. A consequence of
+this is that file objects returned by the {@link makefile} method should
+only be used when the socket is in blocking mode; in timeout or
+non-blocking mode file operations that cannot be completed immediately
+will fail.
+
+<p>Note that the {@link connect} operation is subject to the timeout
+setting, and in general it is recommended to call {@link settimeout}
+before calling {@link connect}.
+
+@@method Socket.setsockopt(level, optname, value)
+
+<p>Set the value of the given socket option (see the Unix manual page
+setsockopt(2)). The needed symbolic constants are defined in the {@link
+socket} module ({@code SO_*} etc.). The value can be an integer or a
+string representing a buffer. In the latter case it is up to the caller
+to ensure that the string contains the proper bits (see the optional
+built-in module {@link struct} for a way to encode C structures as
+strings).
+
+@@method Socket.shutdown(how)
+
+<p>Shut down one or both halves of the connection. If {@var how} is
+{@code SHUT_RD}, further receives are disallowed. If {@var how} is
+{@code SHUT_WR}, further sends are disallowed. If {@var how} is {@code
+SHUT_RDWR}, further sends and receives are disallowed.
+
+@@text 
+
+<p>Note that there are no methods {@link read} or {@link write}; use
+{@link recv} and {@link send} without {@var flags} argument instead.
+
+<h2>SSL Objects</h2>
+
+<p>SSL objects have the following methods.
+
+@@method SSL.write(s)
+
+<p>Writes the string {@var s} to the on the object's SSL connection. The
+return value is the number of bytes written.
+
+@@method SSL.read([n])
+
+<p>If {@var n} is provided, read {@var n} bytes from the SSL connection,
+otherwise read until EOF. The return value is a string of the bytes
+read.
+
+@@text 
+
+<h2>Example</h2>
+
+<p>Here are four minimal example programs using the TCP/IP protocol: a
+server that echoes all data that it receives back (servicing only one
+client), and a client using it. Note that a server must perform the
+sequence {@link socket}, {@link bind}, {@link listen}, {@link accept}
+(possibly repeating the {@link accept} to service more than one client),
+while a client only needs the sequence {@link socket}, {@link connect}.
+Also note that the server does not {@link send}/{@link recv} on the
+socket it is listening on but on the new socket returned by {@link
+accept}.
+
+<p>The first two examples support IPv4 only.
+
+<pre>
+# Echo server program
+import socket
+
+HOST = ''                 # Symbolic name meaning the local host
+PORT = 50007              # Arbitrary non-privileged port
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.bind((HOST, PORT))
+s.listen(1)
+conn, addr = s.accept()
+print 'Connected by', addr
+while 1:
+    data = conn.recv(1024)
+    if not data: break
+    conn.send(data)
+conn.close()
+</pre>
+
+
+<pre>
+# Echo client program
+import socket
+
+HOST = 'daring.cwi.nl'    # The remote host
+PORT = 50007              # The same port as used by the server
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.connect((HOST, PORT))
+s.send('Hello, world')
+data = s.recv(1024)
+s.close()
+print 'Received', repr(data)
+</pre>
+
+
+<p>The next two examples are identical to the above two, but support
+both IPv4 and IPv6. The server side will listen to the first address
+family available (it should listen to both instead). On most of
+IPv6-ready systems, IPv6 will take precedence and the server may not
+accept IPv4 traffic. The client side will try to connect to the all
+addresses returned as a result of the name resolution, and sends traffic
+to the first one connected successfully.
+
+<pre>
+# Echo server program
+import socket
+import sys
+
+HOST = ''                 # Symbolic name meaning the local host
+PORT = 50007              # Arbitrary non-privileged port
+s = None
+for res in socket.getaddrinfo(HOST, PORT, socket.AF_UNSPEC, socket.SOCK_STREAM, 0, socket.AI_PASSIVE):
+    af, socktype, proto, canonname, sa = res
+    try:
+    s = socket.socket(af, socktype, proto)
+    except socket.error, msg:
+    s = None
+    continue
+    try:
+    s.bind(sa)
+    s.listen(1)
+    except socket.error, msg:
+    s.close()
+    s = None
+    continue
+    break
+if s is None:
+    print 'could not open socket'
+    sys.exit(1)
+conn, addr = s.accept()
+print 'Connected by', addr
+while 1:
+    data = conn.recv(1024)
+    if not data: break
+    conn.send(data)
+conn.close()
+</pre>
+
+
+<pre>
+# Echo client program
+import socket
+import sys
+
+HOST = 'daring.cwi.nl'    # The remote host
+PORT = 50007              # The same port as used by the server
+s = None
+for res in socket.getaddrinfo(HOST, PORT, socket.AF_UNSPEC, socket.SOCK_STREAM):
+    af, socktype, proto, canonname, sa = res
+    try:
+    s = socket.socket(af, socktype, proto)
+    except socket.error, msg:
+    s = None
+    continue
+    try:
+    s.connect(sa)
+    except socket.error, msg:
+    s.close()
+    s = None
+    continue
+    break
+if s is None:
+    print 'could not open socket'
+    sys.exit(1)
+s.send('Hello, world')
+data = s.recv(1024)
+s.close()
+print 'Received', repr(data)
+</pre>
+

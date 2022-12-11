@@ -1,0 +1,49 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>Importing Python&nbsp;Modules</title> <script type="text/javascript">effbot_page_id=149;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> <!--
+<p style='color: #8f8f8f; background: #fff5bf; padding: 5px 10px;'> <b>2008-07-15:</b> Selected articles
+ (including this one) 
+now have experimental "comment" links in the left column and at the bottom.
+You're welcome to use them for commenting and voting on articles.
+For a bit more on this, see <a
+href="http://effbot.slinkset.com/links/Welcome_to_discuss_effbot_org">this
+page</a>. /F
+</p>
+--> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <h1 class="maintitle">Importing Python&nbsp;Modules</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p class="info">January 07, 1999 | Updated February 02, 2001 | Fredrik Lundh</p><h2 id="introduction">Introduction&#160;<a class="nav" href="#introduction" title="bookmark!">#</a></h2><p>The <i>import</i> and <i>from-import</i> statements are a
+constant cause of serious confusion for newcomers to Python.
+Luckily, once you&#8217;ve figured out what they really do, you&#8217;ll never
+have problems with them again.</p><p>This note tries to sort out some of the more common issues
+related to <i>import</i> and <i>from-import</i> and everything.</p><h2 id="many-ways">There are Many Ways to Import a Module&#160;<a class="nav" href="#many-ways" title="bookmark!">#</a></h2><p>Python provides at least three different ways to import modules.
+You can use the <i>import</i> statement, the <i>from</i> statement,
+or the builtin <i>__import__</i> function. (There are more
+contrived ways to do this too, but that&#8217;s outside the scope for
+this small note.)</p><p>Anyway, here&#8217;s how these statements and functions work:</p><ul><li><p><b>import X</b> imports the module X, and creates a reference
+to that module in the current namespace. Or in other words, after
+you&#8217;ve run this statement, you can use <i>X.name</i> to refer to
+things defined in module X.</p></li><li><p><b>from X import *</b> imports the module X, and creates
+references in the current namespace to all <i>public</i> objects
+defined by that module (that is, everything that doesn&#8217;t have a
+name starting with &#8220;_&#8221;). Or in other words, after you&#8217;ve run this
+statement, you can simply use a plain <i>name</i> to refer to
+things defined in module X. But X itself is not defined, so <i>
+X.name</i> doesn&#8217;t work. And if <i>name</i> was already defined,
+it is replaced by the new version. And if <i>name</i> in X is
+changed to point to some other object, your module won&#8217;t notice.</p></li><li><p><b>from X import a, b, c</b> imports the module X, and creates
+references in the current namespace to the given objects. Or in
+other words, you can now use <i>a</i> and <i>b</i> and <i>c</i> in
+your program.</p></li><li><p>Finally, <b>X = __import__(&#8216;X&#8217;)</b> works like <b>import X</b>,
+with the difference that you 1) pass the module name as a string,
+and 2) explicitly assign it to a variable in your current
+namespace.</p></li></ul><h2 id="which-way-should-i-use">Which Way Should I Use?&#160;<a class="nav" href="#which-way-should-i-use" title="bookmark!">#</a></h2><p>Short answer: always use <b>import</b>.</p><p>As usual, there are a number of exceptions to this rule:</p><ul><li><p><b>The Module Documentation Tells You To Use from-import</b>.
+The most common example in this category is <i>Tkinter</i>, which
+is carefully designed to add only the widget classes and related
+constants to your current namespace. Using <b>import Tkinter</b>
+only makes your program harder to read; something that is generally
+a bad idea.</p></li><li><p><b>You&#8217;re Importing a Package Component</b>. When you need a
+certain submodule from a package, it&#8217;s often much more convenient
+to write <b>from io.drivers import zip</b> than <b>import
+io.drivers.zip</b>, since the former lets you refer to the module
+simply as <b>zip</b> instead of its full name. In this case, the
+<i>from-import</i> statement acts pretty much like a plain <i>
+import</i>, and there&#8217;s not much risk for confusion.</p></li><li><p><b>You Don&#8217;t Know the Module Name Before Execution</b>. In this
+case, use <i>__import__(module)</i> where <i>mo

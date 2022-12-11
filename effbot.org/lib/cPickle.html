@@ -1,0 +1,58 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>cPickle</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-cPickle.html'>original</a> :::
+<a href='cPickle.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>cPickle&#8212;A faster pickle</h1>
+
+<p>The <code>cPickle</code> module
+supports serialization and de-serialization of Python objects,
+providing an interface and functionality nearly identical to the <code>pickle</code> module. There are
+several differences, the most important being performance and
+subclassability.</p>
+
+<p>First, <code>cPickle</code> can be up
+to 1000 times faster than <code>
+pickle</code> because the former is implemented in C. Second, in the
+<code>cPickle</code> module the
+callables <code>Pickler</code> and <code>Unpickler</code> are functions, not
+classes. This means that you cannot use them to derive custom
+pickling and unpickling subclasses. Most applications have no need
+for this functionality and should benefit from the greatly improved
+performance of the <code>cPickle</code>
+module.</p>
+
+<p>The pickle data stream produced by <code>pickle</code> and <code>cPickle</code> are identical, so it is possible to
+use <code>pickle</code> and <code>cPickle</code> interchangeably with
+existing pickles.<code>footnote:8958</code></p>
+
+<p>There are additional minor differences in API between <code>cPickle</code> and <code>pickle</code>, however for most applications, they
+are interchangeable. More documentation is provided in the <code>pickle</code> module documentation,
+which includes a list of the documented differences.</p>
+
+<h4>Footnotes</h4>
+</div>
+<dl><dt class="variable" id="..."><b>... pickles.3.11</b> <tt class="nav"><a class="nav" href="cPickle...." title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Since the pickle data format is actually a tiny stack-oriented
+programming language, and some freedom is taken in the encodings of
+certain objects, it is possible that the two modules produce
+different data streams for the same input objects. However it is
+guaranteed that they will always be able to read each other's data
+streams.</p>
+</dd>
+</dl></div></body></html>

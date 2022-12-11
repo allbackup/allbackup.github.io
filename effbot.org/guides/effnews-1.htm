@@ -1,0 +1,111 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>EffNews Part 1: Fetching RSS&nbsp;Files</title> <script type="text/javascript">effbot_page_id=59;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> <!--
+<p style='color: #8f8f8f; background: #fff5bf; padding: 5px 10px;'> <b>2008-07-15:</b> Selected articles
+
+now have experimental "comment" links in the left column and at the bottom.
+You're welcome to use them for commenting and voting on articles.
+For a bit more on this, see <a
+href="http://effbot.slinkset.com/links/Welcome_to_discuss_effbot_org">this
+page</a>. /F
+</p>
+--> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <p><a href="effnews.htm">back</a> <a href="effnews-2.htm">next</a></p> <h1 class="maintitle">EffNews Part 1: Fetching RSS&nbsp;Files</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p class="info">September 5, 2002 | Updated September 8, 2002 | Fredrik Lundh</p><h2 id="rss-files">RSS Files&#160;<a class="nav" href="#rss-files" title="bookmark!">#</a></h2><p>The RSS file format is <a href="http://www.mnot.net/rss/tutorial/">an
+XML-based file format that provides a &#8220;site summary&#8221;</a>, that is, a brief
+summary of information published on a site.  It&#8217;s usually used to provide
+a machine readable version of the contents on a news site or a weblog.</p><p>Depending on who you talk to, RSS means &#8220;<a href="http://my.netscape.com/publish/formats/rss-spec-0.91.html">Rich Site Summary</a>&#8220;, &#8220;<a href="http://purl.org/rss/1.0">RDF Site Summary</a>&#8221; or
+&#8220;<a href="http://backend.userland.com/">Really Simple Syndication</a>&#8221;
+(or perhaps
+&#8220;<a href="http://www.kottke.org/02/09/really-small-something">Really
+Small Something</a>&#8220;).
+It was originally created by Netscape for use on their
+<a href="http://my.netscape.com">my.netscape.com</a>
+site, and was later developed into two similar but slightly differing
+versions, <a href="http://backend.userland.com/">RSS 0.9x/2.0</a>
+and <a href="http://purl.org/rss/1.0">RSS 1.0</a>.</p><p>An RSS 0.9x file might look something like this:</p><pre class="xml">
+&lt;<span class="pyfunction">?xml</span> version="1.0"?&gt;
+&lt;<span class="pyfunction">rss</span> version="0.91"&gt;
+  &lt;<span class="pyfunction">channel</span>&gt;
+    &lt;<span class="pyfunction">title</span>&gt;the eff-bot online&lt;/<span class="pyfunction">title</span>&gt;
+    &lt;<span class="pyfunction">link</span>&gt;http://online.effbot.org&lt;/<span class="pyfunction">link</span>&gt;
+    &lt;<span class="pyfunction">description</span>&gt;Fredrik Lundh's clipbook.&lt;/<span class="pyfunction">description</span>&gt;
+    &lt;<span class="pyfunction">language</span>&gt;en-us&lt;/<span class="pyfunction">language</span>&gt;
+    ...
+    &lt;<span class="pyfunction">item</span>&gt;
+      &lt;<span class="pyfunction">title</span>&gt;spam, spam, spam&lt;/<span class="pyfunction">title</span>&gt;
+      &lt;<span class="pyfunction">link</span>&gt;http://online.effbot.org#85292735&lt;/<span class="pyfunction">link</span>&gt;
+      &lt;<span class="pyfunction">description</span>&gt;for the first seven months of 2002, the spam
+      filters watching fredrik@pythonware.com has&lt;/<span class="pyfunction">description</span>&gt;
+    &lt;/<span class="pyfunction">item</span>&gt;
+    ...
+  &lt;/<span class="pyfunction">channel</span>&gt;
+&lt;/<span class="pyfunction">rss</span>&gt;</pre><p>The content consists of some descriptive information (the site&#8217;s
+<b>title</b>, a <b>link</b> to an HTML rendering of the content, etc)
+and a number of <b>item</b> elements, each of which contains an item
+<b>title</b>, a <b>link</b>, and a (usually brief)
+<b>description</b>.</p><p>We&#8217;ll look into <a href="effnews-2.htm">RSS parsing</a> and
+<a href="effnews-4.htm">other RSS formats</a> in later articles.
+For now, we&#8217;re more interested in getting our hands on some RSS
+files to parse&#8230;</p><h2 id="using-http-to-download-files">Using HTTP to Download Files&#160;<a class="nav" href="#using-http-to-download-files" title="bookmark!">#</a></h2><p>Like all other resources on a web, an RSS file is identified by a
+<b>uniform resource locator</b> (URI).  A typical RSS URI might look
+something like:</p><blockquote>
+<a href="http://online.effbot.org/rss.xml">http://online.effbot.org/rss.xml</a>
+</blockquote><p>To fetch this RSS file, the aggregator connects to the computer
+named <b>online.effbot.org</b> and issues an HTTP request, asking the
+server to return the document identified as <b>/rss.xml</b>.</p><p>Here&#8217;s a minimal HTTP request message that does exactly this:</p><pre>
+GET /rss.xml HTTP/1.0
+Host: online.effbot.org
+</pre><p>The message should be followed by an empty line.</p><p>If everything goes well, the HTTP server responds with a status
+line, followed by a number of header lines, an empty line, and the RSS
+file itself:</p><pre>
+HTTP/1.1 200 OK
+Last-Modified: Tue, 03 Sep 2002 11:04:09 GMT
+ETag: "1e49dc-dfa-3d749729"
+Content-Length: 3578
+Content-Type: text/xml
+Connection: close
+
+...RSS data...
+</pre><h3 id="sending-an-http-request">Sending an HTTP request&#160;<a class="nav" href="#sending-an-http-request" title="bookmark!">#</a></h3><p>Python makes it easy to issue HTTP requests.  Here&#8217;s an example
+that uses the <b>socket</b> module, which is a low-level interface for
+network communication:</p><div class="example"><pre class="python">
+HOST = <span class="pystring">"online.effbot.org"</span>
+PATH = <span class="pystring">"/rss.xml"</span>
+
+<span class="pykeyword">import</span> socket
+
+sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+sock.connect((HOST, 80))
+
+sock.send(<span class="pystring">"GET %s HTTP/1.0\r\nHost: %s\r\n\r\n"</span> % (PATH, HOST))
+
+<span class="pykeyword">while</span> 1:
+    text = sock.recv(2048)
+    <span class="pykeyword">if</span> <span class="pykeyword">not</span> text:
+        <span class="pykeyword">break</span>
+    <span class="pykeyword">print</span> <span class="pystring">"read"</span>, len(text), <span class="pystring">"bytes"</span>
+
+s.close()</pre></div><p>The <b>socket.socket</b> call creates a socket for the INET
+(internet) network, and of the STREAM (reliable byte stream) type.
+This is more commonly known as a <b>TCP connection</b>.</p><p>The <b>connect</b> method is used to connect to a remote computer.
+The method takes a tuple containing two values; the computer name and
+the port number to use on that computer.  In this example, we&#8217;re using
+port 80 which is the standard port for HTTP.</p><p>The <b>send</b> method is used to send the HTTP request to the
+server.  Note that lines are separated by both a carriage return (\r)
+and a newline (\n), and that there&#8217;s an extra empty line at the end of
+the request.</p><p>The <b>recv</b> method, finally, is used to read data from the
+socket.  Like the standard read method, it returns an empty string
+when there&#8217;s no more data to read.</p><h3 id="using-an-http-support-library">Using an HTTP support library&#160;<a class="nav" href="#using-an-http-support-library" title="bookmark!">#</a></h3><p>In addition to the low-level <b>socket</b> module, Python&#8217;s
+standard library comes with modules that support common network
+protocols, including HTTP.  The most obvious choice, <b>httplib</b> is
+an intermediate-level library which provides only a thin layer on top
+of the socket library.</p><p>The <b>urllib</b> module provides a higher-level interface.  It
+takes an URL, generates a full HTTP request, parses the response
+header, and returns a file-like object that can be used to read the
+rest of the response right off the server:</p><pre class="python">
+<span class="pykeyword">import</span> urllib
+
+file = urllib.urlopen(<span class="pystring">"http://"</span> + HOST + PATH)
+text = file.read()
+
+<span class="pykeyword">print</span> <span class="pystring">"read"</span>, len(text), <span class="pystri

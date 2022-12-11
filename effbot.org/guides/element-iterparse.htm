@@ -1,0 +1,58 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>The ElementTree iterparse&nbsp;Function</title> <script type="text/javascript">effbot_page_id=81;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> <!--
+<p style='color: #8f8f8f; background: #fff5bf; padding: 5px 10px;'> <b>2008-07-15:</b> Selected articles
+ (including this one) 
+now have experimental "comment" links in the left column and at the bottom.
+You're welcome to use them for commenting and voting on articles.
+For a bit more on this, see <a
+href="http://effbot.slinkset.com/links/Welcome_to_discuss_effbot_org">this
+page</a>. /F
+</p>
+--> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <h1 class="maintitle">The ElementTree iterparse&nbsp;Function</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p>The new <b>iterparse</b> interface allows you to track changes to
+the tree while it is being built.  This interface was first added in
+<a href="celementtree.htm">the cElementTree library</a>, and is also
+available in <a href="element-index.htm">ElementTree 1.2.5</a> and
+later.</p><p>Recent versions of <a href="http://codespeak.net/lxml/">lxml.etree</a>
+also supports this API.</p><h3 id="usage">Usage&#160;<a class="nav" href="#usage" title="bookmark!">#</a></h3><p>To use <b>iterparse</b>, just call the method and iterate over
+the object it returns.  The result is an iterable that returns a
+stream of (event, element) tuples.</p><pre class="python">
+<span class="pykeyword">for</span> event, elem <span class="pykeyword">in</span> iterparse(source):
+    ... elem <span class="pykeyword">is</span> complete; process it ...</pre><pre class="python">
+<span class="pykeyword">for</span> event, elem <span class="pykeyword">in</span> iterparse(source, events=(<span class="pystring">"start"</span>, <span class="pystring">"end"</span>)):
+    <span class="pykeyword">if</span> event == <span class="pystring">"start"</span>:
+        ... elem was just added to the tree ...
+    <span class="pykeyword">else</span>:
+        ... elem <span class="pykeyword">is</span> complete; process it ...</pre><p>The <b>events</b> option specify what events you want to see
+(available events in this release are &#8220;start&#8221;, &#8220;end&#8221;, &#8220;start-ns&#8221;, and
+&#8220;end-ns&#8221;, where the &#8220;ns&#8221; events are used to get detailed namespace
+information).  If the option is omitted, only &#8220;end&#8221; events are
+returned.</p><p class="note"><b>Note:</b>
+The tree builder and the event generator are not necessarily synchronized;
+the latter usually lags behind a bit.  This means that when you get a &#8220;start&#8221;
+event for an element, the builder may already have filled that element with
+content.  You cannot rely on this, though &#8212; a &#8220;start&#8221; event can only be used
+to inspect the attributes, not the element content.  For more details, see
+<a href="http://mail.python.org/pipermail/xml-sig/2005-January/010838.html">this message</a>.</p><h3 id="incremental-parsing">Incremental Parsing&#160;<a class="nav" href="#incremental-parsing" title="bookmark!">#</a></h3><p>Note that <b>iterparse</b> still builds a tree, just like <b>parse</b>,
+but you can safely rearrange or remove parts of the tree while parsing.
+For example, to parse large files, you can get rid of elements as soon
+as you&#8217;ve processed them:</p><pre class="python">
+<span class="pykeyword">for</span> event, elem <span class="pykeyword">in</span> iterparse(source):
+    <span class="pykeyword">if</span> elem.tag == <span class="pystring">"record"</span>:
+        ... process record elements ...
+        elem.clear()</pre><p>The above pattern has one drawback; it does not clear the root
+element, so you will end up with a single element with lots of empty
+child elements.  If your files are huge, rather than just large, this
+might be a problem.  To work around this, you need to get your hands on
+the root element.  The easiest way to do this is to enable <b>start</b>
+events, and save a reference to the first element in a variable:</p><pre class="python">
+<span class="pycomment"># get an iterable</span>
+context = iterparse(source, events=(<span class="pystring">"start"</span>, <span class="pystring">"end"</span>))
+
+<span class="pycomment"># turn it into an iterator</span>
+context = iter(context)
+
+<span class="pycomment"># get the root element</span>
+event, root = context.next()
+
+<span class="pykeyword">for</span> event, elem <span class="pykeywor

@@ -1,0 +1,132 @@
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>downloads.effbot.org ::: www.effbot.org</title>
+<link rel="stylesheet" href="/effbot2.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="/effbotprint.css" type="text/css" media="print" />
+</head>
+
+<body bgcolor="white">
+
+<script src="/effbot.js" type="text/javascript"></script>
+<script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-578832-1";
+urchinTracker();
+</script>
+
+<div id="effbot-page">
+
+<div id="effbot-head">
+<a href="/"><b>effbot.org</b></a> ::: 
+<a href="/zone/"><b>zone</b></a> :::
+<b>downloads.effbot.org</b>
+</div>
+
+<div id="effbot-nav">
+
+<div style="margin-top: 10px;" class='small'>Think this article can be improved? <a href='#add-comment'>Check</a> for comments, or <a href='/comment/zone/zone-template-downloads.htm'>add your own</a>!</div>
+
+</div>
+
+<div id="effbot-body">
+
+
+<h1 class="title">downloads.effbot.org</h1>
+<p>
+[<a href="/">home</a>]
+[<a href="/zone">zone</a>]
+[<a href="http://online.effbot.org">blog</a>]
+
+</p><p>Assorted software, most of it shipped under an OSI-compatible <a href="/zone/copyright.htm">old-style Python license</a>.  If you want
+to support development, you can always <a href="http://www.amazon.co.uk/gp/registry/2QZDLLDVBENMC">buy me some refreshments</a>.
+
+<h3>Contents:</h3>
+
+
+<p>
+Contents of <b>downloads/tkinter3000-1.1-20051211.zip</b> [<a href='/downloads/tkinter3000-1.1-20051211.zip'>download</a>]:
+</p>
+<pre>
+tkinter3000-1.1-20051211/benchOscilloscope.py [2k]
+tkinter3000-1.1-20051211/demoAggCanvas.py [3k]
+tkinter3000-1.1-20051211/demoArrowButton.py [2k]
+tkinter3000-1.1-20051211/demoButton.py [4k]
+tkinter3000-1.1-20051211/demoC.py [2k]
+tkinter3000-1.1-20051211/demoClock.py [1k]
+tkinter3000-1.1-20051211/demoCore.py [1k]
+tkinter3000-1.1-20051211/demoDraw2D.py [4k]
+tkinter3000-1.1-20051211/demoGauge.py [3k]
+tkinter3000-1.1-20051211/demoImage.py [8k]
+tkinter3000-1.1-20051211/demoLissajou.py [3k]
+tkinter3000-1.1-20051211/demoMacPython.py [4k]
+tkinter3000-1.1-20051211/demoOscilloscope.py [2k]
+tkinter3000-1.1-20051211/demoRightArrow.py [1k]
+tkinter3000-1.1-20051211/demoScrolledText.py [2k]
+tkinter3000-1.1-20051211/demoSimpleCanvas.py [2k]
+tkinter3000-1.1-20051211/demoSimplePlot.py [3k]
+tkinter3000-1.1-20051211/demoSimpleRightArrow.py [1k]
+tkinter3000-1.1-20051211/demoTextLabel.py [1k]
+tkinter3000-1.1-20051211/demoTrackingController.py [3k]
+tkinter3000-1.1-20051211/demoUnicode.py [1k]
+tkinter3000-1.1-20051211/demoX.py [1k]
+tkinter3000-1.1-20051211/PKG-INFO [1k]
+    Metadata-Version: 1.0
+    Name: tkinter3000
+    Version: 1.1-20051211
+    Summary: Widget Construction Kit for Tkinter
+    Home-page: <a href='http://www.effbot.org/zone/wck.htm'>http://www.effbot.org/zone/wck.htm</a>
+    Author: Fredrik Lundh
+    Author-email: fredrik at pythonware.com
+    Download-URL: http://www.effbot.org/downloads#tkinter3000
+<a href='tkinter3000-1.1-20051211.zip/README'>tkinter3000-1.1-20051211/README</a> [8k]
+tkinter3000-1.1-20051211/selftest.py [2k]
+tkinter3000-1.1-20051211/setup.py [2k]
+tkinter3000-1.1-20051211/setuplib.py [2k]
+tkinter3000-1.1-20051211/tk3000.h [2k]
+tkinter3000-1.1-20051211/WCK.css [1k]
+<a href='tkinter3000-1.1-20051211.zip/WCK.html'>tkinter3000-1.1-20051211/WCK.html</a> [46k]
+tkinter3000-1.1-20051211/_tk3demo.c [5k]
+tkinter3000-1.1-20051211/_tk3draw.c [37k]
+tkinter3000-1.1-20051211/_windraw.c [25k]
+tkinter3000-1.1-20051211/tk3/__init__.py [1k]
+tkinter3000-1.1-20051211/WCK/coreButton.py [1k]
+tkinter3000-1.1-20051211/WCK/coreForm.py [3k]
+tkinter3000-1.1-20051211/WCK/coreInput.py [7k]
+tkinter3000-1.1-20051211/WCK/Utils.py [16k]
+tkinter3000-1.1-20051211/WCK/wckTkinter.py [32k]
+tkinter3000-1.1-20051211/WCK/widTkinter.py [2k]
+tkinter3000-1.1-20051211/WCK/__init__.py [1k]
+</pre>
+
+
+
+
+
+</p>
+
+
+<hr />
+
+<div class='navigate'>
+<div  style='float: right;'>
+admin:
+[<a href='/zone/edit/?name=zone-template-downloads'>edit</a>]
+[<a href='/zone/edit/?action=new'>new</a>]
+[<a href='http://validator.w3.org/check?uri=http://www.effbot.org/zone/zone-template-downloads.htm'>validate</a>]
+</div>
+<div>
+[<a id="add-comment" href='/comment/zone/zone-template-downloads.htm'><b>add a comment!</b></a>]
+</div>
+</div>
+
+<p class='small'>Copyright &copy; 2002-2006 by Fredrik Lundh.</p>
+
+</div> <!-- effbot-body -->
+</div> <!-- effbot-page -->
+
+</body>
+</html>

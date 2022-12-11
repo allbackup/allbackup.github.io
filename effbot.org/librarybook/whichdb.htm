@@ -1,0 +1,29 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>The whichdb&nbsp;module</title></head><body data-page-id="717"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">The whichdb&nbsp;module</h1></div><div class="yui-ge"><div class="yui-u first"><p>This module can be used to figure out which database handler
+that was used for a given database file.</p><div class="example">
+<b style="example">Example: Using the whichdb
+module</b>
+<pre>
+# File: <a href="whichdb/whichdb-example-1.py">whichdb-example-1.py</a>
+
+import whichdb
+
+filename = "database"
+
+result = whichdb.whichdb(filename)
+
+if result:
+    print "file created by", result
+    handler = __import__(result)
+    db = handler.open(filename, "r")
+    print db.keys()
+else:
+    # cannot identify data base
+    if result is None:
+        print "cannot read database file", filename
+    else:
+        print "cannot identify database file", filename
+    db = None
+</pre></div><p>This example used the <b>__import__</b> function to import a
+module with the given name.</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to librarybook index page.">::: librarybook :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

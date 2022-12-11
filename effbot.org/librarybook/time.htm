@@ -1,0 +1,284 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>The time&nbsp;module</title></head><body data-page-id="689"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">The time&nbsp;module</h1></div><div class="yui-ge"><div class="yui-u first"><p>This module provides a number of functions to deal with dates
+and the time within a day. It&#8217;s a thin layer on top of the C
+runtime library.</p><p>A given date and time can either be represented as a floating
+point value (the number of seconds since a reference date, usually
+January 1st, 1970), or as a time tuple.</p><h3 style="sect2">Getting the current time</h3><div class="example">
+<b style="example">Example: Using the time
+module to get the current time</b>
+<pre>
+# File: <a href="time/time-example-1.py">time-example-1.py</a>
+
+import time
+
+now = time.time()
+
+print now, "seconds since", time.gmtime(0)[:6]
+print
+print "or in other words:"
+print "- local time:", time.localtime(now)
+print "- utc:", time.gmtime(now)
+
+</pre><pre class="computeroutput" moreinfo="NONE">
+937758359.77 seconds since (1970, 1, 1, 0, 0, 0)
+
+or in other words:
+- local time: (1999, 9, 19, 18, 25, 59, 6, 262, 1)
+- utc: (1999, 9, 19, 16, 25, 59, 6, 262, 0)
+</pre></div><p>The tuple returned by <b>localtime</b> and <b>gmtime</b>
+contains (year, month, day, hour, minute, second, day of week, day
+of year, daylight savings flag), where the year number is four
+digits, the day of week begins with 0 for Monday, and January 1st
+is day number 1.</p><h3 style="sect2">Converting time values to strings</h3><p>You can of course use standard string formatting operators to
+convert a time tuple to a string, but the <b>time</b> module also
+provides a number of standard conversion functions:</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><div class="example wide">
+<b style="example">Example: Using the time
+module to format dates and times</b>
+<pre class="wide">
+# File: <a href="time/time-example-2.py">time-example-2.py</a>
+
+import time
+
+now = time.localtime(time.time())
+
+print time.asctime(now)
+print time.strftime("%y/%m/%d %H:%M", now)
+print time.strftime("%a %b %d", now)
+print time.strftime("%c", now)
+print time.strftime("%I %p", now)
+print time.strftime("%Y-%m-%d %H:%M:%S %Z", now)
+
+# do it by hand...
+year, month, day, hour, minute, second, weekday, yearday, daylight = now
+print "%04d-%02d-%02d" % (year, month, day)
+print "%02d:%02d:%02d" % (hour, minute, second)
+print ("MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN")[weekday], yearday
+
+</pre><pre class="computeroutput wide" moreinfo="NONE">
+Sun Oct 10 21:39:24 1999
+99/10/10 21:39
+Sun Oct 10
+Sun Oct 10 21:39:24 1999
+09 PM
+1999-10-10 21:39:24 CEST
+1999-10-10
+21:39:24
+SUN 283
+</pre></div></div><div class="yui-ge"><div class="yui-u first"><h3 style="sect2">Converting strings to time values</h3><p>On some platforms, the <b>time</b> module contains a
+<b>strptime</b> function, which is pretty much the opposite of
+<b>strftime</b>. Given a string and a pattern, it returns the
+corresponding time tuple:</p><div class="example">
+<b style="example">Example: Using the
+time.strptime function to parse dates and times</b>
+<pre>
+# File: <a href="time/time-example-6.py">time-example-6.py</a>
+
+import time
+
+# make sure we have a strptime function!
+try:
+    strptime = time.strptime
+except AttributeError:
+    from strptime import strptime
+
+print strptime("31 Nov 00", "%d %b %y")
+print strptime("1 Jan 70 1:30pm", "%d %b %y %I:%M%p")
+</pre></div><p>The <b>time.strptime</b> function is currently only made
+available by Python if it&#8217;s provided by the platform&#8217;s C libraries.
+For platforms that don&#8217;t have a standard implementation (this
+includes Windows), here&#8217;s a partial replacement:</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><div class="example wide">
+<b style="example">Example: A strptime implementation</b>
+<pre class="wide">
+# File: <a href="time/strptime.py">strptime.py</a>
+
+import re
+import string
+
+MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug",
+          "Sep", "Oct", "Nov", "Dec"]
+
+SPEC = {
+    # map formatting code to a regular expression fragment
+    "%a": "(?P&lt;weekday&gt;[a-z]+)",
+    "%A": "(?P&lt;weekday&gt;[a-z]+)",
+    "%b": "(?P&lt;month&gt;[a-z]+)",
+    "%B": "(?P&lt;month&gt;[a-z]+)",
+    "%C": "(?P&lt;century&gt;\d\d?)",
+    "%d": "(?P&lt;day&gt;\d\d?)",
+    "%D": "(?P&lt;month&gt;\d\d?)/(?P&lt;day&gt;\d\d?)/(?P&lt;year&gt;\d\d)",
+    "%e": "(?P&lt;day&gt;\d\d?)",
+    "%h": "(?P&lt;month&gt;[a-z]+)",
+    "%H": "(?P&lt;hour&gt;\d\d?)",
+    "%I": "(?P&lt;hour12&gt;\d\d?)",
+    "%j": "(?P&lt;yearday&gt;\d\d?\d?)",
+    "%m": "(?P&lt;month&gt;\d\d?)",
+    "%M": "(?P&lt;minute&gt;\d\d?)",
+    "%p": "(?P&lt;ampm12&gt;am|pm)",
+    "%R": "(?P&lt;hour&gt;\d\d?):(?P&lt;minute&gt;\d\d?)",
+    "%S": "(?P&lt;second&gt;\d\d?)",
+    "%T": "(?P&lt;hour&gt;\d\d?):(?P&lt;minute&gt;\d\d?):(?P&lt;second&gt;\d\d?)",
+    "%U": "(?P&lt;week&gt;\d\d)",
+    "%w": "(?P&lt;weekday&gt;\d)",
+    "%W": "(?P&lt;weekday&gt;\d\d)",
+    "%y": "(?P&lt;year&gt;\d\d)",
+    "%Y": "(?P&lt;year&gt;\d\d\d\d)",
+    "%%": "%"
+}
+
+class TimeParser:
+    def __init__(self, format):
+        # convert strptime format string to regular expression
+        format = string.join(re.split("(?:\s|%t|%n)+", format))
+        pattern = []
+        try:
+            for spec in re.findall("%\w|%%|.", format):
+                if spec[0] == "%":
+                    spec = SPEC[spec]
+                pattern.append(spec)
+        except KeyError:
+            raise ValueError, "unknown specificer: %s" % spec
+        self.pattern = re.compile("(?i)" + string.join(pattern, ""))
+    def match(self, daytime):
+        # match time string
+        match = self.pattern.match(daytime)
+        if not match:
+            raise ValueError, "format mismatch"
+        get = match.groupdict().get
+        tm = [0] * 9
+        # extract date elements
+        y = get("year")
+        if y:
+            y = int(y)
+            if y &lt; 68:
+                y = 2000 + y
+            elif y &lt; 100:
+                y = 1900 + y
+            tm[0] = y
+        m = get("month")
+        if m:
+            if m in MONTHS:
+                m = MONTHS.index(m) + 1
+            tm[1] = int(m)
+        d = get("day")
+        if d: tm[2] = int(d)
+        # extract time elements
+        h = get("hour")
+        if h:
+            tm[3] = int(h)
+        else:
+            h = get("hour12")
+            if h:
+                h = int(h)
+                if string.lower(get("ampm12", "")) == "pm":
+                    h = h + 12
+                tm[3] = h
+        m = get("minute")
+        if m: tm[4] = int(m)
+        s = get("second")
+        if s: tm[5] = int(s)
+        # ignore weekday/yearday for now
+        return tuple(tm)
+
+def strptime(string, format="%a %b %d %H:%M:%S %Y"):
+    return TimeParser(format).match(string)
+
+if __name__ == "__main__":
+    # try it out
+    import time
+    print strptime("2000-12-20 01:02:03", "%Y-%m-%d %H:%M:%S")
+    print strptime(time.ctime(time.time()))
+
+</pre><pre class="computeroutput wide" moreinfo="NONE">
+(2000, 12, 20, 1, 2, 3, 0, 0, 0)
+(2000, 11, 15, 12, 30, 45, 0, 0, 0)
+</pre></div></div><div class="yui-ge"><div class="yui-u first"><h3 style="sect2">Converting time values</h3><p>Converting a time tuple back to a time value is pretty easy, at
+least as long as we&#8217;re talking about local time. Just pass the time
+tuple to the <b>mktime</b> function:</p><div class="example">
+<b style="example">Example: Using the time
+module to convert a local time tuple to a time integer</b>
+<pre>
+# File: <a href="time/time-example-3.py">time-example-3.py</a>
+
+import time
+
+t0 = time.time()
+tm = time.localtime(t0)
+
+print tm
+
+print t0
+print time.mktime(tm)
+
+</pre><pre class="computeroutput" moreinfo="NONE">
+(1999, 9, 9, 0, 11, 8, 3, 252, 1)
+936828668.16
+936828668.0
+</pre></div><p>Unfortunately, there&#8217;s no function in the 1.5.2 standard library
+that converts UTC time tuples <i>back</i> to time values (neither
+in Python nor in the underlying C libraries). The following example
+provides a Python implementation of such a function, called
+<b>timegm</b>:</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><div class="example wide">
+<b style="example">Example: Converting a UTC
+time tuple to a time integer</b>
+<pre class="wide">
+# File: <a href="time/time-example-4.py">time-example-4.py</a>
+
+import time
+
+def _d(y, m, d, days=(0,31,59,90,120,151,181,212,243,273,304,334,365)):
+    # map a date to the number of days from a reference point
+    return (((y - 1901)*1461)/4 + days[m-1] + d +
+        ((m &gt; 2 and not y % 4 and (y % 100 or not y % 400)) and 1))
+
+def timegm(tm, epoch=_d(1970,1,1)):
+    year, month, day, h, m, s = tm[:6]
+    assert year &gt;= 1970
+    assert 1 &lt;= month &lt;= 12
+    return (_d(year, month, day) - epoch)*86400 + h*3600 + m*60 + s
+
+t0 = time.time()
+tm = time.gmtime(t0)
+
+print tm
+
+print t0
+print timegm(tm)
+
+</pre><pre class="computeroutput wide" moreinfo="NONE">
+(1999, 9, 8, 22, 12, 12, 2, 251, 0)
+936828732.48
+936828732
+</pre></div></div><div class="yui-ge"><div class="yui-u first"><p>In 1.6 and later, a similar function is available in the
+<b><a href="calendar.htm">calendar</a></b> module, as <b>calendar.timegm</b>.</p><h3 style="sect2">Timing things</h3><p>The <b>time</b> module can be used to time the execution of a
+Python program. You can measure either <span>&#8220;wall time&#8221;</span>
+(real world time), or <span>&#8220;process time&#8221;</span> (the amount of
+CPU time the process has consumed, this far).</p><div class="example">
+<b style="example">Example: Using the time
+module to benchmark an algorithm</b>
+<pre>
+# File: <a href="time/time-example-5.py">time-example-5.py</a>
+
+import time
+
+def procedure():
+    time.sleep(2.5)
+
+# measure process time
+t0 = time.clock()
+procedure()
+print time.clock() - t0, "seconds process time"
+
+# measure wall time
+t0 = time.time()
+procedure()
+print time.time() - t0, "seconds wall time"
+
+</pre><pre class="computeroutput" moreinfo="NONE">
+0.0 seconds process time
+2.50903499126 seconds wall time
+</pre></div><p>Not all systems can measure the true process time. On such
+systems (including Windows), <b>clock</b> usually measures the
+wall time since the program was started.</p><p>Also see the <b><a href="timing.htm">timing</a></b> module, which
+measures the wall time between two events.</p><p>The process time has limited precision. On many systems, it
+wraps around after just over 30 minutes.</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to librarybook index page.">::: librarybook :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

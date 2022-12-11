@@ -1,0 +1,71 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>The cElementTree&nbsp;Module</title> <script type="text/javascript">effbot_page_id=20;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> <!--
+<p style='color: #8f8f8f; background: #fff5bf; padding: 5px 10px;'> <b>2008-07-15:</b> Selected articles
+ (including this one) 
+now have experimental "comment" links in the left column and at the bottom.
+You're welcome to use them for commenting and voting on articles.
+For a bit more on this, see <a
+href="http://effbot.slinkset.com/links/Welcome_to_discuss_effbot_org">this
+page</a>. /F
+</p>
+--> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <h1 class="maintitle">The cElementTree&nbsp;Module</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p class="info">January 30, 2005 | Fredrik Lundh</p><p>
+[<a href="/">home</a>]
+[<a href="/zone/">zone</a>]
+[<a alt="support elementtree development (via paypal)" href="https://www.paypal.com/xclick/business=fredrik%40pythonware.com&amp;item_name=support+elementtree+development&amp;no_note=1&amp;tax=0&amp;currency_code=USD">support effbot.org: the elementtree tip jar!</a>]
+</p><p>The cElementTree module is a C implementation of the
+<a href="element-index.htm">ElementTree API</a>, optimized for fast parsing
+and low memory use.
+On typical documents, cElementTree is 15-20 times faster than the Python
+version of ElementTree, and uses 2-5 times less memory.  On modern hardware,
+that means that documents in the 50-100 megabyte range can be manipulated
+in memory, and that documents in the 0-1 megabyte range load in zero time
+(0.0 seconds).  This allows you to drastically simplify many kinds of XML
+applications.</p><p>
+[<a href="#downloads">download&amp;install</a>]
+[<a href="#usage">usage</a>]
+[<a href="#benchmarks">benchmarks</a>]
+</p><h2 id="downloads">Download and install&#160;<a class="nav" href="#downloads" title="bookmark!">#</a></h2><p>cElementTree is included with Python 2.5 and later, as
+<b>xml.etree.cElementTree</b>.
+
+</p><p>For earlier versions, cElementTree 1.0.5 can be downloaded from
+<a href="/downloads#celementtree">the effbot.org downloads site</a>.
+You also need a recent version of <a href="/downloads#elementtree">the standard ElementTree library</a>.</p><p>If you&#8217;re using Linux or BSD systems, check your favourite package
+repository for <b>python-celementtree</b> or <b>py-celementtree</b>
+packages.  Note that some distributors have included cElementTree in
+their ElementTree package.  Mac OS X users may want to check the
+<a href="http://pdb.finkproject.org/pdb/search.php?summary=elementtree">Fink
+repository</a>.</p><p>To install binary distributions from effbot.org, download and run
+the installer, and follow the instructions on the screen.  If the
+installer cannot find your Python interpreter, see <a href="python-register.htm">this page</a>.</p><p>To install from sources, simply unpack the distribution archive,
+change to the distribution directory, and run the <b>setup.py</b> script
+as follows:</p><pre>
+$ python setup.py install
+</pre><p>See the README and CHANGES files for more on installation, licensing
+(BSD style), changes since the last version, etc.</p><p>cElementTree is designed to work with Python 2.1 and newer.
+
+The <b>iterparse</b> mechanism is currently only supported for Python
+2.2 and later.
+
+Earlier Python versions are not supported (let me know if you need
+support for 2.0 or 1.5.2).  For best performance, use Python 2.4.</p><p class="note"><b>Note:</b>
+Mandriva Linux ships with broken Python configuration files, and cannot
+be used to build Python extensions that rely on <b>distutils</b> feature
+tests.  For a workaround, see <a href="http://qa.mandriva.com/show_bug.cgi?id=19376">this thread</a>.
+</p><h2 id="usage">Usage&#160;<a class="nav" href="#usage" title="bookmark!">#</a></h2><p>The cElementTree module is designed to replace the ElementTree module
+from the standard elementtree package.  In theory, you should be able
+to simply change:</p><pre class="python">
+    <span class="pykeyword">from</span> elementtree <span class="pykeyword">import</span> ElementTree</pre><p>to
+
+<pre class="python">
+    <span class="pykeyword">import</span> cElementTree as ElementTree</pre></p><p>in existing code, and run your programs without any problems (note that
+<b>cElementTree</b> is a module, not a package).  (Let me know if you find
+that something you rely on doesn&#8217;t work as expected.)</p><p><b>cElementTree</b> contains one new function, <b>iterparse</b>, which
+works like <b>parse</b>, but lets you track changes to the tree while it is
+being built.  You can also modify and remove elements during the parse, as
+in this example, which processes &#8220;record&#8221; elements as they arrive, and then
+removes their contents from the tree.</p><pre class="python">
+<span class="pykeyword">import</span> cElementTree
+
+<span class="pykeyword">for</span> event, elem <span class="pykeyword">in</span> cElementTree.iterparse(file):
+    <span class="pykeyword">if</span> elem.tag == <span c

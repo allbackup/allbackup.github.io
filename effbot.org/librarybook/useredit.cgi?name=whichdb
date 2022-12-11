@@ -1,0 +1,132 @@
+<html>
+<head>
+<title>whichdb ::: www.effbot.org</title>
+<link rel='stylesheet' href='/effbot.css' type='text/css' media='screen' />
+</head>
+<body bgcolor='#ccffcc'>
+<div>[<a href='whichdb.htm'>back</a>]</div>
+<h3>Welcome to the effbot.org user editor!</h3>
+
+
+<p><b>Note: This is not a contact form!  Support questions, spam, and
+other off-topic stuff will be ignored.</b></p>
+
+<p>To suggest changes, edit the HTML fragment in the text box below.
+You can use the 'update preview' button to check your changes (the
+preview is displayed beneath the text box).  When done, fill in the
+name and address fields (optional) and click 'submit patch' to mail
+the patch to me.  (I reserve the right to decide which patches to
+include, of course.)  Thanks! /F</p>
+
+<form method='post' id='useredit'>
+<input type='hidden' name='name' value='whichdb'/>
+<p>
+<input type='submit' name='preview' value='update preview' style='background:#084; color:white; width:200px; font-weight:bold;' >
+&nbsp;&nbsp;&nbsp;
+<input type='submit' name='submit' value='submit patch'  style='background:#084; color:white; width:200px; font-weight:bold;' >
+</p>
+<textarea name='text' rows='30' cols='80'>The whichdb module
+
+&lt;!-- ADSENSE --&gt;
+&lt;p class='site'&gt;[&lt;a href='index.htm'&gt;contents&lt;/a&gt;]&lt;/p&gt;
+&lt;p class='site'&gt;[&lt;a href='index.htm'&gt;contents&lt;/a&gt;]&lt;/p&gt;
+
+&lt;p&gt;This module can be used to figure out which database handler
+that was used for a given database file.&lt;/p&gt;
+
+&lt;div class="example"&gt;
+
+&lt;b style="example"&gt;Example: Using the whichdb
+module&lt;/b&gt;
+&lt;pre&gt;
+# File: &lt;a href="whichdb-example-1.py"&gt;whichdb-example-1.py&lt;/a&gt;
+
+import whichdb
+
+filename = "database"
+
+result = whichdb.whichdb(filename)
+
+if result:
+    print "file created by", result
+    handler = __import__(result)
+    db = handler.open(filename, "r")
+    print db.keys()
+else:
+    # cannot identify data base
+    if result is None:
+        print "cannot read database file", filename
+    else:
+        print "cannot identify database file", filename
+    db = None
+&lt;/pre&gt;
+
+&lt;/div&gt;
+
+&lt;p&gt;This example used the &lt;b&gt;__import__&lt;/b&gt; function to import a
+module with the given name.&lt;/p&gt;</textarea>
+<table>
+<tr><td><label for='author'>Name:</label></td><td>
+<div><input name='author' value="" size=40></div>
+</td><td>(Optional)</td></tr>
+<tr><td><label for='email'>Mail:</label></td><td>
+<div><input name='email' value="" size=40></div>
+</td><td>(Optional)</td></tr>
+<tr><td><label for='note'>Comment:</label></td><td>
+<div><input name='note' value="" size=40></div>
+</td><td>(Optional)</td></tr>
+<tr><td><label for='password'>Password:</label></td><td>
+<div><input name='password' value="(replace with the sum of 7+4)" size=40></div>
+</td><td>(Required)</td></tr>
+</table>
+<p>
+<input type='submit' name='preview' value='update preview' style='background:#084; color:white; width:200px; font-weight:bold;' >
+&nbsp;&nbsp;&nbsp;
+<input type='submit' name='submit' value='submit patch'  style='background:#084; color:white; width:200px; font-weight:bold;' >
+</p>
+<p>&nbsp;</p>
+</form>
+<div style='background: white; border: 2px solid #084; padding: 0px 20px;'>
+<h2>The whichdb module</h2>
+
+<!-- ADSENSE -->
+<p class='site'>[<a href='index.htm'>contents</a>]</p>
+<p class='site'>[<a href='index.htm'>contents</a>]</p>
+
+<p>This module can be used to figure out which database handler
+that was used for a given database file.</p>
+
+<div class="example">
+
+<b style="example">Example: Using the whichdb
+module</b>
+<pre>
+# File: <a href="whichdb-example-1.py">whichdb-example-1.py</a>
+
+import whichdb
+
+filename = "database"
+
+result = whichdb.whichdb(filename)
+
+if result:
+    print "file created by", result
+    handler = __import__(result)
+    db = handler.open(filename, "r")
+    print db.keys()
+else:
+    # cannot identify data base
+    if result is None:
+        print "cannot read database file", filename
+    else:
+        print "cannot identify database file", filename
+    db = None
+</pre>
+
+</div>
+
+<p>This example used the <b>__import__</b> function to import a
+module with the given name.</p>
+</div>
+</body>
+</html>

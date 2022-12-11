@@ -1,0 +1,49 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>The readline&nbsp;module</title></head><body data-page-id="633"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">The readline&nbsp;module</h1></div><div class="yui-ge"><div class="yui-u first"><p>(Optional). This module activates input editing on Unix, using
+the GNU readline library (or a compatible library).</p><p>Once imported, this module provides improved command line
+editing, and also command history. It also enhances the
+<b>input</b> and <b>raw_input</b> functions.</p><div class="example">
+<b style="example">Example: Using the readline module</b>
+<pre>
+# File: <a href="readline/readline-example-1.py">readline-example-1.py</a>
+
+import readline # <i>activate readline editing</i>
+</pre></div><p>The module supports customized completion handling.  The following
+example shows how to install a completion handler:</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><div class="example wide">
+<b style="example">Example: Installing a custom completion handler</b>
+<pre class="wide">
+# File: readline-example-2.py
+
+class Completer:
+    def __init__(self, words):
+        self.words = words
+        self.prefix = None
+    def complete(self, prefix, index):
+        if prefix != self.prefix:
+            # <i>we have a new prefix!</i>
+            # <i>find all words that start with this prefix</i>
+            self.matching_words = [
+                w for w in self.words if w.startswith(prefix)
+                ]
+            self.prefix = prefix
+        try:
+            return self.matching_words[index]
+        except IndexError:
+            return None
+
+import readline
+
+# <i>a set of more or less interesting words</i>
+words = "perl", "pyjamas", "python", "pythagoras"
+
+completer = Completer(words)
+
+readline.parse_and_bind("tab: complete")
+readline.set_completer(completer.complete)
+
+# <i>try it out!</i>
+while 1:
+    print repr(raw_input("&gt;&gt;&gt; "))
+</pre></div></div><div class="yui-ge"><div class="yui-u first"><p>The <a href="rlcompleter.htm"><b>rlcompleter</b></a> provides more
+advanced completion for the Python interpreter command line.</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to librarybook index page.">::: librarybook :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

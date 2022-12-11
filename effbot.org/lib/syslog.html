@@ -1,0 +1,85 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>syslog</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-syslog.html'>original</a> :::
+<a href='syslog.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>syslog&#8212;Unix syslog library routines</h1>
+
+<p>Availability: Unix.</p>
+
+<p>This module provides an interface to the Unix <code>
+syslog</code> library routines. Refer to the Unix manual pages for
+a detailed description of the <code>syslog</code> facility.</p>
+
+<p>The module defines the following functions:</p>
+</div>
+<dl><dt class="function" id="syslog"><b>syslog([priority,] message)</b> <tt class="nav"><a class="nav" href="syslog.syslog" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Send the string <var>message</var> to the system logger. A
+trailing newline is added if necessary. Each message is tagged with
+a priority composed of a <var>facility</var> and a <var>
+level</var>. The optional <var>priority</var> argument, which
+defaults to <code>LOG_INFO</code>, determines the message priority.
+If the facility is not encoded in <var>priority</var> using
+logical-or (<code>LOG_INFO | LOG_USER</code>), the value given in
+the <a class="link" href="#openlog"><code>openlog</code></a> call is
+used.</p>
+</dd>
+<dt class="function" id="openlog"><b>openlog(ident[, logopt[, facility]])</b> <tt class="nav"><a class="nav" href="syslog.openlog" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Logging options other than the defaults can be set by explicitly
+opening the log file with <a class="link" href="#openlog"><code>
+openlog</code></a> prior to calling <a class="link" href="#syslog"><code>
+syslog</code></a>. The defaults are (usually) <var>ident</var> = <code>
+'syslog'</code>, <var>logopt</var> = <code>0</code>, <var>
+facility</var> = <code>LOG_USER</code>. The <var>ident</var>
+argument is a string which is prepended to every message. The
+optional <var>logopt</var> argument is a bit field - see below for
+possible values to combine. The optional <var>facility</var>
+argument sets the default facility for messages which do not have a
+facility explicitly encoded.</p>
+</dd>
+<dt class="function" id="closelog"><b>closelog()</b> <tt class="nav"><a class="nav" href="syslog.closelog" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Close the log file.</p>
+</dd>
+<dt class="function" id="setlogmask"><b>setlogmask(maskpri)</b> <tt class="nav"><a class="nav" href="syslog.setlogmask" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Set the priority mask to <var>maskpri</var> and return the
+previous mask value. Calls to <a class="link" href="#syslog"><code>
+syslog</code></a> with a priority level not set in <var>maskpri</var> are
+ignored. The default is to log all priorities. The function <code>
+LOG_MASK(</code><var>pri</var>) calculates the mask for the
+individual priority <var>pri</var>. The function <code>
+LOG_UPTO(</code><var>pri</var>) calculates the mask for all
+priorities up to and including <var>pri</var>.</p>
+</dd>
+</dl><div class="text">
+<p>The module defines the following constants:</p>
+</div>
+<dl><dt class="variable" id="Log"><b>Log options:</b> <tt class="nav"><a class="nav" href="syslog.Log" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p><code>LOG_PID</code>, <code>LOG_CONS</code>, <code>
+LOG_NDELAY</code>, <code>LOG_NOWAIT</code> and <code>
+LOG_PERROR</code> if defined in <code>
+&amp;ltsyslog.h&gt;</code>.</p>
+</dd>
+</dl></div></body></html>

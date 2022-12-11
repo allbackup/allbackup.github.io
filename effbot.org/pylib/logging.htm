@@ -1,0 +1,1410 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>logging -- Logging facility for&nbsp;Python</title> <script type="text/javascript">effbot_page_id=1062;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> <!--
+<p style='color: #8f8f8f; background: #fff5bf; padding: 5px 10px;'> <b>2008-07-15:</b> Selected articles
+
+now have experimental "comment" links in the left column and at the bottom.
+You're welcome to use them for commenting and voting on articles.
+For a bit more on this, see <a
+href="http://effbot.slinkset.com/links/Welcome_to_discuss_effbot_org">this
+page</a>. /F
+</p>
+--> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <h1 class="maintitle">logging -- Logging facility for&nbsp;Python</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><div class="module"><p>New in version 2.3. This module defines functions and classes
+which implement a flexible error logging system for
+applications.</p><p>Logging is performed by calling methods on instances of the <a class="link" href="Logger.htm#Logger">Logger</a> class (hereafter called
+loggers). Each instance has a name, and they are conceptually
+arranged in a name space hierarchy using dots (periods) as
+separators. For example, a logger named &#8220;scan&#8221; is the parent of
+loggers &#8220;scan.text&#8221;, &#8220;scan.html&#8221; and &#8220;scan.pdf&#8221;. Logger names can
+be anything you want, and indicate the area of an application in
+which a logged message originates.</p><p>Logged messages also have levels of importance associated with
+them. The default levels provided are <code>DEBUG</code>, <code>
+INFO</code>, <code>WARNING</code>, <code>ERROR</code> and <code>
+CRITICAL</code>. As a convenience, you indicate the importance of a
+logged message by calling an appropriate method of <a class="link" href="Logger.htm#Logger">Logger</a>. The methods are <a class="link" href="logging.htm#logging.debug">debug</a>, <a class="link" href="logging.htm#logging.info">
+info</a>, <a class="link" href="logging.htm#logging.warning">warning</a>, <a class="link" href="logging.htm#logging.error">error</a> and <a class="link" href="logging.htm#logging.critical">critical</a>, which mirror the default levels.
+You are not constrained to use these levels: you can specify your
+own and use a more general <a class="link" href="Logger.htm#Logger">
+Logger</a> method, <a class="link" href="logging.htm#logging.log">log</a>, which
+takes an explicit level argument.</p><p>The numeric values of logging levels are given in the following
+table. These are primarily of interest if you want to define your
+own levels, and need them to have specific values relative to the
+predefined levels. If you define a level with the same numeric
+value, it overwrites the predefined value; the predefined name is
+lost.</p><table border="1" class="simpletable">
+<tr>
+<th>
+<p>Level</p></th>
+<th>
+<p>Numeric value</p></th>
+</tr>
+<tr>
+<td>
+<p><code>CRITICAL</code></p></td>
+<td>
+<p>50</p></td>
+</tr>
+<tr>
+<td>
+<p><code>ERROR</code></p></td>
+<td>
+<p>40</p></td>
+</tr>
+<tr>
+<td>
+<p><code>WARNING</code></p></td>
+<td>
+<p>30</p></td>
+</tr>
+<tr>
+<td>
+<p><code>INFO</code></p></td>
+<td>
+<p>20</p></td>
+</tr>
+<tr>
+<td>
+<p><code>DEBUG</code></p></td>
+<td>
+<p>10</p></td>
+</tr>
+<tr>
+<td>
+<p><code>NOTSET</code></p></td>
+<td>
+<p>0</p></td>
+</tr>
+</table><br />
+<br />
+<p>Levels can also be associated with loggers, being set either by
+the developer or through loading a saved logging configuration.
+When a logging method is called on a logger, the logger compares
+its own level with the level associated with the method call. If
+the logger&#8217;s level is higher than the method call&#8217;s, no logging
+message is actually generated. This is the basic mechanism
+controlling the verbosity of logging output.</p><p>Logging messages are encoded as instances of the <a class="link" href="logging.htm#logging.LogRecord">LogRecord</a> class. When a logger decides to
+actually log an event, an <a class="link" href="logging.htm#logging.LogRecord">
+LogRecord</a> instance is created from the logging message.</p><p>Logging messages are subjected to a dispatch mechanism through
+the use of handlers, which are instances of subclasses of the <a class="link" href="Handler.htm#Handler">Handler</a> class. Handlers are
+responsible for ensuring that a logged message (in the form of a <a class="link" href="logging.htm#logging.LogRecord">LogRecord</a>) ends up in a
+particular location (or set of locations) which is useful for the
+target audience for that message (such as end users, support desk
+staff, system administrators, developers). Handlers are passed <a class="link" href="logging.htm#logging.LogRecord">LogRecord</a> instances intended
+for particular destinations. Each logger can have zero, one or more
+handlers associated with it (via the <a class="link" href="addHandler.htm#addHandler">addHandler</a> method of <a class="link" href="Logger.htm#Logger">Logger</a>). In addition to any handlers
+directly associated with a logger, <em>all handlers associated with
+all ancestors of the logger</em> are called to dispatch the
+message.</p><p>Just as for loggers, handlers can have levels associated with
+them. A handler&#8217;s level acts as a filter in the same way as a
+logger&#8217;s level does. If a handler decides to actually dispatch an
+event, the <a class="link" href="emit.htm#emit">emit</a> method is used
+to send the message to its destination. Most user-defined
+subclasses of <a class="link" href="Handler.htm#Handler">Handler</a> will
+need to override this <a class="link" href="emit.htm#emit">
+emit</a>.</p><p>In addition to the base <a class="link" href="Handler.htm#Handler">
+Handler</a> class, many useful subclasses are provided:</p><ol><li><p><a class="link" href="logging.htm#logging.StreamHandler">StreamHandler</a>
+instances send error messages to streams (file-like objects).</p></li><li><p><a class="link" href="logging.htm#logging.FileHandler">FileHandler</a>
+instances send error messages to disk files.</p></li><li><p><a class="link" href="BaseRotatingHandler.htm#BaseRotatingHandler">
+BaseRotatingHandler</a> is the base class for handlers that rotate
+log files at a certain point. It is not meant to be instantiated
+directly. Instead, use <a class="link" href="logging.htm#logging.RotatingFileHandler">RotatingFileHandler</a> or <a class="link" href="logging.htm#logging.TimedRotatingFileHandler">
+TimedRotatingFileHandler</a>.</p></li><li><p><a class="link" href="logging.htm#logging.RotatingFileHandler">
+RotatingFileHandler</a> instances send error messages to disk
+files, with support for maximum log file sizes and log file
+rotation.</p></li><li><p><a class="link" href="logging.htm#logging.TimedRotatingFileHandler">
+TimedRotatingFileHandler</a> instances send error messages to disk
+files rotating the log file at certain timed intervals.</p></li><li><p><a class="link" href="logging.htm#logging.SocketHandler">SocketHandler</a>
+instances send error messages to TCP/IP sockets.</p></li><li><p><a class="link" href="logging.htm#logging.DatagramHandler">DatagramHandler</a>
+instances send error messages to UDP sockets.</p></li><li><p><a class="link" href="logging.htm#logging.SMTPHandler">SMTPHandler</a>
+instances send error messages to a designated email address.</p></li><li><p><a class="link" href="logging.htm#logging.SysLogHandler">SysLogHandler</a>
+instances send error messages to a Unix syslog daemon, possibly on
+a remote machine.</p></li><li><p><a class="link" href="logging.htm#logging.NTEventLogHandler">
+NTEventLogHandler</a> instances send error messages to a Windows
+NT/2000/XP event log.</p></li><li><p><a class="link" href="logging.htm#logging.MemoryHandler">MemoryHandler</a>
+instances send error messages to a buffer in memory, which is
+flushed whenever specific criteria are met.</p></li><li><p><a class="link" href="logging.htm#logging.HTTPHandler">HTTPHandler</a>
+instances send error messages to an HTTP server using either
+&#8220;<code>GET</code>&#8221; or &#8220;<code>POST</code>&#8221; semantics.</p></li></ol><p>The <a class="link" href="logging.htm#logging.StreamHandler">StreamHandler</a>
+and <a class="link" href="logging.htm#logging.FileHandler">FileHandler</a> classes
+are defined in the core logging package. The other handlers are
+defined in a sub- module, <a class="link" href="logging.htm#logging.handlers">logging.handlers</a>. (There is also
+another sub-module, <a class="link" href="logging.htm#logging.config">
+logging.config</a>, for configuration functionality.)</p><p>Logged messages are formatted for presentation through instances
+of the <a class="link" href="logging.htm#logging.Formatter">Formatter</a> class.
+They are initialized with a format string suitable for use with the
+% operator and a dictionary.</p><p>For formatting multiple messages in a batch, instances of <a class="link" href="BufferingFormatter.htm#BufferingFormatter">BufferingFormatter</a>
+can be used. In addition to the format string (which is applied to
+each message in the batch), there is provision for header and
+trailer format strings.</p><p>When filtering based on logger level and/or handler level is not
+enough, instances of <a class="link" href="logging.htm#logging.Filter">Filter</a>
+can be added to both <a class="link" href="Logger.htm#Logger">Logger</a>
+and <a class="link" href="Handler.htm#Handler">Handler</a> instances
+(through their <a class="link" href="addFilter.htm#addFilter">addFilter</a>
+method). Before deciding to process a message further, both loggers
+and handlers consult all their filters for permission. If any
+filter returns a false value, the message is not processed
+further.</p><p>The basic <a class="link" href="logging.htm#logging.Filter">Filter</a>
+functionality allows filtering by specific logger name. If this
+feature is used, messages sent to the named logger and its children
+are allowed through the filter, and all others dropped.</p><p>In addition to the classes described above, there are a number
+of module- level functions.</p></div><dl><dt class="function" id="logging.getLogger"><b>getLogger([name])</b> <tt class="mark"><a href="#logging.getLogger" title="bookmark">#</a>|<a href="/comment/pylib/logging.htm%23logging.getLogger" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="function">
+<p>Return a logger with the specified name or, if no name is
+specified, return a logger which is the root logger of the
+hierarchy. If specified, the name is typically a dot-separated
+hierarchical name like <var>&#8220;a&#8221;</var>, <var>&#8220;a.b&#8221;</var> or <var>
+&#8220;a.b.c.d&#8221;</var>. Choice of these names is entirely up to the
+developer who is using logging.</p><p>All calls to this function with a given name return the same
+logger instance. This means that logger instances never need to be
+passed between different parts of an application.</p></dd>
+<dt class="function" id="logging.getLoggerClass"><b>getLoggerClass()</b> <tt class="mark"><a href="#logging.getLoggerClass" title="bookmark">#</a>|<a href="/comment/pylib/logging.htm%23logging.getLoggerClass" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="function">
+<p>Return either the standard <a class="link" href="Logger.htm#Logger">
+Logger</a> class, or the last class passed to <a class="link" href="logging.htm#logging.setLoggerClass">setLoggerClass</a>. This function may be
+called from within a new class definition, to ensure that
+installing a customised <a class="link" href="Logger.htm#Logger">
+Logger</a> class will not undo customisations already applied by
+other code. For example:</p><pre>
+ class MyLogger(logging.getLoggerClass()):
+     # ... override behaviour here
+</pre></dd>
+<dt class="function" id="logging.debug"><b>debug(msg[, *args[, **kwargs]])</b> <tt class="mark"><a href="#logging.debug" title="bookmark">#</a>|<a href="/comment/pylib/logging.htm%23logging.debug" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="function">
+<p>Logs a message with level <code>DEBUG</code> on the root logger.
+The <var>msg</var> is the message format string, and the <var>
+args</var> are the arguments which are merged into <var>msg</var>.
+The only keyword argument in <var>kwargs</var> which is inspected
+is <var>exc_info</var> which, if it does not evaluate as false,
+causes exception information to be added to the logging message. If
+an exception tuple (in the format returned by <a class="link" href="sys.htm#sys.exc_info">sys.exc_info</a>) is provided, it is used;
+otherwise, <a class="link" href="sys.htm#sys.exc_info">
+sys.exc_info</a> is called to get the exception information.</p></dd>
+<dt class="function" id="logging.info"><b>info(msg[, *args[, **kwargs]])</b> <tt class="mark"><a href="#logging.info" title="bookmark">#</a>|<a href="/comment/pylib/logging.htm%23logging.info" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="function">
+<p>Logs a message with level <code>INFO</code> on the root logger.
+The arguments are interpreted as for <a class="link" href="logging.htm#logging.debug">debug</a>.</p></dd>
+<dt class="function" id="logging.warning"><b>warning(msg[, *args[, **kwargs]])</b> <tt class="mark"><a href="#logging.warning" title="bookmark">#</a>|<a href="/comment/pylib/logging.htm%23logging.warning" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="function">
+<p>Logs a message with level <code>WARNING</code> on the root
+logger. The arguments are interpreted as for <a class="link" href="logging.htm#logging.debug">debug</a>.</p></dd>
+<dt class="function" id="logging.error"><b>error(msg[, *args[, **kwargs]])</b> <tt class="mark"><a href="#logging.error" title="bookmark">#</a>|<a href="/comment/pylib/logging.htm%23logging.error" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="function">
+<p>Logs a message with level <code>ERROR</code> on the root logger.
+The arguments are interpreted as for <a class="link" href="logging.htm#logging.debug">debug</a>.</p></dd>
+<dt class="function" id="logging.critical"><b>critical(msg[, *args[, **kwargs]])</b> <tt class="mark"><a href="#logging.critical" title="bookmark">#</a>|<a href="/comment/pylib/logging.htm%23logging.critical" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="function">
+<p>Logs a message with level <code>CRITICAL</code> on the root
+logger. The arguments are interpreted as for <a class="link" href="logging.htm#logging.debug">debug</a>.</p></dd>
+<dt class="function" id="logging.exception"><b>exception(msg[, *args])</b> <tt class="mark"><a href="#logging.exception" title="bookmark">#</a>|<a href="/comment/pylib/logging.htm%23logging.exception" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="function">
+<p>Logs a message with level <code>ERROR</code> on the root logger.
+The arguments are interpreted as for <a class="link" href="logging.htm#logging.debug">debug</a>. Exception info is added to the logging
+message. This function should only be called from an exception
+handler.</p></dd>
+<dt class="function" id="logging.log"><b>log(level, msg[, *args[, **kwargs]])</b> <tt class="mark"><a href="#logging.log" title="bookmark">#</a>|<a href="/comment/pylib/logging.htm%23logging.log" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="function">
+<p>Logs a message with level <var>level</var> on the root logger.
+The other arguments are interpreted as for <a class="link" href="logging.htm#logging.debug">debug</a>.</p></dd>
+<dt class="function" id="logging.disable"><b>disable(lvl)</b> <tt class="mark"><a href="#logging.disable" title="bookmark">#</a>|<a href="/comment/pylib/logging.htm%23logging.disable" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="function">
+<p>Provides an overriding level <var>lvl</var> for all loggers
+which takes precedence over the logger&#8217;s own level. When the need
+arises to temporarily throttle logging output down across the whole
+application, this function can be useful.</p></dd>
+<dt class="function" id="logging.addLevelName"><b>addLevelName(lvl, levelName)</b> <tt class="mark"><a href="#logging.addLevelName" title="bookmark">#</a>|<a href="/comment/pylib/logging.htm%23logging.addLevelName" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="function">
+<p>Associates level <var>lvl</var> with text <var>levelName</var>
+in an internal dictionary, which is used to map numeric levels to a
+textual representation, for example when a <a class="link" href="logging.htm#logging.Formatter">Formatter</a> formats a message. This
+function can also be used to define your own levels. The only
+constraints are that all levels used must be registered using this
+function, levels should be positive integers and they should
+increase in increasing order of severity.</p></dd>
+<dt class="function" id="logging.getLevelName"><b>getLevelName(lvl)</b> <tt class="mark"><a href="#logging.getLevelName" title="bookmark">#</a>|<a href="/comment/pylib/logging.htm%23logging.getLevelName" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="function">
+<p>Returns the textual representation of logging level <var>
+lvl</var>. If the level is one of the predefined levels <code>
+CRITICAL</code>, <code>ERROR</code>, <code>WARNING</code>, <code>
+INFO</code> or <code>DEBUG</code> then you get the corresponding
+string. If you have associated levels with names using <a class="link" href="logging.htm#logging.addLevelName">addLevelName</a> then the
+name you have associated with <var>lvl</var> is returned. If a
+numeric value corresponding to one of the defined levels is passed
+in, the corresponding string representation is returned. Otherwise,
+the string &#8220;Level %s&#8221; % lvl is returned.</p></dd>
+<dt class="function" id="logging.makeLogRecord"><b>makeLogRecord(attrdict)</b> <tt class="mark"><a href="#logging.makeLogRecord" title="bookmark">#</a>|<a href="/comment/pylib/logging.htm%23logging.makeLogRecord" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="function">
+<p>Creates and returns a new <a class="link" href="logging.htm#logging.LogRecord">
+LogRecord</a> instance whose attributes are defined by <var>
+attrdict</var>. This function is useful for taking a pickled <a class="link" href="logging.htm#logging.LogRecord">LogRecord</a> attribute
+dictionary, sent over a socket, and reconstituting it as a <a class="link" href="logging.htm#logging.LogRecord">LogRecord</a> instance at the
+receiving end.</p></dd>
+<dt class="function" id="logging.basicConfig"><b>basicConfig([**kwargs])</b> <tt class="mark"><a href="#logging.basicConfig" title="bookmark">#</a>|<a href="/comment/pylib/logging.htm%23logging.basicConfig" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="function">
+<p>Does basic configuration for the logging system by creating a <a class="link" href="logging.htm#logging.StreamHandler">StreamHandler</a> with a
+default <a class="link" href="logging.htm#logging.Formatter">Formatter</a> and
+adding it to the root logger. The functions <a class="link" href="logging.htm#logging.debug">debug</a>, <a class="link" href="logging.htm#logging.info">
+info</a>, <a class="link" href="logging.htm#logging.warning">warning</a>, <a class="link" href="logging.htm#logging.error">error</a> and <a class="link" href="logging.htm#logging.critical">critical</a> will call <a class="link" href="logging.htm#logging.basicConfig">basicConfig</a> automatically if no
+handlers are defined for the root logger.</p><p>The following keyword arguments are supported.</p><table border="1" class="simpletable">
+<tr>
+<th>
+<p>Format</p></th>
+<th>
+<p>Description</p></th>
+</tr>
+<tr>
+<td>
+<p><code>filename</code></p></td>
+<td>
+<p>Specifies that a FileHandler be created, using the specified
+filename, rather than a StreamHandler.</p></td>
+</tr>
+<tr>
+<td>
+<p><code>filemode</code></p></td>
+<td>
+<p>Specifies the mode to open the file, if filename is specified
+(if filemode is unspecified, it defaults to &#8216;a&#8217;).</p></td>
+</tr>
+<tr>
+<td>
+<p><code>format</code></p></td>
+<td>
+<p>Use the specified format string for the handler.</p></td>
+</tr>
+<tr>
+<td>
+<p><code>datefmt</code></p></td>
+<td>
+<p>Use the specified date/time format.</p></td>
+</tr>
+<tr>
+<td>
+<p><code>level</code></p></td>
+<td>
+<p>Set the root logger level to the specified level.</p></td>
+</tr>
+<tr>
+<td>
+<p><code>stream</code></p></td>
+<td>
+<p>Use the specified stream to initialize the StreamHandler. Note
+that this argument is incompatible with &#8216;filename&#8217; - if both are
+present, &#8216;stream&#8217; is ignored.</p></td>
+</tr>
+</table><br />
+<br />
+<blockquote><span class="mark">@since</span> Changed in version
+2.4: Formerly, basicConfig did not take any keyword
+arguments.<br />
+</blockquote></dd>
+<dt class="function" id="logging.shutdown"><b>shutdown()</b> <tt class="mark"><a href="#logging.shutdown" title="bookmark">#</a>|<a href="/comment/pylib/logging.htm%23logging.shutdown" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="function">
+<p>Informs the logging system to perform an orderly shutdown by
+flushing and closing all handlers.</p></dd>
+<dt class="function" id="logging.setLoggerClass"><b>setLoggerClass(klass)</b> <tt class="mark"><a href="#logging.setLoggerClass" title="bookmark">#</a>|<a href="/comment/pylib/logging.htm%23logging.setLoggerClass" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="function">
+<p>Tells the logging system to use the class <var>klass</var> when
+instantiating a logger. The class should define <a class="link" href="/pyref/__init__">__init__</a> such that only a name argument is
+required, and the <a class="link" href="/pyref/__init__">__init__</a>
+should call <a class="link" href="Logger.htm#Logger.__init__">
+Logger.__init__</a>. This function is typically called before any
+loggers are instantiated by applications which need to use custom
+logger behavior.</p></dd>
+</dl><div class="text"><span class="mark">@see</span> <a class="link" href="http://www.python.org/peps/pep-0282.html">PEP 282, A Logging
+System</a> The proposal which described this feature for inclusion
+in the Python standard library. <span class="mark">@see</span> <a class="link" href="http://www.red-dove.com/python_logging.html">
+Original Python logging package</a> This is the original source for
+the logging package. The version of the package available from this
+site is suitable for use with Python 1.5.2, 2.1.x and 2.2.x, which
+do not include the logging package in the standard library. 
+
+<h2 id="logger-objects">Logger Objects&#160;<a class="nav" href="#logger-objects" title="bookmark!">#</a></h2><p>Loggers have the following attributes and methods. Note that
+Loggers are never instantiated directly, but always through the
+module-level function <a class="link" href="logging.htm#logging.getLogger(name)">
+logging.getLogger(name)</a>.</p></div><dl><dt class="variable" id="logging.propagate"><b>propagate</b> <tt class="mark"><a href="#logging.propagate" title="bookmark">#</a>|<a href="/comment/pylib/logging.htm%23logging.propagate" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="variable">
+<p>If this evaluates to false, logging messages are not passed by
+this logger or by child loggers to higher level (ancestor) loggers.
+The constructor sets this attribute to 1.</p></dd>
+<dt class="method" id="logging.Logger.setLevel"><b>setLevel(lvl)</b> <tt class="mark"><a href="#logging.Logger.setLevel" title="bookmark">#</a>|<a href="/comment/pylib/logging.htm%23logging.Logger.setLevel" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="method">
+<p>Sets the threshold for this logger to <var>lvl</var>. Logging
+messages which are less severe than <var>lvl</var> will be ignored.
+When a logger is created, the level is set to <code>NOTSET</code>
+(which causes all messages to be processed when the logger is the
+root logger, or delegation to the parent when the logger is a
+non-root logger). Note that the root logger is created with level
+<code>WARNING</code>.</p></dd>
+<dt class="method" id="logging.Logger.isEnabledFor"><b>isEnabledFor(lvl)</b> <tt class="mark"><a href="#logging.Logger.isEnabledFor" title="bookmark">#</a>|<a href="/comment/pylib/logging.htm%23logging.Logger.isEnabledFor" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="method">
+<p>Indicates if a message of severity <var>lvl</var> would be
+processed by this logger. This method checks first the module-level
+level set by <a class="link" href="logging.htm#logging.disable(lvl)">
+logging.disable(lvl)</a> and then the logger&#8217;s effective level as
+determined by <a class="link" href="getEffectiveLevel.htm#getEffectiveLevel">
+getEffectiveLevel</a>.</p></dd>
+<dt class="method" id="logging.Logger.getEffectiveLevel"><b>getEffectiveLevel()</b> <tt class="mark"><a href="#logging.Logger.getEffectiveLevel" title="bookmark">#</a>|<a href="/comment/pylib/logging.htm%23logging.Logger.getEffectiveLevel" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="method">
+<p>Indicates the effective level for this logger. If a value other
+than <code>NOTSET</code> has been set using <a class="link" href="setLevel.htm#setLevel">setLevel</a>, it is returned. Otherwise, the
+hierarchy is traversed towards the root until a value other than
+<code>NOTSET</code> is found, and that value is returned.</p></dd>
+<dt class="method" id="logging.Logger.debug"><b>debug(msg[, *args[, **kwargs]])</b> <tt class="mark"><a href="#logging.Logger.debug" title="bookmark">#</a>|<a href="/comment/pylib/logging.htm%23logging.Logger.debug" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="method">
+<p>Logs a message with level <code>DEBUG</code> on this logger. The
+<var>msg</var> is the message format string, and the <var>
+args</var> are the arguments which are merged into <var>msg</var>.
+The only keyword argument in <var>kwargs</var> which is inspected
+is <var>exc_info</var> which, if it does not evaluate as false,
+causes exception information to be added to the logging message. If
+an exception tuple (as provided by <a class="link" href="sys.htm#sys.exc_info">sys.exc_info</a>) is provided, it is used;
+otherwise, <a class="link" href="sys.htm#sys.exc_info">
+sys.exc_info</a> is called to get the exception information.</p></dd>
+<dt class="method" id="logging.Logger.info"><b>info(msg[, *args[, **kwargs]])</b> <tt class="mark"><a href="#logging.Logger.info" title="bookmark">#</a>|<a href="/comment/pylib/logging.htm%23logging.Logger.info" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="method">
+<p>Logs a message with level <code>INFO</code> on this logger. The
+arguments are interpreted as for <a class="link" href="logging.htm#logging.debug">
+debug</a>.</p></dd>
+<dt class="method" id="logging.Logger.warning"><b>warning(msg[, *args[, **kwargs]])</b> <tt class="mark"><a href="#logging.Logger.warning" title="bookmark">#</a>|<a href="/comment/pylib/logging.htm%23logging.Logger.warning" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="method">
+<p>Logs a message with level <code>WARNING</code> on this logger.
+The arguments are interpreted as for <a class="link" href="logging.htm#logging.debug">debug</a>.</p></dd>
+<dt class="method" id="logging.Logger.error"><b>error(msg[, *args[, **kwargs]])</b> <tt class="mark"><a href="#logging.Logger.error" title="bookmark">#</a>|<a href="/comment/pylib/logging.htm%23logging.Logger.error" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="method">
+<p>Logs a message with level <code>ERROR</code> on this logger. The
+arguments are interpreted as for <a class="link" href="logging.htm#logging.debug">
+debug</a>.</p></dd>
+<dt class="method" id="logging.Logger.critical"><b>critical(msg[, *args[, **kwargs]])</b> <tt class="mark"><a href="#logging.Logger.critical" title="bookmark">#</a>|<a href="/comment/pylib/logging.htm%23logging.Logger.critical" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="method">
+<p>Logs a message with level <code>CRITICAL</code> on this logger.
+The arguments are interpreted as for <a class="link" href="logging.htm#logging.debug">debug</a>.</p></dd>
+<dt class="method" id="logging.Logger.log"><b>log(lvl, msg[, *args[, **kwargs]])</b> <tt class="mark"><a href="#logging.Logger.log" title="bookmark">#</a>|<a href="/comment/pylib/logging.htm%23logging.Logger.log" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="method">
+<p>Logs a message with integer level <var>lvl</var> on this logger.
+The other arguments are interpreted as for <a class="link" href="logging.htm#logging.debug">debug</a>.</p></dd>
+<dt class="method" id="logging.Logger.exception"><b>exception(msg[, *args])</b> <tt class="mark"><a href="#logging.Logger.exception" title="bookmark">#</a>|<a href="/comment/pylib/logging.htm%23logging.Logger.exception" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="method">
+<p>Logs a message with level <code>ERROR</code> on this logger. The
+arguments are interpreted as for <a class="link" href="logging.htm#logging.debug">
+debug</a>. Exception info is added to the logging message. This
+method should only be called from an exception handler.</p></dd>
+<dt class="method" id="logging.Logger.addFilter"><b>addFilter(filt)</b> <tt class="mark"><a href="#logging.Logger.addFilter" title="bookmark">#</a>|<a href="/comment/pylib/logging.htm%23logging.Logger.addFilter" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="method">
+<p>Adds the specified filter <var>filt</var> to this logger.</p></dd>
+<dt class="method" id="logging.Logger.removeFilter"><b>removeFilter(filt)</b> <tt class="mark"><a href="#logging.Logger.removeFilter" title="bookmark">#</a>|<a href="/comment/pylib/logging.htm%23logging.Logger.removeFilter" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="method">
+<p>Removes the specified filter <var>filt</var> from this
+logger.</p></dd>
+<dt class="method" id="logging.Logger.filter"><b>filter(record)</b> <tt class="mark"><a href="#logging.Logger.filter" title="bookmark">#</a>|<a href="/comment/pylib/logging.htm%23logging.Logger.filter" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="method">
+<p>Applies this logger&#8217;s filters to the record and returns a true
+value if the record is to be processed.</p></dd>
+<dt class="method" id="logging.Logger.addHandler"><b>addHandler(hdlr)</b> <tt class="mark"><a href="#logging.Logger.addHandler" title="bookmark">#</a>|<a href="/comment/pylib/logging.htm%23logging.Logger.addHandler" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="method">
+<p>Adds the specified handler <var>hdlr</var> to this logger.</p></dd>
+<dt class="method" id="logging.Logger.removeHandler"><b>removeHandler(hdlr)</b> <tt class="mark"><a href="#logging.Logger.removeHandler" title="bookmark">#</a>|<a href="/comment/pylib/logging.htm%23logging.Logger.removeHandler" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="method">
+<p>Removes the specified handler <var>hdlr</var> from this
+logger.</p></dd>
+<dt class="method" id="logging.Logger.findCaller"><b>findCaller()</b> <tt class="mark"><a href="#logging.Logger.findCaller" title="bookmark">#</a>|<a href="/comment/pylib/logging.htm%23logging.Logger.findCaller" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="method">
+<p>Finds the caller&#8217;s source filename and line number. Returns the
+filename and line number as a 2-element tuple.</p></dd>
+<dt class="method" id="logging.Logger.handle"><b>handle(record)</b> <tt class="mark"><a href="#logging.Logger.handle" title="bookmark">#</a>|<a href="/comment/pylib/logging.htm%23logging.Logger.handle" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="method">
+<p>Handles a record by passing it to all handlers associated with
+this logger and its ancestors (until a false value of <var>
+propagate</var> is found). This method is used for unpickled
+records received from a socket, as well as those created locally.
+Logger-level filtering is applied using <a class="link" href="/pyref/filter">filter</a>.</p></dd>
+<dt class="method" id="logging.Logger.makeRecord"><b>makeRecord(name, lvl, fn, lno, msg, args,
+exc_info)</b> <tt class="mark"><a href="#logging.Logger.makeRecord" title="bookmark">#</a>|<a href="/comment/pylib/logging.htm%23logging.Logger.makeRecord" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="method">
+<p>This is a factory method which can be overridden in subclasses
+to create specialized <a class="link" href="logging.htm#logging.LogRecord">
+LogRecord</a> instances.</p></dd>
+</dl></div><div class="yui-u">&#160;</div></div><div class="yui-g"><div class="text wide"><h2 id="basic-example">Basic example&#160;<a class="nav" href="#basic-example" title="bookmark!">#</a></h2><p>Changed in version 2.4: formerly <a class="link" href="logging.htm#logging.basicConfig">basicConfig</a> did not take any keyword
+arguments.</p><p>The <a class="link" href="logging.htm#logging">logging</a> package
+provides a lot of flexibility, and its configuration can appear
+daunting. This section demonstrates that simple use of the logging
+package is possible.</p><p>The simplest example shows logging to the console:</p><pre class="wide">
+import logging
+
+logging.debug('A debug message')
+logging.info('Some information')
+logging.warning('A shot across the bows')
+</pre><p>If you run the above script, you&#8217;ll see this:</p><pre class="wide">
+WARNING:root:A shot across the bows
+</pre><p>Because no particular logger was specified, the system used the
+root logger. The debug and info messages didn&#8217;t appear because by
+default, the root logger is configured to only handle messages with
+a severity of WARNING or above. The message format is also a
+configuration default, as is the output destination of the messages
+- <code>sys.stderr</code>. The severity level, the message format
+and destination can be easily changed, as shown in the example
+below:</p><pre class="wide">
+import logging
+
+logging.basicConfig(level=logging.DEBUG,
+                    format='%(asctime)s %(levelname)s %(message)s',
+                    filename='/tmp/myapp.log',
+                    filemode='w')
+logging.debug('A debug message')
+logging.info('Some information')
+logging.warning('A shot across the bows')
+</pre><p>The <a class="link" href="logging.htm#logging.basicConfig">basicConfig</a>
+method is used to change the configuration defaults, which results
+in output (written to <code>/tmp/myapp.log</code>) which should
+look something like the following:</p><pre class="wide">
+2004-07-02 13:00:08,743 DEBUG A debug message
+2004-07-02 13:00:08,743 INFO Some information
+2004-07-02 13:00:08,743 WARNING A shot across the bows
+</pre><p>This time, all messages with a severity of DEBUG or above were
+handled, and the format of the messages was also changed, and
+output went to the specified file rather than the console.</p><p>Formatting uses standard Python string formatting - see section
+<a class="link" href="typesseq-strings.htm#typesseq-strings.html#typesseq-strings">
+typesseq-strings.html#typesseq-strings</a>. The format string takes
+the following common specifiers. For a complete list of specifiers,
+consult the <a class="link" href="logging.htm#logging.Formatter">Formatter</a>
+documentation.</p><table border="1" class="simpletable">
+<tr>
+<th>
+<p>Format</p></th>
+<th>
+<p>Description</p></th>
+</tr>
+<tr>
+<td>
+<p><code>%(name)s</code></p></td>
+<td>
+<p>Name of the logger (logging channel).</p></td>
+</tr>
+<tr>
+<td>
+<p><code>%(levelname)s</code></p></td>
+<td>
+<p>Text logging level for the message (<code>'DEBUG'</code>, <code>
+'INFO'</code>, <code>'WARNING'</code>, <code>'ERROR'</code>, <code>
+'CRITICAL'</code>).</p></td>
+</tr>
+<tr>
+<td>
+<p><code>%(asctime)s</code></p></td>
+<td>
+<p>Human-readable time when the <a class="link" href="logging.htm#logging.LogRecord">LogRecord</a> was created. By default this is
+of the form &#8220;2003-07-08 16:49:45,896&#8221; (the numbers
+after the comma are millisecond portion of the time).</p></td>
+</tr>
+<tr>
+<td>
+<p><code>%(message)s</code></p></td>
+<td>
+<p>The logged message.</p></td>
+</tr>
+</table><br />
+<br />
+<p>To change the date/time format, you can pass an additional
+keyword parameter, <var>datefmt</var>, as in the following:</p><pre class="wide">
+import logging
+
+logging.basicConfig(level=logging.DEBUG,
+                    format='%(asctime)s %(levelname)-8s %(message)s',
+                    datefmt='%a, %d %b %Y %H:%M:%S',
+                    filename='/temp/myapp.log',
+                    filemode='w')
+logging.debug('A debug message')
+logging.info('Some information')
+logging.warning('A shot across the bows')
+</pre><p>which would result in output like</p><pre class="wide">
+Fri, 02 Jul 2004 13:06:18 DEBUG    A debug message
+Fri, 02 Jul 2004 13:06:18 INFO     Some information
+Fri, 02 Jul 2004 13:06:18 WARNING  A shot across the bows
+</pre><p>The date format string follows the requirements of <a class="link" href="strftime.htm#strftime">strftime</a> - see the
+documentation for the <a class="link" href="time.htm#time">time</a>
+module.</p><p>If, instead of sending logging output to the console or a file,
+you&#8217;d rather use a file-like object which you have created
+separately, you can pass it to <a class="link" href="logging.htm#logging.basicConfig">basicConfig</a> using the <var>stream</var>
+keyword argument. Note that if both <var>stream</var> and <var>
+filename</var> keyword arguments are passed, the <var>stream</var>
+argument is ignored.</p><p>Of course, you can put variable information in your output. To
+do this, simply have the message be a format string and pass in
+additional arguments containing the variable information, as in the
+following example:</p><pre class="wide">
+import logging
+
+logging.basicConfig(level=logging.DEBUG,
+                    format='%(asctime)s %(levelname)-8s %(message)s',
+                    datefmt='%a, %d %b %Y %H:%M:%S',
+                    filename='/temp/myapp.log',
+                    filemode='w')
+logging.error('Pack my box with %d dozen %s', 5, 'liquor jugs')
+</pre><p>which would result in</p><pre class="wide">
+Wed, 21 Jul 2004 15:35:16 ERROR    Pack my box with 5 dozen liquor jugs
+</pre><h2 id="logging-to-multiple-destinations">Logging to multiple destinations&#160;<a class="nav" href="#logging-to-multiple-destinations" title="bookmark!">#</a></h2><p>Let&#8217;s say you want to log to console and file with different
+message formats and in differing circumstances. Say you want to log
+messages with levels of DEBUG and higher to file, and those
+messages at level INFO and higher to the console. Let&#8217;s also assume
+that the file should contain timestamps, but the console messages
+should not. Here&#8217;s how you can achieve this:</p><pre class="wide">
+import logging
+
+# set up logging to file - see previous section for more details
+logging.basicConfig(level=logging.DEBUG,
+                    format='%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
+                    datefmt='%m-%d %H:%M',
+                    filename='/temp/myapp.log',
+                    filemode='w')
+# define a Handler which writes INFO messages or higher to the sys.stderr
+console = logging.StreamHandler()
+console.setLevel(logging.INFO)
+# set a format which is simpler for console use
+formatter = logging.Formatter('%(name)-12s: %(levelname)-8s %(message)s')
+# tell the handler to use this format
+console.setFormatter(formatter)
+# add the handler to the root logger
+logging.getLogger('').addHandler(console)
+
+# Now, we can log to the root logger, or any other logger. First the root...
+logging.info('Jackdaws love my big sphinx of quartz.')
+
+# Now, define a couple of other loggers which might represent areas in your
+# application:
+
+logger1 = logging.getLogger('myapp.area1')
+logger2 = logging.getLogger('myapp.area2')
+
+logger1.debug('Quick zephyrs blow, vexing daft Jim.')
+logger1.info('How quickly daft jumping zebras vex.')
+logger2.warning('Jail zesty vixen who grabbed pay from quack.')
+logger2.error('The five boxing wizards jump quickly.')
+</pre><p>When you run this, on the console you will see</p><pre class="wide">
+root        : INFO     Jackdaws love my big sphinx of quartz.
+myapp.area1 : INFO     How quickly daft jumping zebras vex.
+myapp.area2 : WARNING  Jail zesty vixen who grabbed pay from quack.
+myapp.area2 : ERROR    The five boxing wizards jump quickly.
+</pre><p>and in the file you will see something like</p><pre class="wide">
+10-22 22:19 root         INFO     Jackdaws love my big sphinx of quartz.
+10-22 22:19 myapp.area1  DEBUG    Quick zephyrs blow, vexing daft Jim.
+10-22 22:19 myapp.area1  INFO     How quickly daft jumping zebras vex.
+10-22 22:19 myapp.area2  WARNING  Jail zesty vixen who grabbed pay from quack.
+10-22 22:19 myapp.area2  ERROR    The five boxing wizards jump quickly.
+</pre><p>As you can see, the DEBUG message only shows up in the file. The
+other messages are sent to both destinations.</p><p>This example uses console and file handlers, but you can use any
+number and combination of handlers you choose.</p><h2 id="sending-and-receiving-logging-events-across-a-network">Sending and receiving logging events across a network&#160;<a class="nav" href="#sending-and-receiving-logging-events-across-a-network" title="bookmark!">#</a></h2><p>Let&#8217;s say you want to send logging events across a network, and
+handle them at the receiving end. A simple way of doing this is
+attaching a <a class="link" href="logging.htm#logging.SocketHandler">
+SocketHandler</a> instance to the root logger at the sending
+end:</p><pre class="wide">
+import logging, logging.handlers
+
+rootLogger = logging.getLogger('')
+rootLogger.setLevel(logging.DEBUG)
+socketHandler = logging.handlers.SocketHandler('localhost',
+                    logging.handlers.DEFAULT_TCP_LOGGING_PORT)
+# don't bother with a formatter, since a socket handler sends the event as
+# an unformatted pickle
+rootLogger.addHandler(socketHandler)
+
+# Now, we can log to the root logger, or any other logger. First the root...
+logging.info('Jackdaws love my big sphinx of quartz.')
+
+# Now, define a couple of other loggers which might represent areas in your
+# application:
+
+logger1 = logging.getLogger('myapp.area1')
+logger2 = logging.getLogger('myapp.area2')
+
+logger1.debug('Quick zephyrs blow, vexing daft Jim.')
+logger1.info('How quickly daft jumping zebras vex.')
+logger2.warning('Jail zesty vixen who grabbed pay from quack.')
+logger2.error('The five boxing wizards jump quickly.')
+</pre><p>At the receiving end, you can set up a receiver using the <a class="link" href="SocketServer.htm#SocketServer">SocketServer</a> module. Here
+is a basic working example:</p><pre class="wide">
+import cPickle
+import logging
+import logging.handlers
+import SocketServer
+import struct
+
+
+class LogRecordStreamHandler(SocketServer.StreamRequestHandler):
+    """Handler for a streaming logging request.
+
+    This basically logs the record using whatever logging policy is
+    configured locally.
+    """
+
+    def handle(self):
+        """
+        Handle multiple requests - each expected to be a 4-byte length,
+        followed by the LogRecord in pickle format. Logs the record
+        according to whatever policy is configured locally.
+        """
+        while 1:
+            chunk = self.connection.recv(4)
+            if len(chunk) &lt; 4:
+                break
+            slen = struct.unpack("&gt;L", chunk)[0]
+            chunk = self.connection.recv(slen)
+            while len(chunk) &lt; slen:
+                chunk = chunk + self.connection.recv(slen - len(chunk))
+            obj = self.unPickle(chunk)
+            record = logging.makeLogRecord(obj)
+            self.handleLogRecord(record)
+
+    def unPickle(self, data):
+        return cPickle.loads(data)
+
+    def handleLogRecord(self, record):
+        # if a name is specified, we use the named logger rather than the one
+        # implied by the record.
+        if self.server.logname is not None:
+            name = self.server.logname
+        else:
+            name = record.name
+        logger = logging.getLogger(name)
+        # N.B. EVERY record gets logged. This is because Logger.handle
+        # is normally called AFTER logger-level filtering. If you want
+        # to do filtering, do it at the client end to save wasting
+        # cycles and network bandwidth!
+        logger.handle(record)
+
+class LogRecordSocketReceiver(SocketServer.ThreadingTCPServer):
+    """simple TCP socket-based logging receiver suitable for testing.
+    """
+
+    allow_reuse_address = 1
+
+    def __init__(self, host='localhost',
+                 port=logging.handlers.DEFAULT_TCP_LOGGING_PORT,
+                 handler=LogRecordStreamHandler):
+        SocketServer.ThreadingTCPServer.__init__(self, (host, port), handler)
+        self.abort = 0
+        self.timeout = 1
+        self.logname = None
+
+    def serve_until_stopped(self):
+        import select
+        abort = 0
+        while not abort:
+            rd, wr, ex = select.select([self.socket.fileno()],
+                                       [], [],
+                                       self.timeout)
+            if rd:
+                self.handle_request()
+            abort = self.abort
+
+def main():
+    logging.basicConfig(
+        format="%(relativeCreated)5d %(name)-15s %(levelname)-8s %(message)s")
+    tcpserver = LogRecordSocketReceiver()
+    print "About to start TCP server..."
+    tcpserver.serve_until_stopped()
+
+if __name__ == "__main__":
+    main()
+</pre><p>First run the server, and then the client. On the client side,
+nothing is printed on the console; on the server side, you should
+see something like:</p><pre class="wide">
+About to start TCP server...
+   59 root            INFO     Jackdaws love my big sphinx of quartz.
+   59 myapp.area1     DEBUG    Quick zephyrs blow, vexing daft Jim.
+   69 myapp.area1     INFO     How quickly daft jumping zebras vex.
+   69 myapp.area2     WARNING  Jail zesty vixen who grabbed pay from quack.
+   69 myapp.area2     ERROR    The five boxing wizards jump quickly.
+</pre><h2 id="handler-objects">Handler Objects&#160;<a class="nav" href="#handler-objects" title="bookmark!">#</a></h2><p>Handlers have the following attributes and methods. Note that <a class="link" href="Handler.htm#Handler">Handler</a> is never instantiated
+directly; this class acts as a base for more useful subclasses.
+However, the <a class="link" href="/pyref/__init__">__init__</a>
+method in subclasses needs to call <a class="link" href="logging.htm#logging.Handler.__init__">Handler.__init__</a>.</p></div></div><div class="yui-ge"><div class="yui-u first"><dl><dt class="method" id="logging.Handler.__init__"><b>__init__(level=NOTSET)</b> <tt class="mark"><a href="#logging.Handler.__init__" title="bookmark">#</a>|<a href="/comment/pylib/logging.htm%23logging.Handler.__init__" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="method">
+<p>Initializes the <a class="link" href="Handler.htm#Handler">Handler</a>
+instance by setting its level, setting the list of filters to the
+empty list and creating a lock (using <a class="link" href="createLock.htm#createLock">createLock</a>) for serializing access to an
+I/O mechanism.</p></dd>
+<dt class="method" id="logging.Handler.createLock"><b>createLock()</b> <tt class="mark"><a href="#logging.Handler.createLock" title="bookmark">#</a>|<a href="/comment/pylib/logging.htm%23logging.Handler.createLock" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="method">
+<p>Initializes a thread lock which can be used to serialize access
+to underlying I/O functionality which may not be threadsafe.</p></dd>
+<dt class="method" id="logging.Handler.acquire"><b>acquire()</b> <tt class="mark"><a href="#logging.Handler.acquire" title="bookmark">#</a>|<a href="/comment/pylib/logging.htm%23logging.Handler.acquire" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="method">
+<p>Acquires the thread lock created with <a class="link" href="createLock.htm#createLock">createLock</a>.</p></dd>
+<dt class="method" id="logging.Handler.release"><b>release()</b> <tt class="mark"><a href="#logging.Handler.release" title="bookmark">#</a>|<a href="/comment/pylib/logging.htm%23logging.Handler.release" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="method">
+<p>Releases the thread lock acquired with <a class="link" href="acquire.htm#acquire">acquire</a>.</p></dd>
+<dt class="method" id="logging.Handler.setLevel"><b>setLevel(lvl)</b> <tt class="mark"><a href="#logging.Handler.setLevel" title="bookmark">#</a>|<a href="/comment/pylib/logging.htm%23logging.Handler.setLevel" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="method">
+<p>Sets the threshold for this handler to <var>lvl</var>. Logging
+messages which are less severe than <var>lvl</var> will be ignored.
+When a handler is created, the level is set to <code>NOTSET</code>
+(which causes all messages to be processed).</p></dd>
+<dt class="method" id="logging.Handler.setFormatter"><b>setFormatter(form)</b> <tt class="mark"><a href="#logging.Handler.setFormatter" title="bookmark">#</a>|<a href="/comment/pylib/logging.htm%23logging.Handler.setFormatter" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="method">
+<p>Sets the <a class="link" href="logging.htm#logging.Formatter">Formatter</a> for
+this handler to <var>form</var>.</p></dd>
+<dt class="method" id="logging.Handler.addFilter"><b>addFilter(filt)</b> <tt class="mark"><a href="#logging.Handler.addFilter" title="bookmark">#</a>|<a href="/comment/pylib/logging.htm%23logging.Handler.addFilter" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="method">
+<p>Adds the specified filter <var>filt</var> to this handler.</p></dd>
+<dt class="method" id="logging.Handler.removeFilter"><b>removeFilter(filt)</b> <tt class="mark"><a href="#logging.Handler.removeFilter" title="bookmark">#</a>|<a href="/comment/pylib/logging.htm%23logging.Handler.removeFilter" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="method">
+<p>Removes the specified filter <var>filt</var> from this
+handler.</p></dd>
+<dt class="method" id="logging.Handler.filter"><b>filter(record)</b> <tt class="mark"><a href="#logging.Handler.filter" title="bookmark">#</a>|<a href="/comment/pylib/logging.htm%23logging.Handler.filter" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="method">
+<p>Applies this handler&#8217;s filters to the record and returns a true
+value if the record is to be processed.</p></dd>
+<dt class="method" id="logging.Handler.flush"><b>flush()</b> <tt class="mark"><a href="#logging.Handler.flush" title="bookmark">#</a>|<a href="/comment/pylib/logging.htm%23logging.Handler.flush" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="method">
+<p>Ensure all logging output has been flushed. This version does
+nothing and is intended to be implemented by subclasses.</p></dd>
+<dt class="method" id="logging.Handler.close"><b>close()</b> <tt class="mark"><a href="#logging.Handler.close" title="bookmark">#</a>|<a href="/comment/pylib/logging.htm%23logging.Handler.close" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="method">
+<p>Tidy up any resources used by the handler. This version does
+nothing and is intended to be implemented by subclasses.</p></dd>
+<dt class="method" id="logging.Handler.handle"><b>handle(record)</b> <tt class="mark"><a href="#logging.Handler.handle" title="bookmark">#</a>|<a href="/comment/pylib/logging.htm%23logging.Handler.handle" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="method">
+<p>Conditionally emits the specified logging record, depending on
+filters which may have been added to the handler. Wraps the actual
+emission of the record with acquisition/release of the I/O thread
+lock.</p></dd>
+<dt class="method" id="logging.Handler.handleError"><b>handleError(record)</b> <tt class="mark"><a href="#logging.Handler.handleError" title="bookmark">#</a>|<a href="/comment/pylib/logging.htm%23logging.Handler.handleError" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="method">
+<p>This method should be called from handlers when an exception is
+encountered during an <a class="link" href="emit.htm#emit">emit</a>
+call. By default it does nothing, which means that exceptions get
+silently ignored. This is what is mostly wanted for a logging
+system - most users will not care about errors in the logging
+system, they are more interested in application errors. You could,
+however, replace this with a custom handler if you wish. The
+specified record is the one which was being processed when the
+exception occurred.</p></dd>
+<dt class="method" id="logging.Handler.format"><b>format(record)</b> <tt class="mark"><a href="#logging.Handler.format" title="bookmark">#</a>|<a href="/comment/pylib/logging.htm%23logging.Handler.format" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="method">
+<p>Do formatting for a record - if a formatter is set, use it.
+Otherwise, use the default formatter for the module.</p></dd>
+<dt class="method" id="logging.Handler.emit"><b>emit(record)</b> <tt class="mark"><a href="#logging.Handler.emit" title="bookmark">#</a>|<a href="/comment/pylib/logging.htm%23logging.Handler.emit" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="method">
+<p>Do whatever it takes to actually log the specified logging
+record. This version is intended to be implemented by subclasses
+and so raises a <a class="link" href="exceptions.htm#exceptions.NotImplementedError">
+exceptions.NotImplementedError</a>.</p></dd>
+</dl><div class="error"><h3 id="streamhandler">StreamHandler&#160;<a class="nav" href="#streamhandler" title="bookmark!">#</a></h3><p>The <a class="link" href="logging.htm#logging.StreamHandler">StreamHandler</a>
+class sends logging output to streams such as <var>
+sys.stdout</var>, <var>sys.stderr</var> or any file-like object
+(or, more precisely, any object which supports <a class="link" href="write.htm#write">write</a> and <a class="link" href="flush.htm#flush">
+flush</a> methods).</p></div><dl><dt class="class" id="logging.StreamHandler"><b>class StreamHandler([strm])</b> <tt class="mark"><a href="#logging.StreamHandler" title="bookmark">#</a>|<a href="/comment/pylib/logging.htm%23logging.StreamHandler" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="class">
+<p>Returns a new instance of the <a class="link" href="logging.htm#logging.StreamHandler">StreamHandler</a> class. If <var>
+strm</var> is specified, the instance will use it for logging
+output; otherwise, <var>sys.stderr</var> will be used.</p></dd>
+<dt class="method" id="logging.StreamHandler.emit"><b>emit(record)</b> <tt class="mark"><a href="#logging.StreamHandler.emit" title="bookmark">#</a>|<a href="/comment/pylib/logging.htm%23logging.StreamHandler.emit" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="method">
+<p>If a formatter is specified, it is used to format the record.
+The record is then written to the stream with a trailing newline.
+If exception information is present, it is formatted using <a class="link" href="traceback.htm#traceback.print_exception">
+traceback.print_exception</a> and appended to the stream.</p></dd>
+<dt class="method" id="logging.StreamHandler.flush"><b>flush()</b> <tt class="mark"><a href="#logging.StreamHandler.flush" title="bookmark">#</a>|<a href="/comment/pylib/logging.htm%23logging.StreamHandler.flush" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="method">
+<p>Flushes the stream by calling its <a class="link" href="flush.htm#flush">flush</a> method. Note that the <a class="link" href="close.htm#close">close</a> method is inherited from <a class="link" href="Handler.htm#Handler">Handler</a> and so does nothing,
+so an explicit <a class="link" href="flush.htm#flush">flush</a> call may
+be needed at times.</p></dd>
+</dl><div class="text"><h3 id="filehandler">FileHandler&#160;<a class="nav" href="#filehandler" title="bookmark!">#</a></h3><p>The <a class="link" href="logging.htm#logging.FileHandler">FileHandler</a>
+class sends logging output to a disk file. It inherits the output
+functionality from <a class="link" href="logging.htm#logging.StreamHandler">
+StreamHandler</a>.</p></div><dl><dt class="class" id="logging.FileHandler"><b>class FileHandler(filename[, mode])</b> <tt class="mark"><a href="#logging.FileHandler" title="bookmark">#</a>|<a href="/comment/pylib/logging.htm%23logging.FileHandler" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="class">
+<p>Returns a new instance of the <a class="link" href="logging.htm#logging.FileHandler">FileHandler</a> class. The specified file
+is opened and used as the stream for logging. If <var>mode</var> is
+not specified, <code>'a'</code> is used. By default, the file grows
+indefinitely.</p></dd>
+<dt class="method" id="logging.FileHandler.close"><b>close()</b> <tt class="mark"><a href="#logging.FileHandler.close" title="bookmark">#</a>|<a href="/comment/pylib/logging.htm%23logging.FileHandler.close" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="method">
+<p>Closes the file.</p></dd>
+<dt class="method" id="logging.FileHandler.emit"><b>emit(record)</b> <tt class="mark"><a href="#logging.FileHandler.emit" title="bookmark">#</a>|<a href="/comment/pylib/logging.htm%23logging.FileHandler.emit" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="method">
+<p>Outputs the record to the file.</p></dd>
+</dl><div class="text"><h3 id="rotatingfilehandler">RotatingFileHandler&#160;<a class="nav" href="#rotatingfilehandler" title="bookmark!">#</a></h3><p>The <a class="link" href="logging.htm#logging.RotatingFileHandler">
+RotatingFileHandler</a> class supports rotation of disk log
+files.</p></div><dl><dt class="class" id="logging.RotatingFileHandler"><b>class RotatingFileHandler(filename[, mode[, maxBytes[,
+backupCount]]])</b> <tt class="mark"><a href="#logging.RotatingFileHandler" title="bookmark">#</a>|<a href="/comment/pylib/logging.htm%23logging.RotatingFileHandler" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="class">
+<p>Returns a new instance of the <a class="link" href="logging.htm#logging.RotatingFileHandler">RotatingFileHandler</a> class. The
+specified file is opened and used as the stream for logging. If
+<var>mode</var> is not specified, <code>'a'</code> is used. By
+default, the file grows indefinitely.</p><p>You can use the <var>maxBytes</var> and <var>backupCount</var>
+values to allow the file to rollover at a predetermined size. When
+the size is about to be exceeded, the file is closed and a new file
+is silently opened for output. Rollover occurs whenever the current
+log file is nearly <var>maxBytes</var> in length; if <var>
+maxBytes</var> is zero, rollover never occurs. If <var>
+backupCount</var> is non-zero, the system will save old log files
+by appending the extensions &#8220;.1&#8221;, &#8220;.2&#8221; etc., to the filename. For
+example, with a <var>backupCount</var> of 5 and a base file name of
+app.log, you would get app.log, app.log.1, app.log.2, up to
+app.log.5. The file being written to is always app.log. When this
+file is filled, it is closed and renamed to app.log.1, and if files
+app.log.1, app.log.2, etc. exist, then they are renamed to
+app.log.2, app.log.3 etc. respectively.</p></dd>
+<dt class="method" id="logging.RotatingFileHandler.doRollover"><b>doRollover()</b> <tt class="mark"><a href="#logging.RotatingFileHandler.doRollover" title="bookmark">#</a>|<a href="/comment/pylib/logging.htm%23logging.RotatingFileHandler.doRollover" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="method">
+<p>Does a rollover, as described above.</p></dd>
+<dt class="method" id="logging.RotatingFileHandler.emit"><b>emit(record)</b> <tt class="mark"><a href="#logging.RotatingFileHandler.emit" title="bookmark">#</a>|<a href="/comment/pylib/logging.htm%23logging.RotatingFileHandler.emit" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="method">
+<p>Outputs the record to the file, catering for rollover as
+described previously.</p></dd>
+</dl><div class="text"><h3 id="timedrotatingfilehandler">TimedRotatingFileHandler&#160;<a class="nav" href="#timedrotatingfilehandler" title="bookmark!">#</a></h3><p>The <a class="link" href="logging.htm#logging.TimedRotatingFileHandler">
+TimedRotatingFileHandler</a> class supports rotation of disk log
+files at certain timed intervals.</p></div><dl><dt class="class" id="logging.TimedRotatingFileHandler"><b>class TimedRotatingFileHandler(filename [,when
+[,interval [,backupCount]]])</b> <tt class="mark"><a href="#logging.TimedRotatingFileHandler" title="bookmark">#</a>|<a href="/comment/pylib/logging.htm%23logging.TimedRotatingFileHandler" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="class">
+<p>Returns a new instance of the <a class="link" href="logging.htm#logging.TimedRotatingFileHandler">TimedRotatingFileHandler</a>
+class. The specified file is opened and used as the stream for
+logging. On rotating it also sets the filename suffix. Rotating
+happens based on the product of <var>when</var> and <var>
+interval</var>.</p><p>You can use the <var>when</var> to specify the type of <var>
+interval</var>. The list of possible values is, note that they are
+not case sensitive:</p><table border="1" class="simpletable">
+<tr>
+<th>
+<p>Value</p></th>
+<th>
+<p>Type of interval</p></th>
+</tr>
+<tr>
+<td>
+<p>S</p></td>
+<td>
+<p>Seconds</p></td>
+</tr>
+<tr>
+<td>
+<p>M</p></td>
+<td>
+<p>Minutes</p></td>
+</tr>
+<tr>
+<td>
+<p>H</p></td>
+<td>
+<p>Hours</p></td>
+</tr>
+<tr>
+<td>
+<p>D</p></td>
+<td>
+<p>Days</p></td>
+</tr>
+<tr>
+<td>
+<p>W</p></td>
+<td>
+<p>Week day (0=Monday)</p></td>
+</tr>
+<tr>
+<td>
+<p>midnight</p></td>
+<td>
+<p>Roll over at midnight</p></td>
+</tr>
+</table><br />
+<br />
+<p>If <var>backupCount</var> is non-zero, the system will save old
+log files by appending the extensions &#8220;.1&#8221;, &#8220;.2&#8221; etc., to the
+filename. For example, with a <var>backupCount</var> of 5 and a
+base file name of app.log, you would get app.log, app.log.1,
+app.log.2, up to app.log.5. The file being written to is always
+app.log. When this file is filled, it is closed and renamed to
+app.log.1, and if files app.log.1, app.log.2, etc. exist, then they
+are renamed to app.log.2, app.log.3 etc. respectively.</p></dd>
+<dt class="method" id="logging.TimedRotatingFileHandler.doRollover"><b>doRollover()</b> <tt class="mark"><a href="#logging.TimedRotatingFileHandler.doRollover" title="bookmark">#</a>|<a href="/comment/pylib/logging.htm%23logging.TimedRotatingFileHandler.doRollover" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="method">
+<p>Does a rollover, as described above.</p></dd>
+<dt class="method" id="logging.TimedRotatingFileHandler.emit"><b>emit(record)</b> <tt class="mark"><a href="#logging.TimedRotatingFileHandler.emit" title="bookmark">#</a>|<a href="/comment/pylib/logging.htm%23logging.TimedRotatingFileHandler.emit" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="method">
+<p>Outputs the record to the file, catering for rollover as
+described above.</p></dd>
+</dl><div class="text"><h3 id="sockethandler">SocketHandler&#160;<a class="nav" href="#sockethandler" title="bookmark!">#</a></h3><p>The <a class="link" href="logging.htm#logging.SocketHandler">SocketHandler</a>
+class sends logging output to a network socket. The base class uses
+a TCP socket.</p></div><dl><dt class="class" id="logging.SocketHandler"><b>class SocketHandler(host, port)</b> <tt class="mark"><a href="#logging.SocketHandler" title="bookmark">#</a>|<a href="/comment/pylib/logging.htm%23logging.SocketHandler" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="class">
+<p>Returns a new instance of the <a class="link" href="logging.htm#logging.SocketHandler">SocketHandler</a> class intended to
+communicate with a remote machine whose address is given by <var>
+host</var> and <var>port</var>.</p></dd>
+<dt class="method" id="logging.SocketHandler.close"><b>close()</b> <tt class="mark"><a href="#logging.SocketHandler.close" title="bookmark">#</a>|<a href="/comment/pylib/logging.htm%23logging.SocketHandler.close" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="method">
+<p>Closes the socket.</p></dd>
+<dt class="method" id="logging.SocketHandler.handleError"><b>handleError()</b> <tt class="mark"><a href="#logging.SocketHandler.handleError" title="bookmark">#</a>|<a href="/comment/pylib/logging.htm%23logging.SocketHandler.handleError" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="method">
+</dd><dt class="method" id="logging.SocketHandler.emit"><b>emit()</b> <tt class="mark"><a href="#logging.SocketHandler.emit" title="bookmark">#</a>|<a href="/comment/pylib/logging.htm%23logging.SocketHandler.emit" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="method">
+<p>Pickles the record&#8217;s attribute dictionary and writes it to the
+socket in binary format. If there is an error with the socket,
+silently drops the packet. If the connection was previously lost,
+re-establishes the connection. To unpickle the record at the
+receiving end into a <a class="link" href="logging.htm#logging.LogRecord">
+LogRecord</a>, use the <a class="link" href="logging.htm#logging.makeLogRecord">
+makeLogRecord</a> function.</p></dd>
+<dt class="method"><b>handleError()</b> </dt><dd class="method">
+<p>Handles an error which has occurred during <a class="link" href="emit.htm#emit">emit</a>. The most likely cause is a lost
+connection. Closes the socket so that we can retry on the next
+event.</p></dd>
+<dt class="method" id="logging.SocketHandler.makeSocket"><b>makeSocket()</b> <tt class="mark"><a href="#logging.SocketHandler.makeSocket" title="bookmark">#</a>|<a href="/comment/pylib/logging.htm%23logging.SocketHandler.makeSocket" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="method">
+<p>This is a factory method which allows subclasses to define the
+precise type of socket they want. The default implementation
+creates a TCP socket (<code>socket.SOCK_STREAM</code>).</p></dd>
+<dt class="method" id="logging.SocketHandler.makePickle"><b>makePickle(record)</b> <tt class="mark"><a href="#logging.SocketHandler.makePickle" title="bookmark">#</a>|<a href="/comment/pylib/logging.htm%23logging.SocketHandler.makePickle" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="method">
+<p>Pickles the record&#8217;s attribute dictionary in binary format with
+a length prefix, and returns it ready for transmission across the
+socket.</p></dd>
+<dt class="method" id="logging.SocketHandler.send"><b>send(packet)</b> <tt class="mark"><a href="#logging.SocketHandler.send" title="bookmark">#</a>|<a href="/comment/pylib/logging.htm%23logging.SocketHandler.send" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="method">
+<p>Send a pickled string <var>packet</var> to the socket. This
+function allows for partial sends which can happen when the network
+is busy.</p></dd>
+</dl><div class="text"><h3 id="datagramhandler">DatagramHandler&#160;<a class="nav" href="#datagramhandler" title="bookmark!">#</a></h3><p>The <a class="link" href="logging.htm#logging.DatagramHandler">
+DatagramHandler</a> class inherits from <a class="link" href="logging.htm#logging.SocketHandler">SocketHandler</a> to support sending
+logging messages over UDP sockets.</p></div><dl><dt class="class" id="logging.DatagramHandler"><b>class DatagramHandler(host, port)</b> <tt class="mark"><a href="#logging.DatagramHandler" title="bookmark">#</a>|<a href="/comment/pylib/logging.htm%23logging.DatagramHandler" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="class">
+<p>Returns a new instance of the <a class="link" href="logging.htm#logging.DatagramHandler">DatagramHandler</a> class intended to
+communicate with a remote machine whose address is given by <var>
+host</var> and <var>port</var>.</p></dd>
+<dt class="method" id="logging.DatagramHandler.emit"><b>emit()</b> <tt class="mark"><a href="#logging.DatagramHandler.emit" title="bookmark">#</a>|<a href="/comment/pylib/logging.htm%23logging.DatagramHandler.emit" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="method">
+<p>Pickles the record&#8217;s attribute dictionary and writes it to the
+socket in binary format. If there is an error with the socket,
+silently drops the packet. To unpickle the record at the receiving
+end into a <a class="link" href="logging.htm#logging.LogRecord">LogRecord</a>, use
+the <a class="link" href="logging.htm#logging.makeLogRecord">makeLogRecord</a>
+function.</p></dd>
+<dt class="method" id="logging.DatagramHandler.makeSocket"><b>makeSocket()</b> <tt class="mark"><a href="#logging.DatagramHandler.makeSocket" title="bookmark">#</a>|<a href="/comment/pylib/logging.htm%23logging.DatagramHandler.makeSocket" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="method">
+<p>The factory method of <a class="link" href="logging.htm#logging.SocketHandler">
+SocketHandler</a> is here overridden to create a UDP socket
+(<code>socket.SOCK_DGRAM</code>).</p></dd>
+<dt class="method" id="logging.DatagramHandler.send"><b>send(s)</b> <tt class="mark"><a href="#logging.DatagramHandler.send" title="bookmark">#</a>|<a href="/comment/pylib/logging.htm%23logging.DatagramHandler.send" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="method">
+<p>Send a pickled string to a socket.</p></dd>
+</dl><div class="text"><h3 id="sysloghandler">SysLogHandler&#160;<a class="nav" href="#sysloghandler" title="bookmark!">#</a></h3><p>The <a class="link" href="logging.htm#logging.SysLogHandler">SysLogHandler</a>
+class supports sending logging messages to a remote or local Unix
+syslog.</p></div><dl><dt class="class" id="logging.SysLogHandler"><b>class SysLogHandler([address[, facility]])</b> <tt class="mark"><a href="#logging.SysLogHandler" title="bookmark">#</a>|<a href="/comment/pylib/logging.htm%23logging.SysLogHandler" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="class">
+<p>Returns a new instance of the <a class="link" href="logging.htm#logging.SysLogHandler">SysLogHandler</a> class intended to
+communicate with a remote Unix machine whose address is given by
+<var>address</var> in the form of a <code>(</code><var>host</var>,
+<var>port</var>) tuple. If <var>address</var> is not specified,
+<code>('localhost', 514)</code> is used. The address is used to
+open a UDP socket. If <var>facility</var> is not specified, <code>
+LOG_USER</code> is used.</p></dd>
+<dt class="method" id="logging.SysLogHandler.close"><b>close()</b> <tt class="mark"><a href="#logging.SysLogHandler.close" title="bookmark">#</a>|<a href="/comment/pylib/logging.htm%23logging.SysLogHandler.close" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="method">
+<p>Closes the socket to the remote host.</p></dd>
+<dt class="method" id="logging.SysLogHandler.emit"><b>emit(record)</b> <tt class="mark"><a href="#logging.SysLogHandler.emit" title="bookmark">#</a>|<a href="/comment/pylib/logging.htm%23logging.SysLogHandler.emit" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="method">
+<p>The record is formatted, and then sent to the syslog server. If
+exception information is present, it is <em>not</em> sent to the
+server.</p></dd>
+<dt class="method" id="logging.SysLogHandler.encodePriority"><b>encodePriority(facility,
+priority)</b> <tt class="mark"><a href="#logging.SysLogHandler.encodePriority" title="bookmark">#</a>|<a href="/comment/pylib/logging.htm%23logging.SysLogHandler.encodePriority" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="method">
+<p>Encodes the facility and priority into an integer. You can pass
+in strings or integers - if strings are passed, internal mapping
+dictionaries are used to convert them to integers.</p></dd>
+</dl><div class="text"><h3 id="nteventloghandler">NTEventLogHandler&#160;<a class="nav" href="#nteventloghandler" title="bookmark!">#</a></h3><p>The <a class="link" href="logging.htm#logging.NTEventLogHandler">
+NTEventLogHandler</a> class supports sending logging messages to a
+local Windows NT, Windows 2000 or Windows XP event log. Before you
+can use it, you need Mark Hammond&#8217;s Win32 extensions for Python
+installed.</p></div><dl><dt class="class" id="logging.NTEventLogHandler"><b>class NTEventLogHandler(appname[, dllname[,
+logtype]])</b> <tt class="mark"><a href="#logging.NTEventLogHandler" title="bookmark">#</a>|<a href="/comment/pylib/logging.htm%23logging.NTEventLogHandler" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="class">
+<p>Returns a new instance of the <a class="link" href="logging.htm#logging.NTEventLogHandler">NTEventLogHandler</a> class. The
+<var>appname</var> is used to define the application name as it
+appears in the event log. An appropriate registry entry is created
+using this name. The <var>dllname</var> should give the fully
+qualified pathname of a .dll or .exe which contains message
+definitions to hold in the log (if not specified, <code>
+'win32service.pyd'</code> is used - this is installed with the
+Win32 extensions and contains some basic placeholder message
+definitions. Note that use of these placeholders will make your
+event logs big, as the entire message source is held in the log. If
+you want slimmer logs, you have to pass in the name of your own
+.dll or .exe which contains the message definitions you want to use
+in the event log). The <var>logtype</var> is one of <code>
+'Application'</code>, <code>'System'</code> or <code>
+'Security'</code>, and defaults to <code>'Application'</code>.</p></dd>
+<dt class="method" id="logging.NTEventLogHandler.close"><b>close()</b> <tt class="mark"><a href="#logging.NTEventLogHandler.close" title="bookmark">#</a>|<a href="/comment/pylib/logging.htm%23logging.NTEventLogHandler.close" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="method">
+<p>At this point, you can remove the application name from the
+registry as a source of event log entries. However, if you do this,
+you will not be able to see the events as you intended in the Event
+Log Viewer - it needs to be able to access the registry to get the
+.dll name. The current version does not do this (in fact it doesn&#8217;t
+do anything).</p></dd>
+<dt class="method" id="logging.NTEventLogHandler.emit"><b>emit(record)</b> <tt class="mark"><a href="#logging.NTEventLogHandler.emit" title="bookmark">#</a>|<a href="/comment/pylib/logging.htm%23logging.NTEventLogHandler.emit" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="method">
+<p>Determines the message ID, event category and event type, and
+then logs the message in the NT event log.</p></dd>
+<dt class="method" id="logging.NTEventLogHandler.getEventCategory"><b>getEventCategory(record)</b> <tt class="mark"><a href="#logging.NTEventLogHandler.getEventCategory" title="bookmark">#</a>|<a href="/comment/pylib/logging.htm%23logging.NTEventLogHandler.getEventCategory" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="method">
+<p>Returns the event category for the record. Override this if you
+want to specify your own categories. This version returns 0.</p></dd>
+<dt class="method" id="logging.NTEventLogHandler.getEventType"><b>getEventType(record)</b> <tt class="mark"><a href="#logging.NTEventLogHandler.getEventType" title="bookmark">#</a>|<a href="/comment/pylib/logging.htm%23logging.NTEventLogHandler.getEventType" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="method">
+<p>Returns the event type for the record. Override this if you want
+to specify your own types. This version does a mapping using the
+handler&#8217;s typemap attribute, which is set up in <a class="link" href="/pyref/__init__">__init__</a> to a dictionary which contains
+mappings for <code>DEBUG</code>, <code>INFO</code>, <code>
+WARNING</code>, <code>ERROR</code> and <code>CRITICAL</code>. If
+you are using your own levels, you will either need to override
+this method or place a suitable dictionary in the handler&#8217;s <var>
+typemap</var> attribute.</p></dd>
+<dt class="method" id="logging.NTEventLogHandler.getMessageID"><b>getMessageID(record)</b> <tt class="mark"><a href="#logging.NTEventLogHandler.getMessageID" title="bookmark">#</a>|<a href="/comment/pylib/logging.htm%23logging.NTEventLogHandler.getMessageID" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="method">
+<p>Returns the message ID for the record. If you are using your own
+messages, you could do this by having the <var>msg</var> passed to
+the logger being an ID rather than a format string. Then, in here,
+you could use a dictionary lookup to get the message ID. This
+version returns 1, which is the base message ID in
+win32service.pyd.</p></dd>
+</dl><div class="text"><h3 id="smtphandler">SMTPHandler&#160;<a class="nav" href="#smtphandler" title="bookmark!">#</a></h3><p>The <a class="link" href="logging.htm#logging.SMTPHandler">SMTPHandler</a>
+class supports sending logging messages to an email address via
+SMTP.</p></div><dl><dt class="class" id="logging.SMTPHandler"><b>class SMTPHandler(mailhost, fromaddr, toaddrs,
+subject)</b> <tt class="mark"><a href="#logging.SMTPHandler" title="bookmark">#</a>|<a href="/comment/pylib/logging.htm%23logging.SMTPHandler" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="class">
+<p>Returns a new instance of the <a class="link" href="logging.htm#logging.SMTPHandler">SMTPHandler</a> class. The instance is
+initialized with the from and to addresses and subject line of the
+email. The <var>toaddrs</var> should be a list of strings. To
+specify a non-standard SMTP port, use the (host, port) tuple format
+for the <var>mailhost</var> argument. If you use a string, the
+standard SMTP port is used.</p></dd>
+<dt class="method" id="logging.SMTPHandler.emit"><b>emit(record)</b> <tt class="mark"><a href="#logging.SMTPHandler.emit" title="bookmark">#</a>|<a href="/comment/pylib/logging.htm%23logging.SMTPHandler.emit" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="method">
+<p>Formats the record and sends it to the specified addressees.</p></dd>
+<dt class="method" id="logging.SMTPHandler.getSubject"><b>getSubject(record)</b> <tt class="mark"><a href="#logging.SMTPHandler.getSubject" title="bookmark">#</a>|<a href="/comment/pylib/logging.htm%23logging.SMTPHandler.getSubject" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="method">
+<p>If you want to specify a subject line which is record-dependent,
+override this method.</p></dd>
+</dl><div class="text"><h3 id="memoryhandler">MemoryHandler&#160;<a class="nav" href="#memoryhandler" title="bookmark!">#</a></h3><p>The <a class="link" href="logging.htm#logging.MemoryHandler">MemoryHandler</a>
+supports buffering of logging records in memory, periodically
+flushing them to a target handler. Flushing occurs whenever the
+buffer is full, or when an event of a certain severity or greater
+is seen.</p><p><a class="link" href="logging.htm#logging.MemoryHandler">MemoryHandler</a> is a
+subclass of the more general <a class="link" href="logging.htm#logging.BufferingHandler">BufferingHandler</a>, which is an
+abstract class. This buffers logging records in memory. Whenever
+each record is added to the buffer, a check is made by calling <a class="link" href="shouldFlush.htm#shouldFlush">shouldFlush</a> to see if the
+buffer should be flushed. If it should, then <a class="link" href="flush.htm#flush">flush</a> is expected to do the needful.</p></div><dl><dt class="class" id="logging.BufferingHandler"><b>class BufferingHandler(capacity)</b> <tt class="mark"><a href="#logging.BufferingHandler" title="bookmark">#</a>|<a href="/comment/pylib/logging.htm%23logging.BufferingHandler" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="class">
+<p>Initializes the handler with a buffer of the specified
+capacity.</p></dd>
+<dt class="method" id="logging.BufferingHandler.emit"><b>emit(record)</b> <tt class="mark"><a href="#logging.BufferingHandler.emit" title="bookmark">#</a>|<a href="/comment/pylib/logging.htm%23logging.BufferingHandler.emit" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="method">
+<p>Appends the record to the buffer. If <a class="link" href="shouldFlush.htm#shouldFlush">shouldFlush</a> returns true, calls <a class="link" href="flush.htm#flush">flush</a> to process the buffer.</p></dd>
+<dt class="method" id="logging.BufferingHandler.flush"><b>flush()</b> <tt class="mark"><a href="#logging.BufferingHandler.flush" title="bookmark">#</a>|<a href="/comment/pylib/logging.htm%23logging.BufferingHandler.flush" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="method">
+<p>You can override this to implement custom flushing behavior.
+This version just zaps the buffer to empty.</p></dd>
+<dt class="method" id="logging.BufferingHandler.shouldFlush"><b>shouldFlush(record)</b> <tt class="mark"><a href="#logging.BufferingHandler.shouldFlush" title="bookmark">#</a>|<a href="/comment/pylib/logging.htm%23logging.BufferingHandler.shouldFlush" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="method">
+<p>Returns true if the buffer is up to capacity. This method can be
+overridden to implement custom flushing strategies.</p></dd>
+<dt class="class" id="logging.MemoryHandler"><b>class MemoryHandler(capacity[, flushLevel [,
+target]])</b> <tt class="mark"><a href="#logging.MemoryHandler" title="bookmark">#</a>|<a href="/comment/pylib/logging.htm%23logging.MemoryHandler" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="class">
+<p>Returns a new instance of the <a class="link" href="logging.htm#logging.MemoryHandler">MemoryHandler</a> class. The instance is
+initialized with a buffer size of <var>capacity</var>. If <var>
+flushLevel</var> is not specified, <code>ERROR</code> is used. If
+no <var>target</var> is specified, the target will need to be set
+using <a class="link" href="setTarget.htm#setTarget">setTarget</a> before
+this handler does anything useful.</p></dd>
+<dt class="method" id="logging.MemoryHandler.close"><b>close()</b> <tt class="mark"><a href="#logging.MemoryHandler.close" title="bookmark">#</a>|<a href="/comment/pylib/logging.htm%23logging.MemoryHandler.close" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="method">
+<p>Calls <a class="link" href="flush.htm#flush">flush</a>, sets the
+target to <code>None</code> and clears the buffer.</p></dd>
+<dt class="method" id="logging.MemoryHandler.flush"><b>flush()</b> <tt class="mark"><a href="#logging.MemoryHandler.flush" title="bookmark">#</a>|<a href="/comment/pylib/logging.htm%23logging.MemoryHandler.flush" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="method">
+<p>For a <a class="link" href="logging.htm#logging.MemoryHandler">
+MemoryHandler</a>, flushing means just sending the buffered records
+to the target, if there is one. Override if you want different
+behavior.</p></dd>
+<dt class="method" id="logging.MemoryHandler.setTarget"><b>setTarget(target)</b> <tt class="mark"><a href="#logging.MemoryHandler.setTarget" title="bookmark">#</a>|<a href="/comment/pylib/logging.htm%23logging.MemoryHandler.setTarget" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="method">
+<p>Sets the target handler for this handler.</p></dd>
+<dt class="method" id="logging.MemoryHandler.shouldFlush"><b>shouldFlush(record)</b> <tt class="mark"><a href="#logging.MemoryHandler.shouldFlush" title="bookmark">#</a>|<a href="/comment/pylib/logging.htm%23logging.MemoryHandler.shouldFlush" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="method">
+<p>Checks for buffer full or a record at the <var>flushLevel</var>
+or higher.</p></dd>
+</dl><div class="text"><h3 id="httphandler">HTTPHandler&#160;<a class="nav" href="#httphandler" title="bookmark!">#</a></h3><p>The <a class="link" href="logging.htm#logging.HTTPHandler">HTTPHandler</a>
+class supports sending logging messages to a Web server, using
+either &#8220;<code>GET</code>&#8221; or &#8220;<code>POST</code>&#8221; semantics.</p></div><dl><dt class="class" id="logging.HTTPHandler"><b>class HTTPHandler(host, url[, method])</b> <tt class="mark"><a href="#logging.HTTPHandler" title="bookmark">#</a>|<a href="/comment/pylib/logging.htm%23logging.HTTPHandler" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="class">
+<p>Returns a new instance of the <a class="link" href="logging.htm#logging.HTTPHandler">HTTPHandler</a> class. The instance is
+initialized with a host address, url and HTTP method. If no <var>
+method</var> is specified, &#8220;<code>GET</code>&#8221; is used.</p></dd>
+<dt class="method" id="logging.HTTPHandler.emit"><b>emit(record)</b> <tt class="mark"><a href="#logging.HTTPHandler.emit" title="bookmark">#</a>|<a href="/comment/pylib/logging.htm%23logging.HTTPHandler.emit" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="method">
+<p>Sends the record to the Web server as an URL-encoded
+dictionary.</p></dd>
+</dl><div class="text"><h2 id="formatter-objects">Formatter Objects&#160;<a class="nav" href="#formatter-objects" title="bookmark!">#</a></h2><p><a class="link" href="logging.htm#logging.Formatter">Formatter</a>s have the
+following attributes and methods. They are responsible for
+converting a <a class="link" href="logging.htm#logging.LogRecord">LogRecord</a> to
+(usually) a string which can be interpreted by either a human or an
+external system. The base <a class="link" href="logging.htm#logging.Formatter">
+Formatter</a> allows a formatting string to be specified. If none
+is supplied, the default value of <code>'%(message)s'</code> is
+used.</p><p>A Formatter can be initialized with a format string which makes
+use of knowledge of the <a class="link" href="logging.htm#logging.LogRecord">
+LogRecord</a> attributes - such as the default value mentioned
+above making use of the fact that the user&#8217;s message and arguments
+are pre-formatted into a <a class="link" href="logging.htm#logging.LogRecord">
+LogRecord</a>&#8216;s <var>message</var> attribute. This format string
+contains standard python %-style mapping keys. See section <a class="link" href="typesseq-strings.htm#typesseq-strings.html#typesseq-strings">
+typesseq-strings.html#typesseq-strings</a>, &#8220;String
+Formatting Operations,&#8221; for more information on string
+formatting.</p><p>Currently, the useful mapping keys in a <a class="link" href="logging.htm#logging.LogRecord">LogRecord</a> are:</p><table border="1" class="simpletable">
+<tr>
+<th>
+<p>Format</p></th>
+<th>
+<p>Description</p></th>
+</tr>
+<tr>
+<td>
+<p><code>%(name)s</code></p></td>
+<td>
+<p>Name of the logger (logging channel).</p></td>
+</tr>
+<tr>
+<td>
+<p><code>%(levelno)s</code></p></td>
+<td>
+<p>Numeric logging level for the message (<code>DEBUG</code>,
+<code>INFO</code>, <code>WARNING</code>, <code>ERROR</code>, <code>
+CRITICAL</code>).</p></td>
+</tr>
+<tr>
+<td>
+<p><code>%(levelname)s</code></p></td>
+<td>
+<p>Text logging level for the message (<code>'DEBUG'</code>, <code>
+'INFO'</code>, <code>'WARNING'</code>, <code>'ERROR'</code>, <code>
+'CRITICAL'</code>).</p></td>
+</tr>
+<tr>
+<td>
+<p><code>%(pathname)s</code></p></td>
+<td>
+<p>Full pathname of the source file where the logging call was
+issued (if available).</p></td>
+</tr>
+<tr>
+<td>
+<p><code>%(filename)s</code></p></td>
+<td>
+<p>Filename portion of pathname.</p></td>
+</tr>
+<tr>
+<td>
+<p><code>%(module)s</code></p></td>
+<td>
+<p>Module (name portion of filename).</p></td>
+</tr>
+<tr>
+<td>
+<p><code>%(lineno)d</code></p></td>
+<td>
+<p>Source line number where the logging call was issued (if
+available).</p></td>
+</tr>
+<tr>
+<td>
+<p><code>%(created)f</code></p></td>
+<td>
+<p>Time when the <a class="link" href="logging.htm#logging.LogRecord">
+LogRecord</a> was created (as returned by <a class="link" href="time.htm#time.time">time.time</a>).</p></td>
+</tr>
+<tr>
+<td>
+<p><code>%(asctime)s</code></p></td>
+<td>
+<p>Human-readable time when the <a class="link" href="logging.htm#logging.LogRecord">LogRecord</a> was created. By default this is
+of the form &#8220;2003-07-08 16:49:45,896&#8221; (the numbers
+after the comma are millisecond portion of the time).</p></td>
+</tr>
+<tr>
+<td>
+<p><code>%(msecs)d</code></p></td>
+<td>
+<p>Millisecond portion of the time when the <a class="link" href="logging.htm#logging.LogRecord">LogRecord</a> was created.</p></td>
+</tr>
+<tr>
+<td>
+<p><code>%(thread)d</code></p></td>
+<td>
+<p>Thread ID (if available).</p></td>
+</tr>
+<tr>
+<td>
+<p><code>%(threadName)s</code></p></td>
+<td>
+<p>Thread name (if available).</p></td>
+</tr>
+<tr>
+<td>
+<p><code>%(process)d</code></p></td>
+<td>
+<p>Process ID (if available).</p></td>
+</tr>
+<tr>
+<td>
+<p><code>%(message)s</code></p></td>
+<td>
+<p>The logged message, computed as <code>msg % args</code>.</p></td>
+</tr>
+</table><br />
+<br />
+</div><dl><dt class="class" id="logging.Formatter"><b>class Formatter([fmt[, datefmt]])</b> <tt class="mark"><a href="#logging.Formatter" title="bookmark">#</a>|<a href="/comment/pylib/logging.htm%23logging.Formatter" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="class">
+<p>Returns a new instance of the <a class="link" href="logging.htm#logging.Formatter">Formatter</a> class. The instance is
+initialized with a format string for the message as a whole, as
+well as a format string for the date/time portion of a message. If
+no <var>fmt</var> is specified, <code>'%(message)s'</code> is used.
+If no <var>datefmt</var> is specified, the ISO8601 date format is
+used.</p></dd>
+<dt class="method" id="logging.Formatter.format"><b>format(record)</b> <tt class="mark"><a href="#logging.Formatter.format" title="bookmark">#</a>|<a href="/comment/pylib/logging.htm%23logging.Formatter.format" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="method">
+<p>The record&#8217;s attribute dictionary is used as the operand to a
+string formatting operation. Returns the resulting string. Before
+formatting the dictionary, a couple of preparatory steps are
+carried out. The <var>message</var> attribute of the record is
+computed using <var>msg</var> % <var>args</var>. If the formatting
+string contains <code>'(asctime)'</code>, <a class="link" href="formatTime.htm#formatTime">formatTime</a> is called to format the event
+time. If there is exception information, it is formatted using <a class="link" href="formatException.htm#formatException">formatException</a> and
+appended to the message.</p></dd>
+<dt class="method" id="logging.Formatter.formatTime"><b>formatTime(record[, datefmt])</b> <tt class="mark"><a href="#logging.Formatter.formatTime" title="bookmark">#</a>|<a href="/comment/pylib/logging.htm%23logging.Formatter.formatTime" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="method">
+<p>This method should be called from <a class="link" href="format.htm#format">format</a> by a formatter which wants to make
+use of a formatted time. This method can be overridden in
+formatters to provide for any specific requirement, but the basic
+behavior is as follows: if <var>datefmt</var> (a string) is
+specified, it is used with <a class="link" href="time.htm#time.strftime">time.strftime</a> to format the creation
+time of the record. Otherwise, the ISO8601 format is used. The
+resulting string is returned.</p></dd>
+<dt class="method" id="logging.Formatter.formatException"><b>formatException(exc_info)</b> <tt class="mark"><a href="#logging.Formatter.formatException" title="bookmark">#</a>|<a href="/comment/pylib/logging.htm%23logging.Formatter.formatException" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="method">
+<p>Formats the specified exception information (a standard
+exception tuple as returned by <a class="link" href="sys.htm#sys.exc_info">sys.exc_info</a>) as a string. This
+default implementation just uses <a class="link" href="traceback.htm#traceback.print_exception">
+traceback.print_exception</a>. The resulting string is
+returned.</p></dd>
+</dl><div class="text"><h2 id="filter-objects">Filter Objects&#160;<a class="nav" href="#filter-objects" title="bookmark!">#</a></h2><p><a class="link" href="logging.htm#logging.Filter">Filter</a>s can be used by <a class="link" href="Handler.htm#Handler">Handler</a>s and <a class="link" href="Logger.htm#Logger">Logger</a>s for more sophisticated filtering
+than is provided by levels. The base filter class only allows
+events which are below a certain point in the logger hierarchy. For
+example, a filter initialized with &#8220;A.B&#8221; will allow events logged
+by loggers &#8220;A.B&#8221;, &#8220;A.B.C&#8221;, &#8220;A.B.C.D&#8221;, &#8220;A.B.D&#8221; etc. but not &#8220;A.BB&#8221;,
+&#8220;B.A.B&#8221; etc. If initialized with the empty string, all events are
+passed.</p></div><dl><dt class="class" id="logging.Filter"><b>class Filter([name])</b> <tt class="mark"><a href="#logging.Filter" title="bookmark">#</a>|<a href="/comment/pylib/logging.htm%23logging.Filter" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="class">
+<p>Returns an instance of the <a class="link" href="logging.htm#logging.Filter">
+Filter</a> class. If <var>name</var> is specified, it names a
+logger which, together with its children, will have its events
+allowed through the filter. If no name is specified, allows every
+event.</p></dd>
+<dt class="method" id="logging.Filter.filter"><b>filter(record)</b> <tt class="mark"><a href="#logging.Filter.filter" title="bookmark">#</a>|<a href="/comment/pylib/logging.htm%23logging.Filter.filter" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="method">
+<p>Is the specified record to be logged? Returns zero for no,
+nonzero for yes. If deemed appropriate, the record may be modified
+in-place by this method.</p></dd>
+</dl><div class="text"><h2 id="logrecord-objects">LogRecord Objects&#160;<a class="nav" href="#logrecord-objects" title="bookmark!">#</a></h2><p><a class="link" href="logging.htm#logging.LogRecord">LogRecord</a> instances
+are created every time something is logged. They contain all the
+information pertinent to the event being logged. The main
+information passed in is in msg and args, which are combined using
+msg % args to create the message field of the record. The record
+also includes information such as when the record was created, the
+source line where the logging call was made, and any exception
+information to be logged.</p></div><dl><dt class="class" id="logging.LogRecord"><b>class LogRecord(name, lvl, pathname, lineno, msg, args,
+exc_info)</b> <tt class="mark"><a href="#logging.LogRecord" title="bookmark">#</a>|<a href="/comment/pylib/logging.htm%23logging.LogRecord" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="class">
+<p>Returns an instance of <a class="link" href="logging.htm#logging.LogRecord">
+LogRecord</a> initialized with interesting information. The <var>
+name</var> is the logger name; <var>lvl</var> is the numeric level;
+<var>pathname</var> is the absolute pathname of the source file in
+which the logging call was made; <var>lineno</var> is the line
+number in that file where the logging call is found; <var>msg</var>
+is the user-supplied message (a format string); <var>args</var> is
+the tuple which, together with <var>msg</var>, makes up the user
+message; and <var>exc_info</var> is the exception tuple obtained by
+calling <a class="link" href="sys.htm#sys.exc_info">sys.exc_info</a>
+(or <code>None</code>, if no exception information is
+available).</p></dd>
+<dt class="method" id="logging.LogRecord.getMessage"><b>getMessage()</b> <tt class="mark"><a href="#logging.LogRecord.getMessage" title="bookmark">#</a>|<a href="/comment/pylib/logging.htm%23logging.LogRecord.getMessage" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="method">
+<p>Returns the message for this <a class="link" href="logging.htm#logging.LogRecord">LogRecord</a> instance after merging any
+user-supplied arguments with the message.</p></dd>
+</dl><div class="text"><h2 id="thread-safety">Thread Safety&#160;<a class="nav" href="#thread-safety" title="bookmark!">#</a></h2><p>The logging module is intended to be thread-safe without any
+special work needing to be done by its clients. It achieves this
+though using threading locks; there is one lock to serialize access
+to the module&#8217;s shared data, and each handler also creates a lock
+to serialize access to its underlying I/O.</p><h2 id="configuration">Configuration&#160;<a class="nav" href="#configuration" title="bookmark!">#</a></h2></div><div class="error"><h3 id="configuration-functions">Configuration functions&#160;<a class="nav" href="#configuration-functions" title="bookmark!">#</a></h3><p>The following functions allow the logging module to be
+configured. Before they can be used, you must import <a class="link" href="logging.htm#logging.config">logging.config</a>. Their
+use is optional &#8212; you can configure the logging module entirely by
+making calls to the main API (defined in <a class="link" href="logging.htm#logging">logging</a> itself) and defining handlers which
+are declared either in <a class="link" href="logging.htm#logging">
+logging</a> or <a class="link" href="logging.htm#logging.handlers">
+logging.handlers</a>.</p></div><dl><dt class="function" id="logging.fileConfig"><b>fileConfig(fname[, defaults])</b> <tt class="mark"><a href="#logging.fileConfig" title="bookmark">#</a>|<a href="/comment/pylib/logging.htm%23logging.fileConfig" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="function">
+<p>Reads the logging configuration from a ConfigParser-format file
+named <var>fname</var>. This function can be called several times
+from an application, allowing an end user the ability to select
+from various pre-canned configurations (if the developer provides a
+mechanism to present the choices and load the chosen
+configuration). Defaults to be passed to ConfigParser can be
+specified in the <var>defaults</var> argument.</p></dd>
+<dt class="function" id="logging.listen"><b>listen([port])</b> <tt class="mark"><a href="#logging.listen" title="bookmark">#</a>|<a href="/comment/pylib/logging.htm%23logging.listen" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="function">
+<p>Starts up a socket server on the specified port, and listens for
+new configurations. If no port is specified, the module&#8217;s default
+<code>DEFAULT_LOGGING_CONFIG_PORT</code> is used. Logging
+configurations will be sent as a file suitable for processing by <a class="link" href="logging.htm#logging.fileConfig">fileConfig</a>. Returns a <a class="link" href="Thread.htm#Thread">Thread</a> instance on which you
+can call <a class="link" href="start.htm#start">start</a> to start the
+server, and which you can <a class="link" href="join.htm#join">join</a>
+when appropriate. To stop the server, call <a class="link" href="logging.htm#logging.stopListening">stopListening</a>. To send a
+configuration to the socket, read in the configuration file and
+send it to the socket as a string of bytes preceded by a four-byte
+length packed in binary using struct.<code>pack("&gt;L",
+n)</code>.</p></dd>
+<dt class="function" id="logging.stopListening"><b>stopListening()</b> <tt class="mark"><a href="#logging.stopListening" title="bookmark">#</a>|<a href="/comment/pylib/logging.htm%23logging.stopListening" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="function">
+<p>Stops the listening server which was created with a call to <a class="link" href="logging.htm#logging.listen">listen</a>. This is typically
+called before calling <a class="link" href="join.htm#join">join</a> on
+the return value from <a class="link" href="logging.htm#logging.listen">
+listen</a>.</p></dd>
+</dl></div><div class="yui-u">&#160;</div></div><div class="yui-g"><div class="text wide"><h3 id="configuration-file-format">Configuration file format&#160;<a class="nav" href="#configuration-file-format" title="bookmark!">#</a></h3><p>The configuration file format understood by <a class="link" href="logging.htm#logging.fileConfig">fileConfig</a> is based on ConfigParser
+functionality. The file must contain sections called <code>
+[loggers]</code>, <code>[handlers]</code> and <code>
+[formatters]</code> which identify by name the entities of each
+type which are defined in the file. For each such entity, there is
+a separate section which identified how that entity is configured.
+Thus, for a logger named <code>log01</code> in the <code>
+[loggers]</code> section, the relevant configuration details are
+held in a section <code>[logger_log01]</code>. Similarly, a handler
+called <code>hand01</code> in the <code>[handlers]</code> section
+will have its configuration held in a section called <code>
+[handler_hand01]</code>, while a formatter called <code>
+form01</code> in the <code>[formatters]</code> section will have
+its configuration specified in a section called <code>
+[formatter_form01]</code>. The root logger configuration must be
+specified in a section called <code>[logger_root]</code>.</p><p>Examples of these sections in the file are given below.</p><pre class="wide">
+[loggers]
+keys=root,log02,log03,log04,log05,log06,log07
+
+[handlers]
+keys=hand01,hand02,hand03,hand04,hand05,hand06,hand07,hand08,hand09
+
+[formatters]
+keys=form01,form02,form03,form04,form05,form06,form07,form08,form09
+</pre><p>The root logger must specify a level and a list of handlers. An
+example of a root logger section is given below.</p><pre class="wide">
+[logger_root]
+level=NOTSET
+handlers=hand01
+</pre><p>The <code>level</code> entry can be one of <code>DEBUG, INFO,
+WARNING, ERROR, CRITICAL</code> or <code>NOTSET</code>. For the
+root logger only, <code>NOTSET</code> means that all messages will
+be logged. Level values are <a class="link" href="/pyref/eval">
+eval</a>uated in the context of the <code>logging</code> package&#8217;s
+namespace.</p><p>The <code>handlers</code> entry is a comma-separated list of
+handler names, which must appear in the <code>[handlers]</code>
+section. These names must appear in the <code>[handlers]</code>
+section and have corresponding sections in the configuration
+file.</p><p>For loggers other than the root logger, some additional
+information is required. This is illustrated by the following
+example.</p><pre class="wide">
+[logger_parser]
+level=DEBUG
+handlers=hand01
+propagate=1
+qualname=compiler.parser
+</pre><p>The <code>level</code> and <code>handlers</code> entries are
+interpreted as for the root logger, except that if a non-root
+logger&#8217;s level is specified as <code>NOTSET</code>, the system
+consults loggers higher up the hierarchy to determine the effective
+level of the logger. The <code>propagate</code> entry is set to 1
+to indicate that messages must propagate to handlers higher up the
+logger hierarchy from this logger, or 0 to indicate that messages
+are not propagated to handlers up the hierarchy. The <code>
+qualname</code> entry is the hierarchical channel name of the
+logger, that is to say the name used by the application to get the
+logger.</p><p>Sections which specify handler configuration are exemplified by
+the following.</p><pre class="wide">
+[handler_hand01]
+class=StreamHandler
+level=NOTSET
+formatter=form01
+args=(sys.stdout,)
+</pre><p>The <code>class</code> entry indicates the handler&#8217;s class (as
+determined by <a class="link" href="/pyref/eval">eval</a> in the
+<code>logging</code> package&#8217;s namespace). The <code>level</code>
+is interpreted as for loggers, and <code>NOTSET</code> is taken to
+mean &#8220;log everything&#8221;.</p><p>The <code>formatter</code> entry indicates the key name of the
+formatter for this handler. If blank, a default formatter
+(<code>logging._defaultFormatter</code>) is used. If a name is
+specified, it must appear in the <code>[formatters]</code> section
+and have a corresponding section in the configuration file.</p><p>The <code>args</code> entry, when <a class="link" href="/pyref/eval">eval</a>uated in the context of the <code>
+logging</code> package&#8217;s namespace, is the list of arguments to the
+constructor for the handler class. Refer to the constructors for
+the relevant handlers, or to the examples below, to see how typical
+entries are constructed.</p><pre class="wide">
+[handler_hand02]
+class=FileHandler
+level=DEBUG
+formatter=form02
+args=('python.log', 'w')
+
+[handler_hand03]
+class=handlers.SocketHandler
+level=INFO
+formatter=form03
+args=('localhost', handlers.DEFAULT_TCP_LOGGING_PORT)
+
+[handler_hand04]
+class=handlers.DatagramHandler
+level=WARN
+formatter=form04
+args=('localhost', handlers.DEFAULT_UDP_LOGGING_PORT)
+
+[handler_hand05]
+class=handlers.SysLogHandler
+level=ERROR
+formatter=form05
+args=(('localhost', handlers.SYSLOG_UDP_PORT), handlers.SysLogHandler.LOG_USER)
+
+[handler_hand06]
+class=handlers.NTEventLogHandler
+level=CRITICAL
+formatter=form06
+args=('Python Application', '', 'Application')
+
+[handler_hand07]
+class=handlers.SMTPHandler
+level=WARN
+formatter=form07
+args=('localhost', 'from<span class="mark">@abc</span>', ['user1<span class="mark">@abc</span>', 'user2<span class="mark">@xyz</span>'], 'Logger Subject')
+
+[handler_hand08]
+class=handlers.MemoryHandler
+level=NOTSET
+formatter=form08
+target=
+args=(10, ERROR)
+
+[handler_hand09]
+class=handlers.HTTPHandler
+level=NOTSET
+formatter=form09
+args=('localhost:9022', '/log', 'GET')
+</pre><p>Sections which specify formatter configuration are typified by
+the following.</p><pre class="wide">
+[formatter_form01]
+format=F1 %(asctime)s %(levelname)s %(message)s
+datefmt=
+</pre><p>The <code>format</code> entry is the overall format string, and
+the <code>datefmt</code> entry is the <a class="link" href="strftime.htm#strftime">strftime</a>-compatible date/time format
+string. If empty, the package substitutes ISO8601 format
+date/times, which is almost equivalent to specifying the date
+format string &#8220;The ISO8601 format also specifies milliseconds,
+which are appended to the result of using the above format string,
+with a comma separator. An example time in ISO8601 format is <code>
+2003-01-23 00:29:50,411</code>.</p></div></div><div class="yui-g"></div> <!-- yui-g --></div> <!-- content --> </div> <!-- yui-b --> </div> <!-- yui-main --> <div class="yui-b"> <div id='menu'> <ul> <li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li> <li><b><a href="." title="Go to pylib index page.">::: pylib :::</a></b></li> </ul> <ul><li><b>::: contents</b></li></ul> <ul><li><ul><li><a href="#logger-objects">Logger Objects</a></li><li><a href="#basic-example">Basic example</a></li><li><a href="#logging-to-multiple-destinations">Logging to multiple destinations</a></li><li><a href="#sending-and-receiving-logging-events-across-a-network">Sending and receiving logging events across a network</a></li><li><a href="#handler-objects">Handler Objects</a></li><li><ul><li><a href="#streamhandler">StreamHandler</a></li><li><a href="#filehandler">FileHandler</a></li><li><a href="#rotatingfilehandler">RotatingFileHandler</a></li><li><a href="#timedrotatingfilehandler">TimedRotatingFileHandler</a></li><li><a href="#sockethandler">SocketHandler</a></li><li><a href="#datagramhandler">DatagramHandler</a></li><li><a href="#sysloghandler">SysLogHandler</a></li><li><a href="#nteventloghandler">NTEventLogHandler</a></li><li><a href="#smtphandler">SMTPHandler</a></li><li><a href="#memoryhandler">MemoryHandler</a></li><li><a href="#httphandler">HTTPHandler</a></li></ul></li><li><a href="#formatter-objects">Formatter Objects</a></li><li><a href="#filter-objects">Filter Objects</a></li><li><a href="#logrecord-objects">LogRecord Objects</a></li><li><a href="#thread-safety">Thread Safety</a></li><li><a href="#configuration">Configuration</a></li><li><ul><li><a href="#configuration-functions">Configuration functions</a></li><li><a href="#configuration-file-format">Configuration file format</a></li></ul></li></ul></li></ul> </div> <!-- menu --> </div> <!-- yui-b --> </div> <!-- bd --> <div id="ft"> <!-- footer --> <p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15_grey.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;"></a>
+this page was rendered by a <a href="http://www.djangoproject.com/">django</a> application in 0.18s 2009-06-05 22:37:49.027386.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p> </div> <!-- ft --> </div> <!-- doc --> <script src="/media/js/effbot-min.js" type="text/javascript"> </script> </body> </html>

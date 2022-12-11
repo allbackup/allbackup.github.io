@@ -1,0 +1,38 @@
+
+@@module cPickle
+
+<h1>cPickle&#8212;A faster pickle</h1>
+
+<p>The {@link cPickle} module supports serialization and
+de-serialization of Python objects, providing an interface and
+functionality nearly identical to the {@link pickle} module. There are
+several differences, the most important being performance and
+subclassability.
+
+<p>First, {@link cPickle} can be up to 1000 times faster than {@link
+pickle} because the former is implemented in C. Second, in the {@link
+cPickle} module the callables {@link Pickler} and {@link Unpickler} are
+functions, not classes. This means that you cannot use them to derive
+custom pickling and unpickling subclasses. Most applications have no
+need for this functionality and should benefit from the greatly improved
+performance of the {@link cPickle} module.
+
+<p>The pickle data stream produced by {@link pickle} and {@link cPickle}
+are identical, so it is possible to use {@link pickle} and {@link
+cPickle} interchangeably with existing pickles.{@link footnote:8958}
+
+<p>There are additional minor differences in API between {@link cPickle}
+and {@link pickle}, however for most applications, they are
+interchangeable. More documentation is provided in the {@link pickle}
+module documentation, which includes a list of the documented
+differences.
+
+<h4>Footnotes</h4>
+
+@@variable ... pickles.3.11
+
+<p>Since the pickle data format is actually a tiny stack-oriented
+programming language, and some freedom is taken in the encodings of
+certain objects, it is possible that the two modules produce different
+data streams for the same input objects. However it is guaranteed that
+they will always be able to read each other's data streams.

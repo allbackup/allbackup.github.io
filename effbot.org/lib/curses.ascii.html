@@ -1,0 +1,515 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>curses.ascii</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-curses.ascii.html'>original</a> :::
+<a href='curses.ascii.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>curses.ascii&#8212;Utilities for ASCII characters</h1>
+
+<p>New in version 1.6.</p>
+
+<p>The <code>curses.ascii</code>
+module supplies name constants for ASCII characters and functions
+to test membership in various ASCII character classes. The
+constants supplied are names for control characters as follows:</p>
+
+<table border="1">
+<tr>
+<th>
+<p>Name</p>
+</th>
+<th>
+<p>Meaning</p>
+</th>
+</tr>
+
+<tr>
+<td>
+<p><code>NUL</code></p>
+</td>
+<td />
+</tr>
+
+<tr>
+<td>
+<p><code>SOH</code></p>
+</td>
+<td>
+<p>Start of heading, console interrupt</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>STX</code></p>
+</td>
+<td>
+<p>Start of text</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>ETX</code></p>
+</td>
+<td>
+<p>End of text</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>EOT</code></p>
+</td>
+<td>
+<p>End of transmission</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>ENQ</code></p>
+</td>
+<td>
+<p>Enquiry, goes with <code>ACK</code> flow control</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>ACK</code></p>
+</td>
+<td>
+<p>Acknowledgement</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>BEL</code></p>
+</td>
+<td>
+<p>Bell</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>BS</code></p>
+</td>
+<td>
+<p>Backspace</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>TAB</code></p>
+</td>
+<td>
+<p>Tab</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>HT</code></p>
+</td>
+<td>
+<p>Alias for <code>TAB</code>: &#8220;Horizontal tab&#8221;</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>LF</code></p>
+</td>
+<td>
+<p>Line feed</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>NL</code></p>
+</td>
+<td>
+<p>Alias for <code>LF</code>: &#8220;New line&#8221;</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>VT</code></p>
+</td>
+<td>
+<p>Vertical tab</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>FF</code></p>
+</td>
+<td>
+<p>Form feed</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>CR</code></p>
+</td>
+<td>
+<p>Carriage return</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>SO</code></p>
+</td>
+<td>
+<p>Shift-out, begin alternate character set</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>SI</code></p>
+</td>
+<td>
+<p>Shift-in, resume default character set</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>DLE</code></p>
+</td>
+<td>
+<p>Data-link escape</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>DC1</code></p>
+</td>
+<td>
+<p>XON, for flow control</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>DC2</code></p>
+</td>
+<td>
+<p>Device control 2, block-mode flow control</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>DC3</code></p>
+</td>
+<td>
+<p>XOFF, for flow control</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>DC4</code></p>
+</td>
+<td>
+<p>Device control 4</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>NAK</code></p>
+</td>
+<td>
+<p>Negative acknowledgement</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>SYN</code></p>
+</td>
+<td>
+<p>Synchronous idle</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>ETB</code></p>
+</td>
+<td>
+<p>End transmission block</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>CAN</code></p>
+</td>
+<td>
+<p>Cancel</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>EM</code></p>
+</td>
+<td>
+<p>End of medium</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>SUB</code></p>
+</td>
+<td>
+<p>Substitute</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>ESC</code></p>
+</td>
+<td>
+<p>Escape</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>FS</code></p>
+</td>
+<td>
+<p>File separator</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>GS</code></p>
+</td>
+<td>
+<p>Group separator</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>RS</code></p>
+</td>
+<td>
+<p>Record separator, block-mode terminator</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>US</code></p>
+</td>
+<td>
+<p>Unit separator</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>SP</code></p>
+</td>
+<td>
+<p>Space</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>DEL</code></p>
+</td>
+<td>
+<p>Delete</p>
+</td>
+</tr>
+</table>
+
+<br />
+<br />
+ 
+
+<p>Note that many of these have little practical significance in
+modern usage. The mnemonics derive from teleprinter conventions
+that predate digital computers.</p>
+
+<p>The module supplies the following functions, patterned on those
+in the standard C library:</p>
+</div>
+<dl><dt class="function" id="isalnum"><b>isalnum(c)</b> <tt class="nav"><a class="nav" href="curses.ascii.isalnum" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Checks for an ASCII alphanumeric character; it is equivalent to
+"<code>isalpha(</code><var>c</var>) or isdigit(<var>c</var>)".</p>
+</dd>
+<dt class="function" id="isalpha"><b>isalpha(c)</b> <tt class="nav"><a class="nav" href="curses.ascii.isalpha" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Checks for an ASCII alphabetic character; it is equivalent to
+"<code>isupper(</code><var>c</var>) or islower(<var>c</var>)".</p>
+</dd>
+<dt class="function" id="isascii"><b>isascii(c)</b> <tt class="nav"><a class="nav" href="curses.ascii.isascii" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Checks for a character value that fits in the 7-bit ASCII
+set.</p>
+</dd>
+<dt class="function" id="isblank"><b>isblank(c)</b> <tt class="nav"><a class="nav" href="curses.ascii.isblank" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Checks for an ASCII whitespace character.</p>
+</dd>
+<dt class="function" id="iscntrl"><b>iscntrl(c)</b> <tt class="nav"><a class="nav" href="curses.ascii.iscntrl" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Checks for an ASCII control character (in the range 0x00 to
+0x1f).</p>
+</dd>
+<dt class="function" id="isdigit"><b>isdigit(c)</b> <tt class="nav"><a class="nav" href="curses.ascii.isdigit" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Checks for an ASCII decimal digit, "<code>0</code>" through
+"<code>9</code>". This is equivalent to "<var>c</var> in
+string.digits".</p>
+</dd>
+<dt class="function" id="isgraph"><b>isgraph(c)</b> <tt class="nav"><a class="nav" href="curses.ascii.isgraph" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Checks for ASCII any printable character except space.</p>
+</dd>
+<dt class="function" id="islower"><b>islower(c)</b> <tt class="nav"><a class="nav" href="curses.ascii.islower" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Checks for an ASCII lower-case character.</p>
+</dd>
+<dt class="function" id="isprint"><b>isprint(c)</b> <tt class="nav"><a class="nav" href="curses.ascii.isprint" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Checks for any ASCII printable character including space.</p>
+</dd>
+<dt class="function" id="ispunct"><b>ispunct(c)</b> <tt class="nav"><a class="nav" href="curses.ascii.ispunct" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Checks for any printable ASCII character which is not a space or
+an alphanumeric character.</p>
+</dd>
+<dt class="function" id="isspace"><b>isspace(c)</b> <tt class="nav"><a class="nav" href="curses.ascii.isspace" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Checks for ASCII white-space characters; space, line feed,
+carriage return, form feed, horizontal tab, vertical tab.</p>
+</dd>
+<dt class="function" id="isupper"><b>isupper(c)</b> <tt class="nav"><a class="nav" href="curses.ascii.isupper" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Checks for an ASCII uppercase letter.</p>
+</dd>
+<dt class="function" id="isxdigit"><b>isxdigit(c)</b> <tt class="nav"><a class="nav" href="curses.ascii.isxdigit" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Checks for an ASCII hexadecimal digit. This is equivalent to
+"<var>c</var> in string.hexdigits".</p>
+</dd>
+<dt class="function" id="isctrl"><b>isctrl(c)</b> <tt class="nav"><a class="nav" href="curses.ascii.isctrl" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Checks for an ASCII control character (ordinal values 0 to
+31).</p>
+</dd>
+<dt class="function" id="ismeta"><b>ismeta(c)</b> <tt class="nav"><a class="nav" href="curses.ascii.ismeta" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Checks for a non-ASCII character (ordinal values 0x80 and
+above).</p>
+</dd>
+</dl><div class="text">
+<p>These functions accept either integers or strings; when the
+argument is a string, it is first converted using the built-in
+function <code>ord</code>.</p>
+
+<p>Note that all these functions check ordinal bit values derived
+from the first character of the string you pass in; they do not
+actually know anything about the host machine's character encoding.
+For functions that know about the character encoding (and handle
+internationalization properly) see the <code>string</code> module.</p>
+
+<p>The following two functions take either a single-character
+string or integer byte value; they return a value of the same
+type.</p>
+</div>
+<dl><dt class="function" id="ascii"><b>ascii(c)</b> <tt class="nav"><a class="nav" href="curses.ascii.ascii" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return the ASCII value corresponding to the low 7 bits of <var>
+c</var>.</p>
+</dd>
+<dt class="function" id="ctrl"><b>ctrl(c)</b> <tt class="nav"><a class="nav" href="curses.ascii.ctrl" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return the control character corresponding to the given
+character (the character bit value is bitwise-anded with 0x1f).</p>
+</dd>
+<dt class="function" id="alt"><b>alt(c)</b> <tt class="nav"><a class="nav" href="curses.ascii.alt" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return the 8-bit character corresponding to the given ASCII
+character (the character bit value is bitwise-ored with 0x80).</p>
+</dd>
+</dl><div class="text">
+<p>The following function takes either a single-character string or
+integer value; it returns a string.</p>
+</div>
+<dl><dt class="function" id="unctrl"><b>unctrl(c)</b> <tt class="nav"><a class="nav" href="curses.ascii.unctrl" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return a string representation of the ASCII character <var>
+c</var>. If <var>c</var> is printable, this string is the character
+itself. If the character is a control character (0x00-0x1f) the
+string consists of a caret ("<code>^</code>") followed by the
+corresponding uppercase letter. If the character is an ASCII delete
+(0x7f) the string is <code>'^?'</code>. If the character has its
+meta bit (0x80) set, the meta bit is stripped, the preceding rules
+applied, and "<code>!</code>" prepended to the result.</p>
+</dd>
+<dt class="variable" id="controlnames"><b>controlnames</b> <tt class="nav"><a class="nav" href="curses.ascii.controlnames" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>A 33-element string array that contains the ASCII mnemonics for
+the thirty-two ASCII control characters from 0 (NUL) to 0x1f (US),
+in order, plus the mnemonic "<code>SP</code>" for the space
+character.</p>
+</dd>
+</dl></div></body></html>

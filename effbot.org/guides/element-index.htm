@@ -1,0 +1,77 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>ElementTree&nbsp;Overview</title> <script type="text/javascript">effbot_page_id=78;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> <!--
+<p style='color: #8f8f8f; background: #fff5bf; padding: 5px 10px;'> <b>2008-07-15:</b> Selected articles
+ (including this one) 
+now have experimental "comment" links in the left column and at the bottom.
+You're welcome to use them for commenting and voting on articles.
+For a bit more on this, see <a
+href="http://effbot.slinkset.com/links/Welcome_to_discuss_effbot_org">this
+page</a>. /F
+</p>
+--> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <h1 class="maintitle">ElementTree&nbsp;Overview</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><blockquote><p align="right">
+
+&#8220;<i>But I have found that sitting under the ElementTree, one can feel the Zen of XML.</i>&#8221;<br /> &#8212; Essien Ita Essien
+
+
+</p></blockquote><p class="nav">
+[<a href="/">home</a>]
+[<a href="/zone/">zone</a>]
+[<a href="http://www.amazon.co.uk/gp/registry/2QZDLLDVBENMC">like the library? why not buy me a gift!</a>]
+</p></div><div class="yui-u">&#160;</div></div><div class="yui-ge"><div class="yui-u first"><p class="note"><b>Update 2007-09-12:</b>
+ElementTree 1.3 alpha 3 is now available.  For more information, see <a href="elementtree-13-intro.htm"><cite>Introducing ElementTree 1.3</cite></a>.</p><p class="note"><b>Update 2007-08-27:</b>
+<a href="/downloads#elementtree">ElementTree 1.2.7 preview</a> is now available.  This is 1.2.6 plus support for IronPython.  The serializer is ~20% faster, and now supports newlines in attribute values.</p><p>The <b>Element</b> type is a simple but flexible container object,
+designed to store hierarchical data structures, such as simplified XML
+infosets, in memory.  The element type can be described as a cross
+between a Python list and a Python dictionary.</p><p>The <b>ElementTree</b> wrapper type adds code to load XML files as trees
+of Element objects, and save them back again.
+
+
+</p><p>The <b>Element</b> type is available as a pure-Python implementation
+for Python 1.5.2 and later.  A <a href="celementtree.htm">C implementation</a>
+is also available, for use with CPython 2.1 and later.  The core
+components of both libraries are also shipped with Python 2.5 and
+later.</p><p>There&#8217;s also an independent implementation, <a href="http://codespeak.net/lxml/">lxml.etree</a>, based on the well-known libxml2/libxslt libraries.  This adds full support for XSLT, XPath, and
+more.</p><p>For more implementations and add-ons, see the <a href="#interesting-stuff"><cite>Interesting Stuff</cite></a>
+section below.</p><p class="nav">
+[<a href="#usage">usage</a>]
+[<a href="#documentation">documentation</a>]
+[<a href="pythondoc-elementtree-ElementTree.htm">api reference</a>]
+</p><h2 id="installation">Installation&#160;<a class="nav" href="#installation" title="bookmark!">#</a></h2><p>Binary installers are available for many platforms, including
+Windows, Mac OS X, and most Linux distributions.  Look for packages
+named &#8220;python-elementtree&#8221; or similar.
+
+</p><p>To install from source, simply unpack the distribution archive,
+change to the distribution directory, and run the <b>setup.py</b> script
+as follows:</p><pre>
+$ python setup.py install
+</pre><p>When you&#8217;ve done this, you should be able to import the <b>ElementTree</b>
+module, and other modules from the <b>elementtree</b> package:</p><pre class="python">
+$ python
+&gt;&gt;&gt; <span class="pykeyword">from</span> elementtree <span class="pykeyword">import</span> ElementTree</pre><p>It&#8217;s common practice to import ElementTree under an alias, both to
+minimize typing, and to make it easier to switch between different
+implementations:</p><pre class="python">
+$ python
+&gt;&gt;&gt; <span class="pykeyword">import</span> elementtree.ElementTree as ET
+&gt;&gt;&gt; <span class="pykeyword">import</span> cElementTree as ET
+&gt;&gt;&gt; <span class="pykeyword">import</span> lxml.etree as ET
+&gt;&gt;&gt; <span class="pykeyword">import</span> xml.etree.ElementTree as ET <span class="pycomment"># Python 2.5</span></pre><p>Note that if you only need the core functionality, you can include the <b>ElementTree.py</b> file in your own project.  To get <a href="element-xpath.htm">path</a> support, you also need <b>ElementPath.py</b>.  All other modules are optional.</p><h2 id="usage">Basic Usage&#160;<a class="nav" href="#usage" title="bookmark!">#</a></h2><p>Each <b>Element</b> instance can have an identifying tag, any number
+of attributes, any number of child element instances, and an associated
+object (usually a string).  To create elements, you can use the
+<b>Element</b> or <b>Subelement</b> factories:</p><pre class="python">
+<span class="pykeyword">import</span> elementtree.ElementTree as ET
+
+<span class="pycomment"># build a tree structure</span>
+root = ET.Element(<span class="pystring">"html"</span>)
+
+head = ET.SubElement(root, <span class="pystring">"head"</span>)
+
+title = ET.SubElement(head, <span class="pystring">"title"</span>)
+title.text = <span class="pystring">"Page Title"</span>
+
+body = ET.SubElement(root, <span class="pystring">"body"</span>)
+body.set(<span class="pystring">"bgcolor"</span>, <span class="pystring">"#ffffff"</span>)
+
+body.text = <span class="pystring">"Hello, World!"</span>
+
+<span class=

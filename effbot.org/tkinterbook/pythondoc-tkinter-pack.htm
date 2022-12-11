@@ -1,0 +1,93 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>The Tkinter Pack&nbsp;Class</title></head><body data-page-id="1948"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">The Tkinter Pack&nbsp;Class</h1></div><div class="yui-ge"><div class="yui-u first"><dl><dt><b>Pack</b> (class)  [<a href="#Tkinter.Pack-class">#</a>]</dt><dd>
+<p>Pack geometry manager.  This is an implementation class; all the
+methods described below are available on all widget classes.</p></dd>
+<dt><a id="Tkinter.Pack.pack-method" name="Tkinter.Pack.pack-method"><b>pack(**options)</b></a> [<a href="#Tkinter.Pack.pack-method">#</a>]</dt><dd>
+<p>Pack the widget as described by the options.</p><dl><dt><i>**options</i></dt><dd>
+Geometry options.</dd>
+<dt><i>anchor=</i></dt><dd>
+Where the widget is placed inside the packing
+    box.  Default is CENTER.</dd>
+<dt><i>expand=</i></dt><dd>
+Specifies whether the widgets should be expanded
+    to fill any extra space in the geometry master. If false
+    (default), the widget is not expanded.</dd>
+<dt><i>fill=</i></dt><dd>
+Specifies whether the widget should occupy all
+    the space provided to it by the master. If <b>NONE</b>
+    (default), keep the widget&#8217;s original size. If <b>X</b>
+    (fill horizontally), <b>Y</b> (fill vertically), or
+    <b>BOTH</b>, fill the given space along that direction.
+    <br />
+    To make a widget fill the entire master widget, set
+    <b>fill</b> to <b>BOTH</b> and <b>expand</b> to a
+    non-zero value.
+</dd>
+<dt><i>in=</i></dt><dd>
+Pack this widget inside the given widget. You can
+    only pack a widget inside its parent, or in any decendant of
+    its parent.  This option should usually be left out, in which
+    case the widget is packed inside its parent.
+    <br />
+    Note that <b>in</b> is a reserved word in Python. To use it
+    as a keyword option, append an underscore (<b>in_</b>).
+</dd>
+<dt><i>ipadx=</i></dt><dd>
+Internal padding. Default is 0.</dd>
+<dt><i>ipady=</i></dt><dd>
+Internal padding. Default is 0.</dd>
+<dt><i>padx=</i></dt><dd>
+External padding. Default is 0.</dd>
+<dt><i>pady=</i></dt><dd>
+External padding. Default is 0.</dd>
+<dt><i>side=</i></dt><dd>
+Specifies which side to pack the widget against.
+    To pack widgets vertically, use <b>TOP</b> (default). To
+    pack widgets horizontally, use <b>LEFT</b>.
+    <br />
+    You can also pack widgets along the <b>BOTTOM</b> and
+    <b>RIGHT</b> edges. You can mix sides in a single geometry
+    manager, but the results may not always be what you expect.
+    While you can create pretty complicated layouts by nesting
+    <b>Frame</b> widgets, you may prefer using the <b>grid</b>
+    geometry manager for non-trivial layouts.
+</dd>
+</dl><br />
+</dd>
+<dt><a id="Tkinter.Pack.pack_configure-method" name="Tkinter.Pack.pack_configure-method"><b>pack_configure(**options)</b></a> [<a href="#Tkinter.Pack.pack_configure-method">#</a>]</dt><dd>
+<p>Same as <a class="link" href="#pack.Pack.pack-method"><b>pack</b></a>.
+
+</p></dd>
+<dt><a id="Tkinter.Pack.pack_forget-method" name="Tkinter.Pack.pack_forget-method"><b>pack_forget()</b></a> [<a href="#Tkinter.Pack.pack_forget-method">#</a>]</dt><dd>
+<p>Removes the widget from its current manager.  The widget is not
+destroyed, and can be displayed again by <b>pack</b> or any other
+manager.
+</p></dd>
+<dt><a id="Tkinter.Pack.pack_info-method" name="Tkinter.Pack.pack_info-method"><b>pack_info()</b></a> [<a href="#Tkinter.Pack.pack_info-method">#</a>]</dt><dd>
+<p>Returns a dictionary containing the current packer options.</p><dl><dt>Returns:</dt><dd>
+A dictionary mapping packer option names to option
+    values.</dd>
+</dl><br />
+</dd>
+<dt><a id="Tkinter.Pack.pack_propagate-method" name="Tkinter.Pack.pack_propagate-method"><b>pack_propagate(flag)</b></a> [<a href="#Tkinter.Pack.pack_propagate-method">#</a>]</dt><dd>
+<p>(Manager method)  Controls geometry propagation.  If enabled,
+the manager widget will be resized if not large enough to hold
+all the child widgets.
+</p><p>
+Note that this method should be called on the master widget, not
+on an invidivual child widget.
+
+</p></dd>
+<dt><a id="Tkinter.Pack.pack_slaves-method" name="Tkinter.Pack.pack_slaves-method"><b>pack_slaves()</b></a> [<a href="#Tkinter.Pack.pack_slaves-method">#</a>]</dt><dd>
+<p>(Manager method)  Returns a list of all child (&#8220;slave&#8221;) widgets
+managed by the packer for this widget.
+</p><p>
+Note that this method should be called on the master widget, not
+on an invidivual child widget.
+
+</p><dl><dt>Returns:</dt><dd>
+A list of child widgets.</dd>
+</dl><br />
+</dd>
+</dl></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to tkinterbook index page.">::: tkinterbook :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

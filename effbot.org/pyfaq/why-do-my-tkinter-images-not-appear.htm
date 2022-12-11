@@ -1,0 +1,19 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>Why do my Tkinter images not&nbsp;appear?</title></head><body data-page-id="934"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><p class="note" style="text-align: center"><strong>
+This is an old copy of the Python FAQ.  The information here may be
+outdated.
+</strong></p><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">Why do my Tkinter images not&nbsp;appear?</h1></div><div class="yui-ge"><div class="yui-u first"><p>When you add a <a href="/pyref/Tkinter.PhotoImage.htm"><strong>PhotoImage</strong></a> or other Image object
+to a Tkinter widget, you must keep your own reference to the image object.  If
+you don&#8217;t, the image won&#8217;t always show up.</p><p>The problem is that the Tkinter/Tk interface doesn&#8217;t handle references to
+Image objects properly; the Tk widget will hold a reference to the internal
+object, but Tkinter does not.  When Python&#8217;s garbage collector discards the
+Tkinter object, Tkinter tells Tk to release the image.  But since the image
+is in use by a widget, Tk doesn&#8217;t destroy it.  Not completely.  It just
+blanks the image, making it completely transparent&#8230;</p><p>The solution is to make sure to keep a reference to the Tkinter object,
+for example by attaching it to a widget attribute:</p><pre><code>photo = PhotoImage(...)
+
+label = Label(image=photo)
+label.image = photo # keep a reference!
+label.pack()
+</code></pre><p>CATEGORY: gui</p><p>CATEGORY: tkinter</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to pyfaq index page.">::: pyfaq :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

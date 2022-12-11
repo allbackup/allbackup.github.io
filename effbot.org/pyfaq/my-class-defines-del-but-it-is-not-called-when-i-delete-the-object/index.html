@@ -1,0 +1,12 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>My class defines __del__ but it is not called when I delete the&nbsp;object.</title> <script type="text/javascript">effbot_page_id=871;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> <!--
+<p style='color: #8f8f8f; background: #fff5bf; padding: 5px 10px;'> <b>2008-07-15:</b> Selected articles
+
+now have experimental "comment" links in the left column and at the bottom.
+You're welcome to use them for commenting and voting on articles.
+For a bit more on this, see <a
+href="http://effbot.slinkset.com/links/Welcome_to_discuss_effbot_org">this
+page</a>. /F
+</p>
+--> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <h1 class="maintitle">My class defines __del__ but it is not called when I delete the&nbsp;object.</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p>There are several possible reasons for this.</p><p>The del statement does not necessarily call <a href="/pyref/__del__.htm"><strong>__del__</strong></a> &#8212; it simply decrements the object&#8217;s reference count, and if this reaches zero <a href="/pyref/__del__.htm"><strong>__del__</strong></a> is called.</p><p>If your data structures contain circular links (e.g. a tree where each child has a parent reference and each parent has a list of children) the reference counts will never go back to zero. Once in a while Python runs an algorithm to detect such cycles, but the garbage collector might run some time after the last reference to your data structure vanishes, so your <a href="/pyref/__del__.htm"><strong>__del__</strong></a> method may be called at an inconvenient and random time. This is inconvenient if you&#8217;re trying to reproduce a problem. Wor

@@ -1,0 +1,206 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>shelve</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-shelve.html'>original</a> :::
+<a href='shelve.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>shelve&#8212;Python object persistence</h1>
+
+<div class="toc"><dl><dt>On this page:</dt><dd><a href="#restrictions">Restrictions</a></dd><dd><a href="#example">Example</a></dd></dl></div><p>A &#8220;shelf&#8221; is a persistent, dictionary-like object.
+The difference with &#8220;dbm&#8221; databases is that the values
+(not the keys!) in a shelf can be essentially arbitrary Python
+objects -- anything that the <code>
+pickle</code> module can handle. This includes most class instances,
+recursive data types, and objects containing lots of shared
+sub-objects. The keys are ordinary strings.</p>
+</div>
+<dl><dt class="function"><b>
+open(filename[,flag='c'[,protocol=None[,writeback=False[,binary=None]]]])</b> <tt class="nav"><a class="nav" href="shelve." title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Open a persistent dictionary. The filename specified is the base
+filename for the underlying database. As a side-effect, an
+extension may be added to the filename and more than one file may
+be created. By default, the underlying database file is opened for
+reading and writing. The optional <var>flag</var> parameter has the
+same interpretation as the <var>flag</var> parameter of <code>anydbm.open</code>.</p>
+
+<p>By default, version 0 pickles are used to serialize values. The
+version of the pickle protocol can be specified with the <var>
+protocol</var> parameter.</p>
+
+<p>By default, mutations to persistent-dictionary mutable entries
+are not automatically written back. If the optional <var>
+writeback</var> parameter is set to <code>True</code>, all entries accessed are cached in
+memory, and written back at close time; this can make it handier to
+mutate mutable entries in the persistent dictionary, but, if many
+entries are accessed, it can consume vast amounts of memory for the
+cache, and it can make the close operation very slow since all
+accessed entries are written back (there is no way to determine
+which accessed entries are mutable, nor which ones were actually
+mutated).</p>
+
+<blockquote><span class="mark">@since</span> Changed in version
+2.3: The protocol parameter was added. The binary parameter is
+deprecated and provided for backwards compatibility only.<br />
+</blockquote>
+</dd>
+</dl><div class="text">
+<p>Shelve objects support all methods supported by dictionaries.
+This eases the transition from dictionary based scripts to those
+requiring persistent storage.</p>
+
+<p>One additional method is supported:</p>
+</div>
+<dl><dt class="method" id="sync"><b>sync()</b> <tt class="nav"><a class="nav" href="shelve.sync" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Write back all entries in the cache if the shelf was opened with
+<var>writeback</var> set to <code>
+True</code>. Also empty the cache and synchronize the persistent
+dictionary on disk, if feasible. This is called automatically when
+the shelf is closed with <code>
+close</code>.</p>
+</dd>
+</dl><div class="text">
+<h2 id="restrictions">Restrictions <a class="nav" href="#restrictions">#</a></h2>
+
+<ul>
+<li>
+<p>The choice of which database package will be used (such as <code>dbm</code>, <code>gdbm</code> or <code>
+bsddb</code>) depends on which interface is available. Therefore it is
+not safe to open the database directly using <code>dbm</code>. The database is also (unfortunately)
+subject to the limitations of <code>
+dbm</code>, if it is used -- this means that (the pickled
+representation of) the objects stored in the database should be
+fairly small, and in rare cases key collisions may cause the
+database to refuse updates.</p>
+</li>
+
+<li>
+<p>Depending on the implementation, closing a persistent dictionary
+may or may not be necessary to flush changes to disk. The <code>__del__</code> method of the <a class="link" href="#Shelf"><code>Shelf</code></a> class calls the <code>close</code> method, so the programmer
+generally need not do this explicitly.</p>
+</li>
+
+<li>
+<p>The <code>shelve</code> module does
+not support <em>concurrent</em> read/write access to shelved
+objects. (Multiple simultaneous read accesses are safe.) When a
+program has a shelf open for writing, no other program should have
+it open for reading or writing. Unix file locking can be used to
+solve this, but this differs across Unix versions and requires
+knowledge about the database implementation used.</p>
+</li>
+</ul>
+</div>
+<dl><dt class="class" id="Shelf"><b>class Shelf(dict[, protocol=None[, writeback=False[,
+binary=None]]])</b> <tt class="nav"><a class="nav" href="shelve.Shelf" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>A subclass of <code>
+UserDict.DictMixin</code> which stores pickled values in the <var>
+dict</var> object.</p>
+
+<p>By default, version 0 pickles are used to serialize values. The
+version of the pickle protocol can be specified with the <var>
+protocol</var> parameter. See the <code>pickle</code> documentation for a discussion of the
+pickle protocols.</p>
+
+<p>If the <var>writeback</var> parameter is <code>True</code>, the object will hold a cache of all
+entries accessed and write them back to the <var>dict</var> at sync
+and close times. This allows natural operations on mutable entries,
+but can consume much more memory and make sync and close take a
+long time.</p>
+
+<blockquote><span class="mark">@since</span> Changed in version
+2.3: The protocol parameter was added. The binary parameter is
+deprecated and provided for backwards compatibility only.<br />
+</blockquote>
+</dd>
+<dt class="class" id="BsdDbShelf"><b>class BsdDbShelf(dict[, protocol=None[,
+writeback=False[, binary=None]]])</b> <tt class="nav"><a class="nav" href="shelve.BsdDbShelf" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>A subclass of <a class="link" href="#Shelf"><code>Shelf</code></a> which
+exposes <code>first</code>, <code>next</code>, <code>previous</code>, <code>last</code> and <code>set_location</code> which are available in
+the <code>bsddb</code> module but not in
+other database modules. The <var>dict</var> object passed to the
+constructor must support those methods. This is generally
+accomplished by calling one of <code>bsddb.hashopen</code>, <code>bsddb.btopen</code> or <code>bsddb.rnopen</code>. The optional <var>
+protocol</var>, <var>writeback</var>, and <var>binary</var>
+parameters have the same interpretation as for the <a class="link" href="#Shelf"><code>Shelf</code></a> class.</p>
+</dd>
+<dt class="class" id="DbfilenameShelf"><b>class DbfilenameShelf(filename[, flag='c'[,
+protocol=None[, writeback=False[, binary=None]]]])</b> <tt class="nav"><a class="nav" href="shelve.DbfilenameShelf" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>A subclass of <a class="link" href="#Shelf"><code>Shelf</code></a> which
+accepts a <var>filename</var> instead of a dict-like object. The
+underlying file will be opened using <code>anydbm.open</code>. By default, the file will
+be created and opened for both read and write. The optional <var>
+flag</var> parameter has the same interpretation as for the <a class="link" href="#open"><code>open</code></a> function. The optional <var>
+protocol</var>, <var>writeback</var>, and <var>binary</var>
+parameters have the same interpretation as for the <a class="link" href="#Shelf"><code>Shelf</code></a> class.</p>
+</dd>
+</dl><div class="text">
+<h2 id="example">Example <a class="nav" href="#example">#</a></h2>
+
+<p>To summarize the interface (<code>key</code> is a string, <code>
+data</code> is an arbitrary object):</p>
+
+<pre>
+import shelve
+
+d = shelve.open(filename) # open -- file may get suffix added by low-level
+                          # library
+
+d[key] = data   # store data at key (overwrites old data if
+                # using an existing key)
+data = d[key]   # retrieve a COPY of data at key (raise KeyError if no
+                # such key)
+del d[key]      # delete data stored at key (raises KeyError
+                # if no such key)
+flag = d.has_key(key)   # true if the key exists
+list = d.keys() # a list of all existing keys (slow!)
+
+# as d was opened WITHOUT writeback=True, beware:
+d['xx'] = range(4)  # this works as expected, but...
+d['xx'].append(5)   # *this doesn't!* -- d['xx'] is STILL range(4)!!!
+# having opened d without writeback=True, you need to code carefully:
+temp = d['xx']      # extracts the copy
+temp.append(5)      # mutates the copy
+d['xx'] = temp      # stores the copy right back, to persist it
+# or, d=shelve.open(filename,writeback=True) would let you just code
+# d['xx'].append(5) and have it work as expected, BUT it would also
+# consume more memory and make the d.close() operation slower.
+
+d.close()       # close it
+</pre>
+
+<span class="mark">@see</span> <code>
+Module anydbm</code> Generic interface to dbm-style databases. <span class="mark">@see</span> <code>Module
+bsddb</code> BSD db database interface. <span class="mark">@see</span>
+<code>Module dbhash</code> Thin layer
+around the bsddb which provides an open function like the other
+database modules. <span class="mark">@see</span> <code>Module dbm</code> Standard Unix database interface.
+<span class="mark">@see</span> <code>
+Module dumbdbm</code> Portable implementation of the dbm interface.
+<span class="mark">@see</span> <code>
+Module gdbm</code> GNU database interface, based on the dbm interface.
+<span class="mark">@see</span> <code>
+Module pickle</code> Object serialization used by shelve. <span class="mark">@see</span> <code>Module
+cPickle</code> High-performance version of pickle.</div>
+</div></body></html>

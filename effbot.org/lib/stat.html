@@ -1,0 +1,193 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>stat</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-stat.html'>original</a> :::
+<a href='stat.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>stat&#8212;Interpreting stat() results</h1>
+
+<p>The <code>stat</code> module defines
+constants and functions for interpreting the results of <code>os.stat</code>, <code>os.fstat</code> and <code>os.lstat</code> (if they exist). For complete
+details about the <code>c:stat</code>, <code>c:fstat</code> and <code>c:lstat</code> calls, consult the documentation
+for your system.</p>
+
+<p>The <code>stat</code> module defines the
+following functions to test for specific file types:</p>
+</div>
+<dl><dt class="function" id="S_ISDIR"><b>S_ISDIR(mode)</b> <tt class="nav"><a class="nav" href="stat.S_ISDIR" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return non-zero if the mode is from a directory.</p>
+</dd>
+<dt class="function" id="S_ISCHR"><b>S_ISCHR(mode)</b> <tt class="nav"><a class="nav" href="stat.S_ISCHR" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return non-zero if the mode is from a character special device
+file.</p>
+</dd>
+<dt class="function" id="S_ISBLK"><b>S_ISBLK(mode)</b> <tt class="nav"><a class="nav" href="stat.S_ISBLK" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return non-zero if the mode is from a block special device
+file.</p>
+</dd>
+<dt class="function" id="S_ISREG"><b>S_ISREG(mode)</b> <tt class="nav"><a class="nav" href="stat.S_ISREG" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return non-zero if the mode is from a regular file.</p>
+</dd>
+<dt class="function" id="S_ISFIFO"><b>S_ISFIFO(mode)</b> <tt class="nav"><a class="nav" href="stat.S_ISFIFO" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return non-zero if the mode is from a FIFO (named pipe).</p>
+</dd>
+<dt class="function" id="S_ISLNK"><b>S_ISLNK(mode)</b> <tt class="nav"><a class="nav" href="stat.S_ISLNK" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return non-zero if the mode is from a symbolic link.</p>
+</dd>
+<dt class="function" id="S_ISSOCK"><b>S_ISSOCK(mode)</b> <tt class="nav"><a class="nav" href="stat.S_ISSOCK" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return non-zero if the mode is from a socket.</p>
+</dd>
+</dl><div class="text">
+<p>Two additional functions are defined for more general
+manipulation of the file's mode:</p>
+</div>
+<dl><dt class="function" id="S_IMODE"><b>S_IMODE(mode)</b> <tt class="nav"><a class="nav" href="stat.S_IMODE" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return the portion of the file's mode that can be set by <code>os.chmod</code>--that is, the file's
+permission bits, plus the sticky bit, set-group-id, and set-user-id
+bits (on systems that support them).</p>
+</dd>
+<dt class="function" id="S_IFMT"><b>S_IFMT(mode)</b> <tt class="nav"><a class="nav" href="stat.S_IFMT" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return the portion of the file's mode that describes the file
+type (used by the <code>S_IS*</code>
+functions above).</p>
+</dd>
+</dl><div class="text">
+<p>Normally, you would use the <code>os.path.is*</code> functions for testing the
+type of a file; the functions here are useful when you are doing
+multiple tests of the same file and wish to avoid the overhead of
+the <code>c:stat</code> system call for
+each test. These are also useful when checking for information
+about a file that isn't handled by <code>os.path</code>, like the tests for block and
+character devices.</p>
+
+<p>All the variables below are simply symbolic indexes into the
+10-tuple returned by <code>
+os.stat</code>, <code>os.fstat</code> or
+<code>os.lstat</code>.</p>
+</div>
+<dl><dt class="variable" id="ST_MODE"><b>ST_MODE</b> <tt class="nav"><a class="nav" href="stat.ST_MODE" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Inode protection mode.</p>
+</dd>
+<dt class="variable" id="ST_INO"><b>ST_INO</b> <tt class="nav"><a class="nav" href="stat.ST_INO" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Inode number.</p>
+</dd>
+<dt class="variable" id="ST_DEV"><b>ST_DEV</b> <tt class="nav"><a class="nav" href="stat.ST_DEV" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Device inode resides on.</p>
+</dd>
+<dt class="variable" id="ST_NLINK"><b>ST_NLINK</b> <tt class="nav"><a class="nav" href="stat.ST_NLINK" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Number of links to the inode.</p>
+</dd>
+<dt class="variable" id="ST_UID"><b>ST_UID</b> <tt class="nav"><a class="nav" href="stat.ST_UID" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>User id of the owner.</p>
+</dd>
+<dt class="variable" id="ST_GID"><b>ST_GID</b> <tt class="nav"><a class="nav" href="stat.ST_GID" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Group id of the owner.</p>
+</dd>
+<dt class="variable" id="ST_SIZE"><b>ST_SIZE</b> <tt class="nav"><a class="nav" href="stat.ST_SIZE" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Size in bytes of a plain file; amount of data waiting on some
+special files.</p>
+</dd>
+<dt class="variable" id="ST_ATIME"><b>ST_ATIME</b> <tt class="nav"><a class="nav" href="stat.ST_ATIME" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Time of last access.</p>
+</dd>
+<dt class="variable" id="ST_MTIME"><b>ST_MTIME</b> <tt class="nav"><a class="nav" href="stat.ST_MTIME" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Time of last modification.</p>
+</dd>
+<dt class="variable" id="ST_CTIME"><b>ST_CTIME</b> <tt class="nav"><a class="nav" href="stat.ST_CTIME" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>The &#8220;ctime&#8221; as reported by the operating system. On
+some systems (like Unix) is the time of the last metadata change,
+and, on others (like Windows), is the creation time (see platform
+documentation for details).</p>
+</dd>
+</dl><div class="text">
+<p>The interpretation of &#8220;file size&#8221; changes according
+to the file type. For plain files this is the size of the file in
+bytes. For FIFOs and sockets under most flavors of Unix (including
+Linux in particular), the &#8220;size&#8221; is the number of bytes
+waiting to be read at the time of the call to <code>os.stat</code>, <code>os.fstat</code>, or <code>os.lstat</code>; this can sometimes be useful,
+especially for polling one of these special files after a
+non-blocking open. The meaning of the size field for other
+character and block devices varies more, depending on the
+implementation of the underlying system call.</p>
+
+<p>Example:</p>
+
+<pre>
+import os, sys
+from stat import *
+
+def walktree(top, callback):
+    '''recursively descend the directory tree rooted at top,
+       calling the callback function for each regular file'''
+
+    for f in os.listdir(top):
+        pathname = os.path.join(top, f)
+        mode = os.stat(pathname)[ST_MODE]
+        if S_ISDIR(mode):
+            # It's a directory, recurse into it
+            walktree(pathname, callback)
+        elif S_ISREG(mode):
+            # It's a file, call the callback function
+            callback(pathname)
+        else:
+            # Unknown file type, print a message
+            print 'Skipping %s' % pathname
+
+def visitfile(file):
+    print 'visiting', file
+
+if __name__ == '__main__':
+    walktree(sys.argv[1], visitfile)
+</pre>
+</div>
+</div></body></html>

@@ -1,0 +1,18 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>How do I convert a string to a&nbsp;number?</title></head><body data-page-id="781"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><p class="note" style="text-align: center"><strong>
+This is an old copy of the Python FAQ.  The information here may be
+outdated.
+</strong></p><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">How do I convert a string to a&nbsp;number?</h1></div><div class="yui-ge"><div class="yui-u first"><p>For integers, use the built-in <a href="/pyref/int.htm"><strong>int</strong></a> type constructor,
+e.g. int(&#8216;144&#8217;) == 144.  Similarly, <a href="/pyref/float.htm"><strong>float</strong></a> converts to
+floating-point, e.g. float(&#8216;144&#8217;) == 144.0.</p><p>By default, these interpret the number as decimal, so that int(&#8216;0144&#8217;)
+== 144 and int(&#8216;0x144&#8217;) raises <a href="/pyref/ValueError.htm"><strong>ValueError</strong></a>.  int(string,
+base) takes the base to convert from as a second optional argument, so
+int(&#8216;144&#8217;, 16) == 324.  If the base is specified as 0, the number is
+interpreted using Python&#8217;s rules: a leading &#8216;0&#8217; indicates octal, and
+&#8216;0x&#8217; indicates a hex number.</p><p>Do not use the built-in function <a href="/pyref/eval.htm"><strong>eval</strong></a> if all you need is to
+convert strings to numbers.  <a href="/pyref/eval.htm"><strong>eval</strong></a> will be significantly
+slower and it presents a security risk: someone could pass you a
+Python expression that might have unwanted side effects.  For example,
+someone could pass __import__(&#8216;os&#8217;).system(&#8220;rm -rf $HOME&#8221;) which
+would erase your home directory.</p><p>CATEGORY: programming</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to pyfaq index page.">::: pyfaq :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

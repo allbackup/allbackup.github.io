@@ -1,0 +1,90 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>Naming and&nbsp;binding</title> <script type="text/javascript">effbot_page_id=1477;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <h1 class="maintitle">Naming and&nbsp;binding</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p><em>Names</em> refer to objects. Names are introduced by name binding
+operations. Each occurrence of a name in the program text refers to
+the <em>binding</em> of that name established in the innermost function block
+containing the use.</p><p>A <em>block</em> is a piece of Python program text that is executed as a
+unit. The following are blocks: a module, a function body, and a class
+definition. Each command typed interactively is a block. A script file
+(a file given as standard input to the interpreter or specified on the
+interpreter command line the first argument) is a code block. A script
+command (a command specified on the interpreter command line with the
+<strong>-c</strong> option) is a code block. The file read by the built-in
+function <a href="execfile.htm"><strong>execfile</strong></a> is a code block. The string argument passed to the
+built-in function <a href="eval.htm"><strong>eval</strong></a> and to the <a href="exec.htm"><strong>exec</strong></a> statement is a code
+block. The expression read and evaluated by the built-in function
+<a href="input.htm"><strong>input</strong></a> is a code block.</p><p>A code block is executed in an <em>execution frame</em>. A frame contains
+some administrative information (used for debugging) and determines
+where and how execution continues after the code block&#8217;s execution has
+completed.</p><p>A <em>scope</em> defines the visibility of a name within a block. If a local
+variable is defined in a block, its scope includes that block. If the
+definition occurs in a function block, the scope extends to any blocks
+contained within the defining one, unless a contained block introduces
+a different binding for the name. The scope of names defined in a
+class block is limited to the class block; it does not extend to the
+code blocks of methods.</p><p>When a name is used in a code block, it is resolved using the nearest
+enclosing scope. The set of all such scopes visible to a code block is
+called the block&#8217;s <em>environment</em>.</p><p>If a name is bound in a block, it is a local variable of that
+block. If a name is bound at the module level, it is a global
+variable. (The variables of the module code block are local and
+global.) If a variable is used in a code block but not defined there,
+it is a <em>free variable</em>.</p><p>When a name is not found at all, a <a href="NameError.htm"><strong>NameError</strong></a> exception is raised. If
+the name refers to a local variable that has not been bound, a
+<a href="UnboundLocalError.htm"><strong>UnboundLocalError</strong></a> exception is raised. <a href="UnboundLocalError.htm"><strong>UnboundLocalError</strong></a> is a
+subclass of <a href="NameError.htm"><strong>NameError</strong></a>.</p><p>The following constructs bind names: formal parameters to functions,
+<a href="import.htm"><strong>import</strong></a> statements, class and function definitions (these bind the
+class or function name in the defining block), and targets that are
+identifiers if occurring in an assignment, <a href="for.htm"><strong>for</strong></a> loop header, or in
+the second position of an <a href="except.htm"><strong>except</strong></a> clause header. The <a href="import.htm"><strong>import</strong></a> statement
+of the form &#8220;from &#8230;import *&#8221; binds all names defined in the imported
+module, except those beginning with an underscore. This form may only
+be used at the module level.</p><p>A target occurring in a <a href="del.htm"><strong>del</strong></a> statement is also considered bound for
+this purpose (though the actual semantics are to unbind the name). It
+is illegal to unbind a name that is referenced by an enclosing scope;
+the compiler will report a <a href="SyntaxError.htm"><strong>SyntaxError</strong></a>.</p><p>Each assignment or <a href="import.htm"><strong>import</strong></a> statement occurs within a block defined by a
+class or function definition or at the module level (the top-level
+code block).</p><p>If a name binding operation occurs anywhere within a code block, all
+uses of the name within the block are treated as references to the
+current block. This can lead to errors when a name is used within a
+block before it is bound. This rule is subtle. Python lacks
+declarations and allows name binding operations to occur anywhere
+within a code block. The local variables of a code block can be
+determined by scanning the entire text of the block for name binding
+operations.</p><p>If the <a href="global.htm"><strong>global</strong></a> statement occurs within a block, all uses of the name
+specified in the statement refer to the binding of that name in the
+top-level namespace. Names are resolved in the top-level namespace by
+searching the global namespace, i.e. the namespace of the module
+containing the code block, and the builtin namespace, the namespace of
+the module <a href="__builtin__.htm"><strong>__builtin__</strong></a>. The global namespace is searched first. If
+the name is not found there, the builtin namespace is searched. The
+<a href="global.htm"><strong>global</strong></a> statement must precede all uses of the name.</p><p>The built-in namespace associated with the execution of a code block
+is actually found by looking up the name <a href="__builtins__.htm"><strong>__builtins__</strong></a> in its
+global namespace; this should be a dictionary or a module (in the
+latter case the module&#8217;s dictionary is used). Normally, the
+<a href="__builtins__.htm"><strong>__builtins__</strong></a> namespace is the dictionary of the built-in module
+<a href="__builtin__.htm"><strong>__builtin__</strong></a> (note: no <q>s</q>). If it isn&#8217;t, restricted execution mode
+is in effect.</p><p>The namespace for a module is automatically created the first time a
+module is imported. The main module for a script is always called
+<a href="__main__.htm"><strong>__main__</strong></a>.</p><p>The <a href="global.htm"><strong>global</strong></a> statement has the same scope as a name binding operation in
+the same block. If the nearest enclosing scope for a free variable
+contains a <a href="global.htm"><strong>global</strong></a> statement, the free variable is treated as a global.</p><p>A <a href="class.htm"><strong>class</strong></a> definition is an executable statement that may use and
+defin names. These references follow the normal rules for name
+resolution. The namespace of the class definition becomes the
+attribute dictionary of the class. Names defined at the class scope
+are not visible in methods.</p><h2 id="interaction-with-dynamic-features">Interaction with dynamic features&#160;<a class="nav" href="#interaction-with-dynamic-features" title="bookmark!">#</a></h2><p>There are several cases where Python statements are illegal when used
+in conjunction with nested scopes that contain free variables.</p><p>If a variable is referenced in an enclosing scope, it is illegal to
+delete the name. An error will be reported at compile time.</p><p>If the wild card form of import &#8212; &#8220;from &#8230; import *&#8221; &#8212; is used in a
+function and the function contains or is a nested block with free
+variables, the compiler will raise a <a href="SyntaxError.htm"><strong>SyntaxError</strong></a>.</p><p>If <a href="exec.htm"><strong>exec</strong></a> is used in a function and the function contains or is a nested
+block with free variables, the compiler will raise a <a href="SyntaxError.htm"><strong>SyntaxError</strong></a>
+unless the <a href="exec.htm"><strong>exec</strong></a> explicitly specifies the local namespace for the
+exec. (In other words, &#8220;exec obj&#8221; would be illegal, but &#8220;exec obj in
+ns&#8221; would be legal.)</p><p>The <a href="eval.htm"><strong>eval</strong></a>, <a href="execfile.htm"><strong>execfile</strong></a>, and <a href="input.htm"><strong>input</strong></a> functions and the <a href="exec.htm"><strong>exec</strong></a>
+statement do not have access to the full environment for resolving names.
+Names may be resolved in the local and global namespaces of the caller. Free
+variables are not resolved in the nearest enclosing namespace, but in
+the global namespace. The <a href="exec.htm"><strong>exec</strong></a> statement and the <a href="eval.htm"><strong>eval</strong></a> and
+<a href="execfile.htm"><strong>execfile</strong></a> functions have optional arguments to override the global
+and local namespace. If only one namespace is specified, it is used
+for both.</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div> <!-- yui-g --></div> <!-- content --> </div> <!-- yui-b --> </div> <!-- yui-main --> <div class="yui-b"> <div id='menu'> <ul> <li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li> <li><b><a href="." title="Go to pyref index page.">::: pyref :::</a></b></li> </ul> <ul><li><b>::: contents</b></li></ul> <ul><li><ul><li><a href="#interaction-with-dynamic-features">Interaction with dynamic features</a></li></ul></li></ul> </div> <!-- menu --> </div> <!-- yui-b --> </div> <!-- bd --> <div id="ft"> <!-- footer --> <p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;"></a>
+this page was rendered by a <a href="http://www.djangoproject.com/">django</a> application in 0.02s 2011-08-29 02:09:16.020798.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p> </div> <!-- ft --> </div> <!-- doc --> <script src="/media/js/effbot-min.js" type="text/javascript"> </script> </body> </html>

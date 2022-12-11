@@ -1,0 +1,140 @@
+<html>
+<head>
+<title>dospath ::: www.effbot.org</title>
+<link rel='stylesheet' href='/effbot.css' type='text/css' media='screen' />
+</head>
+<body bgcolor='#ccffcc'>
+<div>[<a href='dospath.htm'>back</a>]</div>
+<h3>Welcome to the effbot.org user editor!</h3>
+
+
+<p><b>Note: This is not a contact form!  Support questions, spam, and
+other off-topic stuff will be ignored.</b></p>
+
+<p>To suggest changes, edit the HTML fragment in the text box below.
+You can use the 'update preview' button to check your changes (the
+preview is displayed beneath the text box).  When done, fill in the
+name and address fields (optional) and click 'submit patch' to mail
+the patch to me.  (I reserve the right to decide which patches to
+include, of course.)  Thanks! /F</p>
+
+<form method='post' id='useredit'>
+<input type='hidden' name='name' value='dospath'/>
+<p>
+<input type='submit' name='preview' value='update preview' style='background:#084; color:white; width:200px; font-weight:bold;' >
+&nbsp;&nbsp;&nbsp;
+<input type='submit' name='submit' value='submit patch'  style='background:#084; color:white; width:200px; font-weight:bold;' >
+</p>
+<textarea name='text' rows='30' cols='80'>The dospath module
+
+&lt;!-- ADSENSE --&gt;
+&lt;p class='site'&gt;[&lt;a href='index.htm'&gt;contents&lt;/a&gt;]&lt;/p&gt;
+&lt;p class='site'&gt;[&lt;a href='index.htm'&gt;contents&lt;/a&gt;]&lt;/p&gt;
+
+&lt;p&gt;(Removed in 2.3) This module provides an &lt;b&gt;&lt;a href="os-path.htm"&gt;os.path&lt;/a&gt;&lt;/b&gt;
+implementation for DOS platforms.  You can also use it directly if
+you need to handle DOS paths on other platforms.&lt;/p&gt;
+
+&lt;div class="example"&gt;
+
+&lt;b style="example"&gt;Example: Using the dospath module&lt;/b&gt;
+
+&lt;pre&gt;
+# File: &lt;a href="dospath-example-1.py"&gt;dospath-example-1.py&lt;/a&gt;
+
+import dospath
+
+file = "/my/little/pony"
+
+print "isabs", "=&amp;gt;", dospath.isabs(file)
+print "dirname", "=&amp;gt;", dospath.dirname(file)
+print "basename", "=&amp;gt;", dospath.basename(file)
+print "normpath", "=&amp;gt;", dospath.normpath(file)
+print "split", "=&amp;gt;", dospath.split(file)
+print "join", "=&amp;gt;", dospath.join(file, "zorba")
+
+&lt;/pre&gt;
+
+&lt;pre class="computeroutput" moreinfo="NONE"&gt;
+$ python dospath-example-1.py
+isabs =&amp;gt; 1
+dirname =&amp;gt; /my/little
+basename =&amp;gt; pony
+normpath =&amp;gt; \my\little\pony
+split =&amp;gt; ('/my/little', 'pony')
+join =&amp;gt; /my/little/pony\zorba
+&lt;/pre&gt;
+
+&lt;/div&gt;
+
+&lt;p&gt;Note that Python's DOS support can use both forward (/) and
+backwards slashes (\) as directory separators.&lt;/p&gt;</textarea>
+<table>
+<tr><td><label for='author'>Name:</label></td><td>
+<div><input name='author' value="" size=40></div>
+</td><td>(Optional)</td></tr>
+<tr><td><label for='email'>Mail:</label></td><td>
+<div><input name='email' value="" size=40></div>
+</td><td>(Optional)</td></tr>
+<tr><td><label for='note'>Comment:</label></td><td>
+<div><input name='note' value="" size=40></div>
+</td><td>(Optional)</td></tr>
+<tr><td><label for='password'>Password:</label></td><td>
+<div><input name='password' value="(replace with the sum of 7+4)" size=40></div>
+</td><td>(Required)</td></tr>
+</table>
+<p>
+<input type='submit' name='preview' value='update preview' style='background:#084; color:white; width:200px; font-weight:bold;' >
+&nbsp;&nbsp;&nbsp;
+<input type='submit' name='submit' value='submit patch'  style='background:#084; color:white; width:200px; font-weight:bold;' >
+</p>
+<p>&nbsp;</p>
+</form>
+<div style='background: white; border: 2px solid #084; padding: 0px 20px;'>
+<h2>The dospath module</h2>
+
+<!-- ADSENSE -->
+<p class='site'>[<a href='index.htm'>contents</a>]</p>
+<p class='site'>[<a href='index.htm'>contents</a>]</p>
+
+<p>(Removed in 2.3) This module provides an <b><a href="os-path.htm">os.path</a></b>
+implementation for DOS platforms.  You can also use it directly if
+you need to handle DOS paths on other platforms.</p>
+
+<div class="example">
+
+<b style="example">Example: Using the dospath module</b>
+
+<pre>
+# File: <a href="dospath-example-1.py">dospath-example-1.py</a>
+
+import dospath
+
+file = "/my/little/pony"
+
+print "isabs", "=&gt;", dospath.isabs(file)
+print "dirname", "=&gt;", dospath.dirname(file)
+print "basename", "=&gt;", dospath.basename(file)
+print "normpath", "=&gt;", dospath.normpath(file)
+print "split", "=&gt;", dospath.split(file)
+print "join", "=&gt;", dospath.join(file, "zorba")
+
+</pre>
+
+<pre class="computeroutput" moreinfo="NONE">
+$ python dospath-example-1.py
+isabs =&gt; 1
+dirname =&gt; /my/little
+basename =&gt; pony
+normpath =&gt; \my\little\pony
+split =&gt; ('/my/little', 'pony')
+join =&gt; /my/little/pony\zorba
+</pre>
+
+</div>
+
+<p>Note that Python's DOS support can use both forward (/) and
+backwards slashes (\) as directory separators.</p>
+</div>
+</body>
+</html>

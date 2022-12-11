@@ -1,0 +1,23 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>The syslog&nbsp;module</title></head><body data-page-id="677"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">The syslog&nbsp;module</h1></div><div class="yui-ge"><div class="yui-u first"><p>(Unix only, Optional). This module sends messages to the system
+logger facility (<b>syslogd</b>). Exactly what happens to these
+messages is system-dependent, but they usually end up in a log file
+named <b>/var/log/messages</b>, <b>/var/adm/syslog</b>, or some
+variation thereof. (If you cannot find it, check with your favorite
+system administrator.)</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><div class="example wide">
+<b style="example">Example: Using the syslog
+module</b>
+<pre class="wide">
+# File: <a href="syslog/syslog-example-1.py">syslog-example-1.py</a>
+
+import syslog
+import sys
+
+syslog.openlog(sys.argv[0])
+
+syslog.syslog(syslog.LOG_NOTICE, "a log notice")
+syslog.syslog(syslog.LOG_NOTICE, "another log notice: %s" % "watch out!")
+
+syslog.closelog()
+</pre></div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to librarybook index page.">::: librarybook :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

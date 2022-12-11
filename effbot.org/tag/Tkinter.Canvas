@@ -1,0 +1,187 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>The Tkinter Canvas&nbsp;Widget</title> <script type="text/javascript">effbot_page_id=1919;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> <!--
+<p style='color: #8f8f8f; background: #fff5bf; padding: 5px 10px;'> <b>2008-07-15:</b> Selected articles
+ (including this one) 
+now have experimental "comment" links in the left column and at the bottom.
+You're welcome to use them for commenting and voting on articles.
+For a bit more on this, see <a
+href="http://effbot.slinkset.com/links/Welcome_to_discuss_effbot_org">this
+page</a>. /F
+</p>
+--> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <p><a href="button.htm">back</a> <a href="checkbutton.htm">next</a></p> <h1 class="maintitle">The Tkinter Canvas&nbsp;Widget</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p>The <b>Canvas</b> widget provides structured graphics facilities
+for Tkinter. This is a highly versatile widget which can be used to
+draw graphs and plots, create graphics editors, and implement
+various kinds of custom widgets.</p><h2 id="when-to-use">When to use the Canvas Widget&#160;<a class="nav" href="#when-to-use" title="bookmark!">#</a></h2><p>The canvas is a general purpose widget, which is typically used
+to display and edit graphs and other drawings.</p><p>Another common use for this widget is to implement various kinds
+of custom widgets. For example, you can use a canvas as a
+completion bar, by drawing and updating a rectangle on the
+canvas.</p><h2 id="patterns">Patterns&#160;<a class="nav" href="#patterns" title="bookmark!">#</a></h2><p>To draw things in the canvas, use the <b>create</b> methods to add
+new items.</p><pre class="python">
+<span class="pykeyword">from</span> Tkinter <span class="pykeyword">import</span> *
+
+master = Tk()
+
+w = Canvas(master, width=200, height=100)
+w.pack()
+
+w.create_line(0, 0, 200, 100)
+w.create_line(0, 100, 200, 0, fill=<span class="pystring">"red"</span>, dash=(4, 4))
+
+w.create_rectangle(50, 25, 150, 75, fill=<span class="pystring">"blue"</span>)
+
+mainloop()</pre><p>Note that items added to the canvas are kept until you remove them.
+If you want to change the drawing, you can either use methods like
+<b>coords</b>, <b>itemconfig</b>, and <b>move</b> to modify the items,
+or use <b>delete</b> to remove them.</p><pre class="python">
+i = w.create_line(xy, fill=<span class="pystring">"red"</span>)
+
+w.coords(i, new_xy) <span class="pycomment"># change coordinates</span>
+w.itemconfig(i, fill=<span class="pystring">"blue"</span>) <span class="pycomment"># change color</span>
+
+w.delete(i) <span class="pycomment"># remove</span>
+
+w.delete(ALL) <span class="pycomment"># remove all items</span></pre><h2 id="concepts">Concepts&#160;<a class="nav" href="#concepts" title="bookmark!">#</a></h2><p>To display things on the canvas, you create one or more
+<i>canvas items</i>, which are placed in a stack. By default, new
+items are drawn on top of items already on the canvas.</p><p>Tkinter provides lots of methods allowing you to manipulate the
+items in various ways. Among other things, you can attach
+(<i>bind</i>) event callbacks to individual canvas items.</p><h3 id="canvas-items">Canvas Items&#160;<a class="nav" href="#canvas-items" title="bookmark!">#</a></h3><p>The <b>Canvas</b> widget supports the following standard
+items:</p><ul><li><a href="#Tkinter.Canvas.create_arc-method"><b>arc</b></a> (arc, chord,
+or pieslice)</li><li><a href="#Tkinter.Canvas.create_bitmap-method"><b>bitmap</b></a>
+(built-in or read from XBM file)</li><li><a href="#Tkinter.Canvas.create_image-method"><b>image</b></a> (a
+<a href="bitmapimage.htm">BitmapImage</a> or <a href="photoimage.htm">PhotoImage</a> instance)</li><li><a href="#Tkinter.Canvas.create_line-method"><b>line</b></a></li><li><a href="#Tkinter.Canvas.create_oval-method"><b>oval</b></a> (a circle
+or an ellipse)</li><li><a href="#Tkinter.Canvas.create_polygon-method"><b>polygon</b></a></li><li><a href="#Tkinter.Canvas.create_rectangle-method"><b>rectangle</b></a></li><li><a href="#Tkinter.Canvas.create_text-method"><b>text</b></a></li><li><a href="#Tkinter.Canvas.create_window-method"><b>window</b></a></li></ul><p>Chords, pieslices, ovals, polygons, and rectangles consist of
+both an outline and an interior area, either of which can be made
+transparent (and if you insist, you can make both transparent).</p><p>Window items are used to place other Tkinter widgets on top of
+the canvas; for these items, the Canvas widget simply acts like a
+geometry manager.</p><p>You can also write your own item types in C or C++ and plug them
+into Tkinter via Python extension modules.</p><h3 id="coordinate-systems">Coordinate Systems&#160;<a class="nav" href="#coordinate-systems" title="bookmark!">#</a></h3><p>The <b>Canvas</b> widget uses two coordinate systems; the window
+coordinate system (with (0, 0) in the upper left corner), and a
+canvas coordinate system which specify where the items are drawn.
+By scrolling the canvas, you can specify which part of the canvas
+coordinate system to show in the window.</p><p>The <b>scrollregion</b> option is used to limit scrolling
+operations for the canvas. To set this, you can usually use
+something like:</p><pre class="python">
+    canvas.config(scrollregion=canvas.bbox(ALL))</pre><p>To convert from window coordinates to canvas coordinates, use
+the <a href="#Tkinter.Canvas.canvasx-method"><b>canvasx</b></a> and
+<a href="#Tkinter.Canvas.canvasy-method"><b>canvasy</b></a> methods:</p><pre class="python">
+<span class="pykeyword">def</span> <span class="pyfunction">callback</span>(event):
+    canvas = event.widget
+    x = canvas.canvasx(event.x)
+    y = canvas.canvasy(event.y)
+    <span class="pykeyword">print</span> canvas.find_closest(x, y)</pre><h3 id="item-specifiers">Item Specifiers: Handles and Tags&#160;<a class="nav" href="#item-specifiers" title="bookmark!">#</a></h3><p>The <b>Canvas</b> widget allows you to identify items in several
+ways. Everywhere a method expects an item specifier, you can use
+one of the following:</p><ul><li>item handles (integers)</li><li>tags</li><li><b>ALL</b></li><li><b>CURRENT</b></li></ul><p><b>Item handles</b> are integer values used to identify a
+specific item on the canvas. Tkinter automatically assigns a new
+handle to each new item created on the canvas. Item handles can be
+passed to the various canvas methods either as integers or as
+strings.</p><p><b>Tags</b> are symbolic names attached to items. Tags are
+ordinary strings, and they can contain anything except whitespace
+(as long as they don&#8217;t look like item handles).</p><p>An item can have zero or more tags associated with it, and the
+same tag can be used for more than one item. However, unlike the
+<b>Text</b> widget, the <b>Canvas</b> widget doesn&#8217;t allow you to
+create bindings or otherwise configure tags for which there are no
+existing items. Tags are owned by the items, not the widget itself.
+All such operations are ignored.</p><p>You can either specify the tags via an option when you create
+the item, set them via the
+<a href="#Tkinter.Canvas.itemconfig-method"><b>itemconfig</b></a>
+method, or add them using the
+<a href="#Tkinter.Canvas.addtag_withtag"><b>addtag_withtag</b></a>
+method. The <b>tags</b> option takes either a single tag string, or
+a tuple of strings.</p><pre class="python">
+item = canvas.create_line(0, 0, 100, 100, tags=<span class="pystring">"uno"</span>)
+canvas.itemconfig(item, tags=(<span class="pystring">"one"</span>, <span class="pystring">"two"</span>))
+canvas.addtag_withtag(<span class="pystring">"three"</span>, <span class="pystring">"one"</span>)</pre><p>To get all tags associated with a specific item, use
+<b>gettags</b>. To get the handles for all items having a given
+tag, use <b>find_withtag</b>.</p><pre class="python">
+&gt;&gt;&gt; <span class="pykeyword">print</span> canvas.gettags(item)
+(<span class="pystring">'one'</span>, <span class="pystring">'two'</span>, <span class="pystring">'three'</span>)
+&gt;&gt;&gt; <span class="pykeyword">print</span> canvas.find_withtag(<span class="pystring">"one"</span>)
+(1,)</pre><p>The <b>Canvas</b> widget also provides two predefined tags:</p><p><b>ALL</b> (or the string &#8220;all&#8221;) matches all items on the
+canvas.</p><p><b>CURRENT</b> (or &#8220;current&#8221;) matches the item under the mouse
+pointer, if any. This can be used inside mouse event bindings to
+refer to the item that triggered the callback.</p><h3 id="printing">Printing&#160;<a class="nav" href="#printing" title="bookmark!">#</a></h3><p>The Tkinter widget supports printing to Postscript printers.</p><h2 id="performance-issues">Performance Issues&#160;<a class="nav" href="#performance-issues" title="bookmark!">#</a></h2><p>The <b>Canvas</b> widget implements a straight-forward
+damage/repair display model. Changes to the canvas, and external
+events such as <b>Expose</b>, are all treated as &#8220;damage&#8221; to the
+screen. The widget maintains a <b>dirty rectangle</b> to keep track
+of the damaged area.</p><p>When the first damage event arrives, the canvas registers an
+idle task (using <b>after_idle</b>) which is used to &#8220;repair&#8221; the
+canvas when the program gets back to the Tkinter main loop. You can
+force updates by calling the <b>update_idletasks</b> method.</p><p>When it&#8217;s time to redraw the canvas, the widget starts by
+allocating a pixmap (on X windows, this is an image memory stored
+on the display) with the same size as the dirty rectangle.</p><p>It then loops over the canvas items, and redraws <i>all</i>
+items for which the bounding box touch the dirty rectangle (this
+means that diagonal lines may be redrawn also if they don&#8217;t
+actually cover the rectangle, but this is usually no big deal).</p><p>Finally, the widget copies the pixmap to the display, and
+releases the pixmap. The copy operation is a very fast operation on
+most modern hardware.</p><p>Since the canvas uses a <i>single</i> dirty rectangle, you can
+sometimes get better performance by forcing updates. For example,
+if you&#8217;re changing things in different parts of the canvas without
+returning to the main loop, adding explicit calls to
+<b>update_idletasks()</b> allows the canvas to update a few small
+rectangles, instead of a large one with many more objects.</p><h2 id="reference">Reference&#160;<a class="nav" href="#reference" title="bookmark!">#</a></h2><div class="zone:include"><dl><dt><b>Canvas(master=None, **options)</b> (class) [<a href="#Tkinter.Canvas-class">#</a>]</dt><dd>
+<p>A structured graphics canvas.</p><dl><dt><i>master</i></dt><dd>
+Parent widget.</dd>
+<dt><i>**options</i></dt><dd>
+Widget options.  See the description of
+   the <a class="link" href="#canvas.Canvas.config-method"><b>config</b></a> method for a list of available
+   options.
+</dd>
+</dl><br />
+</dd>
+<dt><a id="Tkinter.Canvas.addtag-method" name="Tkinter.Canvas.addtag-method"><b>addtag(tag, method, *args)</b></a> [<a href="#Tkinter.Canvas.addtag-method">#</a>]</dt><dd>
+<p>Adds a tag to a number of items.  Application code should use
+more specific methods wherever possible (that is, use
+<a class="link" href="#canvas.Canvas.addtag_above-method"><b>addtag_above</b></a> instead of <b>addtag(&#8220;above&#8221;)</b>,
+and so on.
+
+</p><dl><dt><i>tag</i></dt><dd>
+The tag to add.</dd>
+<dt><i>method</i></dt><dd>
+How to add a new tag.  This can be one of &#8220;above&#8221;,
+   &#8220;all&#8221;, &#8220;below&#8221;, &#8220;closest&#8221;, &#8220;enclosed&#8221;, &#8220;overlapping&#8221; or
+   &#8220;withtag&#8221;.</dd>
+<dt><i>*args</i></dt><dd>
+Additional arguments.  For details, see the description
+   of the individual method.</dd>
+</dl><br />
+</dd>
+<dt><a id="Tkinter.Canvas.addtag_above-method" name="Tkinter.Canvas.addtag_above-method"><b>addtag_above(tag, item)</b></a> [<a href="#Tkinter.Canvas.addtag_above-method">#</a>]</dt><dd>
+<p>Adds a tag to the item just above the given item.</p><dl><dt><i>tag</i></dt><dd>
+The tag to add.</dd>
+<dt><i>item</i></dt><dd>
+The tag or id of the reference item.</dd>
+</dl><br />
+</dd>
+<dt><a id="Tkinter.Canvas.addtag_all-method" name="Tkinter.Canvas.addtag_all-method"><b>addtag_all(tag)</b></a> [<a href="#Tkinter.Canvas.addtag_all-method">#</a>]</dt><dd>
+<p>Adds a tag to all items on the canvas. This is a shortcut for
+<b>addtag_withtag(newtag, ALL)</b>.
+
+</p><dl><dt><i>tag</i></dt><dd>
+The tag to add.</dd>
+</dl><br />
+</dd>
+<dt><a id="Tkinter.Canvas.addtag_below-method" name="Tkinter.Canvas.addtag_below-method"><b>addtag_below(tag, item)</b></a> [<a href="#Tkinter.Canvas.addtag_below-method">#</a>]</dt><dd>
+<p>Adds a tag to the item just below the given item.</p><dl><dt><i>tag</i></dt><dd>
+The tag to add.</dd>
+<dt><i>item</i></dt><dd>
+The tag or id of the reference item.</dd>
+</dl><br />
+</dd>
+<dt><a id="Tkinter.Canvas.addtag_closest-method" name="Tkinter.Canvas.addtag_closest-method"><b>addtag_closest(tag, x, y, halo=None, start=None)</b></a> [<a href="#Tkinter.Canvas.addtag_closest-method">#</a>]</dt><dd>
+<p>Adds a tag to the item closest to the given coordinate.  Note
+that the position is given in canvas coordinates, and that
+this method always succeeds if there&#8217;s at least one item in
+the canvas. To add tags to items within a certain distance
+from the position, use <a class="link" href="link:Canvas.add_overlapping"><b>add_overlapping</b></a> with a
+small rectangle centered on the position.
+
+</p><dl><dt><i>tag</i></dt><dd>
+The tag to add.</dd>
+<dt><i>x</i></dt><dd>
+The horizontal coordinate.</dd>
+<dt><i>y</i></dt><dd>
+The vertical coordinate.</dd>
+<dt><i>halo</i></dt><dd>
+Optional halo distance.</dd>
+<dt>

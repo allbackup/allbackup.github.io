@@ -1,0 +1,47 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>The marshal&nbsp;module</title> <script type="text/javascript">effbot_page_id=578;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> <!--
+<p style='color: #8f8f8f; background: #fff5bf; padding: 5px 10px;'> <b>2008-07-15:</b> Selected articles
+ (including this one) 
+now have experimental "comment" links in the left column and at the bottom.
+You're welcome to use them for commenting and voting on articles.
+For a bit more on this, see <a
+href="http://effbot.slinkset.com/links/Welcome_to_discuss_effbot_org">this
+page</a>. /F
+</p>
+--> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <h1 class="maintitle">The marshal&nbsp;module</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p>This module is used to serialize data; that is, convert data to
+and from character strings, so that they can be stored on file or
+sent over a network.</p><p>Marshal uses a simple self-describing data format. For each data
+item, the marshalled string contains a type code, followed by one
+or more type specific fields. Integers are stored in little-endian
+order, strings as a length field followed by the string&#8217;s contents
+(which can include null bytes), tuples as a length field followed
+by the objects that make up the tuple, etc.</p><div class="example">
+<b style="example">Example: Using the marshal
+module to serialize data</b>
+<pre>
+# File: <a href="marshal-example-1.py">marshal-example-1.py</a>
+
+import marshal
+
+value = (
+    "this is a string",
+    [1, 2, 3, 4],
+    ("more tuples", 1.0, 2.3, 4.5),
+    "this is yet another string"
+    )
+
+data = marshal.dumps(value)
+
+# intermediate format
+print type(data), len(data)
+
+print "-"*50
+print repr(data)
+print "-"*50
+
+print marshal.loads(data)
+
+</pre><pre class="computeroutput" moreinfo="NONE">
+&lt;type 'string'&gt; 118
+-

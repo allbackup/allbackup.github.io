@@ -1,0 +1,209 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>HTMLParser</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-HTMLParser.html'>original</a> :::
+<a href='HTMLParser.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>HTMLParser&#8212;Simple HTML and XHTML parser</h1>
+
+<div class="toc"><dl><dt>On this page:</dt><dd><a href="#example-html-parser-application">Example HTML Parser Application</a></dd></dl></div><p>New in version 2.2.</p>
+
+<p>This module defines a class <a class="link" href="#HTMLParser"><code>HTMLParser</code></a> which serves as the basis for
+parsing text files formatted in HTML (HyperText Mark-up Language)
+and XHTML. Unlike the parser in <code>htmllib</code>, this parser is not based on the
+SGML parser in <code>sgmllib</code>.</p>
+</div>
+<dl><dt class="class" id="HTMLParser"><b>class HTMLParser()</b> <tt class="nav"><a class="nav" href="HTMLParser.HTMLParser" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>The <a class="link" href="#HTMLParser"><code>HTMLParser</code></a> class
+is instantiated without arguments.</p>
+
+<p>An HTMLParser instance is fed HTML data and calls handler
+functions when tags begin and end. The <a class="link" href="#HTMLParser"><code>HTMLParser</code></a> class is meant to be
+overridden by the user to provide a desired behavior.</p>
+
+<p>Unlike the parser in <code>
+htmllib</code>, this parser does not check that end tags match start
+tags or call the end-tag handler for elements which are closed
+implicitly by closing an outer element.</p>
+</dd>
+</dl><div class="text">
+<p>An exception is defined as well:</p>
+</div>
+<dl><dt class="exception" id="HTMLParseError"><b>exception HTMLParseError</b> <tt class="nav"><a class="nav" href="HTMLParser.HTMLParseError" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="exception">
+<p>Exception raised by the <a class="link" href="#HTMLParser"><code>
+HTMLParser</code></a> class when it encounters an error while parsing.
+This exception provides three attributes: <code>msg</code> is a brief message explaining the error, <code>lineno</code> is the number of the
+line on which the broken construct was detected, and <code>offset</code> is the number of
+characters into the line at which the construct starts.</p>
+</dd>
+</dl><div class="text">
+<p><a class="link" href="#HTMLParser"><code>HTMLParser</code></a> instances
+have the following methods:</p>
+</div>
+<dl><dt class="method" id="HTMLParser.reset"><b>reset()</b> <tt class="nav"><a class="nav" href="HTMLParser.HTMLParser.reset" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Reset the instance. Loses all unprocessed data. This is called
+implicitly at instantiation time.</p>
+</dd>
+<dt class="method" id="HTMLParser.feed"><b>feed(data)</b> <tt class="nav"><a class="nav" href="HTMLParser.HTMLParser.feed" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Feed some text to the parser. It is processed insofar as it
+consists of complete elements; incomplete data is buffered until
+more data is fed or <code>close</code> is
+called.</p>
+</dd>
+<dt class="method" id="HTMLParser.close"><b>close()</b> <tt class="nav"><a class="nav" href="HTMLParser.HTMLParser.close" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Force processing of all buffered data as if it were followed by
+an end-of-file mark. This method may be redefined by a derived
+class to define additional processing at the end of the input, but
+the redefined version should always call the <a class="link" href="#HTMLParser"><code>HTMLParser</code></a> base class method <code>close</code>.</p>
+</dd>
+<dt class="method" id="HTMLParser.getpos"><b>getpos()</b> <tt class="nav"><a class="nav" href="HTMLParser.HTMLParser.getpos" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return current line number and offset.</p>
+</dd>
+<dt class="method" id="HTMLParser.get_starttag_text"><b>get_starttag_text()</b> <tt class="nav"><a class="nav" href="HTMLParser.HTMLParser.get_starttag_text" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return the text of the most recently opened start tag. This
+should not normally be needed for structured processing, but may be
+useful in dealing with HTML &#8220;as deployed&#8221; or for
+re-generating input with minimal changes (whitespace between
+attributes can be preserved, etc.).</p>
+</dd>
+<dt class="method" id="HTMLParser.handle_starttag"><b>handle_starttag(tag, attrs)</b> <tt class="nav"><a class="nav" href="HTMLParser.HTMLParser.handle_starttag" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>This method is called to handle the start of a tag. It is
+intended to be overridden by a derived class; the base class
+implementation does nothing.</p>
+
+<p>The <var>tag</var> argument is the name of the tag converted to
+lower case. The <var>attrs</var> argument is a list of <code>
+(</code><var>name</var>, <var>value</var>) pairs containing the
+attributes found inside the tag's <code>&lt;&gt;</code> brackets.
+The <var>name</var> will be translated to lower case and double
+quotes and backslashes in the <var>value</var> have been
+interpreted. For instance, for the tag <code>&amp;ltA
+HREF="http://www.cwi.nl/"&gt;</code>, this method would be called
+as "<code>handle_starttag('a', [('href',
+'http://www.cwi.nl/')])</code>".</p>
+</dd>
+<dt class="method" id="HTMLParser.handle_startendtag"><b>handle_startendtag(tag, attrs)</b> <tt class="nav"><a class="nav" href="HTMLParser.HTMLParser.handle_startendtag" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Similar to <code>
+handle_starttag</code>, but called when the parser encounters an
+XHTML-style empty tag (<code>&amp;lta .../&gt;</code>). This method
+may be overridden by subclasses which require this particular
+lexical information; the default implementation simple calls <code>handle_starttag</code> and <code>handle_endtag</code>.</p>
+</dd>
+<dt class="method" id="HTMLParser.handle_endtag"><b>handle_endtag(tag)</b> <tt class="nav"><a class="nav" href="HTMLParser.HTMLParser.handle_endtag" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>This method is called to handle the end tag of an element. It is
+intended to be overridden by a derived class; the base class
+implementation does nothing. The <var>tag</var> argument is the
+name of the tag converted to lower case.</p>
+</dd>
+<dt class="method" id="HTMLParser.handle_data"><b>handle_data(data)</b> <tt class="nav"><a class="nav" href="HTMLParser.HTMLParser.handle_data" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>This method is called to process arbitrary data. It is intended
+to be overridden by a derived class; the base class implementation
+does nothing.</p>
+</dd>
+<dt class="method" id="HTMLParser.handle_charref"><b>handle_charref(name)</b> <tt class="nav"><a class="nav" href="HTMLParser.HTMLParser.handle_charref" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>This method is called to process a character reference of the
+form "<code>&amp;#</code><var>ref</var>;". It is intended to be
+overridden by a derived class; the base class implementation does
+nothing.</p>
+</dd>
+<dt class="method" id="HTMLParser.handle_entityref"><b>handle_entityref(name)</b> <tt class="nav"><a class="nav" href="HTMLParser.HTMLParser.handle_entityref" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>This method is called to process a general entity reference of
+the form "<code>&amp;</code><var>name</var>;" where <var>name</var>
+is an general entity reference. It is intended to be overridden by
+a derived class; the base class implementation does nothing.</p>
+</dd>
+<dt class="method" id="HTMLParser.handle_comment"><b>handle_comment(data)</b> <tt class="nav"><a class="nav" href="HTMLParser.HTMLParser.handle_comment" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>This method is called when a comment is encountered. The <var>
+comment</var> argument is a string containing the text between the
+"<code>--</code>" and "<code>--</code>" delimiters, but not the
+delimiters themselves. For example, the comment
+"<code>&lt;!--text--&gt;</code>" will cause this method to be
+called with the argument <code>'text'</code>. It is intended to be
+overridden by a derived class; the base class implementation does
+nothing.</p>
+</dd>
+<dt class="method" id="HTMLParser.handle_decl"><b>handle_decl(decl)</b> <tt class="nav"><a class="nav" href="HTMLParser.HTMLParser.handle_decl" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Method called when an SGML declaration is read by the parser.
+The <var>decl</var> parameter will be the entire contents of the
+declaration inside the <code>&lt;!</code>...<code>&gt;</code>
+markup.It is intended to be overridden by a derived class; the base
+class implementation does nothing.</p>
+</dd>
+<dt class="method" id="HTMLParser.handle_pi"><b>handle_pi(data)</b> <tt class="nav"><a class="nav" href="HTMLParser.HTMLParser.handle_pi" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Method called when a processing instruction is encountered. The
+<var>data</var> parameter will contain the entire processing
+instruction. For example, for the processing instruction <code>
+&lt;?proc color='red'&gt;</code>, this method would be called as
+<code>handle_pi("proc color='red'")</code>. It is intended to be
+overridden by a derived class; the base class implementation does
+nothing.</p>
+
+<p class="note"><b>Note:</b> The <a class="link" href="#HTMLParser"><code>HTMLParser</code></a> class uses the SGML syntactic
+rules for processing instructions. An XHTML processing instruction
+using the trailing "<code>?</code>" will cause the "<code>?</code>"
+to be included in <var>data</var>.</p>
+</dd>
+</dl><div class="text">
+<h2 id="example-html-parser-application">Example HTML Parser Application <a class="nav" href="#example-html-parser-application">#</a></h2>
+
+<p>As a basic example, below is a very basic HTML parser that uses
+the <a class="link" href="#HTMLParser"><code>HTMLParser</code></a> class to
+print out tags as they are encountered:</p>
+
+<pre>
+from HTMLParser import HTMLParser
+
+class MyHTMLParser(HTMLParser):
+
+    def handle_starttag(self, tag, attrs):
+        print "Encountered the beginning of a %s tag" % tag
+
+    def handle_endtag(self, tag):
+        print "Encountered the end of a %s tag" % tag
+</pre>
+</div>
+</div></body></html>

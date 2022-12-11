@@ -1,0 +1,35 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>type-class</title> <script type="text/javascript">effbot_page_id=1705;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <h1 class="maintitle">type-class</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p><strong>Classic Classes</strong></p><p>Class objects are described below. When a class object is called, a
+new class instance (also described below) is created and
+returned. This implies a call to the class&#8217;s <a href="__init__.htm"><strong>__init__</strong></a> method if
+it has one. Any arguments are passed on to the <a href="__init__.htm"><strong>__init__</strong></a>
+method. If there is no <a href="__init__.htm"><strong>__init__</strong></a> method, the class must be called
+without arguments.</p><p><strong>Class instances</strong></p><p>Class instances are described below. Class instances are callable only
+when the class has a <a href="__call__.htm"><strong>__call__</strong></a> method; <code>x(arguments)</code> is a
+shorthand for <code>x.__call__(arguments)</code>.</p><p><strong>Classes</strong></p><p>Class objects are created by <a href="class.htm"><strong>class</strong></a> definitions. A class has a namespace
+implemented by a dictionary object. Class attribute references are
+translated to lookups in this dictionary, e.g., &#8220;C.x&#8221; is translated to
+&#8220;C.__dict__[&#8220;x&#8221;]&#8221;. When the attribute name is not found there, the
+attribute search continues in the base classes. The search is
+depth-first, left-to-right in the order of occurrence in the base
+class list.</p><p>When a class attribute reference (for class C, say) would yield a
+user-defined function object or an unbound user-defined method object
+whose associated class is either C or one of its base classes, it is
+transformed into an unbound user-defined method object whose im_class
+attribute is C. When it would yield a class method object, it is
+transformed into a bound user-defined method object whose im_class
+and im_self attributes are both C. When it would yield a static
+method object, it is transformed into the object wrapped by the static
+method object. See section&#160;[3.4.2][7] for another way in which
+attributes retrieved from a class may differ from those actually
+contained in its <a href="__dict__.htm"><strong>__dict__</strong></a>.</p><p>Class attribute assignments update the class&#8217;s dictionary, never the
+dictionary of a base class.</p><p>A class object can be called (see above) to yield a class instance
+(see below).</p><p>Special attributes:</p><ul><li><a href="__name__.htm"><strong>__name__</strong></a> is the class name.</li><li><a href="__module__.htm"><strong>__module__</strong></a> is the module name in which the
+class was defined.</li><li><a href="__dict__.htm"><strong>__dict__</strong></a> is the dictionary containing the
+class&#8217;s namespace.</li><li><a href="__bases__.htm"><strong>__bases__</strong></a> is a tuple (possibly empty or a
+singleton) containing the base classes, in the order of their
+occurrence in the base class
+list.</li><li><a href="__doc__.htm"><strong>__doc__</strong></a> is the class&#8217;s documentation string,
+or <a href="None.htm"><strong>None</strong></a> if undefined.</li></ul></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div> <!-- yui-g --></div> <!-- content --> </div> <!-- yui-b --> </div> <!-- yui-main --> <div class="yui-b"> <div id='menu'> <ul> <li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li> <li><b><a href="." title="Go to pyref index page.">::: pyref :::</a></b></li> </ul> </div> <!-- menu --> </div> <!-- yui-b --> </div> <!-- bd --> <div id="ft"> <!-- footer --> <p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;"></a>
+this page was rendered by a <a href="http://www.djangoproject.com/">django</a> application in 0.01s 2011-06-21 21:00:40.056535.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p> </div> <!-- ft --> </div> <!-- doc --> <script src="/media/js/effbot-min.js" type="text/javascript"> </script> </body> </html>

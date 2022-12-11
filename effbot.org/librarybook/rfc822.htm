@@ -1,0 +1,64 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>The rfc822&nbsp;module</title></head><body data-page-id="641"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">The rfc822&nbsp;module</h1></div><div class="yui-ge"><div class="yui-u first"><p>This module contains a parser for mail and news messages (and
+any other message that conforms to the RFC 822 standard, such as
+HTTP headers).</p><p>Basically, an RFC 822 style message consists of a number of
+header fields, followed by at least one blank line, and the message
+body itself.</p><p>For example, here&#8217;s a short mail message. The first five lines
+make up the message header, and the actual messages (a single line,
+in this case) follows after an empty line:</p><pre>
+Message-Id: &lt;20001114144603.00abb310@oreilly.com&gt;
+Date: Tue, 14 Nov 2000 14:55:07 -0500
+To: "Fredrik Lundh" &lt;fredrik@effbot.org&gt;
+From: Frank
+Subject: Re: python library book!
+
+Where is it?
+</pre><p>The message parser reads the headers, and returns a
+dictionary-like object, with the message headers as keys.</p><div class="example">
+<b style="example">Example: Using the rfc822 module</b>
+<pre>
+# File: <a href="rfc822/rfc822-example-1.py">rfc822-example-1.py</a>
+
+import rfc822
+
+file = open("samples/sample.eml")
+
+message = rfc822.Message(file)
+
+for k, v in message.items():
+    print k, "=", v
+
+print len(file.read()), "bytes in body"
+
+</pre><pre class="computeroutput" moreinfo="NONE">
+$ python rfc822-example-1.py
+subject = Re: python library book!
+from = "Frank" &lt;your@editor&gt;
+message-id = &lt;20001114144603.00abb310@oreilly.com&gt;
+to = "Fredrik Lundh" &lt;fredrik@effbot.org&gt;
+date = Tue, 14 Nov 2000 14:55:07 -0500
+25 bytes in body
+</pre></div><p>The message object also provides a couple of convenience
+methods, which parses address fields and dates for you:</p><div class="example">
+<b style="example">Example: Parsing header fields using the rfc822 module</b>
+<pre>
+# File: <a href="rfc822/rfc822-example-2.py">rfc822-example-2.py</a>
+
+import rfc822
+
+file = open("samples/sample.eml")
+
+message = rfc822.Message(file)
+
+print message.getdate("date")
+print message.getaddr("from")
+print message.getaddrlist("to")
+</pre><pre class="computeroutput" moreinfo="NONE">
+$ python rfc822-example-2.py
+(2000, 11, 14, 14, 55, 7, 0, 0, 0)
+('Frank', 'your@editor')
+[('Fredrik Lundh', 'fredrik@effbot.org')]
+</pre></div><p>The address fields are parsed into (mail, real name)-tuples. The
+date field is parsed into a 9-element time tuple, ready for use
+with the <b>time</b> module.</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to librarybook index page.">::: librarybook :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

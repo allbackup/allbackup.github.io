@@ -1,0 +1,112 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>The array&nbsp;module</title></head><body data-page-id="467"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">The array&nbsp;module</h1></div><div class="yui-ge"><div class="yui-u first"><p>This module implements an efficient array storage type. Arrays
+are similar to lists, but all items must be of the same primitive
+type. The type is defined when the array is created.</p><p>Here are some simple examples. The first example creates an
+<b>array</b> object, and copies the internal buffer to a string
+through the <b>tostring</b> method:</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><div class="example wide">
+<b style="example">Example: Using the array
+module to convert lists of integers to strings</b>
+<pre class="python wide">
+<span class="pycomment"># File: array-example-1.py</span>
+
+<span class="pykeyword">import</span> array
+
+a = array.array(<span class="pystring">"B"</span>, range(16)) <span class="pycomment"># unsigned char</span>
+b = array.array(<span class="pystring">"h"</span>, range(16)) <span class="pycomment"># signed short</span>
+
+<span class="pykeyword">print</span> a
+<span class="pykeyword">print</span> repr(a.tostring())
+
+<span class="pykeyword">print</span> b
+<span class="pykeyword">print</span> repr(b.tostring())</pre><pre class="computeroutput wide" moreinfo="NONE">
+array('B', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15])
+'\000\001\002\003\004\005\006\007\010\011\012\013\014\015\016\017'
+array('h', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15])
+'\000\000\001\000\002\000\003\000\004\000\005\000\006\000\007\000
+\010\000\011\000\012\000\013\000\014\000\015\000\016\000\017\000'
+</pre></div></div><div class="yui-ge"><div class="yui-u first"><p>The <b>array</b> objects can be treated as ordinary lists, to
+some extent. You cannot concatenate arrays if they have different
+type codes, though.</p><div class="example">
+<b style="example">Example: Using arrays as ordinary sequences</b>
+<pre>
+# File: <a href="array/array-example-2.py">array-example-2.py</a>
+
+import array
+
+a = array.array("B", [1, 2, 3])
+
+a.append(4)
+
+a = a + a
+
+a = a[2:-2]
+
+print a
+print repr(a.tostring())
+for i in a:
+    print i,
+
+</pre><pre class="computeroutput" moreinfo="NONE">
+array('B', [3, 4, 1, 2])
+'\003\004\001\002'
+3 4 1 2
+</pre></div><p>This module also provides a very efficient way to turn raw
+binary data into a sequence of integers (or floating point values,
+for that matter):</p><div class="example">
+<b style="example">Example: Using arrays to
+convert strings to lists of integers</b>
+<pre>
+# File: <a href="array/array-example-3.py">array-example-3.py</a>
+
+import array
+
+a = array.array("i", "fish license") # signed integer
+
+print a
+print repr(a.tostring())
+print a.tolist()
+
+</pre><pre class="computeroutput" moreinfo="NONE">
+array('i', [1752394086, 1667853344, 1702063717])
+'fish license'
+[1752394086, 1667853344, 1702063717]
+</pre></div><p>Finally, here&#8217;s how to use this module to determine the
+endianess of the current platform:</p><div class="example">
+<b style="example">Example: Using the array
+module to determine platform endianess</b>
+<pre>
+# File: <a href="array/array-example-4.py">array-example-4.py</a>
+
+import array
+
+def little_endian():
+    return ord(array.array("i",[1]).tostring()[0])
+
+if little_endian():
+    print "little-endian platform (intel, alpha)"
+else:
+    print "big-endian platform (motorola, sparc)"
+
+</pre><pre class="computeroutput" moreinfo="NONE">
+big-endian platform (motorola, sparc)
+</pre></div><p>Python 2.0 and later provides a <b>sys.byteorder</b>
+attribute, which is set to either <span>&#8220;<b>little</b>&#8221;</span> or
+<span>&#8220;<b>big</b>&#8221;</span>:</p><div class="example">
+<b style="example">Example: Using the
+sys.byteorder attribute to determine platform endianess (Python
+2.0)</b>
+<pre>
+# File: <a href="array/sys-byteorder-example-1.py">sys-byteorder-example-1.py</a>
+
+import sys
+
+# available in Python 2.0 and later
+if sys.byteorder == "little":
+    print "little-endian platform (intel, alpha)"
+else:
+    print "big-endian platform (motorola, sparc)"
+
+</pre><pre class="computeroutput" moreinfo="NONE">
+'big-endian platform (motorola, sparc)'
+</pre></div></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to librarybook index page.">::: librarybook :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

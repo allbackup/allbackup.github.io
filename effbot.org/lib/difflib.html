@@ -1,0 +1,840 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>difflib</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-difflib.html'>original</a> :::
+<a href='difflib.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>difflib&#8212;Helpers for computing deltas</h1>
+
+<div class="toc"><dl><dt>On this page:</dt><dd><a href="#sequencematcher-objects">SequenceMatcher Objects</a></dd><dd><a href="#sequencematcher-examples">SequenceMatcher Examples</a></dd><dd><a href="#differ-objects">Differ Objects</a></dd><dd><a href="#differ-example">Differ Example</a></dd></dl></div><p>New in version 2.1.</p>
+</div>
+<dl><dt class="class" id="SequenceMatcher"><b>class SequenceMatcher</b> <tt class="nav"><a class="nav" href="difflib.SequenceMatcher" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>This is a flexible class for comparing pairs of sequences of any
+type, so long as the sequence elements are hashable. The basic
+algorithm predates, and is a little fancier than, an algorithm
+published in the late 1980's by Ratcliff and Obershelp under the
+hyperbolic name &#8220;gestalt pattern matching.&#8221; The idea is
+to find the longest contiguous matching subsequence that contains
+no &#8220;junk&#8221; elements (the Ratcliff and Obershelp
+algorithm doesn't address junk). The same idea is then applied
+recursively to the pieces of the sequences to the left and to the
+right of the matching subsequence. This does not yield minimal edit
+sequences, but does tend to yield matches that &#8220;look
+right&#8221; to people.</p>
+
+<p>Timing: The basic Ratcliff-Obershelp algorithm is cubic time in
+the worst case and quadratic time in the expected case. <a class="link" href="#SequenceMatcher"><code>SequenceMatcher</code></a> is
+quadratic time for the worst case and has expected-case behavior
+dependent in a complicated way on how many elements the sequences
+have in common; best case time is linear.</p>
+</dd>
+<dt class="class" id="Differ"><b>class Differ</b> <tt class="nav"><a class="nav" href="difflib.Differ" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>This is a class for comparing sequences of lines of text, and
+producing human-readable differences or deltas. Differ uses <a class="link" href="#SequenceMatcher"><code>SequenceMatcher</code></a> both
+to compare sequences of lines, and to compare sequences of
+characters within similar (near-matching) lines.</p>
+
+<p>Each line of a <a class="link" href="#Differ"><code>Differ</code></a>
+delta begins with a two-letter code:</p>
+
+<table border="1">
+<tr>
+<th>
+<p>Code</p>
+</th>
+<th>
+<p>Meaning</p>
+</th>
+</tr>
+
+<tr>
+<td>
+<p><code>'- '</code></p>
+</td>
+<td>
+<p>line unique to sequence 1</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>'+ '</code></p>
+</td>
+<td>
+<p>line unique to sequence 2</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>' '</code></p>
+</td>
+<td>
+<p>line common to both sequences</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>'? '</code></p>
+</td>
+<td>
+<p>line not present in either input sequence</p>
+</td>
+</tr>
+</table>
+
+<br />
+<br />
+ 
+
+<p>Lines beginning with `<code>?</code> ' attempt to guide the eye
+to intraline differences, and were not present in either input
+sequence. These lines can be confusing if the sequences contain tab
+characters.</p>
+</dd>
+<dt class="class" id="HtmlDiff"><b>class HtmlDiff</b> <tt class="nav"><a class="nav" href="difflib.HtmlDiff" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>This class can be used to create an HTML table (or a complete
+HTML file containing the table) showing a side by side, line by
+line comparison of text with inter-line and intra-line change
+highlights. The table can be generated in either full or contextual
+difference mode.</p>
+
+<p>The constructor for this class is:</p>
+</dd>
+<dt class="attribute" id="__init__"><b>__init__( [tabsize][, wrapcolumn][, linejunk][,
+charjunk])</b> <tt class="nav"><a class="nav" href="difflib.__init__" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>Initializes instance of <a class="link" href="#HtmlDiff"><code>
+HtmlDiff</code></a>.</p>
+
+<p><var>tabsize</var> is an optional keyword argument to specify
+tab stop spacing and defaults to <code>8</code>.</p>
+
+<p><var>wrapcolumn</var> is an optional keyword to specify column
+number where lines are broken and wrapped, defaults to <code>
+None</code> where lines are not wrapped.</p>
+
+<p><var>linejunk</var> and <var>charjunk</var> are optional keyword
+arguments passed into <code>ndiff()</code> (used by <a class="link" href="#HtmlDiff"><code>HtmlDiff</code></a> to generate the side by side HTML
+differences). See <code>ndiff()</code> documentation for argument
+default values and descriptions.</p>
+
+<p>The following methods are public:</p>
+</dd>
+<dt class="attribute" id="make_file"><b>make_file( fromlines, tolines [, fromdesc][,
+todesc][, context][, numlines])</b> <tt class="nav"><a class="nav" href="difflib.make_file" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>Compares <var>fromlines</var> and <var>tolines</var> (lists of
+strings) and returns a string which is a complete HTML file
+containing a table showing line by line differences with inter-line
+and intra-line changes highlighted.</p>
+
+<p><var>fromdesc</var> and <var>todesc</var> are optional keyword
+arguments to specify from/to file column header strings (both
+default to an empty string).</p>
+
+<p><var>context</var> and <var>numlines</var> are both optional
+keyword arguments. Set <var>context</var> to <code>True</code> when contextual differences are to be
+shown, else the default is <code>False</code> to show the full
+files. <var>numlines</var> defaults to <code>5</code>. When <var>
+context</var> is <code>True</code> <var>
+numlines</var> controls the number of context lines which surround
+the difference highlights. When <var>context</var> is <code>False</code> <var>numlines</var>
+controls the number of lines which are shown before a difference
+highlight when using the "next" hyperlinks (setting to zero would
+cause the "next" hyperlinks to place the next difference highlight
+at the top of the browser without any leading context).</p>
+</dd>
+<dt class="attribute" id="make_table"><b>make_table( fromlines, tolines [, fromdesc][,
+todesc][, context][, numlines])</b> <tt class="nav"><a class="nav" href="difflib.make_table" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>Compares <var>fromlines</var> and <var>tolines</var> (lists of
+strings) and returns a string which is a complete HTML table
+showing line by line differences with inter-line and intra-line
+changes highlighted.</p>
+
+<p>The arguments for this method are the same as those for the <a class="link" href="#make_file"><code>make_file</code></a> method.</p>
+
+<p>Tools/scripts/diff.py is a command-line front-end to this class
+and contains a good example of its use.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.4.<br />
+</blockquote>
+</dd>
+<dt class="function" id="context_diff"><b>context_diff(a, b[, fromfile][, tofile][,
+fromfiledate][, tofiledate][, n][, lineterm])</b> <tt class="nav"><a class="nav" href="difflib.context_diff" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Compare <var>a</var> and <var>b</var> (lists of strings); return
+a delta (a generator generating the delta lines) in context diff
+format.</p>
+
+<p>Context diffs are a compact way of showing just the lines that
+have changed plus a few lines of context. The changes are shown in
+a before/after style. The number of context lines is set by <var>
+n</var> which defaults to three.</p>
+
+<p>By default, the diff control lines (those with <code>***</code>
+or <code>---</code>) are created with a trailing newline. This is
+helpful so that inputs created from <code>file.readlines</code> result in diffs that
+are suitable for use with <code>file.writelines</code> since both the
+inputs and outputs have trailing newlines.</p>
+
+<p>For inputs that do not have trailing newlines, set the <var>
+lineterm</var> argument to <code>""</code> so that the output will
+be uniformly newline free.</p>
+
+<p>The context diff format normally has a header for filenames and
+modification times. Any or all of these may be specified using
+strings for <var>fromfile</var>, <var>tofile</var>, <var>
+fromfiledate</var>, and <var>tofiledate</var>. The modification
+times are normally expressed in the format returned by <code>time.ctime</code>. If not
+specified, the strings default to blanks.</p>
+
+<p>Tools/scripts/diff.py is a command-line front-end for this
+function.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.3.<br />
+</blockquote>
+</dd>
+<dt class="function" id="get_close_matches"><b>get_close_matches(word, possibilities[, n][,
+cutoff])</b> <tt class="nav"><a class="nav" href="difflib.get_close_matches" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return a list of the best &#8220;good enough&#8221; matches.
+<var>word</var> is a sequence for which close matches are desired
+(typically a string), and <var>possibilities</var> is a list of
+sequences against which to match <var>word</var> (typically a list
+of strings).</p>
+
+<p>Optional argument <var>n</var> (default <code>3</code>) is the
+maximum number of close matches to return; <var>n</var> must be
+greater than <code>0</code>.</p>
+
+<p>Optional argument <var>cutoff</var> (default <code>0.6</code>)
+is a float in the range [0, 1]. Possibilities that don't score at
+least that similar to <var>word</var> are ignored.</p>
+
+<p>The best (no more than <var>n</var>) matches among the
+possibilities are returned in a list, sorted by similarity score,
+most similar first.</p>
+
+<pre>
+&gt;&gt;&gt; get_close_matches('appel', ['ape', 'apple', 'peach', 'puppy'])
+['apple', 'ape']
+&gt;&gt;&gt; import keyword
+&gt;&gt;&gt; get_close_matches('wheel', keyword.kwlist)
+['while']
+&gt;&gt;&gt; get_close_matches('apple', keyword.kwlist)
+[]
+&gt;&gt;&gt; get_close_matches('accept', keyword.kwlist)
+['except']
+</pre>
+</dd>
+<dt class="function" id="ndiff"><b>ndiff(a, b[, linejunk][, charjunk])</b> <tt class="nav"><a class="nav" href="difflib.ndiff" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Compare <var>a</var> and <var>b</var> (lists of strings); return
+a <a class="link" href="#Differ"><code>Differ</code></a>-style delta (a
+generator generating the delta lines).</p>
+
+<p>Optional keyword parameters <var>linejunk</var> and <var>
+charjunk</var> are for filter functions (or <code>None</code>):</p>
+
+<p><var>linejunk</var>: A function that accepts a single string
+argument, and returns true if the string is junk, or false if not.
+The default is (<code>None</code>),
+starting with Python 2.3. Before then, the default was the
+module-level function <a class="link" href="#IS_LINE_JUNK"><code>
+IS_LINE_JUNK</code></a>, which filters out lines without visible
+characters, except for at most one pound character
+("<code>#</code>"). As of Python 2.3, the underlying <a class="link" href="#SequenceMatcher"><code>SequenceMatcher</code></a> class
+does a dynamic analysis of which lines are so frequent as to
+constitute noise, and this usually works better than the pre-2.3
+default.</p>
+
+<p><var>charjunk</var>: A function that accepts a character (a
+string of length 1), and returns if the character is junk, or false
+if not. The default is module-level function <a class="link" href="#IS_CHARACTER_JUNK"><code>IS_CHARACTER_JUNK</code></a>, which filters
+out whitespace characters (a blank or tab; note: bad idea to
+include newline in this!).</p>
+
+<p>Tools/scripts/ndiff.py is a command-line front-end to this
+function.</p>
+
+<pre>
+&gt;&gt;&gt; diff = ndiff('one\ntwo\nthree\n'.splitlines(1),
+...              'ore\ntree\nemu\n'.splitlines(1))
+&gt;&gt;&gt; print ''.join(diff),
+- one
+?  ^
++ ore
+?  ^
+- two
+- three
+?  -
++ tree
++ emu
+</pre>
+</dd>
+<dt class="function" id="restore"><b>restore(sequence, which)</b> <tt class="nav"><a class="nav" href="difflib.restore" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return one of the two sequences that generated a delta.</p>
+
+<p>Given a <var>sequence</var> produced by <a class="link" href="#Differ.compare"><code>Differ.compare</code></a> or <a class="link" href="#ndiff"><code>ndiff</code></a>, extract lines originating from file 1
+or 2 (parameter <var>which</var>), stripping off line prefixes.</p>
+
+<p>Example:</p>
+
+<pre>
+&gt;&gt;&gt; diff = ndiff('one\ntwo\nthree\n'.splitlines(1),
+...              'ore\ntree\nemu\n'.splitlines(1))
+&gt;&gt;&gt; diff = list(diff) # materialize the generated delta into a list
+&gt;&gt;&gt; print ''.join(restore(diff, 1)),
+one
+two
+three
+&gt;&gt;&gt; print ''.join(restore(diff, 2)),
+ore
+tree
+emu
+</pre>
+</dd>
+<dt class="function" id="unified_diff"><b>unified_diff(a, b[, fromfile][, tofile][,
+fromfiledate][, tofiledate][, n][, lineterm])</b> <tt class="nav"><a class="nav" href="difflib.unified_diff" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Compare <var>a</var> and <var>b</var> (lists of strings); return
+a delta (a generator generating the delta lines) in unified diff
+format.</p>
+
+<p>Unified diffs are a compact way of showing just the lines that
+have changed plus a few lines of context. The changes are shown in
+a inline style (instead of separate before/after blocks). The
+number of context lines is set by <var>n</var> which defaults to
+three.</p>
+
+<p>By default, the diff control lines (those with <code>---</code>,
+<code>+++</code>, or <code>@@</code>) are created with a trailing
+newline. This is helpful so that inputs created from <code>file.readlines</code> result
+in diffs that are suitable for use with <code>file.writelines</code> since both the
+inputs and outputs have trailing newlines.</p>
+
+<p>For inputs that do not have trailing newlines, set the <var>
+lineterm</var> argument to <code>""</code> so that the output will
+be uniformly newline free.</p>
+
+<p>The context diff format normally has a header for filenames and
+modification times. Any or all of these may be specified using
+strings for <var>fromfile</var>, <var>tofile</var>, <var>
+fromfiledate</var>, and <var>tofiledate</var>. The modification
+times are normally expressed in the format returned by <code>time.ctime</code>. If not
+specified, the strings default to blanks.</p>
+
+<p>Tools/scripts/diff.py is a command-line front-end for this
+function.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.3.<br />
+</blockquote>
+</dd>
+<dt class="function" id="IS_LINE_JUNK"><b>IS_LINE_JUNK(line)</b> <tt class="nav"><a class="nav" href="difflib.IS_LINE_JUNK" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return true for ignorable lines. The line <var>line</var> is
+ignorable if <var>line</var> is blank or contains a single
+"<code>#</code>", otherwise it is not ignorable. Used as a default
+for parameter <var>linejunk</var> in <a class="link" href="#ndiff"><code>ndiff</code></a> before Python 2.3.</p>
+</dd>
+<dt class="function" id="IS_CHARACTER_JUNK"><b>IS_CHARACTER_JUNK(ch)</b> <tt class="nav"><a class="nav" href="difflib.IS_CHARACTER_JUNK" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return true for ignorable characters. The character <var>
+ch</var> is ignorable if <var>ch</var> is a space or tab, otherwise
+it is not ignorable. Used as a default for parameter <var>
+charjunk</var> in <a class="link" href="#ndiff"><code>ndiff</code></a>.</p>
+</dd>
+</dl><div class="text"><span class="mark">@see</span> <a class="link" href="http://www.ddj.com/documents/s=1103/ddj8807c/">Pattern
+Matching: The Gestalt Approach</a> Discussion of a similar
+algorithm by John W. Ratcliff and D. E. Metzener. This was
+published in Dr. Dobb's Journal in July, 1988. 
+
+<h2 id="sequencematcher-objects">SequenceMatcher Objects <a class="nav" href="#sequencematcher-objects">#</a></h2>
+
+<p>The <a class="link" href="#SequenceMatcher"><code>
+SequenceMatcher</code></a> class has this constructor:</p>
+</div>
+<dl><dt class="class"><b>class SequenceMatcher([isjunk[, a[, b]]])</b> <tt class="nav"><a class="nav" href="difflib.SequenceMatcher" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>Optional argument <var>isjunk</var> must be <code>None</code> (the default) or a one-argument function
+that takes a sequence element and returns true if and only if the
+element is &#8220;junk&#8221; and should be ignored. Passing <code>None</code> for <var>isjunk</var> is
+equivalent to passing <code>lambda x: 0</code>; in other words, no
+elements are ignored. For example, pass:</p>
+
+<pre>
+lambda x: x in " \t"
+</pre>
+
+<p>if you're comparing lines as sequences of characters, and don't
+want to synch up on blanks or hard tabs.</p>
+
+<p>The optional arguments <var>a</var> and <var>b</var> are
+sequences to be compared; both default to empty strings. The
+elements of both sequences must be hashable.</p>
+</dd>
+</dl><div class="text">
+<p><a class="link" href="#SequenceMatcher"><code>SequenceMatcher</code></a>
+objects have the following methods:</p>
+</div>
+<dl><dt class="method" id="SequenceMatcher.set_seqs"><b>set_seqs(a, b)</b> <tt class="nav"><a class="nav" href="difflib.SequenceMatcher.set_seqs" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Set the two sequences to be compared.</p>
+</dd>
+</dl><div class="text">
+<p><a class="link" href="#SequenceMatcher"><code>SequenceMatcher</code></a>
+computes and caches detailed information about the second sequence,
+so if you want to compare one sequence against many sequences, use
+<code>set_seq2</code> to set the
+commonly used sequence once and call <code>set_seq1</code> repeatedly, once for each of the
+other sequences.</p>
+</div>
+<dl><dt class="method" id="SequenceMatcher.set_seq1"><b>set_seq1(a)</b> <tt class="nav"><a class="nav" href="difflib.SequenceMatcher.set_seq1" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Set the first sequence to be compared. The second sequence to be
+compared is not changed.</p>
+</dd>
+<dt class="method" id="SequenceMatcher.set_seq2"><b>set_seq2(b)</b> <tt class="nav"><a class="nav" href="difflib.SequenceMatcher.set_seq2" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Set the second sequence to be compared. The first sequence to be
+compared is not changed.</p>
+</dd>
+<dt class="method" id="SequenceMatcher.find_longest_match"><b>find_longest_match(alo, ahi, blo,
+bhi)</b> <tt class="nav"><a class="nav" href="difflib.SequenceMatcher.find_longest_match" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Find longest matching block in <var>
+a</var>[<var>alo</var>:<var>ahi</var>] and <var>
+b</var>[<var>blo</var>:<var>bhi</var>].</p>
+
+<p>If <var>isjunk</var> was omitted or <code>None</code>, <code>get_longest_match</code> returns <code>
+(</code><var>i</var>, <var>j</var>, <var>k</var>) such that <var>
+a</var>[<var>i</var>:<var>i</var>+<var>k</var>] is equal to <var>
+b</var>[<var>j</var>:<var>j</var>+<var>k</var>], where <var>
+alo</var> &lt;= <var>i</var> &lt;= <var>i</var>+<var>k</var> &lt;=
+<var>ahi</var> and <var>blo</var> &lt;= <var>j</var> &lt;= <var>
+j</var>+<var>k</var> &lt;= <var>bhi</var>. For all <code>
+(</code><var>i'</var>, <var>j'</var>, <var>k'</var>) meeting those
+conditions, the additional conditions <var>k</var> &gt;= <var>
+k'</var>, <var>i</var> &lt;= <var>i'</var>, and if <var>i</var> ==
+<var>i'</var>, <var>j</var> &lt;= <var>j'</var> are also met. In
+other words, of all maximal matching blocks, return one that starts
+earliest in <var>a</var>, and of all those maximal matching blocks
+that start earliest in <var>a</var>, return the one that starts
+earliest in <var>b</var>.</p>
+
+<pre>
+&gt;&gt;&gt; s = SequenceMatcher(None, " abcd", "abcd abcd")
+&gt;&gt;&gt; s.find_longest_match(0, 5, 0, 9)
+(0, 4, 5)
+</pre>
+
+<p>If <var>isjunk</var> was provided, first the longest matching
+block is determined as above, but with the additional restriction
+that no junk element appears in the block. Then that block is
+extended as far as possible by matching (only) junk elements on
+both sides. So the resulting block never matches on junk except as
+identical junk happens to be adjacent to an interesting match.</p>
+
+<p>Here's the same example as before, but considering blanks to be
+junk. That prevents <code>' abcd'</code> from matching the <code>'
+abcd'</code> at the tail end of the second sequence directly.
+Instead only the <code>'abcd'</code> can match, and matches the
+leftmost <code>'abcd'</code> in the second sequence:</p>
+
+<pre>
+&gt;&gt;&gt; s = SequenceMatcher(lambda x: x==" ", " abcd", "abcd abcd")
+&gt;&gt;&gt; s.find_longest_match(0, 5, 0, 9)
+(1, 0, 4)
+</pre>
+
+<p>If no blocks match, this returns <code>(</code><var>alo</var>,
+<var>blo</var>, 0).</p>
+</dd>
+<dt class="method" id="SequenceMatcher.get_matching_blocks"><b>get_matching_blocks()</b> <tt class="nav"><a class="nav" href="difflib.SequenceMatcher.get_matching_blocks" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return list of triples describing matching subsequences. Each
+triple is of the form <code>(</code><var>i</var>, <var>j</var>,
+<var>n</var>), and means that <var>
+a</var>[<var>i</var>:<var>i</var>+<var>n</var>] == <var>
+b</var>[<var>j</var>:<var>j</var>+<var>n</var>]. The triples are
+monotonically increasing in <var>i</var> and <var>j</var>.</p>
+
+<p>The last triple is a dummy, and has the value <code>
+(len(</code><var>a</var>), len(<var>b</var>), 0). It is the only
+triple with <var>n</var> == 0.</p>
+
+<pre>
+&gt;&gt;&gt; s = SequenceMatcher(None, "abxcd", "abcd")
+&gt;&gt;&gt; s.get_matching_blocks()
+[(0, 0, 2), (3, 2, 2), (5, 4, 0)]
+</pre>
+</dd>
+<dt class="method" id="SequenceMatcher.get_opcodes"><b>get_opcodes()</b> <tt class="nav"><a class="nav" href="difflib.SequenceMatcher.get_opcodes" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return list of 5-tuples describing how to turn <var>a</var> into
+<var>b</var>. Each tuple is of the form <code>
+(</code><var>tag</var>, <var>i1</var>, <var>i2</var>, <var>
+j1</var>, <var>j2</var>). The first tuple has <var>i1</var> ==
+<var>j1</var> == 0, and remaining tuples have <var>i1</var> equal
+to the <var>i2</var> from the preceding tuple, and, likewise, <var>
+j1</var> equal to the previous <var>j2</var>.</p>
+
+<p>The <var>tag</var> values are strings, with these meanings:</p>
+
+<table border="1">
+<tr>
+<th>
+<p>Value</p>
+</th>
+<th>
+<p>Meaning</p>
+</th>
+</tr>
+
+<tr>
+<td>
+<p><code>'replace'</code></p>
+</td>
+<td>
+<p><var>a</var>[<var>i1</var>:<var>i2</var>] should be replaced by
+<var>b</var>[<var>j1</var>:<var>j2</var>].</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>'delete'</code></p>
+</td>
+<td>
+<p><var>a</var>[<var>i1</var>:<var>i2</var>] should be deleted.
+Note that <var>j1</var> == <var>j2</var> in this case.</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>'insert'</code></p>
+</td>
+<td>
+<p><var>b</var>[<var>j1</var>:<var>j2</var>] should be inserted at
+<var>a</var>[<var>i1</var>:<var>i1</var>]. Note that <var>i1</var>
+== <var>i2</var> in this case.</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>'equal'</code></p>
+</td>
+<td>
+<p><var>a</var>[<var>i1</var>:<var>i2</var>] == <var>
+b</var>[<var>j1</var>:<var>j2</var>] (the sub-sequences are
+equal).</p>
+</td>
+</tr>
+</table>
+
+<br />
+<br />
+ 
+
+<p>For example:</p>
+
+<pre>
+&gt;&gt;&gt; a = "qabxcd"
+&gt;&gt;&gt; b = "abycdf"
+&gt;&gt;&gt; s = SequenceMatcher(None, a, b)
+&gt;&gt;&gt; for tag, i1, i2, j1, j2 in s.get_opcodes():
+...    print ("%7s a[%d:%d] (%s) b[%d:%d] (%s)" %
+...           (tag, i1, i2, a[i1:i2], j1, j2, b[j1:j2]))
+ delete a[0:1] (q) b[0:0] ()
+  equal a[1:3] (ab) b[0:2] (ab)
+replace a[3:4] (x) b[2:3] (y)
+  equal a[4:6] (cd) b[3:5] (cd)
+ insert a[6:6] () b[5:6] (f)
+</pre>
+</dd>
+<dt class="method" id="SequenceMatcher.get_grouped_opcodes"><b>get_grouped_opcodes([n])</b> <tt class="nav"><a class="nav" href="difflib.SequenceMatcher.get_grouped_opcodes" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return a generator of groups with up to <var>n</var> lines of
+context.</p>
+
+<p>Starting with the groups returned by <code>get_opcodes</code>, this method splits out
+smaller change clusters and eliminates intervening ranges which
+have no changes.</p>
+
+<p>The groups are returned in the same format as <code>get_opcodes</code>.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.3.<br />
+</blockquote>
+</dd>
+<dt class="method" id="SequenceMatcher.ratio"><b>ratio()</b> <tt class="nav"><a class="nav" href="difflib.SequenceMatcher.ratio" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return a measure of the sequences' similarity as a float in the
+range [0, 1].</p>
+
+<p>Where T is the total number of elements in both sequences, and M
+is the number of matches, this is 2.0*M / T. Note that this is
+<code>1.0</code> if the sequences are identical, and <code>
+0.0</code> if they have nothing in common.</p>
+
+<p>This is expensive to compute if <code>get_matching_blocks</code> or <code>get_opcodes</code> hasn't already
+been called, in which case you may want to try <code>quick_ratio</code> or <code>real_quick_ratio</code> first to get an
+upper bound.</p>
+</dd>
+<dt class="method" id="SequenceMatcher.quick_ratio"><b>quick_ratio()</b> <tt class="nav"><a class="nav" href="difflib.SequenceMatcher.quick_ratio" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return an upper bound on <code>
+ratio</code> relatively quickly.</p>
+
+<p>This isn't defined beyond that it is an upper bound on <code>ratio</code>, and is faster to
+compute.</p>
+</dd>
+<dt class="method" id="SequenceMatcher.real_quick_ratio"><b>real_quick_ratio()</b> <tt class="nav"><a class="nav" href="difflib.SequenceMatcher.real_quick_ratio" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return an upper bound on <code>
+ratio</code> very quickly.</p>
+
+<p>This isn't defined beyond that it is an upper bound on <code>ratio</code>, and is faster to compute
+than either <code>ratio</code> or <code>quick_ratio</code>.</p>
+</dd>
+</dl><div class="text">
+<p>The three methods that return the ratio of matching to total
+characters can give different results due to differing levels of
+approximation, although <code>
+quick_ratio</code> and <code>
+real_quick_ratio</code> are always at least as large as <code>ratio</code>:</p>
+
+<pre>
+&gt;&gt;&gt; s = SequenceMatcher(None, "abcd", "bcde")
+&gt;&gt;&gt; s.ratio()
+0.75
+&gt;&gt;&gt; s.quick_ratio()
+0.75
+&gt;&gt;&gt; s.real_quick_ratio()
+1.0
+</pre>
+
+<h2 id="sequencematcher-examples">SequenceMatcher Examples <a class="nav" href="#sequencematcher-examples">#</a></h2>
+
+<p>This example compares two strings, considering blanks to be
+&#8220;junk:&#8221;</p>
+
+<pre>
+&gt;&gt;&gt; s = SequenceMatcher(lambda x: x == " ",
+...                     "private Thread currentThread;",
+...                     "private volatile Thread currentThread;")
+</pre>
+
+<p><code>ratio</code> returns a float in
+[0, 1], measuring the similarity of the sequences. As a rule of
+thumb, a <code>ratio</code> value over 0.6
+means the sequences are close matches:</p>
+
+<pre>
+&gt;&gt;&gt; print round(s.ratio(), 3)
+0.866
+</pre>
+
+<p>If you're only interested in where the sequences match, <code>
+get_matching_blocks</code> is handy:</p>
+
+<pre>
+&gt;&gt;&gt; for block in s.get_matching_blocks():
+...     print "a[%d] and b[%d] match for %d elements" % block
+a[0] and b[0] match for 8 elements
+a[8] and b[17] match for 6 elements
+a[14] and b[23] match for 15 elements
+a[29] and b[38] match for 0 elements
+</pre>
+
+<p>Note that the last tuple returned by <code>get_matching_blocks</code> is always a
+dummy, <code>(len(</code><var>a</var>), len(<var>b</var>), 0), and
+this is the only case in which the last tuple element (number of
+elements matched) is <code>0</code>.</p>
+
+<p>If you want to know how to change the first sequence into the
+second, use <code>
+get_opcodes</code>:</p>
+
+<pre>
+&gt;&gt;&gt; for opcode in s.get_opcodes():
+...     print "%6s a[%d:%d] b[%d:%d]" % opcode
+ equal a[0:8] b[0:8]
+insert a[8:8] b[8:17]
+ equal a[8:14] b[17:23]
+ equal a[14:29] b[23:38]
+</pre>
+
+<p>See also the function <a class="link" href="#get_close_matches"><code>get_close_matches</code></a> in this module,
+which shows how simple code building on <a class="link" href="#SequenceMatcher"><code>SequenceMatcher</code></a> can be used to do
+useful work.</p>
+
+<h2 id="differ-objects">Differ Objects <a class="nav" href="#differ-objects">#</a></h2>
+
+<p>Note that <a class="link" href="#Differ"><code>
+Differ</code></a>-generated deltas make no claim to be minimal diffs. To
+the contrary, minimal diffs are often counter-intuitive, because
+they synch up anywhere possible, sometimes accidental matches 100
+pages apart. Restricting synch points to contiguous matches
+preserves some notion of locality, at the occasional cost of
+producing a longer diff.</p>
+
+<p>The <a class="link" href="#Differ"><code>Differ</code></a> class has this
+constructor:</p>
+</div>
+<dl><dt class="class"><b>class Differ([linejunk[, charjunk]])</b> <tt class="nav"><a class="nav" href="difflib.Differ" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>Optional keyword parameters <var>linejunk</var> and <var>
+charjunk</var> are for filter functions (or <code>None</code>):</p>
+
+<p><var>linejunk</var>: A function that accepts a single string
+argument, and returns true if the string is junk. The default is <code>None</code>, meaning that no line is
+considered junk.</p>
+
+<p><var>charjunk</var>: A function that accepts a single character
+argument (a string of length 1), and returns true if the character
+is junk. The default is <code>None</code>,
+meaning that no character is considered junk.</p>
+</dd>
+</dl><div class="text">
+<p><a class="link" href="#Differ"><code>Differ</code></a> objects are used
+(deltas generated) via a single method:</p>
+</div>
+<dl><dt class="method" id="Differ.compare"><b>compare(a, b)</b> <tt class="nav"><a class="nav" href="difflib.Differ.compare" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Compare two sequences of lines, and generate the delta (a
+sequence of lines).</p>
+
+<p>Each sequence must contain individual single-line strings ending
+with newlines. Such sequences can be obtained from the <code>readlines</code> method of
+file-like objects. The delta generated also consists of
+newline-terminated strings, ready to be printed as-is via the <code>writelines</code> method of a
+file-like object.</p>
+</dd>
+</dl><div class="text">
+<h2 id="differ-example">Differ Example <a class="nav" href="#differ-example">#</a></h2>
+
+<p>This example compares two texts. First we set up the texts,
+sequences of individual single-line strings ending with newlines
+(such sequences can also be obtained from the <code>readlines</code> method of file-like
+objects):</p>
+
+<pre>
+&gt;&gt;&gt; text1 = '''  1. Beautiful is better than ugly.
+...   2. Explicit is better than implicit.
+...   3. Simple is better than complex.
+...   4. Complex is better than complicated.
+... '''.splitlines(1)
+&gt;&gt;&gt; len(text1)
+4
+&gt;&gt;&gt; text1[0][-1]
+'\n'
+&gt;&gt;&gt; text2 = '''  1. Beautiful is better than ugly.
+...   3.   Simple is better than complex.
+...   4. Complicated is better than complex.
+...   5. Flat is better than nested.
+... '''.splitlines(1)
+</pre>
+
+<p>Next we instantiate a Differ object:</p>
+
+<pre>
+&gt;&gt;&gt; d = Differ()
+</pre>
+
+<p>Note that when instantiating a <a class="link" href="#Differ"><code>Differ</code></a> object we may pass functions to
+filter out line and character &#8220;junk.&#8221; See the <a class="link" href="#Differ"><code>Differ</code></a> constructor for
+details.</p>
+
+<p>Finally, we compare the two:</p>
+
+<pre>
+&gt;&gt;&gt; result = list(d.compare(text1, text2))
+</pre>
+
+<p><code>result</code> is a list of strings, so let's pretty-print
+it:</p>
+
+<pre>
+&gt;&gt;&gt; from pprint import pprint
+&gt;&gt;&gt; pprint(result)
+['    1. Beautiful is better than ugly.\n',
+ '-   2. Explicit is better than implicit.\n',
+ '-   3. Simple is better than complex.\n',
+ '+   3.   Simple is better than complex.\n',
+ '?     ++                                \n',
+ '-   4. Complex is better than complicated.\n',
+ '?            ^                     ---- ^  \n',
+ '+   4. Complicated is better than complex.\n',
+ '?           ++++ ^                      ^  \n',
+ '+   5. Flat is better than nested.\n']
+</pre>
+
+<p>As a single multi-line string it looks like this:</p>
+
+<pre>
+&gt;&gt;&gt; import sys
+&gt;&gt;&gt; sys.stdout.writelines(result)
+    1. Beautiful is better than ugly.
+-   2. Explicit is better than implicit.
+-   3. Simple is better than complex.
++   3.   Simple is better than complex.
+?     ++
+-   4. Complex is better than complicated.
+?            ^                     ---- ^
++   4. Complicated is better than complex.
+?           ++++ ^                      ^
++   5. Flat is better than nested.
+</pre>
+</div>
+</div></body></html>

@@ -1,0 +1,162 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>fileinput</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-fileinput.html'>original</a> :::
+<a href='fileinput.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>fileinput&#8212;Iterate over lines from multiple input
+streams</h1>
+
+<p>This module implements a helper class and functions to quickly
+write a loop over standard input or a list of files.</p>
+
+<p>The typical use is:</p>
+
+<pre>
+import fileinput
+for line in fileinput.input():
+    process(line)
+</pre>
+
+<p>This iterates over the lines of all files listed in <code>
+sys.argv[1:]</code>, defaulting to <code>sys.stdin</code> if the
+list is empty. If a filename is <code>'-'</code>, it is also
+replaced by <code>sys.stdin</code>. To specify an alternative list
+of filenames, pass it as the first argument to <a class="link" href="#input"><code>input</code></a>. A single file name is also
+allowed.</p>
+
+<p>All files are opened in text mode. If an I/O error occurs during
+opening or reading a file, <code>exceptions.IOError</code> is
+raised.</p>
+
+<p>If <code>sys.stdin</code> is used more than once, the second and
+further use will return no lines, except perhaps for interactive
+use, or if it has been explicitly reset (e.g. using <code>
+sys.stdin.seek(0)</code>).</p>
+
+<p>Empty files are opened and immediately closed; the only time
+their presence in the list of filenames is noticeable at all is
+when the last file opened is empty.</p>
+
+<p>It is possible that the last line of a file does not end in a
+newline character; lines are returned including the trailing
+newline when it is present.</p>
+
+<p>The following function is the primary interface of this
+module:</p>
+</div>
+<dl><dt class="function" id="input"><b>input([files[, inplace[, backup]]])</b> <tt class="nav"><a class="nav" href="fileinput.input" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Create an instance of the <a class="link" href="#FileInput"><code>
+FileInput</code></a> class. The instance will be used as global state for
+the functions of this module, and is also returned to use during
+iteration. The parameters to this function will be passed along to
+the constructor of the <a class="link" href="#FileInput"><code>
+FileInput</code></a> class.</p>
+</dd>
+</dl><div class="text">
+<p>The following functions use the global state created by <a class="link" href="#input"><code>input</code></a>; if there is no active
+state, <code>
+exceptions.RuntimeError</code> is raised.</p>
+</div>
+<dl><dt class="function" id="filename"><b>filename()</b> <tt class="nav"><a class="nav" href="fileinput.filename" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return the name of the file currently being read. Before the
+first line has been read, returns <code>
+None</code>.</p>
+</dd>
+<dt class="function" id="lineno"><b>lineno()</b> <tt class="nav"><a class="nav" href="fileinput.lineno" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return the cumulative line number of the line that has just been
+read. Before the first line has been read, returns <code>0</code>.
+After the last line of the last file has been read, returns the
+line number of that line.</p>
+</dd>
+<dt class="function" id="filelineno"><b>filelineno()</b> <tt class="nav"><a class="nav" href="fileinput.filelineno" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return the line number in the current file. Before the first
+line has been read, returns <code>0</code>. After the last line of
+the last file has been read, returns the line number of that line
+within the file.</p>
+</dd>
+<dt class="function" id="isfirstline"><b>isfirstline()</b> <tt class="nav"><a class="nav" href="fileinput.isfirstline" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Returns true if the line just read is the first line of its
+file, otherwise returns false.</p>
+</dd>
+<dt class="function" id="isstdin"><b>isstdin()</b> <tt class="nav"><a class="nav" href="fileinput.isstdin" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Returns true if the last line was read from <code>
+sys.stdin</code>, otherwise returns false.</p>
+</dd>
+<dt class="function" id="nextfile"><b>nextfile()</b> <tt class="nav"><a class="nav" href="fileinput.nextfile" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Close the current file so that the next iteration will read the
+first line from the next file (if any); lines not read from the
+file will not count towards the cumulative line count. The filename
+is not changed until after the first line of the next file has been
+read. Before the first line has been read, this function has no
+effect; it cannot be used to skip the first file. After the last
+line of the last file has been read, this function has no
+effect.</p>
+</dd>
+<dt class="function" id="close"><b>close()</b> <tt class="nav"><a class="nav" href="fileinput.close" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Close the sequence.</p>
+</dd>
+</dl><div class="text">
+<p>The class which implements the sequence behavior provided by the
+module is available for subclassing as well:</p>
+</div>
+<dl><dt class="class" id="FileInput"><b>class FileInput([files[, inplace[, backup]]])</b> <tt class="nav"><a class="nav" href="fileinput.FileInput" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>Class <a class="link" href="#FileInput"><code>FileInput</code></a> is the
+implementation; its methods <a class="link" href="#filename"><code>
+filename</code></a>, <a class="link" href="#lineno"><code>lineno</code></a>, <code>fileline</code>, <a class="link" href="#isfirstline"><code>isfirstline</code></a>, <a class="link" href="#isstdin"><code>isstdin</code></a>, <a class="link" href="#nextfile"><code>nextfile</code></a> and <a class="link" href="#close"><code>close</code></a> correspond to the functions of the same
+name in the module. In addition it has a <code>readline</code> method which returns the next
+input line, and a <code>
+__getitem__</code> method which implements the sequence behavior. The
+sequence must be accessed in strictly sequential order; random
+access and <code>readline</code> cannot
+be mixed.</p>
+</dd>
+</dl><div class="text">
+<p>Optional in-place filtering: if the keyword argument <var>
+inplace</var>=1 is passed to <a class="link" href="#input"><code>
+input</code></a> or to the <a class="link" href="#FileInput"><code>
+FileInput</code></a> constructor, the file is moved to a backup file and
+standard output is directed to the input file (if a file of the
+same name as the backup file already exists, it will be replaced
+silently). This makes it possible to write a filter that rewrites
+its input file in place. If the keyword argument <var>
+backup</var>='.&amp;ltsome extension&gt;' is also given, it
+specifies the extension for the backup file, and the backup file
+remains around; by default, the extension is <code>'.bak'</code>
+and it is deleted when the output file is closed. In-place
+filtering is disabled when standard input is read.</p>
+
+<p>Caveat: The current implementation does not work for MS-DOS 8+3
+filesystems.</p>
+</div>
+</div></body></html>

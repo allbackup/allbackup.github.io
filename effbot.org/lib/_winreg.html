@@ -1,0 +1,643 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>_winreg</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-_winreg.html'>original</a> :::
+<a href='_winreg.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>_winreg - Windows registry access</h1>
+
+<div class="toc"><dl><dt>On this page:</dt><dd><a href="#registry-handle-objects">Registry Handle Objects</a></dd></dl></div><p>Availability: Windows.</p>
+
+<p>New in version 2.0.</p>
+
+<p>These functions expose the Windows registry API to Python.
+Instead of using an integer as the registry handle, a handle object
+is used to ensure that the handles are closed correctly, even if
+the programmer neglects to explicitly close them.</p>
+
+<p>This module exposes a very low-level interface to the Windows
+registry; it is expected that in the future a new <code>
+winreg</code> module will be created offering a higher-level
+interface to the registry API.</p>
+
+<p>This module offers the following functions:</p>
+</div>
+<dl><dt class="function" id="CloseKey"><b>CloseKey(hkey)</b> <tt class="nav"><a class="nav" href="_winreg.CloseKey" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Closes a previously opened registry key. The hkey argument
+specifies a previously opened key.</p>
+
+<p>Note that if <var>hkey</var> is not closed using this method,
+(or the <code>handle.Close</code>
+closed when the <var>hkey</var> object is destroyed by Python.</p>
+</dd>
+<dt class="function" id="ConnectRegistry"><b>ConnectRegistry(computer_name, key)</b> <tt class="nav"><a class="nav" href="_winreg.ConnectRegistry" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Establishes a connection to a predefined registry handle on
+another computer, and returns a handle object</p>
+
+<p><var>computer_name</var> is the name of the remote computer, of
+the form <code>r"\\computername"</code>. If <code>None</code>, the local computer is used.</p>
+
+<p><var>key</var> is the predefined handle to connect to.</p>
+
+<p>The return value is the handle of the opened key. If the
+function fails, an <code>
+exceptions.EnvironmentError</code> exception is raised.</p>
+</dd>
+<dt class="function" id="CreateKey"><b>CreateKey(key, sub_key)</b> <tt class="nav"><a class="nav" href="_winreg.CreateKey" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Creates or opens the specified key, returning a handle
+object</p>
+
+<p><var>key</var> is an already open key, or one of the predefined
+<code>HKEY_*</code> constants.</p>
+
+<p><var>sub_key</var> is a string that names the key this method
+opens or creates.</p>
+
+<p>If <var>key</var> is one of the predefined keys, <var>
+sub_key</var> may be <code>None</code>. In
+that case, the handle returned is the same key handle passed in to
+the function.</p>
+
+<p>If the key already exists, this function opens the existing
+key</p>
+
+<p>The return value is the handle of the opened key. If the
+function fails, an <code>
+exceptions.EnvironmentError</code> exception is raised.</p>
+</dd>
+<dt class="function" id="DeleteKey"><b>DeleteKey(key, sub_key)</b> <tt class="nav"><a class="nav" href="_winreg.DeleteKey" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Deletes the specified key.</p>
+
+<p><var>key</var> is an already open key, or any one of the
+predefined <code>HKEY_*</code> constants.</p>
+
+<p><var>sub_key</var> is a string that must be a subkey of the key
+identified by the <var>key</var> parameter. This value must not be
+<code>None</code>, and the key may not have
+subkeys.</p>
+
+<p><em>This method can not delete keys with subkeys.</em></p>
+
+<p>If the method succeeds, the entire key, including all of its
+values, is removed. If the method fails, an <code>
+exceptions.EnvironmentError</code> exception is raised.</p>
+</dd>
+<dt class="function" id="DeleteValue"><b>DeleteValue(key, value)</b> <tt class="nav"><a class="nav" href="_winreg.DeleteValue" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Removes a named value from a registry key.</p>
+
+<p><var>key</var> is an already open key, or one of the predefined
+<code>HKEY_*</code> constants.</p>
+
+<p><var>value</var> is a string that identifies the value to
+remove.</p>
+</dd>
+<dt class="function" id="EnumKey"><b>EnumKey(key, index)</b> <tt class="nav"><a class="nav" href="_winreg.EnumKey" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Enumerates subkeys of an open registry key, returning a
+string.</p>
+
+<p><var>key</var> is an already open key, or any one of the
+predefined <code>HKEY_*</code> constants.</p>
+
+<p><var>index</var> is an integer that identifies the index of the
+key to retrieve.</p>
+
+<p>The function retrieves the name of one subkey each time it is
+called. It is typically called repeatedly until an <code>
+exceptions.EnvironmentError</code> exception is raised, indicating, no
+more values are available.</p>
+</dd>
+<dt class="function" id="EnumValue"><b>EnumValue(key, index)</b> <tt class="nav"><a class="nav" href="_winreg.EnumValue" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Enumerates values of an open registry key, returning a
+tuple.</p>
+
+<p><var>key</var> is an already open key, or any one of the
+predefined <code>HKEY_*</code> constants.</p>
+
+<p><var>index</var> is an integer that identifies the index of the
+value to retrieve.</p>
+
+<p>The function retrieves the name of one subkey each time it is
+called. It is typically called repeatedly, until an <code>
+exceptions.EnvironmentError</code> exception is raised, indicating no
+more values.</p>
+
+<p>The result is a tuple of 3 items:</p>
+
+<table border="1">
+<tr>
+<th>
+<p>Index</p>
+</th>
+<th>
+<p>Meaning</p>
+</th>
+</tr>
+
+<tr>
+<td>
+<p><code>0</code></p>
+</td>
+<td>
+<p>A string that identifies the value name</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>1</code></p>
+</td>
+<td>
+<p>An object that holds the value data, and whose type depends on
+the underlying registry type</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>2</code></p>
+</td>
+<td>
+<p>An integer that identifies the type of the value data</p>
+</td>
+</tr>
+</table>
+
+<br />
+<br />
+</dd>
+<dt class="function" id="FlushKey"><b>FlushKey(key)</b> <tt class="nav"><a class="nav" href="_winreg.FlushKey" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Writes all the attributes of a key to the registry.</p>
+
+<p><var>key</var> is an already open key, or one of the predefined
+<code>HKEY_*</code> constants.</p>
+
+<p>It is not necessary to call RegFlushKey to change a key.
+Registry changes are flushed to disk by the registry using its lazy
+flusher. Registry changes are also flushed to disk at system
+shutdown. Unlike <a class="link" href="#CloseKey"><code>CloseKey</code></a>,
+the <a class="link" href="#FlushKey"><code>FlushKey</code></a> method
+returns only when all the data has been written to the registry. An
+application should only call <a class="link" href="#FlushKey"><code>
+FlushKey</code></a> if it requires absolute certainty that registry
+changes are on disk.</p>
+
+<p><em>If you don't know whether a</em> <a class="link" href="#FlushKey"><code>FlushKey</code></a> call is required, it probably
+isn't.</p>
+</dd>
+<dt class="function" id="RegLoadKey"><b>RegLoadKey(key, sub_key, file_name)</b> <tt class="nav"><a class="nav" href="_winreg.RegLoadKey" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Creates a subkey under the specified key and stores registration
+information from a specified file into that subkey.</p>
+
+<p><var>key</var> is an already open key, or any of the predefined
+<code>HKEY_*</code> constants.</p>
+
+<p><var>sub_key</var> is a string that identifies the sub_key to
+load</p>
+
+<p><var>file_name</var> is the name of the file to load registry
+data from. This file must have been created with the <a class="link" href="#SaveKey"><code>SaveKey</code></a> function. Under the
+file allocation table (FAT) file system, the filename may not have
+an extension.</p>
+
+<p>A call to LoadKey() fails if the calling process does not have
+the <code>SE_RESTORE_PRIVILEGE</code> privilege. Note that
+privileges are different than permissions - see the Win32
+documentation for more details.</p>
+
+<p>If <var>key</var> is a handle returned by <a class="link" href="#ConnectRegistry"><code>ConnectRegistry</code></a>, then the path
+specified in <var>fileName</var> is relative to the remote
+computer.</p>
+
+<p>The Win32 documentation implies <var>key</var> must be in the
+<code>HKEY_USER</code> or <code>HKEY_LOCAL_MACHINE</code> tree.
+This may or may not be true.</p>
+</dd>
+<dt class="function" id="OpenKey"><b>OpenKey(key, sub_key[, res = 0][, sam =
+KEY_READ])</b> <tt class="nav"><a class="nav" href="_winreg.OpenKey" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Opens the specified key, returning a handle object</p>
+
+<p><var>key</var> is an already open key, or any one of the
+predefined <code>HKEY_*</code> constants.</p>
+
+<p><var>sub_key</var> is a string that identifies the sub_key to
+open</p>
+
+<p><var>res</var> is a reserved integer, and must be zero. The
+default is zero.</p>
+
+<p><var>sam</var> is an integer that specifies an access mask that
+describes the desired security access for the key. Default is
+<code>KEY_READ</code></p>
+
+<p>The result is a new handle to the specified key</p>
+
+<p>If the function fails, <code>
+exceptions.EnvironmentError</code> is raised.</p>
+</dd>
+<dt class="function" id="OpenKeyEx"><b>OpenKeyEx()</b> <tt class="nav"><a class="nav" href="_winreg.OpenKeyEx" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>The functionality of <a class="link" href="#OpenKeyEx"><code>
+OpenKeyEx</code></a> is provided via <a class="link" href="#OpenKey"><code>
+OpenKey</code></a>, by the use of default arguments.</p>
+</dd>
+<dt class="function" id="QueryInfoKey"><b>QueryInfoKey(key)</b> <tt class="nav"><a class="nav" href="_winreg.QueryInfoKey" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Returns information about a key, as a tuple.</p>
+
+<p><var>key</var> is an already open key, or one of the predefined
+<code>HKEY_*</code> constants.</p>
+
+<p>The result is a tuple of 3 items:</p>
+
+<table border="1">
+<tr>
+<th>
+<p>Index</p>
+</th>
+<th>
+<p>Meaning</p>
+</th>
+</tr>
+
+<tr>
+<td>
+<p><code>0</code></p>
+</td>
+<td>
+<p>An integer giving the number of sub keys this key has.</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>1</code></p>
+</td>
+<td>
+<p>An integer giving the number of values this key has.</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>2</code></p>
+</td>
+<td>
+<p>A long integer giving when the key was last modified (if
+available) as 100's of nanoseconds since Jan 1, 1600.</p>
+</td>
+</tr>
+</table>
+
+<br />
+<br />
+</dd>
+<dt class="function" id="QueryValue"><b>QueryValue(key, sub_key)</b> <tt class="nav"><a class="nav" href="_winreg.QueryValue" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Retrieves the unnamed value for a key, as a string</p>
+
+<p><var>key</var> is an already open key, or one of the predefined
+<code>HKEY_*</code> constants.</p>
+
+<p><var>sub_key</var> is a string that holds the name of the subkey
+with which the value is associated. If this parameter is <code>
+None</code> or empty, the function retrieves the value set by the
+<a class="link" href="#SetValue"><code>SetValue</code></a> method for the
+key identified by <var>key</var>.</p>
+
+<p>Values in the registry have name, type, and data components.
+This method retrieves the data for a key's first value that has a
+NULL name. But the underlying API call doesn't return the type,
+Lame Lame Lame, DO NOT USE THIS!!!</p>
+</dd>
+<dt class="function" id="QueryValueEx"><b>QueryValueEx(key, value_name)</b> <tt class="nav"><a class="nav" href="_winreg.QueryValueEx" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Retrieves the type and data for a specified value name
+associated with an open registry key.</p>
+
+<p><var>key</var> is an already open key, or one of the predefined
+<code>HKEY_*</code> constants.</p>
+
+<p><var>value_name</var> is a string indicating the value to
+query.</p>
+
+<p>The result is a tuple of 2 items:</p>
+
+<table border="1">
+<tr>
+<th>
+<p>Index</p>
+</th>
+<th>
+<p>Meaning</p>
+</th>
+</tr>
+
+<tr>
+<td>
+<p><code>0</code></p>
+</td>
+<td>
+<p>The value of the registry item.</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>1</code></p>
+</td>
+<td>
+<p>An integer giving the registry type for this value.</p>
+</td>
+</tr>
+</table>
+
+<br />
+<br />
+</dd>
+<dt class="function" id="SaveKey"><b>SaveKey(key, file_name)</b> <tt class="nav"><a class="nav" href="_winreg.SaveKey" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Saves the specified key, and all its subkeys to the specified
+file.</p>
+
+<p><var>key</var> is an already open key, or one of the predefined
+<code>HKEY_*</code> constants.</p>
+
+<p><var>file_name</var> is the name of the file to save registry
+data to. This file cannot already exist. If this filename includes
+an extension, it cannot be used on file allocation table (FAT) file
+systems by the <code>LoadKey</code>, <code>ReplaceKey</code> or <code>RestoreKey</code> methods.</p>
+
+<p>If <var>key</var> represents a key on a remote computer, the
+path described by <var>file_name</var> is relative to the remote
+computer. The caller of this method must possess the <code>
+SeBackupPrivilege</code> security privilege. Note that privileges
+are different than permissions - see the Win32 documentation for
+more details.</p>
+
+<p>This function passes NULL for <var>security_attributes</var> to
+the API.</p>
+</dd>
+<dt class="function" id="SetValue"><b>SetValue(key, sub_key, type, value)</b> <tt class="nav"><a class="nav" href="_winreg.SetValue" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Associates a value with a specified key.</p>
+
+<p><var>key</var> is an already open key, or one of the predefined
+<code>HKEY_*</code> constants.</p>
+
+<p><var>sub_key</var> is a string that names the subkey with which
+the value is associated.</p>
+
+<p><var>type</var> is an integer that specifies the type of the
+data. Currently this must be <code>REG_SZ</code>, meaning only
+strings are supported. Use the <a class="link" href="#SetValueEx"><code>SetValueEx</code></a> function for support for
+other data types.</p>
+
+<p><var>value</var> is a string that specifies the new value.</p>
+
+<p>If the key specified by the <var>sub_key</var> parameter does
+not exist, the SetValue function creates it.</p>
+
+<p>Value lengths are limited by available memory. Long values (more
+than 2048 bytes) should be stored as files with the filenames
+stored in the configuration registry. This helps the registry
+perform efficiently.</p>
+
+<p>The key identified by the <var>key</var> parameter must have
+been opened with <code>KEY_SET_VALUE</code> access.</p>
+</dd>
+<dt class="function" id="SetValueEx"><b>SetValueEx(key, value_name, reserved, type,
+value)</b> <tt class="nav"><a class="nav" href="_winreg.SetValueEx" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Stores data in the value field of an open registry key.</p>
+
+<p><var>key</var> is an already open key, or one of the predefined
+<code>HKEY_*</code> constants.</p>
+
+<p><var>sub_key</var> is a string that names the subkey with which
+the value is associated.</p>
+
+<p><var>type</var> is an integer that specifies the type of the
+data. This should be one of the following constants defined in this
+module:</p>
+
+<table border="1">
+<tr>
+<th>
+<p>Constant</p>
+</th>
+<th>
+<p>Meaning</p>
+</th>
+</tr>
+
+<tr>
+<td>
+<p><code>REG_BINARY</code></p>
+</td>
+<td>
+<p>Binary data in any form.</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>REG_DWORD</code></p>
+</td>
+<td>
+<p>A 32-bit number.</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>REG_DWORD_LITTLE_ENDIAN</code></p>
+</td>
+<td>
+<p>A 32-bit number in little-endian format.</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>REG_DWORD_BIG_ENDIAN</code></p>
+</td>
+<td>
+<p>A 32-bit number in big-endian format.</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>REG_EXPAND_SZ</code></p>
+</td>
+<td>
+<p>Null-terminated string containing references to environment
+variables ("<code>%PATH%</code>").</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>REG_LINK</code></p>
+</td>
+<td>
+<p>A Unicode symbolic link.</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>REG_MULTI_SZ</code></p>
+</td>
+<td>
+<p>A sequence of null-terminated strings, terminated by two null
+characters. (Python handles this termination automatically.)</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>REG_NONE</code></p>
+</td>
+<td>
+<p>No defined value type.</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>REG_RESOURCE_LIST</code></p>
+</td>
+<td>
+<p>A device-driver resource list.</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>REG_SZ</code></p>
+</td>
+<td>
+<p>A null-terminated string.</p>
+</td>
+</tr>
+</table>
+
+<br />
+<br />
+ 
+
+<p><var>reserved</var> can be anything - zero is always passed to
+the API.</p>
+
+<p><var>value</var> is a string that specifies the new value.</p>
+
+<p>This method can also set additional value and type information
+for the specified key. The key identified by the key parameter must
+have been opened with <code>KEY_SET_VALUE</code> access.</p>
+
+<p>To open the key, use the <code>CreateKeyEx</code> or <a class="link" href="#OpenKey"><code>OpenKey</code></a> methods.</p>
+
+<p>Value lengths are limited by available memory. Long values (more
+than 2048 bytes) should be stored as files with the filenames
+stored in the configuration registry. This helps the registry
+perform efficiently.</p>
+</dd>
+</dl><div class="text">
+<h2 id="registry-handle-objects">Registry Handle Objects <a class="nav" href="#registry-handle-objects">#</a></h2>
+
+<p>This object wraps a Windows HKEY object, automatically closing
+it when the object is destroyed. To guarantee cleanup, you can call
+either the <a class="link" href="#Close"><code>Close</code></a> method on
+the object, or the <a class="link" href="#CloseKey"><code>
+CloseKey</code></a> function.</p>
+
+<p>All registry functions in this module return one of these
+objects.</p>
+
+<p>All registry functions in this module which accept a handle
+object also accept an integer, however, use of the handle object is
+encouraged.</p>
+
+<p>Handle objects provide semantics for <code>__nonzero__</code> - thus</p>
+
+<pre>
+    if handle:
+        print "Yes"
+</pre>
+
+<p>will print <code>Yes</code> if the handle is currently valid
+(has not been closed or detached).</p>
+
+<p>The object also support comparison semantics, so handle objects
+will compare true if they both reference the same underlying
+Windows handle value.</p>
+
+<p>Handle objects can be converted to an integer (eg, using the
+builtin <code>int</code> function, in which
+case the underlying Windows handle value is returned. You can also
+use the <a class="link" href="#Detach"><code>Detach</code></a> method to
+return the integer handle, and also disconnect the Windows handle
+from the handle object.</p>
+</div>
+<dl><dt class="method" id="Close"><b>Close()</b> <tt class="nav"><a class="nav" href="_winreg.Close" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Closes the underlying Windows handle.</p>
+
+<p>If the handle is already closed, no error is raised.</p>
+</dd>
+<dt class="method" id="Detach"><b>Detach()</b> <tt class="nav"><a class="nav" href="_winreg.Detach" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Detaches the Windows handle from the handle object.</p>
+
+<p>The result is an integer (or long on 64 bit Windows) that holds
+the value of the handle before it is detached. If the handle is
+already detached or closed, this will return zero.</p>
+
+<p>After calling this function, the handle is effectively
+invalidated, but the handle is not closed. You would call this
+function when you need the underlying Win32 handle to exist beyond
+the lifetime of the handle object.</p>
+</dd>
+</dl></div></body></html>

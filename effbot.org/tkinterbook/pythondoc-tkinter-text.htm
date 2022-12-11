@@ -1,0 +1,610 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>The Tkinter Text&nbsp;Class</title></head><body data-page-id="1955"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">The Tkinter Text&nbsp;Class</h1></div><div class="yui-ge"><div class="yui-u first"><dl><dt><b>Text(master=None, **options)</b> (class) [<a href="#Tkinter.Text-class">#</a>]</dt><dd>
+<p>A display/editor widget for formatted text.</p><dl><dt><i>master</i></dt><dd>
+Parent widget.</dd>
+<dt><i>**options</i></dt><dd>
+Widget options.  See the description of
+   the config method for a list of available options.</dd>
+</dl><br />
+</dd>
+<dt><a id="Tkinter.Text.bbox-method" name="Tkinter.Text.bbox-method"><b>bbox(index)</b></a> [<a href="#Tkinter.Text.bbox-method">#</a>]</dt><dd>
+<p>Calculates the bounding box for the given character.
+</p><p>
+This method only works if the text widget is updated.  To make
+sure this is the case, you can call the update_idletasks method
+first.
+
+</p><dl><dt><i>index</i></dt><dd>
+Character index.</dd>
+<dt>Returns:</dt><dd>
+A 4-tuple (x, y, width, height), or None, if the
+    character is not visible.</dd>
+</dl><br />
+</dd>
+<dt><a id="Tkinter.Text.compare-method" name="Tkinter.Text.compare-method"><b>compare(index1, op, index2)</b></a> [<a href="#Tkinter.Text.compare-method">#</a>]</dt><dd>
+<p>Compares two indexes.  The <b>op</b> argument is one of &#8220;&lt;&#8221;,
+&#8220;&lt;=&#8221;, &#8220;==&#8221;, &#8220;&gt;=&#8221;, &#8220;&gt;&#8221;, or &#8220;!=&#8221; (Python&#8217;s &#8220;&lt;&gt;&#8221; syntax
+is not supported).
+
+</p><dl><dt><i>index1</i></dt><dd>
+First index.</dd>
+<dt><i>op</i></dt><dd>
+Operator (see above).</dd>
+<dt><i>index2</i></dt><dd>
+Second index.</dd>
+<dt>Returns:</dt><dd>
+A true value if the condition is true.</dd>
+</dl><br />
+</dd>
+<dt><a id="Tkinter.Text.config-method" name="Tkinter.Text.config-method"><b>config(**options)</b></a> [<a href="#Tkinter.Text.config-method">#</a>]</dt><dd>
+<p>Modifies one or more widget options.  If no options are given,
+the method returns a dictionary containing all current option
+values.</p><dl><dt><i>**options</i></dt><dd>
+Widget options.</dd>
+<dt><i>autoseparators=</i></dt><dd>
+Default is 1. (autoSeparators/AutoSeparators)</dd>
+<dt><i>background=</i></dt><dd>
+Default value is system specific.
+    (the database name is background, the class is Background)</dd>
+<dt><i>bg=</i></dt><dd>
+Same as background.</dd>
+<dt><i>borderwidth=</i></dt><dd>
+Default value is 2.
+    (borderWidth/BorderWidth)</dd>
+<dt><i>bd=</i></dt><dd>
+Same as borderwidth.</dd>
+<dt><i>cursor=</i></dt><dd>
+Default value is &#8220;xterm&#8221;.
+    (cursor/Cursor)</dd>
+<dt><i>exportselection=</i></dt><dd>
+Default value is 1.
+    (exportSelection/ExportSelection)</dd>
+<dt><i>font=</i></dt><dd>
+Default value is system specific.
+    (font/Font)</dd>
+<dt><i>foreground=</i></dt><dd>
+Default value is system specific.
+    (foreground/Foreground)</dd>
+<dt><i>fg=</i></dt><dd>
+Same as foreground.</dd>
+<dt><i>height=</i></dt><dd>
+Default value is 24.
+    (height/Height)</dd>
+<dt><i>highlightbackground=</i></dt><dd>
+Default value is system specific.
+    (highlightBackground/HighlightBackground)</dd>
+<dt><i>highlightcolor=</i></dt><dd>
+Default value is system specific.
+    (highlightColor/HighlightColor)</dd>
+<dt><i>highlightthickness=</i></dt><dd>
+Default value is 0.
+    (highlightThickness/HighlightThickness)</dd>
+<dt><i>insertbackground=</i></dt><dd>
+Default value is system specific.
+    (insertBackground/Foreground)</dd>
+<dt><i>insertborderwidth=</i></dt><dd>
+Default value is 0.
+    (insertBorderWidth/BorderWidth)</dd>
+<dt><i>insertofftime=</i></dt><dd>
+Default value is 300.
+    (insertOffTime/OffTime)</dd>
+<dt><i>insertontime=</i></dt><dd>
+Default value is 600.
+    (insertOnTime/OnTime)</dd>
+<dt><i>insertwidth=</i></dt><dd>
+Default value is 2.
+    (insertWidth/InsertWidth)</dd>
+<dt><i>maxundo=</i></dt><dd>
+Default is 0. (maxUndo/MaxUndo)</dd>
+<dt><i>padx=</i></dt><dd>
+Default value is 1.
+    (padX/Pad)</dd>
+<dt><i>pady=</i></dt><dd>
+Default value is 1.
+    (padY/Pad)</dd>
+<dt><i>relief=</i></dt><dd>
+Default value is SUNKEN.
+    (relief/Relief)</dd>
+<dt><i>selectbackground=</i></dt><dd>
+Default value is system specific.
+    (selectBackground/Foreground)</dd>
+<dt><i>selectborderwidth=</i></dt><dd>
+Default value is 0.
+    (selectBorderWidth/BorderWidth)</dd>
+<dt><i>selectforeground=</i></dt><dd>
+Default value is system specific.
+    (selectForeground/Background)</dd>
+<dt><i>setgrid=</i></dt><dd>
+Default value is 0.
+    (setGrid/SetGrid)</dd>
+<dt><i>spacing1=</i></dt><dd>
+Default value is 0.
+    (spacing1/Spacing)</dd>
+<dt><i>spacing2=</i></dt><dd>
+Default value is 0.
+    (spacing2/Spacing)</dd>
+<dt><i>spacing3=</i></dt><dd>
+Default value is 0.
+    (spacing3/Spacing)</dd>
+<dt><i>state=</i></dt><dd>
+Default value is NORMAL.
+    (state/State)</dd>
+<dt><i>tabs=</i></dt><dd>
+No default value.
+    (tabs/Tabs)</dd>
+<dt><i>takefocus=</i></dt><dd>
+No default value.
+    (takeFocus/TakeFocus)</dd>
+<dt><i>undo=</i></dt><dd>
+Default is 0. (undo/Undo)</dd>
+<dt><i>width=</i></dt><dd>
+Default value is 80.
+    (width/Width)</dd>
+<dt><i>wrap=</i></dt><dd>
+Default value is CHAR.
+    (wrap/Wrap)</dd>
+<dt><i>xscrollcommand=</i></dt><dd>
+No default value.
+    (xScrollCommand/ScrollCommand)</dd>
+<dt><i>yscrollcommand=</i></dt><dd>
+No default value.
+    (yScrollCommand/ScrollCommand)</dd>
+</dl><br />
+</dd>
+<dt><a id="Tkinter.Text.debug-method" name="Tkinter.Text.debug-method"><b>debug(boolean=None)</b></a> [<a href="#Tkinter.Text.debug-method">#</a>]</dt><dd>
+<p>Enables or disables debugging.</p><dl><dt><i>boolean</i></dt><dd>
+</dd>
+</dl><br />
+</dd>
+<dt><a id="Tkinter.Text.delete-method" name="Tkinter.Text.delete-method"><b>delete(start, end=None)</b></a> [<a href="#Tkinter.Text.delete-method">#</a>]</dt><dd>
+<p>Deletes the character (or embedded object) at the given
+position, or all text in the given range. Any marks within the
+range are moved to the beginning of the range.</p><dl><dt><i>start</i></dt><dd>
+Start index.</dd>
+<dt><i>end</i></dt><dd>
+End index.  If omitted, only one character is deleted.</dd>
+</dl><br />
+</dd>
+<dt><a id="Tkinter.Text.dlineinfo-method" name="Tkinter.Text.dlineinfo-method"><b>dlineinfo(index)</b></a> [<a href="#Tkinter.Text.dlineinfo-method">#</a>]</dt><dd>
+<p>Calculates the bounding box for the line containing the given
+character.
+</p><p>
+This method only works if the text widget is updated.  To make
+sure this is the case, you can call the update_idletasks method
+first.
+
+</p><dl><dt><i>index</i></dt><dd>
+Character index.</dd>
+<dt>Returns:</dt><dd>
+A 5-tuple: (x, y, width, height, offset). The last tuple
+   member is the offset from the top of the line to the baseline.
+   If the line is not visible, this method returns None.</dd>
+</dl><br />
+</dd>
+<dt><a id="Tkinter.Text.dump-method" name="Tkinter.Text.dump-method"><b>dump(index1, index2=None, command=None, **kw)</b></a> [<a href="#Tkinter.Text.dump-method">#</a>]</dt><dd>
+<p>Dumps the widget contents.</p></dd>
+<dt><a id="Tkinter.Text.edit_modified-method" name="Tkinter.Text.edit_modified-method"><b>edit_modified(arg=None)</b></a> [<a href="#Tkinter.Text.edit_modified-method">#</a>]</dt><dd>
+<p>The edit_modified method.</p></dd>
+<dt><a id="Tkinter.Text.edit_redo-method" name="Tkinter.Text.edit_redo-method"><b>edit_redo()</b></a> [<a href="#Tkinter.Text.edit_redo-method">#</a>]</dt><dd>
+<p>The edit_redo method.</p></dd>
+<dt><a id="Tkinter.Text.edit_reset-method" name="Tkinter.Text.edit_reset-method"><b>edit_reset()</b></a> [<a href="#Tkinter.Text.edit_reset-method">#</a>]</dt><dd>
+<p>The edit_reset method.</p></dd>
+<dt><a id="Tkinter.Text.edit_separator-method" name="Tkinter.Text.edit_separator-method"><b>edit_separator()</b></a> [<a href="#Tkinter.Text.edit_separator-method">#</a>]</dt><dd>
+<p>The edit_separator method.</p></dd>
+<dt><a id="Tkinter.Text.edit_undo-method" name="Tkinter.Text.edit_undo-method"><b>edit_undo()</b></a> [<a href="#Tkinter.Text.edit_undo-method">#</a>]</dt><dd>
+<p>The edit_undo method.</p></dd>
+<dt><a id="Tkinter.Text.get-method" name="Tkinter.Text.get-method"><b>get(start, end=None)</b></a> [<a href="#Tkinter.Text.get-method">#</a>]</dt><dd>
+<p>Returns the character at the given position, or all text in the
+given range.</p><dl><dt><i>start</i></dt><dd>
+Start position.</dd>
+<dt><i>end</i></dt><dd>
+End position.  If omitted, only one character is
+   returned.</dd>
+</dl><br />
+</dd>
+<dt><a id="Tkinter.Text.image_cget-method" name="Tkinter.Text.image_cget-method"><b>image_cget(index, option)</b></a> [<a href="#Tkinter.Text.image_cget-method">#</a>]</dt><dd>
+<p>Returns the current value of the given option. If there&#8217;s no
+image on the given position, this method raises a <b>TclError</b>
+exception.  Not implemented in Python 1.5.2 and earlier.
+
+</p><dl><dt><i>index</i></dt><dd>
+Index specifier.</dd>
+<dt><i>option</i></dt><dd>
+Image option.</dd>
+<dt>Returns:</dt><dd>
+Option value.</dd>
+</dl><br />
+</dd>
+<dt><a id="Tkinter.Text.image_configure-method" name="Tkinter.Text.image_configure-method"><b>image_configure(index, **options)</b></a> [<a href="#Tkinter.Text.image_configure-method">#</a>]</dt><dd>
+<p>Modifies one or more image options. If there&#8217;s no image on the
+given position, this method raises a <b>TclError</b> exception.
+Not implemented in Python 1.5.2 and earlier.
+
+</p><dl><dt><i>index</i></dt><dd>
+Index specifier.</dd>
+<dt><i>**options</i></dt><dd>
+Image options.</dd>
+<dt><i>align=</i></dt><dd>
+</dd>
+<dt><i>image=</i></dt><dd>
+An image object.  This must be a PhotoImage
+   or BitmapImage object, or any compatible object.</dd>
+<dt><i>name=</i></dt><dd>
+</dd>
+<dt><i>padx=</i></dt><dd>
+</dd>
+<dt><i>pady=</i></dt><dd>
+</dd>
+</dl><br />
+</dd>
+<dt><a id="Tkinter.Text.image_create-method" name="Tkinter.Text.image_create-method"><b>image_create(index, cnf={}, **kw)</b></a> [<a href="#Tkinter.Text.image_create-method">#</a>]</dt><dd>
+<p>Inserts an image at the given position.  The image must be a
+a Tkinter <b>PhotoImage</b> or <b>BitmapImage</b> instance
+(or an instance of the corresponding PIL classes).
+</p><p>
+This method doesn&#8217;t work with Tk versions before 8.0.  As
+a workaround, you can put the image in a Label widget, and
+use window_create to insert the label widget.
+
+</p><dl><dt><i>index</i></dt><dd>
+Index specifier.</dd>
+<dt><i>**options</i></dt><dd>
+Image options.  See image_config for a
+   complete list.</dd>
+</dl><br />
+</dd>
+<dt><a id="Tkinter.Text.image_names-method" name="Tkinter.Text.image_names-method"><b>image_names()</b></a> [<a href="#Tkinter.Text.image_names-method">#</a>]</dt><dd>
+<p>Finds the names of all images embedded in the text widget.
+Tkinter doesn&#8217;t provide a way to get the corresponding
+<b>PhotoImage</b> or <b>BitmapImage</b> objects, but you
+can keep track of those yourself using a dictionary (using
+<b>str(image)</b> as the key).
+
+</p><dl><dt>Returns:</dt><dd>
+A tuple containing image names.</dd>
+</dl><br />
+</dd>
+<dt><a id="Tkinter.Text.index-method" name="Tkinter.Text.index-method"><b>index(index)</b></a> [<a href="#Tkinter.Text.index-method">#</a>]</dt><dd>
+<p>Returns the &#8220;line.column&#8221; index corresponding to the
+given index.</p><dl><dt><i>index</i></dt><dd>
+Index specifier.</dd>
+<dt>Returns:</dt><dd>
+The corresponding row/column, given as a &#8220;line.column&#8221;
+   string.</dd>
+</dl><br />
+</dd>
+<dt><a id="Tkinter.Text.insert-method" name="Tkinter.Text.insert-method"><b>insert(index, text, *tags)</b></a> [<a href="#Tkinter.Text.insert-method">#</a>]</dt><dd>
+<p>Inserts text at the given position.  The index is typically
+<b>INSERT</b> or <b>END</b>. If you provide one or more tags,
+they are attached to the new text.
+</p><p>
+If you insert text on a mark, the mark is moved according to
+its gravity setting.
+
+</p><dl><dt><i>index</i></dt><dd>
+Where to insert the text.</dd>
+<dt><i>text</i></dt><dd>
+The text to insert.</dd>
+<dt><i>*tags</i></dt><dd>
+Optional tags to attach to the text.</dd>
+</dl><br />
+</dd>
+<dt><a id="Tkinter.Text.mark_gravity-method" name="Tkinter.Text.mark_gravity-method"><b>mark_gravity(self, name, direction=None)</b></a> [<a href="#Tkinter.Text.mark_gravity-method">#</a>]</dt><dd>
+<p>Sets the gravity for the given mark. The gravity setting
+controls how to move the mark if text is inserted exactly on the
+mark. If <b>LEFT</b>, the mark is not moved if text is inserted
+at the mark (that is, the text is inserted just after the mark).
+If <b>RIGHT</b>, the mark is moved to the right end of the text
+(that is, the text is inserted just before the mark). The default
+gravity setting is <b>RIGHT</b>.
+
+</p><dl><dt><i>name</i></dt><dd>
+The name of the mark.</dd>
+<dt><i>direction</i></dt><dd>
+The gravity setting (<b>LEFT</b> or <b>RIGHT</b>).
+    If this argument is omitted, the method returns the current
+    gravity setting.
+</dd>
+<dt>Returns:</dt><dd>
+The current gravity setting, if direction was omitted.</dd>
+</dl><br />
+</dd>
+<dt><a id="Tkinter.Text.mark_names-method" name="Tkinter.Text.mark_names-method"><b>mark_names()</b></a> [<a href="#Tkinter.Text.mark_names-method">#</a>]</dt><dd>
+<p>Finds the names of all marks used in the widget. This includes
+the <b>INSERT</b> and <b>CURRENT</b> marks (but not <b>END</b>,
+which is a special index, not a mark).
+
+</p><dl><dt>Returns:</dt><dd>
+A tuple containing mark names.</dd>
+</dl><br />
+</dd>
+<dt><a id="Tkinter.Text.mark_next-method" name="Tkinter.Text.mark_next-method"><b>mark_next(index)</b></a> [<a href="#Tkinter.Text.mark_next-method">#</a>]</dt><dd>
+<p>The mark_next method.</p><dl><dt><i>index</i></dt><dd>
+</dd>
+</dl><br />
+</dd>
+<dt><a id="Tkinter.Text.mark_previous-method" name="Tkinter.Text.mark_previous-method"><b>mark_previous(index)</b></a> [<a href="#Tkinter.Text.mark_previous-method">#</a>]</dt><dd>
+<p>The mark_previous method.</p><dl><dt><i>index</i></dt><dd>
+</dd>
+</dl><br />
+</dd>
+<dt><a id="Tkinter.Text.mark_set-method" name="Tkinter.Text.mark_set-method"><b>mark_set(name, index)</b></a> [<a href="#Tkinter.Text.mark_set-method">#</a>]</dt><dd>
+<p>Moves the mark to the given position.  If the mark doesn&#8217;t exist,
+it is created (with gravity set to <b>RIGHT</b>). You also use
+this method to move the predefined <b>INSERT</b> and
+<b>CURRENT</b> marks.
+
+</p><dl><dt><i>name</i></dt><dd>
+Mark name.</dd>
+<dt><i>index</i></dt><dd>
+New position.</dd>
+</dl><br />
+</dd>
+<dt><a id="Tkinter.Text.mark_unset-method" name="Tkinter.Text.mark_unset-method"><b>mark_unset(name)</b></a> [<a href="#Tkinter.Text.mark_unset-method">#</a>]</dt><dd>
+<p>Removes the given mark from the widget. You cannot remove the
+builtin <b>INSERT</b> and <b>CURRENT</b> marks.
+
+</p><dl><dt><i>name</i></dt><dd>
+Mark name.</dd>
+</dl><br />
+</dd>
+<dt><a id="Tkinter.Text.scan_dragto-method" name="Tkinter.Text.scan_dragto-method"><b>scan_dragto(x, y)</b></a> [<a href="#Tkinter.Text.scan_dragto-method">#</a>]</dt><dd>
+<p>Scrolls the widget contents.  The text view is moved 10 times
+the distance between the scanning anchor and the new position.</p><dl><dt><i>x</i></dt><dd>
+</dd>
+<dt><i>y</i></dt><dd>
+</dd>
+</dl><br />
+</dd>
+<dt><a id="Tkinter.Text.scan_mark-method" name="Tkinter.Text.scan_mark-method"><b>scan_mark(x, y)</b></a> [<a href="#Tkinter.Text.scan_mark-method">#</a>]</dt><dd>
+<p>Sets the scanning anchor.  This anchor is used for fast scrolling.</p><dl><dt><i>x</i></dt><dd>
+</dd>
+<dt><i>y</i></dt><dd>
+</dd>
+</dl><br />
+</dd>
+<dt><a id="Tkinter.Text.search-method" name="Tkinter.Text.search-method"><b>search(pattern, index, stopindex=None, forwards=None, backwards=None, exact=None, regexp=None, nocase=None, count=None)</b></a> [<a href="#Tkinter.Text.search-method">#</a>]</dt><dd>
+<p>Searches for text strings or regular expressions.</p><dl><dt><i>pattern</i></dt><dd>
+</dd>
+<dt><i>index</i></dt><dd>
+</dd>
+<dt><i>stopindex</i></dt><dd>
+</dd>
+<dt><i>forwards</i></dt><dd>
+</dd>
+<dt><i>backwards</i></dt><dd>
+</dd>
+<dt><i>exact</i></dt><dd>
+</dd>
+<dt><i>regexp</i></dt><dd>
+</dd>
+<dt><i>nocase</i></dt><dd>
+</dd>
+<dt><i>count</i></dt><dd>
+</dd>
+</dl><br />
+</dd>
+<dt><a id="Tkinter.Text.see-method" name="Tkinter.Text.see-method"><b>see(index)</b></a> [<a href="#Tkinter.Text.see-method">#</a>]</dt><dd>
+<p>Makes sure a given position is visible.  If the index isn&#8217;t
+visible, scroll the view as necessary.</p><dl><dt><i>index</i></dt><dd>
+Index specifier.</dd>
+</dl><br />
+</dd>
+<dt><a id="Tkinter.Text.tag_add-method" name="Tkinter.Text.tag_add-method"><b>tag_add(tagName, index1, *args)</b></a> [<a href="#Tkinter.Text.tag_add-method">#</a>]</dt><dd>
+<p>The tag_add method.</p><dl><dt><i>tagName</i></dt><dd>
+</dd>
+<dt><i>index1</i></dt><dd>
+</dd>
+<dt><i>*args</i></dt><dd>
+</dd>
+</dl><br />
+</dd>
+<dt><a id="Tkinter.Text.tag_bind-method" name="Tkinter.Text.tag_bind-method"><b>tag_bind(tagName, sequence, func, add=None)</b></a> [<a href="#Tkinter.Text.tag_bind-method">#</a>]</dt><dd>
+<p>The tag_bind method.</p><dl><dt><i>tagName</i></dt><dd>
+</dd>
+<dt><i>sequence</i></dt><dd>
+</dd>
+<dt><i>func</i></dt><dd>
+</dd>
+<dt><i>add</i></dt><dd>
+</dd>
+</dl><br />
+</dd>
+<dt><a id="Tkinter.Text.tag_cget-method" name="Tkinter.Text.tag_cget-method"><b>tag_cget(tagName, option)</b></a> [<a href="#Tkinter.Text.tag_cget-method">#</a>]</dt><dd>
+<p>The tag_cget method.</p><dl><dt><i>tagName</i></dt><dd>
+</dd>
+<dt><i>option</i></dt><dd>
+</dd>
+</dl><br />
+</dd>
+<dt><a id="Tkinter.Text.tag_config-method" name="Tkinter.Text.tag_config-method"><b>tag_config(tagName, cnf={}, **kw)</b></a> [<a href="#Tkinter.Text.tag_config-method">#</a>]</dt><dd>
+<p>The tag_config method.</p><dl><dt><i>tagName</i></dt><dd>
+</dd>
+<dt><i>cnf</i></dt><dd>
+</dd>
+<dt><i>**kw</i></dt><dd>
+</dd>
+</dl><br />
+</dd>
+<dt><a id="Tkinter.Text.tag_configure-method" name="Tkinter.Text.tag_configure-method"><b>tag_configure(tagName, cnf={}, **kw)</b></a> [<a href="#Tkinter.Text.tag_configure-method">#</a>]</dt><dd>
+<p>The tag_configure method.</p><dl><dt><i>tagName</i></dt><dd>
+</dd>
+<dt><i>cnf</i></dt><dd>
+</dd>
+<dt><i>**kw</i></dt><dd>
+</dd>
+</dl><br />
+</dd>
+<dt><a id="Tkinter.Text.tag_delete-method" name="Tkinter.Text.tag_delete-method"><b>tag_delete(*tagNames)</b></a> [<a href="#Tkinter.Text.tag_delete-method">#</a>]</dt><dd>
+<p>The tag_delete method.</p><dl><dt><i>*tagNames</i></dt><dd>
+</dd>
+</dl><br />
+</dd>
+<dt><a id="Tkinter.Text.tag_lower-method" name="Tkinter.Text.tag_lower-method"><b>tag_lower(tagName, belowThis=None)</b></a> [<a href="#Tkinter.Text.tag_lower-method">#</a>]</dt><dd>
+<p>The tag_lower method.</p><dl><dt><i>tagName</i></dt><dd>
+</dd>
+<dt><i>belowThis</i></dt><dd>
+</dd>
+</dl><br />
+</dd>
+<dt><a id="Tkinter.Text.tag_names-method" name="Tkinter.Text.tag_names-method"><b>tag_names(index=None)</b></a> [<a href="#Tkinter.Text.tag_names-method">#</a>]</dt><dd>
+<p>The tag_names method.</p><dl><dt><i>index</i></dt><dd>
+</dd>
+</dl><br />
+</dd>
+<dt><a id="Tkinter.Text.tag_nextrange-method" name="Tkinter.Text.tag_nextrange-method"><b>tag_nextrange(tagName, index1, index2=None)</b></a> [<a href="#Tkinter.Text.tag_nextrange-method">#</a>]</dt><dd>
+<p>The tag_nextrange method.</p><dl><dt><i>tagName</i></dt><dd>
+</dd>
+<dt><i>index1</i></dt><dd>
+</dd>
+<dt><i>index2</i></dt><dd>
+</dd>
+</dl><br />
+</dd>
+<dt><a id="Tkinter.Text.tag_prevrange-method" name="Tkinter.Text.tag_prevrange-method"><b>tag_prevrange(tagName, index1, index2=None)</b></a> [<a href="#Tkinter.Text.tag_prevrange-method">#</a>]</dt><dd>
+<p>The tag_prevrange method.</p><dl><dt><i>tagName</i></dt><dd>
+</dd>
+<dt><i>index1</i></dt><dd>
+</dd>
+<dt><i>index2</i></dt><dd>
+</dd>
+</dl><br />
+</dd>
+<dt><a id="Tkinter.Text.tag_raise-method" name="Tkinter.Text.tag_raise-method"><b>tag_raise(tagName, aboveThis=None)</b></a> [<a href="#Tkinter.Text.tag_raise-method">#</a>]</dt><dd>
+<p>The tag_raise method.</p><dl><dt><i>tagName</i></dt><dd>
+</dd>
+<dt><i>aboveThis</i></dt><dd>
+</dd>
+</dl><br />
+</dd>
+<dt><a id="Tkinter.Text.tag_ranges-method" name="Tkinter.Text.tag_ranges-method"><b>tag_ranges(tagName)</b></a> [<a href="#Tkinter.Text.tag_ranges-method">#</a>]</dt><dd>
+<p>The tag_ranges method.</p><dl><dt><i>tagName</i></dt><dd>
+</dd>
+</dl><br />
+</dd>
+<dt><a id="Tkinter.Text.tag_remove-method" name="Tkinter.Text.tag_remove-method"><b>tag_remove(tagName, index1, index2=None)</b></a> [<a href="#Tkinter.Text.tag_remove-method">#</a>]</dt><dd>
+<p>The tag_remove method.</p><dl><dt><i>tagName</i></dt><dd>
+</dd>
+<dt><i>index1</i></dt><dd>
+</dd>
+<dt><i>index2</i></dt><dd>
+</dd>
+</dl><br />
+</dd>
+<dt><a id="Tkinter.Text.tag_unbind-method" name="Tkinter.Text.tag_unbind-method"><b>tag_unbind(tagName, sequence, funcid=None)</b></a> [<a href="#Tkinter.Text.tag_unbind-method">#</a>]</dt><dd>
+<p>The tag_unbind method.</p><dl><dt><i>tagName</i></dt><dd>
+</dd>
+<dt><i>sequence</i></dt><dd>
+</dd>
+<dt><i>funcid</i></dt><dd>
+</dd>
+</dl><br />
+</dd>
+<dt><a id="Tkinter.Text.window_cget-method" name="Tkinter.Text.window_cget-method"><b>window_cget(index, option)</b></a> [<a href="#Tkinter.Text.window_cget-method">#</a>]</dt><dd>
+<p>Returns the current value of the given window option. If
+there&#8217;s no window on the given position, this method raises
+a <b>TclError</b> exception.
+
+</p><dl><dt><i>index</i></dt><dd>
+</dd>
+<dt><i>option</i></dt><dd>
+</dd>
+</dl><br />
+</dd>
+<dt><a id="Tkinter.Text.window_config-method" name="Tkinter.Text.window_config-method"><b>window_config(index, **options)</b></a> [<a href="#Tkinter.Text.window_config-method">#</a>]</dt><dd>
+<p>Modifies one or more window options. If there&#8217;s no window on
+the given position, this method raises a <b>TclError</b>
+exception.
+
+</p><dl><dt><i>index</i></dt><dd>
+</dd>
+<dt><i>**options</i></dt><dd>
+</dd>
+<dt><i>align=</i></dt><dd>
+</dd>
+<dt><i>create=</i></dt><dd>
+</dd>
+<dt><i>padx=</i></dt><dd>
+</dd>
+<dt><i>pady=</i></dt><dd>
+</dd>
+<dt><i>stretch=</i></dt><dd>
+</dd>
+<dt><i>window=</i></dt><dd>
+Window object.</dd>
+</dl><br />
+</dd>
+<dt><a id="Tkinter.Text.window_configure-method" name="Tkinter.Text.window_configure-method"><b>window_configure(index, cnf=None, **kw)</b></a> [<a href="#Tkinter.Text.window_configure-method">#</a>]</dt><dd>
+<p>Same as <a class="link" href="#text.Text.window_config-method"><b>window_config</b></a>.
+</p></dd>
+<dt><a id="Tkinter.Text.window_create-method" name="Tkinter.Text.window_create-method"><b>window_create(index, **options)</b></a> [<a href="#Tkinter.Text.window_create-method">#</a>]</dt><dd>
+<p>Inserts a widget at the given position. You can either create
+the widget (which should be a child of the text widget itself)
+first, and insert it using the <b>window</b> option, or provide
+a <b>create</b> callback which is called when the window is first
+displayed.
+
+</p><dl><dt><i>index</i></dt><dd>
+Index specifier.</dd>
+<dt><i>**options</i></dt><dd>
+Window options.  See window_config for a
+   complete list.</dd>
+</dl><br />
+</dd>
+<dt><a id="Tkinter.Text.window_names-method" name="Tkinter.Text.window_names-method"><b>window_names()</b></a> [<a href="#Tkinter.Text.window_names-method">#</a>]</dt><dd>
+<p>Returns a tuple containing all windows embedded in the text
+widget.  In 1.5.2 and earlier, this method returns the
+names of the widgets, rather than the widget instances.
+</p><p>
+Here&#8217;s how to convert the names to a list of widget instances
+in a portable fashion:
+<pre class="python">
+windows = text.window_names()
+<span class="pykeyword">try</span>:
+    windows = map(text.nametowidget, windows)
+<span class="pykeyword">except</span> TclError:
+    <span class="pykeyword">pass</span></pre></p><dl><dt>Returns:</dt><dd>
+A list of window names.</dd>
+</dl><br />
+</dd>
+<dt><a id="Tkinter.Text.xview-method" name="Tkinter.Text.xview-method"><b>xview(*what)</b></a> [<a href="#Tkinter.Text.xview-method">#</a>]</dt><dd>
+<p>The xview method.</p><dl><dt><i>*what</i></dt><dd>
+</dd>
+</dl><br />
+</dd>
+<dt><a id="Tkinter.Text.xview_moveto-method" name="Tkinter.Text.xview_moveto-method"><b>xview_moveto(fraction)</b></a> [<a href="#Tkinter.Text.xview_moveto-method">#</a>]</dt><dd>
+<p>The xview_moveto method.</p><dl><dt><i>fraction</i></dt><dd>
+</dd>
+</dl><br />
+</dd>
+<dt><a id="Tkinter.Text.xview_scroll-method" name="Tkinter.Text.xview_scroll-method"><b>xview_scroll(number, what)</b></a> [<a href="#Tkinter.Text.xview_scroll-method">#</a>]</dt><dd>
+<p>The xview_scroll method.</p><dl><dt><i>number</i></dt><dd>
+</dd>
+<dt><i>what</i></dt><dd>
+</dd>
+</dl><br />
+</dd>
+<dt><a id="Tkinter.Text.yview-method" name="Tkinter.Text.yview-method"><b>yview(*what)</b></a> [<a href="#Tkinter.Text.yview-method">#</a>]</dt><dd>
+<p>The yview method.</p><dl><dt><i>*what</i></dt><dd>
+</dd>
+</dl><br />
+</dd>
+<dt><a id="Tkinter.Text.yview_moveto-method" name="Tkinter.Text.yview_moveto-method"><b>yview_moveto(fraction)</b></a> [<a href="#Tkinter.Text.yview_moveto-method">#</a>]</dt><dd>
+<p>The yview_moveto method.</p><dl><dt><i>fraction</i></dt><dd>
+</dd>
+</dl><br />
+</dd>
+<dt><a id="Tkinter.Text.yview_pickplace-method" name="Tkinter.Text.yview_pickplace-method"><b>yview_pickplace(*what)</b></a> [<a href="#Tkinter.Text.yview_pickplace-method">#</a>]</dt><dd>
+<p>The yview_pickplace method.</p><dl><dt><i>*what</i></dt><dd>
+</dd>
+</dl><br />
+</dd>
+<dt><a id="Tkinter.Text.yview_scroll-method" name="Tkinter.Text.yview_scroll-method"><b>yview_scroll(number, what)</b></a> [<a href="#Tkinter.Text.yview_scroll-method">#</a>]</dt><dd>
+<p>The yview_scroll method.</p><dl><dt><i>number</i></dt><dd>
+</dd>
+<dt><i>what</i></dt><dd>
+</dd>
+</dl><br />
+</dd>
+</dl></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to tkinterbook index page.">::: tkinterbook :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

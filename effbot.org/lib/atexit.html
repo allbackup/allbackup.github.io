@@ -1,0 +1,106 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>atexit</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-atexit.html'>original</a> :::
+<a href='atexit.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>atexit&#8212;Exit handlers</h1>
+
+<div class="toc"><dl><dt>On this page:</dt><dd><a href="#atexit-example">atexit Example</a></dd></dl></div><p>New in version 2.0.</p>
+
+<p>The <code>atexit</code> module defines
+a single function to register cleanup functions. Functions thus
+registered are automatically executed upon normal interpreter
+termination.</p>
+
+<p>Note: the functions registered via this module are not called
+when the program is killed by a signal, when a Python fatal
+internal error is detected, or when <code>os._exit</code> is called.</p>
+
+<p>This is an alternate interface to the functionality provided by
+the <code>sys.exitfunc</code> variable.</p>
+
+<p>Note: This module is unlikely to work correctly when used with
+other code that sets <code>sys.exitfunc</code>. In particular,
+other core Python modules are free to use <code>atexit</code> without the programmer's knowledge.
+Authors who use <code>sys.exitfunc</code> should convert their code
+to use <code>atexit</code> instead. The
+simplest way to convert code that sets <code>sys.exitfunc</code> is
+to import <code>atexit</code> and
+register the function that had been bound to <code>
+sys.exitfunc</code>.</p>
+</div>
+<dl><dt class="function" id="register"><b>register(func[, *args[, **kargs]])</b> <tt class="nav"><a class="nav" href="atexit.register" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Register <var>func</var> as a function to be executed at
+termination. Any optional arguments that are to be passed to <var>
+func</var> must be passed as arguments to <a class="link" href="#register"><code>register</code></a>.</p>
+
+<p>At normal program termination (for instance, if <code>sys.exit</code> is called or the main module's
+execution completes), all functions registered are called in last
+in, first out order. The assumption is that lower level modules
+will normally be imported before higher level modules and thus must
+be cleaned up later.</p>
+
+<p>If an exception is raised during execution of the exit handlers,
+a traceback is printed (unless <code>exceptions.SystemExit</code> is
+raised) and the exception information is saved. After all exit
+handlers have had a chance to run the last exception to be raised
+is re-raised.</p>
+</dd>
+</dl><div class="text"><span class="mark">@see</span> <code>Module readline</code> Useful example of atexit
+to read and write readline history files. 
+
+<h2 id="atexit-example">atexit Example <a class="nav" href="#atexit-example">#</a></h2>
+
+<p>The following simple example demonstrates how a module can
+initialize a counter from a file when it is imported and save the
+counter's updated value automatically when the program terminates
+without relying on the application making an explicit call into
+this module at termination.</p>
+
+<pre>
+try:
+    _count = int(open("/tmp/counter").read())
+except IOError:
+    _count = 0
+
+def incrcounter(n):
+    global _count
+    _count = _count + n
+
+def savecounter():
+    open("/tmp/counter", "w").write("%d" % _count)
+
+import atexit
+atexit.register(savecounter)
+</pre>
+
+<p>Positional and keyword arguments may also be passed to <a class="link" href="#register"><code>register</code></a> to be passed along
+to the registered function when it is called:</p>
+
+<pre>
+def goodbye(name, adjective):
+    print 'Goodbye, %s, it was %s to meet you.' % (name, adjective)
+
+import atexit
+atexit.register(goodbye, 'Donny', 'nice')
+
+# or:
+atexit.register(goodbye, adjective='nice', name='Donny')
+</pre>
+</div>
+</div></body></html>

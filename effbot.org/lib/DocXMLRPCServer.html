@@ -1,0 +1,121 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>DocXMLRPCServer</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-DocXMLRPCServer.html'>original</a> :::
+<a href='DocXMLRPCServer.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>DocXMLRPCServer&#8212;Self-documenting XML-RPC server</h1>
+
+<div class="toc"><dl><dt>On this page:</dt><dd><a href="#docxmlrpcserver-objects">DocXMLRPCServer Objects</a></dd><dd><a href="#doccgixmlrpcrequesthandler">DocCGIXMLRPCRequestHandler</a></dd></dl></div><p>New in version 2.3.</p>
+
+<p>The <a class="link" href="#DocXMLRPCServer"><code>
+DocXMLRPCServer</code></a> module extends the classes found in <code>SimpleXMLRPCServer</code>
+to serve HTML documentation in response to HTTP GET requests.
+Servers can either be free standing, using <a class="link" href="#DocXMLRPCServer"><code>DocXMLRPCServer</code></a>, or embedded in a
+CGI environment, using <a class="link" href="#DocCGIXMLRPCRequestHandler"><code>
+DocCGIXMLRPCRequestHandler</code></a>.</p>
+</div>
+<dl><dt class="class" id="DocXMLRPCServer"><b>class DocXMLRPCServer(addr[, requestHandler[,
+logRequests]])</b> <tt class="nav"><a class="nav" href="DocXMLRPCServer.DocXMLRPCServer" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>Create a new server instance. All parameters have the same
+meaning as for <code>
+SimpleXMLRPCServer.SimpleXMLRPCServer</code>; <var>
+requestHandler</var> defaults to <a class="link" href="#DocXMLRPCRequestHandler"><code>
+DocXMLRPCRequestHandler</code></a>.</p>
+</dd>
+<dt class="class" id="DocCGIXMLRPCRequestHandler"><b>class DocCGIXMLRPCRequestHandler()</b> <tt class="nav"><a class="nav" href="DocXMLRPCServer.DocCGIXMLRPCRequestHandler" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>Create a new instance to handle XML-RPC requests in a CGI
+environment.</p>
+</dd>
+<dt class="class" id="DocXMLRPCRequestHandler"><b>class DocXMLRPCRequestHandler()</b> <tt class="nav"><a class="nav" href="DocXMLRPCServer.DocXMLRPCRequestHandler" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>Create a new request handler instance. This request handler
+supports XML-RPC POST requests, documentation GET requests, and
+modifies logging so that the <var>logRequests</var> parameter to
+the <a class="link" href="#DocXMLRPCServer"><code>DocXMLRPCServer</code></a>
+constructor parameter is honored.</p>
+</dd>
+</dl><div class="text">
+<h2 id="docxmlrpcserver-objects">DocXMLRPCServer Objects <a class="nav" href="#docxmlrpcserver-objects">#</a></h2>
+
+<p>The <a class="link" href="#DocXMLRPCServer"><code>
+DocXMLRPCServer</code></a> class is derived from <code>
+SimpleXMLRPCServer.SimpleXMLRPCServer</code> and provides a means of
+creating self-documenting, stand alone XML-RPC servers. HTTP POST
+requests are handled as XML-RPC method calls. HTTP GET requests are
+handled by generating pydoc-style HTML documentation. This allows a
+server to provide its own web-based documentation.</p>
+</div>
+<dl><dt class="method"><b>
+DocXMLRPCServer.set_server_title(server_title)</b> <tt class="nav"><a class="nav" href="DocXMLRPCServer." title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Set the title used in the generated HTML documentation. This
+title will be used inside the HTML "title" element.</p>
+</dd>
+<dt class="method" id="DocXMLRPCServer.set_server_name"><b>set_server_name(server_name)</b> <tt class="nav"><a class="nav" href="DocXMLRPCServer.DocXMLRPCServer.set_server_name" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Set the name used in the generated HTML documentation. This name
+will appear at the top of the generated documentation inside a "h1"
+element.</p>
+</dd>
+<dt class="method"><b>
+DocXMLRPCServer.set_server_documentation(server_documentation)</b> <tt class="nav"><a class="nav" href="DocXMLRPCServer." title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Set the description used in the generated HTML documentation.
+This description will appear as a paragraph, below the server name,
+in the documentation.</p>
+</dd>
+</dl><div class="text">
+<h2 id="doccgixmlrpcrequesthandler">DocCGIXMLRPCRequestHandler <a class="nav" href="#doccgixmlrpcrequesthandler">#</a></h2>
+
+<p>The <a class="link" href="#DocCGIXMLRPCRequestHandler"><code>
+DocCGIXMLRPCRequestHandler</code></a> class is derived from <code>
+SimpleXMLRPCServer.CGIXMLRPCRequestHandler</code> and provides a means
+of creating self-documenting, XML-RPC CGI scripts. HTTP POST
+requests are handled as XML-RPC method calls. HTTP GET requests are
+handled by generating pydoc-style HTML documentation. This allows a
+server to provide its own web-based documentation.</p>
+</div>
+<dl><dt class="method"><b>
+DocXMLRPCServer.set_server_title(server_title)</b> <tt class="nav"><a class="nav" href="DocXMLRPCServer." title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Set the title used in the generated HTML documentation. This
+title will be used inside the HTML "title" element.</p>
+</dd>
+<dt class="method"><b>set_server_name(server_name)</b> <tt class="nav"><a class="nav" href="DocXMLRPCServer.DocXMLRPCServer.set_server_name" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Set the name used in the generated HTML documentation. This name
+will appear at the top of the generated documentation inside a "h1"
+element.</p>
+</dd>
+<dt class="method"><b>
+DocXMLRPCServer.set_server_documentation(server_documentation)</b> <tt class="nav"><a class="nav" href="DocXMLRPCServer." title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Set the description used in the generated HTML documentation.
+This description will appear as a paragraph, below the server name,
+in the documentation.</p>
+</dd>
+</dl></div></body></html>

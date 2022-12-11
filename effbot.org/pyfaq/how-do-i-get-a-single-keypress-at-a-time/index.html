@@ -1,0 +1,17 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>How do I get a single keypress at a&nbsp;time?</title> <script type="text/javascript">effbot_page_id=803;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> <!--
+<p style='color: #8f8f8f; background: #fff5bf; padding: 5px 10px;'> <b>2008-07-15:</b> Selected articles
+
+now have experimental "comment" links in the left column and at the bottom.
+You're welcome to use them for commenting and voting on articles.
+For a bit more on this, see <a
+href="http://effbot.slinkset.com/links/Welcome_to_discuss_effbot_org">this
+page</a>. /F
+</p>
+--> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <h1 class="maintitle">How do I get a single keypress at a&nbsp;time?</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p>For Windows, see:</p><blockquote><p><a href="how-do-i-check-for-a-keypress-without-blocking.htm"><strong>how-do-i-check-for-a-keypress-without-blocking</strong></a></p></blockquote><p>For Unix variants: There are several solutions. It&#8217;s straightforward to do this using <a href="/pyref/curses.htm"><strong>curses</strong></a>, but curses is a fairly large module to learn. Here&#8217;s a solution without curses:</p><pre class="python"><span class="pykeyword">import</span> termios, fcntl, sys, os, select
+
+fd = sys.stdin.fileno()
+
+oldterm = termios.tcgetattr(fd)
+newat

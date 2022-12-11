@@ -1,0 +1,32 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>property</title> <script type="text/javascript">effbot_page_id=1523;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <h1 class="maintitle">property</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p><strong>property</strong>([fget[, fset[, fdel[, doc]]]]) =&gt; descriptor</p><p>Returns a property descriptor for new-style classes (classes that derive
+from <a href="object.htm"><strong>object</strong></a>).</p><p><em>fget</em> is a function for getting an attribute value, likewise <em>fset</em> is
+a function for setting, and <em>fdel</em> a function for deleting, an
+attribute. Typical use is to define a managed attribute x:</p><pre class="python"><span class="pykeyword">class</span> <span class="pyclass">C</span>(object):
+    <span class="pykeyword">def</span> <span class="pyfunction">__init__</span>(self): self.__x = None
+    <span class="pykeyword">def</span> <span class="pyfunction">getx</span>(self): <span class="pykeyword">return</span> self.__x
+    <span class="pykeyword">def</span> <span class="pyfunction">setx</span>(self, value): self.__x = value
+    <span class="pykeyword">def</span> <span class="pyfunction">delx</span>(self): <span class="pykeyword">del</span> self.__x
+    x = property(getx, setx, delx, <span class="pystring">"I'm the 'x' property."</span>)
+
+o = C()
+value = o.x <span class="pycomment"># calls getx</span>
+o.x = value <span class="pycomment"># calls setx</span>
+<span class="pykeyword">del</span> o.x <span class="pycomment"># calls delx</span></pre><p>New in version 2.2.</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><div class='comment'>
+<p><b>Comment:</b></p>
+<p>
+could mention the @property shortcut for readonly attributes here:
+
+    class C(object):
+        @property
+        def x(self):
+            return value
+
+turns the "x" method into a "getter" for a read-only attribute with the same name.
+
+Note that this syntax also works for old-style classes, but the resulting attribute isn't read-only.  If you assign to the attribute, you'll overwrite the property descriptor.</p>
+<p>Posted by <b class='author'><a href='http://pyref.infogami.com/property/_comments/8vm4'>infogami</a></b></p>
+</div>
+</div> <!-- yui-g --></div> <!-- content --> </div> <!-- yui-b --> </div> <!-- yui-main --> <div class="yui-b"> <div id='menu'> <ul> <li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li> <li><b><a href="." title="Go to pyref index page.">::: pyref :::</a></b></li> </ul> </div> <!-- menu --> </div> <!-- yui-b --> </div> <!-- bd --> <div id="ft"> <!-- footer --> <p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;"></a>
+this page was rendered by a <a href="http://www.djangoproject.com/">django</a> application in 0.02s 2011-06-21 23:11:05.619299.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p> </div> <!-- ft --> </div> <!-- doc --> <script src="/media/js/effbot-min.js" type="text/javascript"> </script> </body> </html>

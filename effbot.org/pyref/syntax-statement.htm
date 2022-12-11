@@ -1,0 +1,39 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>Syntax:&nbsp;Statements</title> <script type="text/javascript">effbot_page_id=1632;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <h1 class="maintitle">Syntax:&nbsp;Statements</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><h2 id="simple-statements">Simple Statements&#160;<a class="nav" href="#simple-statements" title="bookmark!">#</a></h2><p>Simple statements are comprised within a single logical line. Several
+simple statements may occur on a single line separated by
+semicolons. The syntax for simple statements is:</p><ul><li><a href="expression-statements.htm"><strong>expression-statements</strong></a></li><li><a href="assert.htm"><strong>assert</strong></a></li><li><a href="assignments.htm"><strong>assignments</strong></a></li><li><a href="pass.htm"><strong>pass</strong></a></li><li><a href="del.htm"><strong>del</strong></a></li><li><a href="print.htm"><strong>print</strong></a></li><li><a href="return.htm"><strong>return</strong></a></li><li><a href="yield.htm"><strong>yield</strong></a></li><li><a href="raise.htm"><strong>raise</strong></a></li><li><a href="break.htm"><strong>break</strong></a></li><li><a href="continue.htm"><strong>continue</strong></a></li><li><a href="import.htm"><strong>import</strong></a></li><li><a href="global.htm"><strong>global</strong></a></li><li><a href="exec.htm"><strong>exec</strong></a></li></ul><h2 id="compound-statements">Compound Statements&#160;<a class="nav" href="#compound-statements" title="bookmark!">#</a></h2><p>Compound statements contain (groups of) other statements; they affect
+or control the execution of those other statements in some way. In
+general, compound statements span multiple lines, although in simple
+incarnations a whole compound statement may be contained in one line.</p><p>The <a href="if.htm"><strong>if</strong></a>, <a href="while.htm"><strong>while</strong></a> and <a href="for.htm"><strong>for</strong></a> statements implement traditional control flow
+constructs. <a href="try.htm"><strong>try</strong></a> and <a href="with.htm"><strong>with</strong></a> specifies exception handlers and/or cleanup code
+for a group of statements.  Function and class definitions (<a href="def.htm"><strong>def</strong></a> and <a href="class.htm"><strong>class</strong></a>)
+are also syntactically compound statements.</p><p>Compound statements consist of one or more <em>clauses</em>. A clause
+consists of a header and a <em>suite</em>. The clause headers of a particular
+compound statement are all at the same indentation level. Each clause
+header begins with a uniquely identifying keyword and ends with a
+colon. A suite is a group of statements controlled by a clause.  The
+suite is usually written as one or more indented statements on subsequent
+lines.</p><blockquote><p><em>keyword</em> <em>expression</em> <strong>:</strong> <br />
+  &#160;&#160;&#160;&#160;<em>statement</em> <br />
+  &#160;&#160;&#160;&#160;<em>statement</em> &#8230;</p></blockquote><p>A suite can also be one or more semicolon-separated simple statements
+on the same line as the header, following the header&#8217;s colon.</p><blockquote><p><em>keyword</em> <em>expression</em> <strong>:</strong> <em>statement</em> <strong>;</strong> <em>statement</em></p></blockquote><p>The latter form cannot contain nested compound statements; the following is
+illegal, mostly because it wouldn&#8217;t be clear to which if clause a
+following else clause would belong:</p><pre><code>if test1: if test2: print x
+</code></pre><p>Also note that the semicolon binds tighter than the colon in this
+context, so that in the following example, either all or none of the
+print statements are executed:</p><pre class="python"><span class="pykeyword">if</span> x &lt; y &lt; z: <span class="pykeyword">print</span> x; <span class="pykeyword">print</span> y; <span class="pykeyword">print</span> z</pre><ul><li><a href="if.htm"><strong>if</strong></a></li><li><a href="while.htm"><strong>while</strong></a></li><li><a href="for.htm"><strong>for</strong></a></li><li><a href="try.htm"><strong>try</strong></a></li><li><a href="with.htm"><strong>with</strong></a></li><li><a href="def.htm"><strong>def</strong></a></li><li><a href="class.htm"><strong>class</strong></a> </li></ul><p>Summarizing:</p><p>compound_stmt ::= [ if_stmt][1]
+<code>| [while\_stmt][2]</code>
+<code>| [ for\_stmt][3]</code>
+<code>| [ try\_stmt][4]</code>
+<code>| [ with\_stmt][5]</code>
+<code>| [funcdef][6]</code>
+<code>| [ classdef][7]</code>
+suite ::= [ stmt_list][8] NEWLINE | NEWLINE INDENT [statement][9]+ DEDENT
+statement ::= [ stmt_list][8] NEWLINE | [compound_stmt][10]
+stmt_list ::= [ simple_stmt][11] (&#8220;;&#8221; [simple_stmt][11])* [&#8220;;&#8221;]</p><p>Note that statements always end in a NEWLINE possibly followed by a
+DEDENT token.  Also note that optional continuation clauses always
+begin with a keyword that cannot start a statement, thus there are
+no ambiguities (the <q>dangling else</q> problem is solved in Python
+by requiring nested if statements to be indented).</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div> <!-- yui-g --></div> <!-- content --> </div> <!-- yui-b --> </div> <!-- yui-main --> <div class="yui-b"> <div id='menu'> <ul> <li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li> <li><b><a href="." title="Go to pyref index page.">::: pyref :::</a></b></li> </ul> <ul><li><b>::: contents</b></li></ul> <ul><li><ul><li><a href="#simple-statements">Simple Statements</a></li><li><a href="#compound-statements">Compound Statements</a></li></ul></li></ul> </div> <!-- menu --> </div> <!-- yui-b --> </div> <!-- bd --> <div id="ft"> <!-- footer --> <p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;"></a>
+this page was rendered by a <a href="http://www.djangoproject.com/">django</a> application in 0.02s 2011-06-21 20:58:14.271701.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p> </div> <!-- ft --> </div> <!-- doc --> <script src="/media/js/effbot-min.js" type="text/javascript"> </script> </body> </html>

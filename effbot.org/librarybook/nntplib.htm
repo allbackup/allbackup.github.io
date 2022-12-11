@@ -1,0 +1,136 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>The nntplib&nbsp;module</title></head><body data-page-id="595"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">The nntplib&nbsp;module</h1></div><div class="yui-ge"><div class="yui-u first"><p>This module provides a <i>Network News Transfer Protocol</i>
+(NNTP) client implementation.</p><h3 style="sect2">Listing messages</h3><p>Prior to reading messages from a news server, you have to
+connect to the server, and then select a newsgroup. The following
+script also downloads a complete list of all messages on the
+server, and extracts some more or less interesting statistics from
+that list:</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><div class="example wide">
+<b style="example">Example: Using the nntplib
+module to list messages</b>
+<pre class="wide">
+# File: <a href="nntplib/nntplib-example-1.py">nntplib-example-1.py</a>
+
+import nntplib
+import string
+
+SERVER = "news.spam.egg"
+GROUP  = "comp.lang.python" 
+AUTHOR = "fredrik@pythonware.com" # <i>eff-bots human alias</i>
+
+# <i>connect to server</i>
+server = nntplib.NNTP(SERVER)
+
+# <i>choose a newsgroup</i>
+resp, count, first, last, name = server.group(GROUP)
+print "count", "=&gt;", count
+print "range", "=&gt;", first, last
+
+# <i>list all items on the server</i>
+resp, items = server.xover(first, last)
+
+# <i>extract some statistics</i>
+authors = {}
+subjects = {}
+for id, subject, author, date, message_id, references, size, lines in items:
+    authors[author] = None
+    if subject[:4] == "Re: ":
+        subject = subject[4:]
+    subjects[subject] = None
+    if string.find(author, AUTHOR) &gt;= 0:
+        print id, subject
+    
+print "authors", "=&gt;", len(authors)
+print "subjects", "=&gt;", len(subjects)
+</pre><pre class="computeroutput wide" moreinfo="NONE">
+count =&gt; 607
+range =&gt; 57179 57971
+57474 Three decades of Python!
+...
+57477 More Python books coming...
+authors =&gt; 257
+subjects =&gt; 200
+</pre></div></div><div class="yui-ge"><div class="yui-u first"><h3 style="sect2">Downloading messages</h3><p>Downloading a message is easy. Just call the <b>article</b>
+method, as shown in this script:</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><div class="example wide">
+<b style="example">Example: Using the nntplib
+module to download messages</b>
+<pre class="wide">
+# File: <a href="nntplib/nntplib-example-2.py">nntplib-example-2.py</a>
+
+import nntplib
+import string
+
+SERVER = "news.spam.egg"
+GROUP  = "comp.lang.python" 
+KEYWORD = "tkinter"
+
+# <i>connect to server</i>
+server = nntplib.NNTP(SERVER)
+
+resp, count, first, last, name = server.group(GROUP)
+resp, items = server.xover(first, last)
+for id, subject, author, date, message_id, references, size, lines in items:
+    if string.find(string.lower(subject), KEYWORD) &gt;= 0:
+        resp, id, message_id, text = server.article(id)
+        print author
+        print subject
+        print len(text), "lines in article"
+
+</pre><pre class="computeroutput wide" moreinfo="NONE">
+"Fredrik Lundh" &lt;fredrik@pythonware.com&gt;
+Re: Programming Tkinter (In Python)
+110 lines in article
+...
+</pre></div></div><div class="yui-ge"><div class="yui-u first"><p>To further manipulate the messages, you can wrap it up in a
+<b>Message</b> object (using the <b>rfc822</b> module):</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><div class="example wide">
+<b style="example">Example: Using the nntplib
+and rfc822 modules to process messages</b>
+<pre class="wide">
+# File: <a href="nntplib/nntplib-example-3.py">nntplib-example-3.py</a>
+
+import nntplib
+import string, random
+import StringIO, rfc822
+
+SERVER = "news.spam.egg"
+GROUP  = "comp.lang.python"
+
+# <i>connect to server</i>
+server = nntplib.NNTP(SERVER)
+
+resp, count, first, last, name = server.group(GROUP)
+for i in range(10):
+    try:
+        id = random.randint(int(first), int(last))
+        resp, id, message_id, text = server.article(str(id))
+    except (nntplib.error_temp, nntplib.error_perm):
+        pass # <i>no such message (maybe it was deleted?)</i>
+    else:
+        break # <i>found a message!</i>
+else:
+    raise SystemExit
+
+text = string.join(text, "\n")
+file = StringIO.StringIO(text)
+
+message = rfc822.Message(file)
+
+for k, v in message.items():
+    print k, "=", v
+
+print message.fp.read()
+</pre><pre class="computeroutput wide" moreinfo="NONE">
+mime-version = 1.0
+content-type = text/plain; charset="iso-8859-1"
+message-id = &lt;008501bf1417$1cf90b70$f29b12c2@sausage.spam.egg&gt;
+lines = 22
+...
+from = "Fredrik Lundh" &lt;fredrik@pythonware.com&gt;
+nntp-posting-host = parrot.python.org
+subject = ANN: (the eff-bot guide to) The Standard Python Library
+...
+&lt;/F&gt;
+</pre></div></div><div class="yui-ge"><div class="yui-u first"><p>Once you&#8217;ve gotten this far, you can use modules like
+<a href="htmllib.htm"><b>htmllib</b></a>,
+<a href="uu.htm"><b>uu</b></a>, and
+<a href="base64.htm"><b>base64</b></a> to further process the messages.</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to librarybook index page.">::: librarybook :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

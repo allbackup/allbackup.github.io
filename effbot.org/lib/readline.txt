@@ -1,0 +1,211 @@
+
+@@module readline
+
+<h1>readline&#8212;GNU readline interface</h1>
+
+<p>Availability: Unix.
+
+<p>The {@link readline} module defines a number of functions used either
+directly or from the {@link rlcompleter} module to facilitate completion
+and history file read and write from the Python interpreter.
+
+<p>The {@link readline} module defines the following functions:
+
+@@function parse_and_bind(string)
+
+<p>Parse and execute single line of a readline init file.
+
+@@function get_line_buffer()
+
+<p>Return the current contents of the line buffer.
+
+@@function insert_text(string)
+
+<p>Insert text into the command line.
+
+@@function read_init_file([filename])
+
+<p>Parse a readline initialization file. The default filename is the
+last filename used.
+
+@@function read_history_file([filename])
+
+<p>Load a readline history file. The default filename is ~/.history.
+
+@@function write_history_file([filename])
+
+<p>Save a readline history file. The default filename is ~/.history.
+
+@@function clear_history()
+
+<p>Clear the current history. (Note: this function is not available if
+the installed version of GNU readline doesn't support it.)
+<blockquote>
+@since New in version 2.4. <br />
+</blockquote>
+
+@@function get_history_length()
+
+<p>Return the desired length of the history file. Negative values imply
+unlimited history file size.
+
+@@function set_history_length(length)
+
+<p>Set the number of lines to save in the history file. {@link
+write_history_file} uses this value to truncate the history file when
+saving. Negative values imply unlimited history file size.
+
+@@function get_current_history_length()
+
+<p>Return the number of lines currently in the history. (This is
+different from {@link get_history_length}, which returns the maximum
+number of lines that will be written to a history file.)
+<blockquote>
+@since New in version
+2.3. <br />
+</blockquote>
+
+@@function get_history_item(index)
+
+<p>Return the current contents of history item at {@var index}.
+<blockquote>
+@since New in version
+2.3. <br />
+</blockquote>
+
+@@function remove_history_item(pos)
+
+<p>Remove history item specified by its position from the history.
+<blockquote>
+@since New in version 2.4. <br />
+</blockquote>
+
+@@function replace_history_item(pos, line)
+
+<p>Replace history item specified by its position with the given line.
+<blockquote>
+@since New in version 2.4. <br />
+</blockquote>
+
+@@function redisplay()
+
+<p>Change what's displayed on the screen to reflect the current contents
+of the line buffer.
+<blockquote>
+@since New in
+version 2.3. <br />
+</blockquote>
+
+@@function set_startup_hook([function])
+
+<p>Set or remove the startup_hook function. If {@var function} is
+specified, it will be used as the new startup_hook function; if omitted
+or {@link None}, any hook function already installed is removed. The
+startup_hook function is called with no arguments just before readline
+prints the first prompt.
+
+@@function set_pre_input_hook([function])
+
+<p>Set or remove the pre_input_hook function. If {@var function} is
+specified, it will be used as the new pre_input_hook function; if
+omitted or {@link None}, any hook function already installed is removed.
+The pre_input_hook function is called with no arguments after the first
+prompt has been printed and just before readline starts reading input
+characters.
+
+@@function set_completer([function])
+
+<p>Set or remove the completer function. If {@var function} is
+specified, it will be used as the new completer function; if omitted or
+{@link None}, any completer function already installed is removed. The
+completer function is called as {@code }{@var function}({@var text},
+{@var state}), for {@var state} in {@code 0}, {@code 1}, {@code 2}, ...,
+until it returns a non-string value. It should return the next possible
+completion starting with {@var text}.
+
+@@function get_completer()
+
+<p>Get the completer function, or {@link None} if no completer function
+has been set.
+<blockquote>
+@since New in
+version 2.3. <br />
+</blockquote>
+
+@@function get_begidx()
+
+<p>Get the beginning index of the readline tab-completion scope.
+
+@@function get_endidx()
+
+<p>Get the ending index of the readline tab-completion scope.
+
+@@function set_completer_delims(string)
+
+<p>Set the readline word delimiters for tab-completion.
+
+@@function get_completer_delims()
+
+<p>Get the readline word delimiters for tab-completion.
+
+@@function add_history(line)
+
+<p>Append a line to the history buffer, as if it was the last line
+typed.
+
+@@text 
+
+@see 
+{@link rlcompleter Module rlcompleter}
+
+Completion of Python identifiers at the interactive prompt.
+
+<h2>Example</h2>
+
+<p>The following example demonstrates how to use the {@link readline}
+module's history reading and writing functions to automatically load and
+save a history file named .pyhist from the user's home directory. The
+code below would normally be executed automatically during interactive
+sessions from the user's PYTHONSTARTUP file.
+
+<pre>
+import os
+histfile = os.path.join(os.environ["HOME"], ".pyhist")
+try:
+    readline.read_history_file(histfile)
+except IOError:
+    pass
+import atexit
+atexit.register(readline.write_history_file, histfile)
+del os, histfile
+</pre>
+
+
+<p>The following example extends the {@link code.InteractiveConsole}
+class to support history save/restore.
+
+<pre>
+import code
+import readline
+import atexit
+import os
+
+class HistoryConsole(code.InteractiveConsole):
+    def __init__(self, locals=None, filename="&lt;console&gt;",
+                 histfile=os.path.expanduser("~/.console-history")):
+        code.InteractiveConsole.__init__(self)
+        self.init_history(histfile)
+
+    def init_history(self, histfile):
+        readline.parse_and_bind("tab: complete")
+        if hasattr(readline, "read_history_file"):
+            try:
+                readline.read_history_file(histfile)
+            except IOError:
+                pass
+            atexit.register(self.save_history, histfile)
+
+    def save_history(self, histfile):
+        readline.write_history_file(histfile)
+</pre>
+

@@ -1,0 +1,712 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>tarfile</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-tarfile.html'>original</a> :::
+<a href='tarfile.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>tarfile&#8212;Read and write tar archive files</h1>
+
+<div class="toc"><dl><dt>On this page:</dt><dd><a href="#tarfile-objects">TarFile Objects</a></dd><dd><a href="#tarinfo-objects">TarInfo Objects</a></dd><dd><a href="#examples">Examples</a></dd></dl></div><p>New in version 2.3.</p>
+
+<p>The <code>tarfile</code> module makes
+it possible to read and create tar archives. Some facts and
+figures:</p>
+
+<ul>
+<li>
+<p>reads and writes <code>gzip</code> and
+<code>bzip2</code> compressed
+archives.</p>
+</li>
+
+<li>
+<p>creates POSIX 1003.1-1990 compliant or GNU tar compatible
+archives.</p>
+</li>
+
+<li>
+<p>reads GNU tar extensions <em>longname</em>, <em>longlink</em>
+and <em>sparse</em>.</p>
+</li>
+
+<li>
+<p>stores pathnames of unlimited length using GNU tar
+extensions.</p>
+</li>
+
+<li>
+<p>handles directories, regular files, hardlinks, symbolic links,
+fifos, character devices and block devices and is able to acquire
+and restore file information like timestamp, access permissions and
+owner.</p>
+</li>
+
+<li>
+<p>can handle tape devices.</p>
+</li>
+</ul>
+</div>
+<dl><dt class="function" id="open"><b>open([name[, mode [, fileobj[, bufsize]]]])</b> <tt class="nav"><a class="nav" href="tarfile.open" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return a <a class="link" href="#TarFile"><code>TarFile</code></a> object
+for the pathname <var>name</var>. For detailed information on <a class="link" href="#TarFile"><code>TarFile</code></a> objects, see <em>
+TarFile Objects</em> (section <code>
+tarfile-objects.html#tarfile-objects</code>).</p>
+
+<p><var>mode</var> has to be a string of the form <code>
+'filemode[:compression]'</code>, it defaults to <code>'r'</code>.
+Here is a full list of mode combinations:</p>
+
+<table border="1">
+<tr>
+<th>
+<p>mode</p>
+</th>
+<th>
+<p>action</p>
+</th>
+</tr>
+
+<tr>
+<td>
+<p><code>'r'</code></p>
+</td>
+<td>
+<p>Open for reading with transparent compression (recommended).</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>'r:'</code></p>
+</td>
+<td>
+<p>Open for reading exclusively without compression.</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>'r:gz'</code></p>
+</td>
+<td>
+<p>Open for reading with gzip compression.</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>'r:bz2'</code></p>
+</td>
+<td>
+<p>Open for reading with bzip2 compression.</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>'a' or 'a:'</code></p>
+</td>
+<td>
+<p>Open for appending with no compression.</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>'w' or 'w:'</code></p>
+</td>
+<td>
+<p>Open for uncompressed writing.</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>'w:gz'</code></p>
+</td>
+<td>
+<p>Open for gzip compressed writing.</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>'w:bz2'</code></p>
+</td>
+<td>
+<p>Open for bzip2 compressed writing.</p>
+</td>
+</tr>
+</table>
+
+<br />
+<br />
+ 
+
+<p>Note that <code>'a:gz'</code> or <code>'a:bz2'</code> is not
+possible. If <var>mode</var> is not suitable to open a certain
+(compressed) file for reading, <a class="link" href="#ReadError"><code>ReadError</code></a> is raised. Use <var>mode</var>
+<code>'r'</code> to avoid this. If a compression method is not
+supported, <a class="link" href="#CompressionError"><code>
+CompressionError</code></a> is raised.</p>
+
+<p>If <var>fileobj</var> is specified, it is used as an alternative
+to a file object opened for <var>name</var>.</p>
+
+<p>For special purposes, there is a second format for <var>
+mode</var>: <code>'filemode|[compression]'</code>. <a class="link" href="#open"><code>open</code></a> will return a <a class="link" href="#TarFile"><code>TarFile</code></a> object that processes its data as a
+stream of blocks. No random seeking will be done on the file. If
+given, <var>fileobj</var> may be any object that has a <code>read</code> or <code>write</code> method (depending on the <var>
+mode</var>). <var>bufsize</var> specifies the blocksize and
+defaults to <code>20 * 512</code> bytes. Use this variant in
+combination with e.g. <code>sys.stdin</code>, a socket file object
+or a tape device. However, such a <a class="link" href="#TarFile"><code>TarFile</code></a> object is limited in that it does
+not allow to be accessed randomly, see &#8220;Examples&#8221;
+(section <code>
+tar-examples.html#tar-examples</code>). The currently possible
+modes:</p>
+
+<table border="1">
+<tr>
+<th>
+<p>Mode</p>
+</th>
+<th>
+<p>Action</p>
+</th>
+</tr>
+
+<tr>
+<td>
+<p><code>'r|'</code></p>
+</td>
+<td>
+<p>Open a <em>stream</em> of uncompressed tar blocks for
+reading.</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>'r|gz'</code></p>
+</td>
+<td>
+<p>Open a gzip compressed <em>stream</em> for reading.</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>'r|bz2'</code></p>
+</td>
+<td>
+<p>Open a bzip2 compressed <em>stream</em> for reading.</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>'w|'</code></p>
+</td>
+<td>
+<p>Open an uncompressed <em>stream</em> for writing.</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>'w|gz'</code></p>
+</td>
+<td>
+<p>Open an gzip compressed <em>stream</em> for writing.</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>'w|bz2'</code></p>
+</td>
+<td>
+<p>Open an bzip2 compressed <em>stream</em> for writing.</p>
+</td>
+</tr>
+</table>
+
+<br />
+<br />
+</dd>
+<dt class="class" id="TarFile"><b>class TarFile</b> <tt class="nav"><a class="nav" href="tarfile.TarFile" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>Class for reading and writing tar archives. Do not use this
+class directly, better use <a class="link" href="#open"><code>
+open</code></a> instead. See &#8220;TarFile Objects&#8221; (section <code>
+tarfile-objects.html#tarfile-objects</code>).</p>
+</dd>
+<dt class="function" id="is_tarfile"><b>is_tarfile(name)</b> <tt class="nav"><a class="nav" href="tarfile.is_tarfile" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return <code>True</code> if <var>name</var> is a tar archive
+file, that the <code>tarfile</code>
+module can read.</p>
+</dd>
+<dt class="class" id="TarFileCompat"><b>class TarFileCompat(filename[, mode[,
+compression]])</b> <tt class="nav"><a class="nav" href="tarfile.TarFileCompat" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>Class for limited access to tar archives with a <code>zipfile</code>-like interface. Please consult the
+documentation of the <code>
+zipfile</code> module for more details. <var>compression</var> must be
+one of the following constants:</p>
+</dd>
+<dt class="attribute" id="TAR_PLAIN"><b>TAR_PLAIN</b> <tt class="nav"><a class="nav" href="tarfile.TAR_PLAIN" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>Constant for an uncompressed tar archive.</p>
+</dd>
+<dt class="attribute" id="TAR_GZIPPED"><b>TAR_GZIPPED</b> <tt class="nav"><a class="nav" href="tarfile.TAR_GZIPPED" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>Constant for a <code>gzip</code>
+compressed tar archive.</p>
+</dd>
+<dt class="exception" id="TarError"><b>exception TarError</b> <tt class="nav"><a class="nav" href="tarfile.TarError" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="exception">
+<p>Base class for all <code>
+tarfile</code> exceptions.</p>
+</dd>
+<dt class="exception" id="ReadError"><b>exception ReadError</b> <tt class="nav"><a class="nav" href="tarfile.ReadError" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="exception">
+<p>Is raised when a tar archive is opened, that either cannot be
+handled by the <code>tarfile</code>
+module or is somehow invalid.</p>
+</dd>
+<dt class="exception" id="CompressionError"><b>exception CompressionError</b> <tt class="nav"><a class="nav" href="tarfile.CompressionError" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="exception">
+<p>Is raised when a compression method is not supported or when the
+data cannot be decoded properly.</p>
+</dd>
+<dt class="exception" id="StreamError"><b>exception StreamError</b> <tt class="nav"><a class="nav" href="tarfile.StreamError" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="exception">
+<p>Is raised for the limitations that are typical for stream-like
+<a class="link" href="#TarFile"><code>TarFile</code></a> objects.</p>
+</dd>
+<dt class="exception" id="ExtractError"><b>exception ExtractError</b> <tt class="nav"><a class="nav" href="tarfile.ExtractError" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="exception">
+<p>Is raised for <em>non-fatal</em> errors when using <code>extract</code>, but only if <a class="link" href="#TarFile.errorlevel"><code>TarFile.errorlevel</code></a>
+<code>== 2</code>.</p>
+</dd>
+</dl><div class="text"><span class="mark">@see</span> <code>Module zipfile</code> Documentation of the zipfile
+standard module. <span class="mark">@see</span> <a class="link" href="http://www.gnu.org/software/tar/manual/html_chapter/tar_8.html#SEC134">
+GNU tar manual, Basic Tar Format</a> Documentation for tar archive
+files, including GNU tar extensions. 
+
+<h2 id="tarfile-objects">TarFile Objects <a class="nav" href="#tarfile-objects">#</a></h2>
+
+<p>The <a class="link" href="#TarFile"><code>TarFile</code></a> object
+provides an interface to a tar archive. A tar archive is a sequence
+of blocks. An archive member (a stored file) is made up of a header
+block followed by data blocks. It is possible, to store a file in a
+tar archive several times. Each archive member is represented by a
+<a class="link" href="#TarInfo"><code>TarInfo</code></a> object, see <em>
+TarInfo Objects</em> (section <code>
+tarinfo-objects.html#tarinfo-objects</code>) for details.</p>
+</div>
+<dl><dt class="class"><b>class TarFile([name [, mode[, fileobj]]])</b> <tt class="nav"><a class="nav" href="tarfile.TarFile" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>Open an <em>(uncompressed)</em> tar archive <var>name</var>.
+<var>mode</var> is either <code>'r'</code> to read from an existing
+archive, <code>'a'</code> to append data to an existing file or
+<code>'w'</code> to create a new file overwriting an existing one.
+<var>mode</var> defaults to <code>'r'</code>.</p>
+
+<p>If <var>fileobj</var> is given, it is used for reading or
+writing data. If it can be determined, <var>mode</var> is
+overridden by <var>fileobj</var>'s mode.</p>
+
+<p class="note"><b>Note:</b> <var>fileobj</var> is not closed, when
+<a class="link" href="#TarFile"><code>TarFile</code></a> is closed.</p>
+</dd>
+<dt class="method" id="TarFile.open"><b>open(...)</b> <tt class="nav"><a class="nav" href="tarfile.TarFile.open" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Alternative constructor. The <a class="link" href="#open"><code>
+open</code></a> function on module level is actually a shortcut to this
+classmethod. See section <code>
+tarfile.html#module-tarfile</code> for details.</p>
+</dd>
+<dt class="method" id="TarFile.getmember"><b>getmember(name)</b> <tt class="nav"><a class="nav" href="tarfile.TarFile.getmember" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return a <a class="link" href="#TarInfo"><code>TarInfo</code></a> object
+for member <var>name</var>. If <var>name</var> can not be found in
+the archive, <code>
+exceptions.KeyError</code> is raised.</p>
+
+<p class="note"><b>Note:</b> If a member occurs more than once in
+the archive, its last occurrence is assumed to be the most
+up-to-date version.</p>
+</dd>
+<dt class="method" id="TarFile.getmembers"><b>getmembers()</b> <tt class="nav"><a class="nav" href="tarfile.TarFile.getmembers" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return the members of the archive as a list of <a class="link" href="#TarInfo"><code>TarInfo</code></a> objects. The list has the same
+order as the members in the archive.</p>
+</dd>
+<dt class="method" id="TarFile.getnames"><b>getnames()</b> <tt class="nav"><a class="nav" href="tarfile.TarFile.getnames" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return the members as a list of their names. It has the same
+order as the list returned by <code>getmembers</code>.</p>
+</dd>
+<dt class="method" id="TarFile.list"><b>list(verbose=True)</b> <tt class="nav"><a class="nav" href="tarfile.TarFile.list" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Print a table of contents to <code>sys.stdout</code>. If <var>
+verbose</var> is <code>False</code>, only the names of the members
+are printed. If it is <code>True</code>, output similar to that of
+ls -l is produced.</p>
+</dd>
+<dt class="method" id="TarFile.next"><b>next()</b> <tt class="nav"><a class="nav" href="tarfile.TarFile.next" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return the next member of the archive as a <a class="link" href="#TarInfo"><code>TarInfo</code></a> object, when <a class="link" href="#TarFile"><code>TarFile</code></a> is opened for reading. Return <code>None</code> if there is no more
+available.</p>
+</dd>
+<dt class="method" id="TarFile.extract"><b>extract(member[, path])</b> <tt class="nav"><a class="nav" href="tarfile.TarFile.extract" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Extract a member from the archive to the current working
+directory, using its full name. Its file information is extracted
+as accurately as possible. <var>member</var> may be a filename or a
+<a class="link" href="#TarInfo"><code>TarInfo</code></a> object. You can
+specify a different directory using <var>path</var>.</p>
+</dd>
+<dt class="method" id="TarFile.extractfile"><b>extractfile(member)</b> <tt class="nav"><a class="nav" href="tarfile.TarFile.extractfile" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Extract a member from the archive as a file object. <var>
+member</var> may be a filename or a <a class="link" href="#TarInfo"><code>TarInfo</code></a> object. If <var>member</var> is a
+regular file, a file-like object is returned. If <var>member</var>
+is a link, a file-like object is constructed from the link's
+target. If <var>member</var> is none of the above, <code>None</code> is returned.</p>
+
+<p class="note"><b>Note:</b> The file-like object is read-only and
+provides the following methods: <code>
+read</code>, <code>readline</code>, <code>readlines</code>, <code>seek</code>, <code>
+tell</code>.</p>
+</dd>
+<dt class="method" id="TarFile.add"><b>add(name[, arcname[, recursive]])</b> <tt class="nav"><a class="nav" href="tarfile.TarFile.add" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Add the file <var>name</var> to the archive. <var>name</var> may
+be any type of file (directory, fifo, symbolic link, etc.). If
+given, <var>arcname</var> specifies an alternative name for the
+file in the archive. Directories are added recursively by default.
+This can be avoided by setting <var>recursive</var> to <code>
+False</code>; the default is <code>True</code>.</p>
+</dd>
+<dt class="method" id="TarFile.addfile"><b>addfile(tarinfo[, fileobj])</b> <tt class="nav"><a class="nav" href="tarfile.TarFile.addfile" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Add the <a class="link" href="#TarInfo"><code>TarInfo</code></a> object
+<var>tarinfo</var> to the archive. If <var>fileobj</var> is given,
+<var>tarinfo</var>.size bytes are read from it and added to the
+archive. You can create <a class="link" href="#TarInfo"><code>
+TarInfo</code></a> objects using <code>
+gettarinfo</code>.</p>
+
+<p class="note"><b>Note:</b> On Windows platforms, <var>
+fileobj</var> should always be opened with mode <code>'rb'</code>
+to avoid irritation about the file size.</p>
+</dd>
+<dt class="method" id="TarFile.gettarinfo"><b>gettarinfo([name[, arcname[,
+fileobj]]])</b> <tt class="nav"><a class="nav" href="tarfile.TarFile.gettarinfo" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Create a <a class="link" href="#TarInfo"><code>TarInfo</code></a> object
+for either the file <var>name</var> or the file object <var>
+fileobj</var> (using <code>
+os.fstat</code> on its file descriptor). You can modify some of the <a class="link" href="#TarInfo"><code>TarInfo</code></a>'s attributes before
+you add it using <code>addfile</code>.
+If given, <var>arcname</var> specifies an alternative name for the
+file in the archive.</p>
+</dd>
+<dt class="method" id="TarFile.close"><b>close()</b> <tt class="nav"><a class="nav" href="tarfile.TarFile.close" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Close the <a class="link" href="#TarFile"><code>TarFile</code></a>. In
+write mode, two finishing zero blocks are appended to the
+archive.</p>
+</dd>
+<dt class="attribute" id="TarFile.posix"><b>posix</b> <tt class="nav"><a class="nav" href="tarfile.TarFile.posix" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>If true, create a POSIX 1003.1-1990 compliant archive. GNU
+extensions are not used, because they are not part of the POSIX
+standard. This limits the length of filenames to at most 256, link
+names to 100 characters and the maximum file size to 8 gigabytes. A
+<code>
+exceptions.ValueError</code> is raised if a file exceeds this limit.
+If false, create a GNU tar compatible archive. It will not be POSIX
+compliant, but can store files without any of the above
+restrictions.</p>
+
+<blockquote><span class="mark">@since</span> Changed in version
+2.4: posix defaults to False.<br />
+</blockquote>
+</dd>
+<dt class="attribute" id="TarFile.dereference"><b>dereference</b> <tt class="nav"><a class="nav" href="tarfile.TarFile.dereference" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>If false, add symbolic and hard links to archive. If true, add
+the content of the target files to the archive. This has no effect
+on systems that do not support symbolic links.</p>
+</dd>
+<dt class="attribute" id="TarFile.ignore_zeros"><b>ignore_zeros</b> <tt class="nav"><a class="nav" href="tarfile.TarFile.ignore_zeros" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>If false, treat an empty block as the end of the archive. If
+true, skip empty (and invalid) blocks and try to get as many
+members as possible. This is only useful for concatenated or
+damaged archives.</p>
+</dd>
+<dt class="attribute" id="TarFile.debug"><b>debug=0</b> <tt class="nav"><a class="nav" href="tarfile.TarFile.debug" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>To be set from <code>0</code> (no debug messages; the default)
+up to <code>3</code> (all debug messages). The messages are written
+to <code>sys.stderr</code>.</p>
+</dd>
+<dt class="attribute" id="TarFile.errorlevel"><b>errorlevel</b> <tt class="nav"><a class="nav" href="tarfile.TarFile.errorlevel" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>If <code>0</code> (the default), all errors are ignored when
+using <code>extract</code>.
+Nevertheless, they appear as error messages in the debug output,
+when debugging is enabled. If <code>1</code>, all <em>fatal</em>
+errors are raised as <code>exceptions.OSError</code> or <code>exceptions.IOError</code>
+exceptions. If <code>2</code>, all <em>non-fatal</em> errors are
+raised as <a class="link" href="#TarError"><code>TarError</code></a>
+exceptions as well.</p>
+</dd>
+</dl><div class="text">
+<h2 id="tarinfo-objects">TarInfo Objects <a class="nav" href="#tarinfo-objects">#</a></h2>
+
+<p>A <a class="link" href="#TarInfo"><code>TarInfo</code></a> object
+represents one member in a <a class="link" href="#TarFile"><code>
+TarFile</code></a>. Aside from storing all required attributes of a file
+(like file type, size, time, permissions, owner etc.), it provides
+some useful methods to determine its type. It does <em>not</em>
+contain the file's data itself.</p>
+
+<p><a class="link" href="#TarInfo"><code>TarInfo</code></a> objects are
+returned by <a class="link" href="#TarFile"><code>TarFile</code></a>'s
+methods <code>getmember</code>, <code>getmembers</code> and <code>gettarinfo</code>.</p>
+</div>
+<dl><dt class="class" id="TarInfo"><b>class TarInfo([name])</b> <tt class="nav"><a class="nav" href="tarfile.TarInfo" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>Create a <a class="link" href="#TarInfo"><code>TarInfo</code></a>
+object.</p>
+</dd>
+<dt class="method" id="TarInfo.frombuf"><b>frombuf()</b> <tt class="nav"><a class="nav" href="tarfile.TarInfo.frombuf" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Create and return a <a class="link" href="#TarInfo"><code>
+TarInfo</code></a> object from a string buffer.</p>
+</dd>
+<dt class="method" id="TarInfo.tobuf"><b>tobuf()</b> <tt class="nav"><a class="nav" href="tarfile.TarInfo.tobuf" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Create a string buffer from a <a class="link" href="#TarInfo"><code>TarInfo</code></a> object.</p>
+</dd>
+</dl><div class="text">
+<p>A <code>TarInfo</code> object has the following public data
+attributes:</p>
+</div>
+<dl><dt class="attribute" id="TarInfo.name"><b>name</b> <tt class="nav"><a class="nav" href="tarfile.TarInfo.name" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>Name of the archive member.</p>
+</dd>
+<dt class="attribute" id="TarInfo.size"><b>size</b> <tt class="nav"><a class="nav" href="tarfile.TarInfo.size" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>Size in bytes.</p>
+</dd>
+<dt class="attribute" id="TarInfo.mtime"><b>mtime</b> <tt class="nav"><a class="nav" href="tarfile.TarInfo.mtime" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>Time of last modification.</p>
+</dd>
+<dt class="attribute" id="TarInfo.mode"><b>mode</b> <tt class="nav"><a class="nav" href="tarfile.TarInfo.mode" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>Permission bits.</p>
+</dd>
+<dt class="attribute" id="TarInfo.type"><b>type</b> <tt class="nav"><a class="nav" href="tarfile.TarInfo.type" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>File type. <var>type</var> is usually one of these constants:
+<code>REGTYPE</code>, <code>AREGTYPE</code>, <code>LNKTYPE</code>,
+<code>SYMTYPE</code>, <code>DIRTYPE</code>, <code>FIFOTYPE</code>,
+<code>CONTTYPE</code>, <code>CHRTYPE</code>, <code>BLKTYPE</code>,
+<code>GNUTYPE_SPARSE</code>. To determine the type of a <a class="link" href="#TarInfo"><code>TarInfo</code></a> object more
+conveniently, use the <code>is_*()</code> methods below.</p>
+</dd>
+<dt class="attribute" id="TarInfo.linkname"><b>linkname</b> <tt class="nav"><a class="nav" href="tarfile.TarInfo.linkname" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>Name of the target file name, which is only present in <a class="link" href="#TarInfo"><code>TarInfo</code></a> objects of type <code>
+LNKTYPE</code> and <code>SYMTYPE</code>.</p>
+</dd>
+<dt class="attribute" id="TarInfo.uid"><b>uid</b> <tt class="nav"><a class="nav" href="tarfile.TarInfo.uid" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>User ID of the user who originally stored this member.</p>
+</dd>
+<dt class="attribute" id="TarInfo.gid"><b>gid</b> <tt class="nav"><a class="nav" href="tarfile.TarInfo.gid" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>Group ID of the user who originally stored this member.</p>
+</dd>
+<dt class="attribute" id="TarInfo.uname"><b>uname</b> <tt class="nav"><a class="nav" href="tarfile.TarInfo.uname" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>User name.</p>
+</dd>
+<dt class="attribute" id="TarInfo.gname"><b>gname</b> <tt class="nav"><a class="nav" href="tarfile.TarInfo.gname" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>Group name.</p>
+</dd>
+</dl><div class="text">
+<p>A <a class="link" href="#TarInfo"><code>TarInfo</code></a> object also
+provides some convenient query methods:</p>
+</div>
+<dl><dt class="method" id="TarInfo.isfile"><b>isfile()</b> <tt class="nav"><a class="nav" href="tarfile.TarInfo.isfile" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return <code>True</code> if the <code>Tarinfo</code> object is a regular file.</p>
+</dd>
+<dt class="method" id="TarInfo.isreg"><b>isreg()</b> <tt class="nav"><a class="nav" href="tarfile.TarInfo.isreg" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Same as <code>isfile</code>.</p>
+</dd>
+<dt class="method" id="TarInfo.isdir"><b>isdir()</b> <tt class="nav"><a class="nav" href="tarfile.TarInfo.isdir" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return <code>True</code> if it is a directory.</p>
+</dd>
+<dt class="method" id="TarInfo.issym"><b>issym()</b> <tt class="nav"><a class="nav" href="tarfile.TarInfo.issym" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return <code>True</code> if it is a symbolic link.</p>
+</dd>
+<dt class="method" id="TarInfo.islnk"><b>islnk()</b> <tt class="nav"><a class="nav" href="tarfile.TarInfo.islnk" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return <code>True</code> if it is a hard link.</p>
+</dd>
+<dt class="method" id="TarInfo.ischr"><b>ischr()</b> <tt class="nav"><a class="nav" href="tarfile.TarInfo.ischr" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return <code>True</code> if it is a character device.</p>
+</dd>
+<dt class="method" id="TarInfo.isblk"><b>isblk()</b> <tt class="nav"><a class="nav" href="tarfile.TarInfo.isblk" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return <code>True</code> if it is a block device.</p>
+</dd>
+<dt class="method" id="TarInfo.isfifo"><b>isfifo()</b> <tt class="nav"><a class="nav" href="tarfile.TarInfo.isfifo" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return <code>True</code> if it is a FIFO.</p>
+</dd>
+<dt class="method" id="TarInfo.isdev"><b>isdev()</b> <tt class="nav"><a class="nav" href="tarfile.TarInfo.isdev" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return <code>True</code> if it is one of character device, block
+device or FIFO.</p>
+</dd>
+</dl><div class="text">
+<h2 id="examples">Examples <a class="nav" href="#examples">#</a></h2>
+
+<p>How to create an uncompressed tar archive from a list of
+filenames:</p>
+
+<pre>
+import tarfile
+tar = tarfile.open("sample.tar", "w")
+for name in ["foo", "bar", "quux"]:
+    tar.add(name)
+tar.close()
+</pre>
+
+<p>How to read a gzip compressed tar archive and display some
+member information:</p>
+
+<pre>
+import tarfile
+tar = tarfile.open("sample.tar.gz", "r:gz")
+for tarinfo in tar:
+    print tarinfo.name, "is", tarinfo.size, "bytes in size and is",
+    if tarinfo.isreg():
+        print "a regular file."
+    elif tarinfo.isdir():
+        print "a directory."
+    else:
+        print "something else."
+tar.close()
+</pre>
+
+<p>How to create a tar archive with faked information:</p>
+
+<pre>
+import tarfile
+tar = tarfile.open("sample.tar.gz", "w:gz")
+for name in namelist:
+    tarinfo = tar.gettarinfo(name, "fakeproj-1.0/" + name)
+    tarinfo.uid = 123
+    tarinfo.gid = 456
+    tarinfo.uname = "johndoe"
+    tarinfo.gname = "fake"
+    tar.addfile(tarinfo, file(name))
+tar.close()
+</pre>
+
+<p>The <em>only</em> way to extract an uncompressed tar stream from
+<code>sys.stdin</code>:</p>
+
+<pre>
+import sys
+import tarfile
+tar = tarfile.open(mode="r|", fileobj=sys.stdin)
+for tarinfo in tar:
+    tar.extract(tarinfo)
+tar.close()
+</pre>
+</div>
+</div></body></html>

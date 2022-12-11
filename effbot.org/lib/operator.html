@@ -1,0 +1,840 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>operator</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-operator.html'>original</a> :::
+<a href='operator.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>operator&#8212;Standard operators as functions.</h1>
+
+<div class="toc"><dl><dt>On this page:</dt><dd><a href="#mapping-operators-to-functions">Mapping Operators to Functions</a></dd></dl></div><p>The <code>operator</code> module
+exports a set of functions implemented in C corresponding to the
+intrinsic operators of Python. For example, <code>operator.add(x,
+y)</code> is equivalent to the expression <code>x+y</code>. The
+function names are those used for special class methods; variants
+without leading and trailing "<code>__</code>" are also provided
+for convenience.</p>
+
+<p>The functions fall into categories that perform object
+comparisons, logical operations, mathematical operations, sequence
+operations, and abstract type tests.</p>
+
+<p>The object comparison functions are useful for all objects, and
+are named after the rich comparison operators they support:</p>
+</div>
+<dl><dt class="function" id="__gt__"><b>__gt__(a, b)</b> <tt class="nav"><a class="nav" href="operator.__gt__" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Perform &#8220;rich comparisons&#8221; between <var>a</var> and
+<var>b</var>. Specifically, <code>lt(</code><var>a</var>, <var>
+b</var>) is equivalent to <var>a</var> &lt; <var>b</var>, <code>
+le(</code><var>a</var>, <var>b</var>) is equivalent to <var>a</var>
+&lt;= <var>b</var>, <code>eq(</code><var>a</var>, <var>b</var>) is
+equivalent to <var>a</var> == <var>b</var>, <code>
+ne(</code><var>a</var>, <var>b</var>) is equivalent to <var>a</var>
+!= <var>b</var>, <code>gt(</code><var>a</var>, <var>b</var>) is
+equivalent to <var>a</var> &gt; <var>b</var> and <code>
+ge(</code><var>a</var>, <var>b</var>) is equivalent to <var>a</var>
+&gt;= <var>b</var>. Note that unlike the built-in <code>cmp</code>, these functions can return any value,
+which may or may not be interpretable as a Boolean value. See the
+<code>Python Reference
+Manual</code> for more information about rich comparisons.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.2.<br />
+</blockquote>
+</dd>
+</dl><div class="text">
+<p>The logical operations are also generally applicable to all
+objects, and support truth tests, identity tests, and boolean
+operations:</p>
+</div>
+<dl><dt class="function" id="__not__"><b>__not__(o)</b> <tt class="nav"><a class="nav" href="operator.__not__" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return the outcome of <code>not</code>
+<var>o</var>. (Note that there is no <a class="link" href="#__not__"><code>__not__</code></a> method for object instances; only
+the interpreter core defines this operation. The result is affected
+by the <code>__nonzero__</code> and
+<code>__len__</code> methods.)</p>
+</dd>
+<dt class="function" id="truth"><b>truth(o)</b> <tt class="nav"><a class="nav" href="operator.truth" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return <code>True</code> if <var>o</var> is true, and <code>
+False</code> otherwise. This is equivalent to using the <code>bool</code> constructor.</p>
+</dd>
+<dt class="function" id="is_"><b>is_(a, b)</b> <tt class="nav"><a class="nav" href="operator.is_" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return <var>a</var> is <var>b</var>. Tests object identity.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.3.<br />
+</blockquote>
+</dd>
+<dt class="function" id="is_not"><b>is_not(a, b)</b> <tt class="nav"><a class="nav" href="operator.is_not" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return <var>a</var> is not <var>b</var>. Tests object
+identity.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.3.<br />
+</blockquote>
+</dd>
+</dl><div class="text">
+<p>The mathematical and bitwise operations are the most
+numerous:</p>
+</div>
+<dl><dt class="function" id="__abs__"><b>__abs__(o)</b> <tt class="nav"><a class="nav" href="operator.__abs__" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return the absolute value of <var>o</var>.</p>
+</dd>
+<dt class="function" id="__add__"><b>__add__(a, b)</b> <tt class="nav"><a class="nav" href="operator.__add__" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return <var>a</var> <code>+</code> <var>b</var>, for <var>
+a</var> and <var>b</var> numbers.</p>
+</dd>
+<dt class="function" id="__and__"><b>__and__(a, b)</b> <tt class="nav"><a class="nav" href="operator.__and__" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return the bitwise and of <var>a</var> and <var>b</var>.</p>
+</dd>
+<dt class="function" id="__div__"><b>__div__(a, b)</b> <tt class="nav"><a class="nav" href="operator.__div__" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return <var>a</var> <code>/</code> <var>b</var> when <code>
+__future__.division</code> is not in effect. This is also known as
+&#8220;classic&#8221; division.</p>
+</dd>
+<dt class="function" id="__floordiv__"><b>__floordiv__(a, b)</b> <tt class="nav"><a class="nav" href="operator.__floordiv__" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return <var>a</var> <code>//</code> <var>b</var>.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.2.<br />
+</blockquote>
+</dd>
+<dt class="function" id="__invert__"><b>__invert__(o)</b> <tt class="nav"><a class="nav" href="operator.__invert__" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return the bitwise inverse of the number <var>o</var>. This is
+equivalent to <code>~</code><var>o</var>. The names <code>invert</code> and <a class="link" href="#__invert__"><code>__invert__</code></a> were added in Python 2.0.</p>
+</dd>
+<dt class="function" id="__lshift__"><b>__lshift__(a, b)</b> <tt class="nav"><a class="nav" href="operator.__lshift__" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return <var>a</var> shifted left by <var>b</var>.</p>
+</dd>
+<dt class="function" id="__mod__"><b>__mod__(a, b)</b> <tt class="nav"><a class="nav" href="operator.__mod__" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return <var>a</var> <code>%</code> <var>b</var>.</p>
+</dd>
+<dt class="function" id="__mul__"><b>__mul__(a, b)</b> <tt class="nav"><a class="nav" href="operator.__mul__" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return <var>a</var> <code>*</code> <var>b</var>, for <var>
+a</var> and <var>b</var> numbers.</p>
+</dd>
+<dt class="function" id="__neg__"><b>__neg__(o)</b> <tt class="nav"><a class="nav" href="operator.__neg__" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return <var>o</var> negated.</p>
+</dd>
+<dt class="function" id="__or__"><b>__or__(a, b)</b> <tt class="nav"><a class="nav" href="operator.__or__" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return the bitwise or of <var>a</var> and <var>b</var>.</p>
+</dd>
+<dt class="function" id="__pos__"><b>__pos__(o)</b> <tt class="nav"><a class="nav" href="operator.__pos__" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return <var>o</var> positive.</p>
+</dd>
+<dt class="function" id="__pow__"><b>__pow__(a, b)</b> <tt class="nav"><a class="nav" href="operator.__pow__" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return <var>a</var> <code>**</code> <var>b</var>, for <var>
+a</var> and <var>b</var> numbers.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.3.<br />
+</blockquote>
+</dd>
+<dt class="function" id="__rshift__"><b>__rshift__(a, b)</b> <tt class="nav"><a class="nav" href="operator.__rshift__" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return <var>a</var> shifted right by <var>b</var>.</p>
+</dd>
+<dt class="function" id="__sub__"><b>__sub__(a, b)</b> <tt class="nav"><a class="nav" href="operator.__sub__" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return <var>a</var> <code>-</code> <var>b</var>.</p>
+</dd>
+<dt class="function" id="__truediv__"><b>__truediv__(a, b)</b> <tt class="nav"><a class="nav" href="operator.__truediv__" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return <var>a</var> <code>/</code> <var>b</var> when <code>
+__future__.division</code> is in effect. This is also known as
+division.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.2.<br />
+</blockquote>
+</dd>
+<dt class="function" id="__xor__"><b>__xor__(a, b)</b> <tt class="nav"><a class="nav" href="operator.__xor__" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return the bitwise exclusive or of <var>a</var> and <var>
+b</var>.</p>
+</dd>
+</dl><div class="text">
+<p>Operations which work with sequences include:</p>
+</div>
+<dl><dt class="function" id="__concat__"><b>__concat__(a, b)</b> <tt class="nav"><a class="nav" href="operator.__concat__" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return <var>a</var> <code>+</code> <var>b</var> for <var>a</var>
+and <var>b</var> sequences.</p>
+</dd>
+<dt class="function" id="__contains__"><b>__contains__(a, b)</b> <tt class="nav"><a class="nav" href="operator.__contains__" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return the outcome of the test <var>b</var> <code>in</code>
+<var>a</var>. Note the reversed operands. The name <a class="link" href="#__contains__"><code>__contains__</code></a> was added in Python
+2.0.</p>
+</dd>
+<dt class="function" id="countOf"><b>countOf(a, b)</b> <tt class="nav"><a class="nav" href="operator.countOf" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return the number of occurrences of <var>b</var> in <var>
+a</var>.</p>
+</dd>
+<dt class="function" id="__delitem__"><b>__delitem__(a, b)</b> <tt class="nav"><a class="nav" href="operator.__delitem__" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Remove the value of <var>a</var> at index <var>b</var>.</p>
+</dd>
+<dt class="function" id="__delslice__"><b>__delslice__(a, b, c)</b> <tt class="nav"><a class="nav" href="operator.__delslice__" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Delete the slice of <var>a</var> from index <var>b</var> to
+index <var>c</var><code>-1</code>.</p>
+</dd>
+<dt class="function" id="__getitem__"><b>__getitem__(a, b)</b> <tt class="nav"><a class="nav" href="operator.__getitem__" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return the value of <var>a</var> at index <var>b</var>.</p>
+</dd>
+<dt class="function" id="__getslice__"><b>__getslice__(a, b, c)</b> <tt class="nav"><a class="nav" href="operator.__getslice__" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return the slice of <var>a</var> from index <var>b</var> to
+index <var>c</var><code>-1</code>.</p>
+</dd>
+<dt class="function" id="indexOf"><b>indexOf(a, b)</b> <tt class="nav"><a class="nav" href="operator.indexOf" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return the index of the first of occurrence of <var>b</var> in
+<var>a</var>.</p>
+</dd>
+<dt class="function" id="__repeat__"><b>__repeat__(a, b)</b> <tt class="nav"><a class="nav" href="operator.__repeat__" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return <var>a</var> <code>*</code> <var>b</var> where <var>
+a</var> is a sequence and <var>b</var> is an integer.</p>
+</dd>
+<dt class="function" id="sequenceIncludes"><b>sequenceIncludes(...)</b> <tt class="nav"><a class="nav" href="operator.sequenceIncludes" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Deprecated since release 2.0. Use <code>contains</code> instead.</p>
+
+<p>Alias for <code>contains</code>.</p>
+</dd>
+<dt class="function" id="__setitem__"><b>__setitem__(a, b, c)</b> <tt class="nav"><a class="nav" href="operator.__setitem__" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Set the value of <var>a</var> at index <var>b</var> to <var>
+c</var>.</p>
+</dd>
+<dt class="function" id="__setslice__"><b>__setslice__(a, b, c, v)</b> <tt class="nav"><a class="nav" href="operator.__setslice__" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Set the slice of <var>a</var> from index <var>b</var> to index
+<var>c</var><code>-1</code> to the sequence <var>v</var>.</p>
+</dd>
+</dl><div class="text">
+<p class="note"><b>Note:</b> The Be careful not to misinterpret the
+results of these functions; only <a class="link" href="#isCallable"><code>isCallable</code></a> has any measure of
+reliability with instance objects. For example:</p>
+
+<pre>
+&gt;&gt;&gt; class C:
+...     pass
+... 
+&gt;&gt;&gt; import operator
+&gt;&gt;&gt; o = C()
+&gt;&gt;&gt; operator.isMappingType(o)
+True
+</pre>
+</div>
+<dl><dt class="function" id="isCallable"><b>isCallable(o)</b> <tt class="nav"><a class="nav" href="operator.isCallable" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Deprecated since release 2.0. Use the <code>callable</code> built-in function instead.</p>
+
+<p>Returns true if the object <var>o</var> can be called like a
+function, otherwise it returns false. True is returned for
+functions, bound and unbound methods, class objects, and instance
+objects which support the <code>
+__call__</code> method.</p>
+</dd>
+<dt class="function" id="isMappingType"><b>isMappingType(o)</b> <tt class="nav"><a class="nav" href="operator.isMappingType" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Returns true if the object <var>o</var> supports the mapping
+interface. This is true for dictionaries and all instance objects
+defining <a class="link" href="#__getitem__"><code>__getitem__</code></a>.
+Warning: There is no reliable way to test if an instance supports
+the complete mapping protocol since the interface itself is
+ill-defined. This makes this test less useful than it otherwise
+might be.</p>
+</dd>
+<dt class="function" id="isNumberType"><b>isNumberType(o)</b> <tt class="nav"><a class="nav" href="operator.isNumberType" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Returns true if the object <var>o</var> represents a number.
+This is true for all numeric types implemented in C. Warning: There
+is no reliable way to test if an instance supports the complete
+numeric interface since the interface itself is ill-defined. This
+makes this test less useful than it otherwise might be.</p>
+</dd>
+<dt class="function" id="isSequenceType"><b>isSequenceType(o)</b> <tt class="nav"><a class="nav" href="operator.isSequenceType" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Returns true if the object <var>o</var> supports the sequence
+protocol. This returns true for all objects which define sequence
+methods in C, and for all instance objects defining <a class="link" href="#__getitem__"><code>__getitem__</code></a>. Warning: There is no
+reliable way to test if an instance supports the complete sequence
+interface since the interface itself is ill-defined. This makes
+this test less useful than it otherwise might be.</p>
+</dd>
+</dl><div class="text">
+<p>Example: Build a dictionary that maps the ordinals from <code>
+0</code> to <code>255</code> to their character equivalents.</p>
+
+<pre>
+&gt;&gt;&gt; import operator
+&gt;&gt;&gt; d = {}
+&gt;&gt;&gt; keys = range(256)
+&gt;&gt;&gt; vals = map(chr, keys)
+&gt;&gt;&gt; map(operator.setitem, [d]*len(keys), keys, vals)
+</pre>
+
+<p>The <code>operator</code> module
+also defines tools for generalized attribute and item lookups.
+These are useful for making fast field extractors as arguments for
+<code>map</code>, <code>sorted</code>, <code>itertools.groupby</code>, or other
+functions that expect a function argument.</p>
+</div>
+<dl><dt class="function" id="attrgetter"><b>attrgetter(attr)</b> <tt class="nav"><a class="nav" href="operator.attrgetter" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return a callable object that fetches <var>attr</var> from its
+operand. After, "<code>f=attrgetter('name')</code>", the call
+"<code>f(b)</code>" returns "<code>b.name</code>".</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.4.<br />
+</blockquote>
+</dd>
+<dt class="function" id="itemgetter"><b>itemgetter(item)</b> <tt class="nav"><a class="nav" href="operator.itemgetter" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return a callable object that fetches <var>item</var> from its
+operand. After, "<code>f=itemgetter(2)</code>", the call
+"<code>f(b)</code>" returns "<code>b[2]</code>".</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.4.<br />
+</blockquote>
+</dd>
+</dl><div class="text">
+<p>Examples:</p>
+
+<pre>
+&gt;&gt;&gt; from operator import *
+&gt;&gt;&gt; inventory = [('apple', 3), ('banana', 2), ('pear', 5), ('orange', 1)]
+&gt;&gt;&gt; getcount = itemgetter(1)
+&gt;&gt;&gt; map(getcount, inventory)
+[3, 2, 5, 1]
+&gt;&gt;&gt; sorted(inventory, key=getcount)
+[('orange', 1), ('banana', 2), ('apple', 3), ('pear', 5)]
+</pre>
+
+<h2 id="mapping-operators-to-functions">Mapping Operators to Functions <a class="nav" href="#mapping-operators-to-functions">#</a></h2>
+
+<p>This table shows how abstract operations correspond to operator
+symbols in the Python syntax and the functions in the <code>operator</code> module.</p>
+
+<table border="1">
+<tr>
+<th>
+<p>Operation</p>
+</th>
+<th>
+<p>Syntax</p>
+</th>
+<th>
+<p>Function</p>
+</th>
+</tr>
+
+<tr>
+<td>
+<p>Addition</p>
+</td>
+<td>
+<p><var>a</var> + <var>b</var></p>
+</td>
+<td>
+<p><code>add(</code><var>a</var>, <var>b</var>)</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>Concatenation</p>
+</td>
+<td>
+<p><var>seq1</var> + <var>seq2</var></p>
+</td>
+<td>
+<p><code>concat(</code><var>seq1</var>, <var>seq2</var>)</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>Containment Test</p>
+</td>
+<td>
+<p><var>o</var> in <var>seq</var></p>
+</td>
+<td>
+<p><code>contains(</code><var>seq</var>, <var>o</var>)</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>Division</p>
+</td>
+<td>
+<p><var>a</var> / <var>b</var></p>
+</td>
+<td>
+<p><code>div(</code><var>a</var>, <var>b</var>) # without <code>
+__future__.division</code></p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>Division</p>
+</td>
+<td>
+<p><var>a</var> / <var>b</var></p>
+</td>
+<td>
+<p><code>truediv(</code><var>a</var>, <var>b</var>) # with <code>
+__future__.division</code></p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>Division</p>
+</td>
+<td>
+<p><var>a</var> // <var>b</var></p>
+</td>
+<td>
+<p><code>floordiv(</code><var>a</var>, <var>b</var>)</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>Bitwise And</p>
+</td>
+<td>
+<p><var>a</var> &amp; <var>b</var></p>
+</td>
+<td>
+<p><code>and_(</code><var>a</var>, <var>b</var>)</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>Bitwise Exclusive Or</p>
+</td>
+<td>
+<p><var>a</var> ^ <var>b</var></p>
+</td>
+<td>
+<p><code>xor(</code><var>a</var>, <var>b</var>)</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>Bitwise Inversion</p>
+</td>
+<td>
+<p><code>~</code> <var>a</var></p>
+</td>
+<td>
+<p><code>invert(</code><var>a</var>)</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>Bitwise Or</p>
+</td>
+<td>
+<p><var>a</var> | <var>b</var></p>
+</td>
+<td>
+<p><code>or_(</code><var>a</var>, <var>b</var>)</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>Exponentiation</p>
+</td>
+<td>
+<p><var>a</var> ** <var>b</var></p>
+</td>
+<td>
+<p><code>pow(</code><var>a</var>, <var>b</var>)</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>Identity</p>
+</td>
+<td>
+<p><var>a</var> is <var>b</var></p>
+</td>
+<td>
+<p><code>is_(</code><var>a</var>, <var>b</var>)</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>Identity</p>
+</td>
+<td>
+<p><var>a</var> is not <var>b</var></p>
+</td>
+<td>
+<p><code>is_not(</code><var>a</var>, <var>b</var>)</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>Indexed Assignment</p>
+</td>
+<td>
+<p><var>o</var>[<var>k</var>] = <var>v</var></p>
+</td>
+<td>
+<p><code>setitem(</code><var>o</var>, <var>k</var>, <var>
+v</var>)</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>Indexed Deletion</p>
+</td>
+<td>
+<p><code>del</code> <var>o</var>[<var>k</var>]</p>
+</td>
+<td>
+<p><code>delitem(</code><var>o</var>, <var>k</var>)</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>Indexing</p>
+</td>
+<td>
+<p><var>o</var>[<var>k</var>]</p>
+</td>
+<td>
+<p><code>getitem(</code><var>o</var>, <var>k</var>)</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>Left Shift</p>
+</td>
+<td>
+<p><var>a</var> &lt;&lt; <var>b</var></p>
+</td>
+<td>
+<p><code>lshift(</code><var>a</var>, <var>b</var>)</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>Modulo</p>
+</td>
+<td>
+<p><var>a</var> % <var>b</var></p>
+</td>
+<td>
+<p><code>mod(</code><var>a</var>, <var>b</var>)</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>Multiplication</p>
+</td>
+<td>
+<p><var>a</var> * <var>b</var></p>
+</td>
+<td>
+<p><code>mul(</code><var>a</var>, <var>b</var>)</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>Negation (Arithmetic)</p>
+</td>
+<td>
+<p><code>-</code> <var>a</var></p>
+</td>
+<td>
+<p><code>neg(</code><var>a</var>)</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>Negation (Logical)</p>
+</td>
+<td>
+<p><code>not</code> <var>a</var></p>
+</td>
+<td>
+<p><code>not_(</code><var>a</var>)</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>Right Shift</p>
+</td>
+<td>
+<p><var>a</var> &gt;&gt; <var>b</var></p>
+</td>
+<td>
+<p><code>rshift(</code><var>a</var>, <var>b</var>)</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>Sequence Repitition</p>
+</td>
+<td>
+<p><var>seq</var> * <var>i</var></p>
+</td>
+<td>
+<p><code>repeat(</code><var>seq</var>, <var>i</var>)</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>Slice Assignment</p>
+</td>
+<td>
+<p><var>seq</var>[<var>i</var>:<var>j</var>] = <var>
+values</var></p>
+</td>
+<td>
+<p><code>setslice(</code><var>seq</var>, <var>i</var>, <var>
+j</var>, <var>values</var>)</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>Slice Deletion</p>
+</td>
+<td>
+<p><code>del</code> <var>seq</var>[<var>i</var>:<var>j</var>]</p>
+</td>
+<td>
+<p><code>delslice(</code><var>seq</var>, <var>i</var>, <var>
+j</var>)</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>Slicing</p>
+</td>
+<td>
+<p><var>seq</var>[<var>i</var>:<var>j</var>]</p>
+</td>
+<td>
+<p><code>getslice(</code><var>seq</var>, <var>i</var>, <var>
+j</var>)</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>String Formatting</p>
+</td>
+<td>
+<p><var>s</var> % <var>o</var></p>
+</td>
+<td>
+<p><code>mod(</code><var>s</var>, <var>o</var>)</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>Subtraction</p>
+</td>
+<td>
+<p><var>a</var> - <var>b</var></p>
+</td>
+<td>
+<p><code>sub(</code><var>a</var>, <var>b</var>)</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>Truth Test</p>
+</td>
+<td>
+<p><var>o</var></p>
+</td>
+<td>
+<p><code>truth(</code><var>o</var>)</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>Ordering</p>
+</td>
+<td>
+<p><var>a</var> &lt; <var>b</var></p>
+</td>
+<td>
+<p><code>lt(</code><var>a</var>, <var>b</var>)</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>Ordering</p>
+</td>
+<td>
+<p><var>a</var> &lt;= <var>b</var></p>
+</td>
+<td>
+<p><code>le(</code><var>a</var>, <var>b</var>)</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>Equality</p>
+</td>
+<td>
+<p><var>a</var> == <var>b</var></p>
+</td>
+<td>
+<p><code>eq(</code><var>a</var>, <var>b</var>)</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>Difference</p>
+</td>
+<td>
+<p><var>a</var> != <var>b</var></p>
+</td>
+<td>
+<p><code>ne(</code><var>a</var>, <var>b</var>)</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>Ordering</p>
+</td>
+<td>
+<p><var>a</var> &gt;= <var>b</var></p>
+</td>
+<td>
+<p><code>ge(</code><var>a</var>, <var>b</var>)</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>Ordering</p>
+</td>
+<td>
+<p><var>a</var> &gt; <var>b</var></p>
+</td>
+<td>
+<p><code>gt(</code><var>a</var>, <var>b</var>)</p>
+</td>
+</tr>
+</table>
+
+<br />
+<br />
+</div>
+</div></body></html>

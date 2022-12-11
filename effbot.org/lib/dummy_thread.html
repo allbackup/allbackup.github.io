@@ -1,0 +1,39 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>dummy_thread</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-dummy_thread.html'>original</a> :::
+<a href='dummy_thread.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>dummy_thread&#8212;Drop-in replacement for the thread
+module</h1>
+
+<p>This module provides a duplicate interface to the <code>thread</code> module. It is meant to
+be imported when the <code>thread</code>
+module is not provided on a platform.</p>
+
+<p>Suggested usage is:</p>
+
+<pre>
+try:
+    import thread as _thread
+except ImportError:
+    import dummy_thread as _thread
+</pre>
+
+<p>Be careful to not use this module where deadlock might occur
+from a thread being created that blocks waiting for another thread
+to be created. This often occurs with blocking I/O.</p>
+</div>
+</div></body></html>

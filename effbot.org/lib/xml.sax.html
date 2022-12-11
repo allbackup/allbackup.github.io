@@ -1,0 +1,164 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>xml.sax</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-xml.sax.html'>original</a> :::
+<a href='xml.sax.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>xml.sax&#8212;Support for SAX2 parsers</h1>
+
+<div class="toc"><dl><dt>On this page:</dt><dd><a href="#saxexception-objects">SAXException Objects</a></dd></dl></div><p>New in version 2.0.</p>
+
+<p>The <code>xml.sax</code> package
+provides a number of modules which implement the Simple API for XML
+(SAX) interface for Python. The package itself provides the SAX
+exceptions and the convenience functions which will be most used by
+users of the SAX API.</p>
+
+<p>The convenience functions are:</p>
+</div>
+<dl><dt class="function" id="make_parser"><b>make_parser([parser_list])</b> <tt class="nav"><a class="nav" href="xml.sax.make_parser" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Create and return a SAX <code>
+XMLReader</code> object. The first parser found will be used. If <var>
+parser_list</var> is provided, it must be a sequence of strings
+which name modules that have a function named <code>create_parser</code>. Modules listed in
+<var>parser_list</var> will be used before modules in the default
+list of parsers.</p>
+</dd>
+<dt class="function" id="parse"><b>parse(filename_or_stream, handler[,
+error_handler])</b> <tt class="nav"><a class="nav" href="xml.sax.parse" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Create a SAX parser and use it to parse a document. The
+document, passed in as <var>filename_or_stream</var>, can be a
+filename or a file object. The <var>handler</var> parameter needs
+to be a SAX <code>
+ContentHandler</code> instance. If <var>error_handler</var> is given,
+it must be a SAX <code>
+ErrorHandler</code> instance; if omitted, <a class="link" href="#SAXParseException"><code>SAXParseException</code></a> will be raised
+on all errors. There is no return value; all work must be done by
+the <var>handler</var> passed in.</p>
+</dd>
+<dt class="function" id="parseString"><b>parseString(string, handler[,
+error_handler])</b> <tt class="nav"><a class="nav" href="xml.sax.parseString" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Similar to <a class="link" href="#parse"><code>parse</code></a>, but
+parses from a buffer <var>string</var> received as a parameter.</p>
+</dd>
+</dl><div class="text">
+<p>A typical SAX application uses three kinds of objects: readers,
+handlers and input sources. &#8220;Reader&#8221; in this context is
+another term for parser, i.e. some piece of code that reads the
+bytes or characters from the input source, and produces a sequence
+of events. The events then get distributed to the handler objects,
+i.e. the reader invokes a method on the handler. A SAX application
+must therefore obtain a reader object, create or open the input
+sources, create the handlers, and connect these objects all
+together. As the final step of preparation, the reader is called to
+parse the input. During parsing, methods on the handler objects are
+called based on structural and syntactic events from the input
+data.</p>
+
+<p>For these objects, only the interfaces are relevant; they are
+normally not instantiated by the application itself. Since Python
+does not have an explicit notion of interface, they are formally
+introduced as classes, but applications may use implementations
+which do not inherit from the provided classes. The <code>InputSource</code>, <code>Locator</code>, <code>Attributes</code>, <code>AttributesNS</code>, and <code>XMLReader</code> interfaces are defined in the
+module <code>
+xml.sax.xmlreader</code>. The handler interfaces are defined in <code>xml.sax.handler</code>. For
+convenience, <code>
+InputSource</code> (which is often instantiated directly) and the
+handler classes are also available from <code>xml.sax</code>. These interfaces are described
+below.</p>
+
+<p>In addition to these classes, <code>xml.sax</code> provides the following exception
+classes.</p>
+</div>
+<dl><dt class="exception" id="SAXException"><b>exception SAXException(msg[, exception])</b> <tt class="nav"><a class="nav" href="xml.sax.SAXException" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="exception">
+<p>Encapsulate an XML error or warning. This class can contain
+basic error or warning information from either the XML parser or
+the application: it can be subclassed to provide additional
+functionality or to add localization. Note that although the
+handlers defined in the <code>
+ErrorHandler</code> interface receive instances of this exception, it
+is not required to actually raise the exception -- it is also
+useful as a container for information.</p>
+
+<p>When instantiated, <var>msg</var> should be a human-readable
+description of the error. The optional <var>exception</var>
+parameter, if given, should be <code>
+None</code> or an exception that was caught by the parsing code and is
+being passed along as information.</p>
+
+<p>This is the base class for the other SAX exception classes.</p>
+</dd>
+<dt class="exception" id="SAXParseException"><b>exception SAXParseException(msg, exception, locator)</b> <tt class="nav"><a class="nav" href="xml.sax.SAXParseException" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="exception">
+<p>Subclass of <a class="link" href="#SAXException"><code>
+SAXException</code></a> raised on parse errors. Instances of this class
+are passed to the methods of the SAX <code>ErrorHandler</code> interface to provide
+information about the parse error. This class supports the SAX <code>Locator</code> interface as well as
+the <a class="link" href="#SAXException"><code>SAXException</code></a>
+interface.</p>
+</dd>
+<dt class="exception" id="SAXNotRecognizedException"><b>exception SAXNotRecognizedException(msg[, exception])</b> <tt class="nav"><a class="nav" href="xml.sax.SAXNotRecognizedException" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="exception">
+<p>Subclass of <a class="link" href="#SAXException"><code>
+SAXException</code></a> raised when a SAX <code>XMLReader</code> is confronted with an
+unrecognized feature or property. SAX applications and extensions
+may use this class for similar purposes.</p>
+</dd>
+<dt class="exception" id="SAXNotSupportedException"><b>exception SAXNotSupportedException(msg[, exception])</b> <tt class="nav"><a class="nav" href="xml.sax.SAXNotSupportedException" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="exception">
+<p>Subclass of <a class="link" href="#SAXException"><code>
+SAXException</code></a> raised when a SAX <code>XMLReader</code> is asked to enable a feature
+that is not supported, or to set a property to a value that the
+implementation does not support. SAX applications and extensions
+may use this class for similar purposes.</p>
+</dd>
+</dl><div class="text"><span class="mark">@see</span> <a class="link" href="http://www.saxproject.org/">SAX: The Simple API for XML</a>
+This site is the focal point for the definition of the SAX API. It
+provides a Java implementation and online documentation. Links to
+implementations and historical information are also available.
+<span class="mark">@see</span> <code>Module xml.sax.handler</code> Definitions
+of the interfaces for application-provided objects. <span class="mark">@see</span> <code>Module xml.sax.saxutils</code>
+Convenience functions for use in SAX applications. <span class="mark">@see</span> <code>Module xml.sax.xmlreader</code>
+Definitions of the interfaces for parser-provided objects. 
+
+<h2 id="saxexception-objects">SAXException Objects <a class="nav" href="#saxexception-objects">#</a></h2>
+
+<p>The <a class="link" href="#SAXException"><code>SAXException</code></a>
+exception class supports the following methods:</p>
+</div>
+<dl><dt class="method" id="SAXException.getMessage"><b>getMessage()</b> <tt class="nav"><a class="nav" href="xml.sax.SAXException.getMessage" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return a human-readable message describing the error
+condition.</p>
+</dd>
+<dt class="method" id="SAXException.getException"><b>getException()</b> <tt class="nav"><a class="nav" href="xml.sax.SAXException.getException" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return an encapsulated exception object, or <code>
+None</code>.</p>
+</dd>
+</dl></div></body></html>

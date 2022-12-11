@@ -1,0 +1,325 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>imp</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-imp.html'>original</a> :::
+<a href='imp.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>imp&#8212;Access the import internals</h1>
+
+<div class="toc"><dl><dt>On this page:</dt><dd><a href="#examples">Examples</a></dd></dl></div><p>This module provides an interface to the mechanisms used to
+implement the <code>import</code>
+statement. It defines the following constants and functions:</p>
+</div>
+<dl><dt class="function" id="get_magic"><b>get_magic()</b> <tt class="nav"><a class="nav" href="imp.get_magic" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return the magic string value used to recognize byte-compiled
+code files (.pyc files). (This value may be different for each
+Python version.)</p>
+</dd>
+<dt class="function" id="get_suffixes"><b>get_suffixes()</b> <tt class="nav"><a class="nav" href="imp.get_suffixes" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return a list of triples, each describing a particular type of
+module. Each triple has the form <code>(</code><var>suffix</var>,
+<var>mode</var>, <var>type</var>), where <var>suffix</var> is a
+string to be appended to the module name to form the filename to
+search for, <var>mode</var> is the mode string to pass to the
+built-in <code>open</code> function to open
+the file (this can be <code>'r'</code> for text files or <code>
+'rb'</code> for binary files), and <var>type</var> is the file
+type, which has one of the values <code>PY_SOURCE</code>, <code>
+PY_COMPILED</code>, or <code>C_EXTENSION</code>, described
+below.</p>
+</dd>
+<dt class="function" id="find_module"><b>find_module(name[, path])</b> <tt class="nav"><a class="nav" href="imp.find_module" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Try to find the module <var>name</var> on the search path <var>
+path</var>. If <var>path</var> is a list of directory names, each
+directory is searched for files with any of the suffixes returned
+by <a class="link" href="#get_suffixes"><code>get_suffixes</code></a> above.
+Invalid names in the list are silently ignored (but all list items
+must be strings). If <var>path</var> is omitted or <code>None</code>, the list of directory names given by
+<code>sys.path</code> is searched, but first it searches a few
+special places: it tries to find a built-in module with the given
+name (<code>C_BUILTIN</code>), then a frozen module
+(<code>PY_FROZEN</code>), and on some systems some other places are
+looked in as well (on the Mac, it looks for a resource
+(<code>PY_RESOURCE</code>); on Windows, it looks in the registry
+which may point to a specific file).</p>
+
+<p>If search is successful, the return value is a triple <code>
+(</code><var>file</var>, <var>pathname</var>, <var>
+description</var>) where <var>file</var> is an open file object
+positioned at the beginning, <var>pathname</var> is the pathname of
+the file found, and <var>description</var> is a triple as contained
+in the list returned by <a class="link" href="#get_suffixes"><code>
+get_suffixes</code></a> describing the kind of module found. If the module
+does not live in a file, the returned <var>file</var> is <code>None</code>, <var>filename</var> is the
+empty string, and the <var>description</var> tuple contains empty
+strings for its suffix and mode; the module type is as indicate in
+parentheses above. If the search is unsuccessful, <code>exceptions.ImportError</code> is
+raised. Other exceptions indicate problems with the arguments or
+environment.</p>
+
+<p>This function does not handle hierarchical module names (names
+containing dots). In order to find <var>P</var>.<var>M</var>, that
+is, submodule <var>M</var> of package <var>P</var>, use <a class="link" href="#find_module"><code>find_module</code></a> and <a class="link" href="#load_module"><code>load_module</code></a> to find and
+load package <var>P</var>, and then use <a class="link" href="#find_module"><code>find_module</code></a> with the <var>path</var>
+argument set to <var>P</var>.__path__. When <var>P</var> itself has
+a dotted name, apply this recipe recursively.</p>
+</dd>
+<dt class="function" id="load_module"><b>load_module(name, file, filename,
+description)</b> <tt class="nav"><a class="nav" href="imp.load_module" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Load a module that was previously found by <a class="link" href="#find_module"><code>find_module</code></a> (or by an otherwise
+conducted search yielding compatible results). This function does
+more than importing the module: if the module was already imported,
+it is equivalent to a <code>
+reload</code>! The <var>name</var> argument indicates the full module
+name (including the package name, if this is a submodule of a
+package). The <var>file</var> argument is an open file, and <var>
+filename</var> is the corresponding file name; these can be <code>None</code> and <code>&#8221;</code>,
+respectively, when the module is not being loaded from a file. The
+<var>description</var> argument is a tuple, as would be returned by
+<a class="link" href="#get_suffixes"><code>get_suffixes</code></a>,
+describing what kind of module must be loaded.</p>
+
+<p>If the load is successful, the return value is the module
+object; otherwise, an exception (usually <code>exceptions.ImportError</code>) is
+raised.</p>
+
+<p>Important: the caller is responsible for closing the <var>
+file</var> argument, if it was not <code>None</code>, even when an
+exception is raised. This is best done using a <code>try</code> ... <code>
+finally</code> statement.</p>
+</dd>
+<dt class="function" id="new_module"><b>new_module(name)</b> <tt class="nav"><a class="nav" href="imp.new_module" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return a new empty module object called <var>name</var>. This
+object is <em>not</em> inserted in <code>sys.modules</code>.</p>
+</dd>
+<dt class="function" id="lock_held"><b>lock_held()</b> <tt class="nav"><a class="nav" href="imp.lock_held" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return <code>True</code> if the import
+lock is currently held, else <code>
+False</code>. On platforms without threads, always return <code>False</code>.</p>
+
+<p>On platforms with threads, a thread executing an import holds an
+internal lock until the import is complete. This lock blocks other
+threads from doing an import until the original import completes,
+which in turn prevents other threads from seeing incomplete module
+objects constructed by the original thread while in the process of
+completing its import (and the imports, if any, triggered by
+that).</p>
+</dd>
+<dt class="function" id="acquire_lock"><b>acquire_lock()</b> <tt class="nav"><a class="nav" href="imp.acquire_lock" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Acquires the interpreter's import lock for the current thread.
+This lock should be used by import hooks to ensure thread-safety
+when importing modules. On platforms without threads, this function
+does nothing.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.3.<br />
+</blockquote>
+</dd>
+<dt class="function" id="release_lock"><b>release_lock()</b> <tt class="nav"><a class="nav" href="imp.release_lock" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Release the interpreter's import lock. On platforms without
+threads, this function does nothing.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.3.<br />
+</blockquote>
+</dd>
+</dl><div class="text">
+<p>The following constants with integer values, defined in this
+module, are used to indicate the search result of <a class="link" href="#find_module"><code>find_module</code></a>.</p>
+</div>
+<dl><dt class="variable" id="PY_SOURCE"><b>PY_SOURCE</b> <tt class="nav"><a class="nav" href="imp.PY_SOURCE" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>The module was found as a source file.</p>
+</dd>
+<dt class="variable" id="PY_COMPILED"><b>PY_COMPILED</b> <tt class="nav"><a class="nav" href="imp.PY_COMPILED" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>The module was found as a compiled code object file.</p>
+</dd>
+<dt class="variable" id="C_EXTENSION"><b>C_EXTENSION</b> <tt class="nav"><a class="nav" href="imp.C_EXTENSION" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>The module was found as dynamically loadable shared library.</p>
+</dd>
+<dt class="variable" id="PY_RESOURCE"><b>PY_RESOURCE</b> <tt class="nav"><a class="nav" href="imp.PY_RESOURCE" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>The module was found as a Mac OS 9 resource. This value can only
+be returned on a Mac OS 9 or earlier Macintosh.</p>
+</dd>
+<dt class="variable" id="PKG_DIRECTORY"><b>PKG_DIRECTORY</b> <tt class="nav"><a class="nav" href="imp.PKG_DIRECTORY" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>The module was found as a package directory.</p>
+</dd>
+<dt class="variable" id="C_BUILTIN"><b>C_BUILTIN</b> <tt class="nav"><a class="nav" href="imp.C_BUILTIN" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>The module was found as a built-in module.</p>
+</dd>
+<dt class="variable" id="PY_FROZEN"><b>PY_FROZEN</b> <tt class="nav"><a class="nav" href="imp.PY_FROZEN" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>The module was found as a frozen module (see <a class="link" href="#init_frozen"><code>init_frozen</code></a>).</p>
+</dd>
+</dl><div class="text">
+<p>The following constant and functions are obsolete; their
+functionality is available through <a class="link" href="#find_module"><code>find_module</code></a> or <a class="link" href="#load_module"><code>load_module</code></a>. They are kept around for
+backward compatibility:</p>
+</div>
+<dl><dt class="variable" id="SEARCH_ERROR"><b>SEARCH_ERROR</b> <tt class="nav"><a class="nav" href="imp.SEARCH_ERROR" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Unused.</p>
+</dd>
+<dt class="function" id="init_builtin"><b>init_builtin(name)</b> <tt class="nav"><a class="nav" href="imp.init_builtin" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Initialize the built-in module called <var>name</var> and return
+its module object. If the module was already initialized, it will
+be initialized <em>again</em>. A few modules cannot be initialized
+twice -- attempting to initialize these again will raise an <code>
+exceptions.ImportError</code> exception. If there is no built-in
+module called <var>name</var>, <code>
+None</code> is returned.</p>
+</dd>
+<dt class="function" id="init_frozen"><b>init_frozen(name)</b> <tt class="nav"><a class="nav" href="imp.init_frozen" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Initialize the frozen module called <var>name</var> and return
+its module object. If the module was already initialized, it will
+be initialized <em>again</em>. If there is no frozen module called
+<var>name</var>, <code>None</code> is
+returned. (Frozen modules are modules written in Python whose
+compiled byte-code object is incorporated into a custom-built
+Python interpreter by Python's freeze utility. See Tools/freeze/
+for now.)</p>
+</dd>
+<dt class="function" id="is_builtin"><b>is_builtin(name)</b> <tt class="nav"><a class="nav" href="imp.is_builtin" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return <code>1</code> if there is a built-in module called <var>
+name</var> which can be initialized again. Return <code>-1</code>
+if there is a built-in module called <var>name</var> which cannot
+be initialized again (see <a class="link" href="#init_builtin"><code>
+init_builtin</code></a>). Return <code>0</code> if there is no built-in
+module called <var>name</var>.</p>
+</dd>
+<dt class="function" id="is_frozen"><b>is_frozen(name)</b> <tt class="nav"><a class="nav" href="imp.is_frozen" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return <code>True</code> if there is a
+frozen module (see <a class="link" href="#init_frozen"><code>
+init_frozen</code></a>) called <var>name</var>, or <code>False</code> if there is no such module.</p>
+</dd>
+<dt class="function" id="load_compiled"><b>load_compiled(name, pathname, [file])</b> <tt class="nav"><a class="nav" href="imp.load_compiled" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Load and initialize a module implemented as a byte-compiled code
+file and return its module object. If the module was already
+initialized, it will be initialized <em>again</em>. The <var>
+name</var> argument is used to create or access a module object.
+The <var>pathname</var> argument points to the byte-compiled code
+file. The <var>file</var> argument is the byte-compiled code file,
+open for reading in binary mode, from the beginning. It must
+currently be a real file object, not a user-defined class emulating
+a file.</p>
+</dd>
+<dt class="function" id="load_dynamic"><b>load_dynamic(name, pathname[, file])</b> <tt class="nav"><a class="nav" href="imp.load_dynamic" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Load and initialize a module implemented as a dynamically
+loadable shared library and return its module object. If the module
+was already initialized, it will be initialized <em>again</em>.
+Some modules don't like that and may raise an exception. The <var>
+pathname</var> argument must point to the shared library. The <var>
+name</var> argument is used to construct the name of the
+initialization function: an external C function called
+"<code>init</code><var>name</var>()" in the shared library is
+called. The optional <var>file</var> argument is ignored. (Note:
+using shared libraries is highly system dependent, and not all
+systems support it.)</p>
+</dd>
+<dt class="function" id="load_source"><b>load_source(name, pathname[, file])</b> <tt class="nav"><a class="nav" href="imp.load_source" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Load and initialize a module implemented as a Python source file
+and return its module object. If the module was already
+initialized, it will be initialized <em>again</em>. The <var>
+name</var> argument is used to create or access a module object.
+The <var>pathname</var> argument points to the source file. The
+<var>file</var> argument is the source file, open for reading as
+text, from the beginning. It must currently be a real file object,
+not a user-defined class emulating a file. Note that if a properly
+matching byte-compiled file (with suffix .pyc or .pyo) exists, it
+will be used instead of parsing the given source file.</p>
+</dd>
+</dl><div class="text">
+<h2 id="examples">Examples <a class="nav" href="#examples">#</a></h2>
+
+<p>The following function emulates what was the standard import
+statement up to Python 1.4 (no hierarchical module names). (This
+<em>implementation</em> wouldn't work in that version, since <a class="link" href="#find_module"><code>find_module</code></a> has been
+extended and <a class="link" href="#load_module"><code>
+load_module</code></a> has been added in 1.4.)</p>
+
+<pre>
+import imp
+import sys
+
+def __import__(name, globals=None, locals=None, fromlist=None):
+    # Fast path: see if the module has already been imported.
+    try:
+        return sys.modules[name]
+    except KeyError:
+        pass
+
+    # If any of the following calls raises an exception,
+    # there's a problem we can't handle -- let the caller handle it.
+
+    fp, pathname, description = imp.find_module(name)
+    
+    try:
+        return imp.load_module(name, fp, pathname, description)
+    finally:
+        # Since we may exit via an exception, close fp explicitly.
+        if fp:
+            fp.close()
+</pre>
+
+<p>A more complete example that implements hierarchical module
+names and includes a <code>reload</code>
+function can be found in the module <code>knee</code>. The <code>
+knee</code> module can be found in Demo/imputil/ in the Python source
+distribution.</p>
+</div>
+</div></body></html>

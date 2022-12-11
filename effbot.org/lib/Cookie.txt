@@ -1,0 +1,275 @@
+
+@@module Cookie
+
+<h1>Cookie&#8212;HTTP state management</h1>
+
+<p>The {@link Cookie} module defines classes for abstracting the concept
+of cookies, an HTTP state management mechanism. It supports both simple
+string-only cookies, and provides an abstraction for having any
+serializable data-type as cookie value.
+
+<p>The module formerly strictly applied the parsing rules described in
+the {@link http://www.faqs.org/rfcs/rfc2109.html RFC 2109} and {@link
+http://www.faqs.org/rfcs/rfc2068.html RFC 2068} specifications. It has
+since been discovered that MSIE 3.0x doesn't follow the character rules
+outlined in those specs. As a result, the parsing rules used are a bit
+less strict.
+
+@@exception CookieError
+
+<p>Exception failing because of {@link
+http://www.faqs.org/rfcs/rfc2109.html RFC 2109} invalidity: incorrect
+attributes, incorrect Set-Cookie: header, etc.
+
+@@class BaseCookie([input])
+
+<p>This class is a dictionary-like object whose keys are strings and
+whose values are {@link Morsel} instances. Note that upon setting a key
+to a value, the value is first converted to a {@link Morsel} containing
+the key and the value.
+
+<p>If {@var input} is given, it is passed to the {@link load} method.
+
+@@class SimpleCookie([input])
+
+<p>This class derives from {@link BaseCookie} and overrides {@link
+value_decode} and {@link value_encode} to be the identity and {@link
+str} respectively.
+
+@@class SerialCookie([input])
+
+<p>This class derives from {@link BaseCookie} and overrides {@link
+value_decode} and {@link value_encode} to be the {@link pickle.loads}
+and {@link pickle.dumps}.
+
+
+<p>Deprecated since release 2.3. Reading pickled values from untrusted
+cookie data is a huge security hole, as pickle strings can be crafted to
+cause arbitrary code to execute on your server. It is supported for
+backwards compatibility only, and may eventually go away.
+
+@@class SmartCookie([input])
+
+<p>This class derives from {@link BaseCookie}. It overrides {@link
+value_decode} to be {@link pickle.loads} if it is a valid pickle, and
+otherwise the value itself. It overrides {@link value_encode} to be
+{@link pickle.dumps} unless it is a string, in which case it returns the
+value itself.
+
+
+<p>Deprecated since release 2.3. The same security warning from {@link
+SerialCookie} applies here.
+
+@@text 
+
+<p>A further security note is warranted. For backwards compatibility,
+the {@link Cookie} module exports a class named {@link Cookie} which is
+just an alias for {@link SmartCookie}. This is probably a mistake and
+will likely be removed in a future version. You should not use the
+{@link Cookie} class in your applications, for the same reason why you
+should not use the {@link SerialCookie} class.
+
+@see 
+{@link cookielib Module cookielib}
+
+HTTP cookie handling for for web clients. The cookielib and Cookie
+modules do not depend on each other.
+@see 
+{@link http://www.faqs.org/rfcs/rfc2109.html RFC 2109, HTTP State Management Mechanism}
+
+This is the state management specification implemented by this module.
+
+<h2>Cookie Objects</h2>
+
+@@method Cookie.value_decode(val)
+
+<p>Return a decoded value from a string representation. Return value can
+be any type. This method does nothing in {@link BaseCookie} -- it exists
+so it can be overridden.
+
+@@method Cookie.value_encode(val)
+
+<p>Return an encoded value. {@var val} can be any type, but return value
+must be a string. This method does nothing in {@link BaseCookie} -- it
+exists so it can be overridden
+
+<p>In general, it should be the case that {@link value_encode} and
+{@link value_decode} are inverses on the range of {@var value_decode}.
+
+@@method Cookie.output([attrs[, header[, sep]]])
+
+<p>Return a string representation suitable to be sent as HTTP headers.
+{@var attrs} and {@var header} are sent to each {@link Morsel}'s {@link
+output} method. {@var sep} is used to join the headers together, and is
+by default a newline.
+
+@@method Cookie.js_output([attrs])
+
+<p>Return an embeddable JavaScript snippet, which, if run on a browser
+which supports JavaScript, will act the same as if the HTTP headers was
+sent.
+
+<p>The meaning for {@var attrs} is the same as in {@link output}.
+
+@@method Cookie.load(rawdata)
+
+<p>If {@var rawdata} is a string, parse it as an {@code HTTP_COOKIE} and
+add the values found there as {@link Morsel}s. If it is a dictionary, it
+is equivalent to:
+
+<pre>
+for k, v in rawdata.items():
+    cookie[k] = v
+</pre>
+
+
+@@text 
+
+<h2>Morsel Objects</h2>
+
+@@class Morsel()
+
+<p>Abstract a key/value pair, which has some {@link
+http://www.faqs.org/rfcs/rfc2109.html RFC 2109} attributes.
+
+<p>Morsels are dictionary-like objects, whose set of keys is constant --
+the valid {@link http://www.faqs.org/rfcs/rfc2109.html RFC 2109}
+attributes, which are
+<ul>
+<li>
+<p>{@code expires}
+<li>
+<p>{@code path}
+<li>
+<p>{@code comment}
+<li>
+<p>{@code domain}
+<li>
+<p>{@code max-age}
+<li>
+<p>{@code secure}
+<li>
+<p>{@code version}
+</ul>
+
+<p>The keys are case-insensitive.
+
+@@attribute Morsel.value
+
+<p>The value of the cookie.
+
+@@attribute Morsel.coded_value
+
+<p>The encoded value of the cookie -- this is what should be sent.
+
+@@attribute Morsel.key
+
+<p>The name of the cookie.
+
+@@method Morsel.set(key, value, coded_value)
+
+<p>Set the {@var key}, {@var value} and {@var coded_value} members.
+
+@@method Morsel.isReservedKey(K)
+
+<p>Whether {@var K} is a member of the set of keys of a {@link Morsel}.
+
+@@method Morsel.output([attrs[, header]])
+
+<p>Return a string representation of the Morsel, suitable to be sent as
+an HTTP header. By default, all the attributes are included, unless
+{@var attrs} is given, in which case it should be a list of attributes
+to use. {@var header} is by default {@code "Set-Cookie:"}.
+
+@@method Morsel.js_output([attrs])
+
+<p>Return an embeddable JavaScript snippet, which, if run on a browser
+which supports JavaScript, will act the same as if the HTTP header was
+sent.
+
+<p>The meaning for {@var attrs} is the same as in {@link output}.
+
+@@method Morsel.OutputString([attrs])
+
+<p>Return a string representing the Morsel, without any surrounding HTTP
+or JavaScript.
+
+<p>The meaning for {@var attrs} is the same as in {@link output}.
+
+@@text 
+
+<h2>Example</h2>
+
+<p>The following example demonstrates how to use the {@link Cookie}
+module.
+
+<pre>
+&gt;&gt;&gt; import Cookie
+&gt;&gt;&gt; C = Cookie.SimpleCookie()
+&gt;&gt;&gt; C = Cookie.SerialCookie()
+&gt;&gt;&gt; C = Cookie.SmartCookie()
+&gt;&gt;&gt; C["fig"] = "newton"
+&gt;&gt;&gt; C["sugar"] = "wafer"
+&gt;&gt;&gt; print C # generate HTTP headers
+Set-Cookie: sugar=wafer;
+Set-Cookie: fig=newton;
+&gt;&gt;&gt; print C.output() # same thing
+Set-Cookie: sugar=wafer;
+Set-Cookie: fig=newton;
+&gt;&gt;&gt; C = Cookie.SmartCookie()
+&gt;&gt;&gt; C["rocky"] = "road"
+&gt;&gt;&gt; C["rocky"]["path"] = "/cookie"
+&gt;&gt;&gt; print C.output(header="Cookie:")
+Cookie: rocky=road; Path=/cookie;
+&gt;&gt;&gt; print C.output(attrs=[], header="Cookie:")
+Cookie: rocky=road;
+&gt;&gt;&gt; C = Cookie.SmartCookie()
+&gt;&gt;&gt; C.load("chips=ahoy; vienna=finger") # load from a string (HTTP header)
+&gt;&gt;&gt; print C
+Set-Cookie: vienna=finger;
+Set-Cookie: chips=ahoy;
+&gt;&gt;&gt; C = Cookie.SmartCookie()
+&gt;&gt;&gt; C.load('keebler="E=everybody; L=\\"Loves\\"; fudge=\\012;";')
+&gt;&gt;&gt; print C
+Set-Cookie: keebler="E=everybody; L=\"Loves\"; fudge=\012;";
+&gt;&gt;&gt; C = Cookie.SmartCookie()
+&gt;&gt;&gt; C["oreo"] = "doublestuff"
+&gt;&gt;&gt; C["oreo"]["path"] = "/"
+&gt;&gt;&gt; print C
+Set-Cookie: oreo=doublestuff; Path=/;
+&gt;&gt;&gt; C = Cookie.SmartCookie()
+&gt;&gt;&gt; C["twix"] = "none for you"
+&gt;&gt;&gt; C["twix"].value
+'none for you'
+&gt;&gt;&gt; C = Cookie.SimpleCookie()
+&gt;&gt;&gt; C["number"] = 7 # equivalent to C["number"] = str(7)
+&gt;&gt;&gt; C["string"] = "seven"
+&gt;&gt;&gt; C["number"].value
+'7'
+&gt;&gt;&gt; C["string"].value
+'seven'
+&gt;&gt;&gt; print C
+Set-Cookie: number=7;
+Set-Cookie: string=seven;
+&gt;&gt;&gt; C = Cookie.SerialCookie()
+&gt;&gt;&gt; C["number"] = 7
+&gt;&gt;&gt; C["string"] = "seven"
+&gt;&gt;&gt; C["number"].value
+7
+&gt;&gt;&gt; C["string"].value
+'seven'
+&gt;&gt;&gt; print C
+Set-Cookie: number="I7\012.";
+Set-Cookie: string="S'seven'\012p1\012.";
+&gt;&gt;&gt; C = Cookie.SmartCookie()
+&gt;&gt;&gt; C["number"] = 7
+&gt;&gt;&gt; C["string"] = "seven"
+&gt;&gt;&gt; C["number"].value
+7
+&gt;&gt;&gt; C["string"].value
+'seven'
+&gt;&gt;&gt; print C
+Set-Cookie: number="I7\012.";
+Set-Cookie: string=seven;
+</pre>
+

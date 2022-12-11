@@ -1,0 +1,321 @@
+
+@@module formatter
+
+<h1>formatter&#8212;Generic output formatting</h1>
+
+<p>This module supports two interface definitions, each with multiple
+implementations. The {@em formatter} interface is used by the {@link
+HTMLParser} class of the {@link htmllib} module, and the {@em writer}
+interface is required by the formatter interface.
+
+<p>Formatter objects transform an abstract flow of formatting events
+into specific output events on writer objects. Formatters manage several
+stack structures to allow various properties of a writer object to be
+changed and restored; writers need not be able to handle relative
+changes nor any sort of &#8220;change back&#8221; operation. Specific
+writer properties which may be controlled via formatter objects are
+horizontal alignment, font, and left margin indentations. A mechanism is
+provided which supports providing arbitrary, non-exclusive style
+settings to a writer as well. Additional interfaces facilitate
+formatting events which are not reversible, such as paragraph
+separation.
+
+<p>Writer objects encapsulate device interfaces. Abstract devices, such
+as file formats, are supported as well as physical devices. The provided
+implementations all work with abstract devices. The interface makes
+available mechanisms for setting the properties which formatter objects
+manage and inserting data into the output.
+
+<h2>The Formatter Interface</h2>
+
+<p>Interfaces to create formatters are dependent on the specific
+formatter class being instantiated. The interfaces described below are
+the required interfaces which all formatters must support once
+initialized.
+
+<p>One data element is defined at the module level:
+
+@@variable AS_IS
+
+<p>Value which can be used in the font specification passed to the
+{@code push_font()} method described below, or as the new value to any
+other {@code push_}{@var property}() method. Pushing the {@code AS_IS}
+value allows the corresponding {@code pop_}{@var property}() method to
+be called without having to track whether the property was changed.
+
+@@text 
+
+<p>The following attributes are defined for formatter instance objects:
+
+@@attribute Formatter.writer
+
+<p>The writer instance with which the formatter interacts.
+
+@@method Formatter.end_paragraph(blanklines)
+
+<p>Close any open paragraphs and insert at least {@var blanklines}
+before the next paragraph.
+
+@@method Formatter.add_line_break()
+
+<p>Add a hard line break if one does not already exist. This does not
+break the logical paragraph.
+
+@@method Formatter.add_hor_rule(*args, **kw)
+
+<p>Insert a horizontal rule in the output. A hard break is inserted if
+there is data in the current paragraph, but the logical paragraph is not
+broken. The arguments and keywords are passed on to the writer's {@link
+send_line_break} method.
+
+@@method Formatter.add_flowing_data(data)
+
+<p>Provide data which should be formatted with collapsed whitespace.
+Whitespace from preceding and successive calls to {@link
+add_flowing_data} is considered as well when the whitespace collapse is
+performed. The data which is passed to this method is expected to be
+word-wrapped by the output device. Note that any word-wrapping still
+must be performed by the writer object due to the need to rely on device
+and font information.
+
+@@method Formatter.add_literal_data(data)
+
+<p>Provide data which should be passed to the writer unchanged.
+Whitespace, including newline and tab characters, are considered legal
+in the value of {@var data}.
+
+@@method Formatter.add_label_data(format, counter)
+
+<p>Insert a label which should be placed to the left of the current left
+margin. This should be used for constructing bulleted or numbered lists.
+If the {@var format} value is a string, it is interpreted as a format
+specification for {@var counter}, which should be an integer. The result
+of this formatting becomes the value of the label; if {@var format} is
+not a string it is used as the label value directly. The label value is
+passed as the only argument to the writer's {@link send_label_data}
+method. Interpretation of non-string label values is dependent on the
+associated writer.
+
+<p>Format specifications are strings which, in combination with a
+counter value, are used to compute label values. Each character in the
+format string is copied to the label value, with some characters
+recognized to indicate a transform on the counter value. Specifically,
+the character "{@code 1}" represents the counter value formatter as an
+Arabic number, the characters "{@code A}" and "{@code a}" represent
+alphabetic representations of the counter value in upper and lower case,
+respectively, and "{@code I}" and "{@code i}" represent the counter
+value in Roman numerals, in upper and lower case. Note that the
+alphabetic and roman transforms require that the counter value be
+greater than zero.
+
+@@method Formatter.flush_softspace()
+
+<p>Send any pending whitespace buffered from a previous call to {@link
+add_flowing_data} to the associated writer object. This should be called
+before any direct manipulation of the writer object.
+
+@@method Formatter.push_alignment(align)
+
+<p>Push a new alignment setting onto the alignment stack. This may be
+{@code AS_IS} if no change is desired. If the alignment value is changed
+from the previous setting, the writer's {@link new_alignment} method is
+called with the {@var align} value.
+
+@@method Formatter.pop_alignment()
+
+<p>Restore the previous alignment.
+
+@@method Formatter.push_font((size, italic, bold, teletype))
+
+<p>Change some or all font properties of the writer object. Properties
+which are not set to {@code AS_IS} are set to the values passed in while
+others are maintained at their current settings. The writer's {@link
+new_font} method is called with the fully resolved font specification.
+
+@@method Formatter.pop_font()
+
+<p>Restore the previous font.
+
+@@method Formatter.push_margin(margin)
+
+<p>Increase the number of left margin indentations by one, associating
+the logical tag {@var margin} with the new indentation. The initial
+margin level is {@code 0}. Changed values of the logical tag must be
+true values; false values other than {@code AS_IS} are not sufficient to
+change the margin.
+
+@@method Formatter.pop_margin()
+
+<p>Restore the previous margin.
+
+@@method Formatter.push_style(*styles)
+
+<p>Push any number of arbitrary style specifications. All styles are
+pushed onto the styles stack in order. A tuple representing the entire
+stack, including {@code AS_IS} values, is passed to the writer's {@link
+new_styles} method.
+
+@@method Formatter.pop_style([n = 1])
+
+<p>Pop the last {@var n} style specifications passed to {@link
+push_style}. A tuple representing the revised stack, including {@code
+AS_IS} values, is passed to the writer's {@link new_styles} method.
+
+@@method Formatter.set_spacing(spacing)
+
+<p>Set the spacing style for the writer.
+
+@@method Formatter.assert_line_data([flag = 1])
+
+<p>Inform the formatter that data has been added to the current
+paragraph out-of-band. This should be used when the writer has been
+manipulated directly. The optional {@var flag} argument can be set to
+false if the writer manipulations produced a hard line break at the end
+of the output.
+
+@@text 
+
+<h2>Formatter Implementations</h2>
+
+<p>Two implementations of formatter objects are provided by this module.
+Most applications may use one of these classes without modification or
+subclassing.
+
+@@class NullFormatter([writer])
+
+<p>A formatter which does nothing. If {@var writer} is omitted, a {@link
+NullWriter} instance is created. No methods of the writer are called by
+{@link NullFormatter} instances. Implementations should inherit from
+this class if implementing a writer interface but don't need to inherit
+any implementation.
+
+@@class AbstractFormatter(writer)
+
+<p>The standard formatter. This implementation has demonstrated wide
+applicability to many writers, and may be used directly in most
+circumstances. It has been used to implement a full-featured World Wide
+Web browser.
+
+@@text 
+
+<h2>The Writer Interface</h2>
+
+<p>Interfaces to create writers are dependent on the specific writer
+class being instantiated. The interfaces described below are the
+required interfaces which all writers must support once initialized.
+Note that while most applications can use the {@link AbstractFormatter}
+class as a formatter, the writer must typically be provided by the
+application.
+
+@@method Writer.flush()
+
+<p>Flush any buffered output or device control events.
+
+@@method Writer.new_alignment(align)
+
+<p>Set the alignment style. The {@var align} value can be any object,
+but by convention is a string or {@link None}, where {@link None}
+indicates that the writer's &#8220;preferred&#8221; alignment should be
+used. Conventional {@var align} values are {@code 'left'}, {@code
+'center'}, {@code 'right'}, and {@code 'justify'}.
+
+@@method Writer.new_font(font)
+
+<p>Set the font style. The value of {@var font} will be {@code None},
+indicating that the device's default font should be used, or a tuple of
+the form {@code (}{@var size}, {@var italic}, {@var bold}, {@var
+teletype}{@code )}. Size will be a string indicating the size of font
+that should be used; specific strings and their interpretation must be
+defined by the application. The {@var italic}, {@var bold}, and {@var
+teletype} values are Boolean values specifying which of those font
+attributes should be used.
+
+@@method Writer.new_margin(margin, level)
+
+<p>Set the margin level to the integer {@var level} and the logical tag
+to {@var margin}. Interpretation of the logical tag is at the writer's
+discretion; the only restriction on the value of the logical tag is that
+it not be a false value for non-zero values of {@var level}.
+
+@@method Writer.new_spacing(spacing)
+
+<p>Set the spacing style to {@var spacing}.
+
+@@method Writer.new_styles(styles)
+
+<p>Set additional styles. The {@var styles} value is a tuple of
+arbitrary values; the value {@code AS_IS} should be ignored. The {@var
+styles} tuple may be interpreted either as a set or as a stack depending
+on the requirements of the application and writer implementation.
+
+@@method Writer.send_line_break()
+
+<p>Break the current line.
+
+@@method Writer.send_paragraph(blankline)
+
+<p>Produce a paragraph separation of at least {@var blankline} blank
+lines, or the equivalent. The {@var blankline} value will be an integer.
+Note that the implementation will receive a call to {@link
+send_line_break} before this call if a line break is needed; this method
+should not include ending the last line of the paragraph. It is only
+responsible for vertical spacing between paragraphs.
+
+@@method Writer.send_hor_rule(*args, **kw)
+
+<p>Display a horizontal rule on the output device. The arguments to this
+method are entirely application- and writer-specific, and should be
+interpreted with care. The method implementation may assume that a line
+break has already been issued via {@link send_line_break}.
+
+@@method Writer.send_flowing_data(data)
+
+<p>Output character data which may be word-wrapped and re-flowed as
+needed. Within any sequence of calls to this method, the writer may
+assume that spans of multiple whitespace characters have been collapsed
+to single space characters.
+
+@@method Writer.send_literal_data(data)
+
+<p>Output character data which has already been formatted for display.
+Generally, this should be interpreted to mean that line breaks indicated
+by newline characters should be preserved and no new line breaks should
+be introduced. The data may contain embedded newline and tab characters,
+unlike data provided to the {@link send_formatted_data} interface.
+
+@@method Writer.send_label_data(data)
+
+<p>Set {@var data} to the left of the current left margin, if possible.
+The value of {@var data} is not restricted; treatment of non-string
+values is entirely application- and writer-dependent. This method will
+only be called at the beginning of a line.
+
+@@text 
+
+<h2>Writer Implementations</h2>
+
+<p>Three implementations of the writer object interface are provided as
+examples by this module. Most applications will need to derive new
+writer classes from the {@link NullWriter} class.
+
+@@class NullWriter()
+
+<p>A writer which only provides the interface definition; no actions are
+taken on any methods. This should be the base class for all writers
+which do not need to inherit any implementation methods.
+
+@@class AbstractWriter()
+
+<p>A writer which can be used in debugging formatters, but not much
+else. Each method simply announces itself by printing its name and
+arguments on standard output.
+
+@@class DumbWriter([file[, maxcol = 72]])
+
+<p>Simple writer class which writes output on the file object passed in
+as {@var file} or, if {@var file} is omitted, on standard output. The
+output is simply word-wrapped to the number of columns specified by
+{@var maxcol}. This class is suitable for reflowing a sequence of
+paragraphs.
+
+@@text 

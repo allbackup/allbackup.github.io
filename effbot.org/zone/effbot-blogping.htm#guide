@@ -1,0 +1,55 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>The blogping Utility&nbsp;(effbot.exe)</title> <script type="text/javascript">effbot_page_id=53;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <h1 class="maintitle">The blogping Utility&nbsp;(effbot.exe)</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p class="info">Updated July 07, 2003 | February 2003 | Fredrik Lundh</p><p>This <a href="effbot-exe-index.htm">effbot.exe</a> utility allows
+you to notify one or more weblog monitors that your weblog has been
+updated, all with a single click.</p><p>The current version supports all monitors that implement the
+<a href="http://www.xmlrpc.com/weblogsCom">weblogs XML-RPC interface</a>.
+This includes
+<a href="http://www.weblogs.com">weblogs.com</a>,
+<a href="http://blo.gs">blo.gs</a>,
+and others.</p><p>[<a href="/downloads#effbot">download</a>]
+[<a href="#install">installation</a>]
+[<a href="#guide">user&#8217;s guide</a>]
+[<a href="https://www.paypal.com/xclick/business=fredrik%40pythonware.com&amp;item_name=effbot.org+sponsorship&amp;no_note=1&amp;tax=0&amp;currency_code=USD" title="effbot.org sponsorship (via paypal.com)">donate</a>]
+</p><img alt="" height="377" src="/media/cache/33be45f3875a7150e281c546197b071d.png" width="267" />
+<h2 id="install">Installation&#160;<a class="nav" href="#install" title="bookmark!">#</a></h2><p>To run this effbot.exe utility, you need effbot.exe/effnews
+version 1.0.5 or later, and the latest version of the <b>blogping.effbot</b>
+package (the current version is 1.0).  Both packages are available from
+<a href="/downloads#effbot">the effbot.org downloads site</a>.</p><p>Step by step:</p><ol><li><p>Download the latest stable <b>effbot.exe/effnews</b> runtime installer
+from <a href="/downloads#effbot">the effbot.org downloads site</a>.</p></li><li><p>Run the installer.  If successful, an <a href="effnews-exe.htm">effnews</a> window should appear on the screen after a
+few seconds.  Close that window.</p></li><li><p>Download the latest stable <b>blogping</b> kit from <a href="/downloads#effbot">the effbot.org downloads site</a>.</p></li><li><p>Open the <b>blogping.effbot</b> file.  Windows will ask if you
+want to &#8220;<b>add blogping.effbot to the effbot.exe environment</b>&#8220;.
+Click OK to install the blogping utility.</p></li><li><p>If successful, a <b>blogping</b> window appears on the screen.</p></li></ol><h2 id="guide">User&#8217;s Guide&#160;<a class="nav" href="#guide" title="bookmark!">#</a></h2><h3>Starting the Program</h3><p>To start the blogping utility, use the <b>effbot.exe blogping</b>
+shortcut that the installer has added to your desktop.</p><p>(Feel free to drag the shortcut to your process bar, or to the start
+menu.)</p><p>If you cannot find the shortcut, you can open the <b>c:/effbot.exe</b>
+directory in the explorer, and open the <b>blogping.effbot</b> utility.
+(To create a shortcut, use the <b>Send to Desktop</b> command in the
+context menu.)</p><h3>Configuration</h3><p>Before you can ping the monitors, you have to fill in the three
+fields at the top of the blogping window:</p><dl><dt><b>ping hosts</b></dt><dd><p>This is a list of URLs to ping.  You can add any number of URLs,
+as long as you put each URL on its own line.  Commonly used monitors
+include (copy and paste into the blogping window to use, click on the
+URL to go to the associated site):</p><dl><dt><a href="http://www.blo.gs">http://ping.blo.gs/</a>
+</dt><dt><a href="http://www.weblogs.com">http://rpc.weblogs.com/RPC2</a>
+</dt><dt><a href="http://www.blogrolling.com">http://rpc.blogrolling.com/pinger/</a>
+</dt><dt><a href="http://www.technorati.com">http://rpc.technorati.com/rpc/ping</a>
+</dt><dt><a href="http://nyligen.se">http://nyligen.se/ping/</a> (Swedish blogs only)
+</dt></dl><p>(link contributions are welcome!)</p><p>The <b>blogping</b> utility adds http:// and trailing slashes,
+where necessary.</p></dd>
+<dt><b>blog name</b></dt><dd><p>This is the name of your blog, e.g. <b>My Excellent Blog</b>.</p></dd>
+<dt><b>blog url</b></dt><dd><p>This the the URL to your blog&#8217;s home page, e.g. <b>http://excellentblog.blogspot.com</b>.</p></dd>
+</dl><p>Note that you have to click in a field to be able to edit it. The
+<b>Tab</b> key doesn&#8217;t work in the current version.</p><h3>Pinging</h3><p>To ping the monitors, click the <b>ping</b> button. (!)</p><p>The utility will ping the monitors in order, and report the status
+in status window.</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div> <!-- yui-g --></div> <!-- content --> </div> <!-- yui-b --> </div> <!-- yui-main --> <div class="yui-b"> <div id='menu'> <ul> <li><b><a href="/">::: effbot.org</a></b></li> <li><b><a href=".">::: zone :::</a></b></li> </ul> <ul><li><b>contents :::</b></li></ul> <ul><li><a href="#install">Installation</a></li><li><a href="#guide">User&#8217;s Guide</a></li></ul> </div> <!-- menu --> <div class='adsense'> <script type="text/javascript"><!--
+google_ad_client = 'pub-0985106753436081';
+google_ad_width = 160;
+google_ad_height = 600;
+google_ad_format = '160x600_as';
+google_ad_channel ="6557156704";
+google_color_border = "CCFFCC";
+google_color_bg = "FFFFFF";
+google_color_link = "008040";
+google_color_url = "40cc80";
+google_color_text = "404040";
+// --> </script> <script type="text/javascript"
+  src="http://pagead2.googlesyndication.com/pagead/show_ads.js"> </script> </div> <!-- adsense --> </div> <!-- yui-b --> </div> <!-- bd --> <div id="ft"> <!-- footer --> <p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15_grey.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;"></a>
+this page was rendered by a <a href="http://www.djangoproject.com/">django</a> application in 0.06s 2007-12-26 13:04:10.881723.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p> </div> <!-- ft --> </div> <!-- doc --> <script src="/media/js/effbot-min.js" type="text/javascript"> </script> </body> </html>

@@ -1,0 +1,16 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>What is a&nbsp;sequence?</title></head><body data-page-id="902"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><p class="note" style="text-align: center"><strong>
+This is an old copy of the Python FAQ.  The information here may be
+outdated.
+</strong></p><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">What is a&nbsp;sequence?</h1></div><div class="yui-ge"><div class="yui-u first"><p>A sequence is an informal interface for container objects that hold zero or
+or more values, in a given order.  A sequence object must support the object[i]
+syntax, and should usually have a known length.  Sequences may also support slicing and other list-style methods.</p><p>The standard <a href="/pyref/str.htm"><strong>str</strong></a>, <a href="/pyref/unicode.htm"><strong>unicode</strong></a>, <a href="/pyref/list.htm"><strong>list</strong></a>, and <a href="/pyref/tuple.htm"><strong>tuple</strong></a> types are all sequence objects.</p><p>To implement your own sequence class, you must implement a
+<a href="/pyref/__getitem__.htm"><strong>__getitem__</strong></a> method, and may also a <a href="/pyref/__len__.htm"><strong>__len__</strong></a>
+method.  The <a href="/pyref/__getitem__.htm"><strong>__getitem__</strong></a> method must raise an <a href="/pyref/IndexError.htm"><strong>IndexError</strong></a> exception for invalid indexes.  An example:</p><pre class="python"><span class="pykeyword">class</span> <span class="pyclass">StringRange</span>:
+    <span class="pykeyword">def</span> <span class="pyfunction">__len__</span>(self):
+        <span class="pykeyword">return</span> 10
+    <span class="pykeyword">def</span> <span class="pyfunction">__getitem__</span>(self, index):
+        <span class="pykeyword">if</span> index &gt;= len(self):
+            <span class="pykeyword">raise</span> IndexError
+        <span class="pykeyword">return</span> str(index)</pre><p>CATEGORY: general</p><p>CATEGORY: programming</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to pyfaq index page.">::: pyfaq :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

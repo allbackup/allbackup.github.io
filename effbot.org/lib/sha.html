@@ -1,0 +1,90 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>sha</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-sha.html'>original</a> :::
+<a href='sha.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>sha&#8212;SHA-1 message digest algorithm</h1>
+
+<p>This module implements the interface to NIST's secure hash
+algorithm, known as SHA-1. SHA-1 is an improved version of the
+original SHA hash algorithm. It is used in the same way as the <code>md5</code> module: use <a class="link" href="#new"><code>new</code></a> to create an sha object, then feed this
+object with arbitrary strings using the <a class="link" href="#update"><code>update</code></a> method, and at any point you can ask
+it for the digest of the concatenation of the strings fed to it so
+far. SHA-1 digests are 160 bits instead of MD5's 128 bits.</p>
+</div>
+<dl><dt class="function" id="new"><b>new([string])</b> <tt class="nav"><a class="nav" href="sha.new" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return a new sha object. If <var>string</var> is present, the
+method call <code>update(</code><var>string</var>) is made.</p>
+</dd>
+</dl><div class="text">
+<p>The following values are provided as constants in the module and
+as attributes of the sha objects returned by <a class="link" href="#new"><code>new</code></a>:</p>
+</div>
+<dl><dt class="variable" id="blocksize"><b>blocksize</b> <tt class="nav"><a class="nav" href="sha.blocksize" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Size of the blocks fed into the hash function; this is always
+<code>1</code>. This size is used to allow an arbitrary string to
+be hashed.</p>
+</dd>
+<dt class="variable" id="digest_size"><b>digest_size</b> <tt class="nav"><a class="nav" href="sha.digest_size" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>The size of the resulting digest in bytes. This is always <code>
+20</code>.</p>
+</dd>
+</dl><div class="text">
+<p>An sha object has the same methods as md5 objects:</p>
+</div>
+<dl><dt class="method" id="update"><b>update(arg)</b> <tt class="nav"><a class="nav" href="sha.update" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Update the sha object with the string <var>arg</var>. Repeated
+calls are equivalent to a single call with the concatenation of all
+the arguments: <code>m.update(a); m.update(b)</code> is equivalent
+to <code>m.update(a+b)</code>.</p>
+</dd>
+<dt class="method" id="digest"><b>digest()</b> <tt class="nav"><a class="nav" href="sha.digest" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return the digest of the strings passed to the <a class="link" href="#update"><code>update</code></a> method so far. This is a 20-byte
+string which may contain non-ASCII characters, including null
+bytes.</p>
+</dd>
+<dt class="method" id="hexdigest"><b>hexdigest()</b> <tt class="nav"><a class="nav" href="sha.hexdigest" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Like <a class="link" href="#digest"><code>digest</code></a> except the
+digest is returned as a string of length 40, containing only
+hexadecimal digits. This may be used to exchange the value safely
+in email or other non-binary environments.</p>
+</dd>
+<dt class="method" id="copy"><b>copy()</b> <tt class="nav"><a class="nav" href="sha.copy" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return a copy (&#8220;clone&#8221;) of the sha object. This can
+be used to efficiently compute the digests of strings that share a
+common initial substring.</p>
+</dd>
+</dl><div class="text"><span class="mark">@see</span> <a class="link" href="http://csrc.nist.gov/publications/fips/fips180-2/fips180-2withchangenotice.pdf">
+Secure Hash Standard</a> The Secure Hash Algorithm is defined by
+NIST document FIPS PUB 180-2: Secure Hash Standard, published in
+August 2002. <span class="mark">@see</span> <a class="link" href="http://csrc.nist.gov/encryption/tkhash.html">Cryptographic
+Toolkit (Secure Hashing)</a> Links from NIST to various information
+on secure hashing.</div>
+</div></body></html>

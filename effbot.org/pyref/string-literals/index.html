@@ -1,0 +1,21 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>String&nbsp;literals</title> <script type="text/javascript">effbot_page_id=1588;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> <!--
+<p style='color: #8f8f8f; background: #fff5bf; padding: 5px 10px;'> <b>2008-07-15:</b> Selected articles
+
+now have experimental "comment" links in the left column and at the bottom.
+You're welcome to use them for commenting and voting on articles.
+For a bit more on this, see <a
+href="http://effbot.slinkset.com/links/Welcome_to_discuss_effbot_org">this
+page</a>. /F
+</p>
+--> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <h1 class="maintitle">String&nbsp;literals</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p>COMMENT: <strong>Needs refactoring!</strong></p><p>String literals are described by the following lexical definitions:</p><p>stringliteral ::= [[stringprefix][1]]([shortstring][2] | [ longstring][3])
+stringprefix ::= &#8220;r&#8221; | &#8220;u&#8221; | &#8220;ur&#8221; | &#8220;R&#8221; | &#8220;U&#8221; | &#8220;UR&#8221; | &#8220;Ur&#8221; | &#8220;uR&#8221;
+shortstring ::= &#8220;&#8217;&#8221; [shortstringitem][4]* &#8220;&#8217;&#8221; | &#8216;&#8221;&#8217; [shortstringitem][4]* &#8216;&#8221;&#8217;
+longstring ::= &#8220;&#8221;&#8217;&#8221; [longstringitem][5]* &#8220;&#8221;&#8217;&#8221;
+<code>| '"""' [longstringitem][5]\* '"""'</code>
+shortstringitem ::= [shortstringchar][6] | [ escapeseq][7]
+longstringitem ::= [ longstringchar][8] | [escapeseq][7]
+shortstringchar ::= &lt;any source character except &#8220;" or newline or the quote&gt;
+longstringchar ::= &lt;any source character except &#8220;"&gt;
+escapeseq ::= &#8220;" &lt;any ASCII character&gt;</p><p>One syntactic restriction not indicated by these productions is that whitespace is not allowed between the [stringprefix][1] and the rest of the string literal. The source character set is defined by the encoding declaration; it is ASCII if no encoding declaration is given in the source file; see section&#160;[2.1.4][10].</p><p>In plain English: String literals can be enclosed in matching single quotes (<code>'</code>) or double quotes (<code>"</code>). They can also be enclosed in matching groups of three single or double quotes (these are generally referred to as <em>triple-quoted strings</em>). The backslash (<code>\</code>) character is used to escape characters that otherwise have a special meaning, such as newline, backslash itself, or the quote character. String literals may optionally be prefixed with a letter &#8220;r&#8221; or &#8220;R&#8221;; such strings are called <em>raw strings</em> and use different rules for interpreting backslash escape sequences. A prefix of &#8220;u&#8221; or &#8220;U&#8221; makes the string a Unicode string. Unicode strings use the Unicode character set as defined by the Unicode Consortium and ISO&#160;10646. Some additional escape sequences, described below, are available in Unicode strings. The two prefix characters may be combined; in this case, &#8220;u&#8221; must appear before &#8220;r&#8221;.</p><p>In triple-quoted strings, unescaped newlines and quotes are allowed (and are retained), except that three unescaped quotes in a row terminate the string. (A <code>`quote'' is the character used to open the string, i.e. either</code>&#8217;<code>or<

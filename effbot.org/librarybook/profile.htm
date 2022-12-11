@@ -1,0 +1,50 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>The profile&nbsp;module</title></head><body data-page-id="623"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">The profile&nbsp;module</h1></div><div class="yui-ge"><div class="yui-u first"><p>This is the standard Python profiler.</p><p>Like the disassembler and the debugger, you can run the profiler
+from the command line.</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><pre class="wide wide" format="LINESPECIFIC">
+$ profile.py hello.py
+
+hello again, and welcome to the show
+
+         3 function calls in 0.785 CPU seconds
+
+   Ordered by: standard name
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+        1    0.001    0.001    0.002    0.002 &lt;string&gt;:1(?)
+        1    0.001    0.001    0.001    0.001 hello.py:1(?)
+        1    0.783    0.783    0.785    0.785 profile:0(execfile('hello.py'))
+        0    0.000             0.000          profile:0(profiler)
+</pre></div><div class="yui-ge"><div class="yui-u first"><p>It can also be used to profile part of a program.</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><div class="example wide">
+<b style="example">Example: Using the profile
+module</b>
+<pre class="wide">
+# File: <a href="profile/profile-example-1.py">profile-example-1.py</a>
+
+import profile
+
+def func1():
+    for i in range(1000):
+        pass
+
+def func2():
+    for i in range(1000):
+        func1()
+
+profile.run("func2()")
+
+</pre><pre class="computeroutput wide" moreinfo="NONE">
+$ python profile-example-1.py
+
+     1003 function calls in 2.380 CPU seconds
+
+Ordered by: standard name
+
+ncalls tottime percall cumtime percall filename:lineno(function)
+     1   0.000   0.000   2.040   2.040 &lt;string&gt;:1(?)
+  1000   1.950   0.002   1.950   0.002 profile-example-1.py:3(func1)
+     1   0.090   0.090   2.040   2.040 profile-example-1.py:7(func2)
+     1   0.340   0.340   2.380   2.380 profile:0(func2())
+     0   0.000           0.000         profile:0(profiler)
+</pre></div></div><div class="yui-ge"><div class="yui-u first"><p>You can modify the report to suit your needs, via the
+<b><a href="pstats.htm">pstats</a></b> module.</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to librarybook index page.">::: librarybook :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

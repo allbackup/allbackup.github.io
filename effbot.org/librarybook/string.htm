@@ -1,0 +1,99 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>The string&nbsp;module</title></head><body data-page-id="667"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">The string&nbsp;module</h1></div><div class="yui-ge"><div class="yui-u first"><p>This module contains a number of functions to process standard
+Python strings.  In recent versions, most functions are available as
+string methods as well (more on this below).</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><div class="example wide">
+<b style="example">Example: Using the string
+module</b>
+<pre class="wide">
+# File: <a href="string/string-example-1.py">string-example-1.py</a>
+
+import string
+
+text = "Monty Python's Flying Circus"
+
+print "upper", "=&gt;", string.upper(text)
+print "lower", "=&gt;", string.lower(text)
+print "split", "=&gt;", string.split(text)
+print "join", "=&gt;", string.join(string.split(text), "+")
+print "replace", "=&gt;", string.replace(text, "Python", "Java")
+print "find", "=&gt;", string.find(text, "Python"), string.find(text, "Java")
+print "count", "=&gt;", string.count(text, "n")
+
+</pre><pre class="computeroutput wide" moreinfo="NONE">
+upper =&gt; MONTY PYTHON'S FLYING CIRCUS
+lower =&gt; monty python's flying circus
+split =&gt; ['Monty', "Python's", 'Flying', 'Circus']
+join =&gt; Monty+Python's+Flying+Circus
+replace =&gt; Monty Java's Flying Circus
+find =&gt; 6 -1
+count =&gt; 3
+</pre></div></div><div class="yui-ge"><div class="yui-u first"><p>In Python 1.5.2 and earlier, this module uses functions from the
+<b><a href="strop.htm">strop</a></b>
+implementation module where possible.</p><p>In Python 1.6 and later, most string operations are made
+available as string methods as well, and many functions in the
+<b>string</b> module are simply wrapper functions that call the
+corresponding string method.</p><div class="example">
+<b style="example">Example: Using string
+methods instead of string module functions (Python 1.6 and
+later)</b>
+<pre>
+# File: <a href="string/string-example-2.py">string-example-2.py</a>
+
+text = "Monty Python's Flying Circus"
+
+print "upper", "=&gt;", text.upper()
+print "lower", "=&gt;", text.lower()
+print "split", "=&gt;", text.split()
+print "join", "=&gt;", "+".join(text.split())
+print "replace", "=&gt;", text.replace("Python", "Perl")
+print "find", "=&gt;", text.find("Python"), text.find("Perl")
+print "count", "=&gt;", text.count("n")
+
+</pre><pre class="computeroutput" moreinfo="NONE">
+upper =&gt; MONTY PYTHON'S FLYING CIRCUS
+lower =&gt; monty python's flying circus
+split =&gt; ['Monty', "Python's", 'Flying', 'Circus']
+join =&gt; Monty+Python's+Flying+Circus
+replace =&gt; Monty Perl's Flying Circus
+find =&gt; 6 -1
+count =&gt; 3
+</pre></div><p>In addition to the string manipulation stuff, the
+<b>string</b> module also contains a number of functions which
+convert strings to other types:</p><div class="example">
+<b style="example">Example: Using the string
+module to convert strings to numbers</b>
+<pre>
+# File: <a href="string/string-example-3.py">string-example-3.py</a>
+
+import string
+
+print int("4711"),
+print string.atoi("4711"),
+print string.atoi("11147", 8), # octal
+print string.atoi("1267", 16), # hexadecimal
+print string.atoi("3mv", 36) # whatever...
+
+print string.atoi("4711", 0),
+print string.atoi("04711", 0),
+print string.atoi("0x4711", 0)
+
+print float("4711"),
+print string.atof("1"),
+print string.atof("1.23e5")
+
+</pre><pre class="computeroutput" moreinfo="NONE">
+4711 4711 4711 4711 4711
+4711 2505 18193
+4711.0 1.0 123000.0
+</pre></div><p>In most cases (especially if you&#8217;re using 1.6 or later), you can
+use the <b>int</b> and <b>float</b> functions instead of their
+<b>string</b> module counterparts.</p><p>The <b>atoi</b> function takes an optional second argument,
+which specifices the number base. If the base is zero, the function
+looks at the first few characters before attempting to interpret
+the value: if <span>&#8220;0x&#8221;</span>, the base is set to 16
+(hexadecimal), and if <span>&#8220;0&#8221;</span>, the base is set to 8
+(octal). The default is base 10 (decimal), just as if you hadn&#8217;t
+provided an extra argument.</p><p>In 1.6 and later, the <b>int</b> also accepts a second
+argument, just like <b>atoi</b>. But unlike the string versions,
+<b>int</b> and <b>float</b> also accepts Unicode strings.</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to librarybook index page.">::: librarybook :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

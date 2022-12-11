@@ -1,0 +1,83 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>The pickle&nbsp;module</title></head><body data-page-id="609"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">The pickle&nbsp;module</h1></div><div class="yui-ge"><div class="yui-u first"><p>This module is used to serialize data; that is, convert data to
+and from character strings, so that they can be stored on file or
+sent over a network.  It&#8217;s a quite a bit slower than <b>marshal</b>, but
+it can handle class instances, shared elements, and recursive data
+structures, among other things.</p><p>There&#8217;s also a faster C implementatation available, <a href="cpickle.htm">cPickle</a>, which can usually be used
+as a drop-in replacement.</p><div class="example">
+<b style="example">Example: Using the pickle
+module</b>
+<pre>
+# File: <a href="pickle/pickle-example-1.py">pickle-example-1.py</a>
+
+import pickle
+
+value = (
+    "this is a string",
+    [1, 2, 3, 4],
+    ("more tuples", 1.0, 2.3, 4.5),
+    "this is yet another string"
+    )
+
+data = pickle.dumps(value)
+
+# intermediate format
+print type(data), len(data)
+
+print "-"*50
+print data
+print "-"*50
+
+print pickle.loads(data)
+
+</pre><pre class="computeroutput" moreinfo="NONE">
+&lt;type 'string'&gt; 121
+--------------------------------------------------
+(S'this is a string'
+p0
+(lp1
+I1
+aI2
+aI3
+aI4
+a(S'more tuples'
+p2
+F1.0
+F2.3
+F4.5
+tp3
+S'this is yet another string'
+p4
+tp5
+.
+--------------------------------------------------
+('this is a string', [1, 2, 3, 4], ('more tuples',
+1.0, 2.3, 4.5), 'this is yet another string')
+</pre></div><p>On the other hand, <b>pickle</b> cannot handle code objects
+(but see the <b><a href="copy-reg.htm">copy_reg</a></b> module
+for a way to fix this).</p><p>By default, pickle uses a text-based format. You can also use a
+binary format, in which numbers and binary strings are stored in a
+compact binary format. The binary format usually results in smaller
+files.</p><div class="example">
+<b style="example">Example: Using the pickle
+module in binary mode</b>
+<pre>
+# File: <a href="pickle/pickle-example-2.py">pickle-example-2.py</a>
+
+import pickle
+import math
+
+value = (
+    "this is a long string" * 100,
+    [1.2345678, 2.3456789, 3.4567890] * 100
+    )
+
+# text mode
+data = pickle.dumps(value)
+print type(data), len(data), pickle.loads(data) == value
+
+# binary mode
+data = pickle.dumps(value, 1)
+print type(data), len(data), pickle.loads(data) == value
+</pre></div></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to librarybook index page.">::: librarybook :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

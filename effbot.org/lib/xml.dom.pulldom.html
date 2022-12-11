@@ -1,0 +1,83 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>xml.dom.pulldom</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-xml.dom.pulldom.html'>original</a> :::
+<a href='xml.dom.pulldom.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>xml.dom.pulldom&#8212;Support for building partial DOM
+trees</h1>
+
+<div class="toc"><dl><dt>On this page:</dt><dd><a href="#domeventstream-objects">DOMEventStream Objects</a></dd></dl></div><p>New in version 2.0.</p>
+
+<p><code>xml.dom.pulldom</code>
+allows building only selected portions of a Document Object Model
+representation of a document from SAX events.</p>
+</div>
+<dl><dt class="class" id="PullDOM"><b>class PullDOM([documentFactory])</b> <tt class="nav"><a class="nav" href="xml.dom.pulldom.PullDOM" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p><code>
+xml.sax.handler.ContentHandler</code> implementation that ...</p>
+</dd>
+<dt class="class" id="DOMEventStream"><b>class DOMEventStream(stream, parser, bufsize)</b> <tt class="nav"><a class="nav" href="xml.dom.pulldom.DOMEventStream" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>...</p>
+</dd>
+<dt class="class" id="SAX2DOM"><b>class SAX2DOM([documentFactory])</b> <tt class="nav"><a class="nav" href="xml.dom.pulldom.SAX2DOM" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p><code>
+xml.sax.handler.ContentHandler</code> implementation that ...</p>
+</dd>
+<dt class="function" id="parse"><b>parse(stream_or_string[, parser[, bufsize]])</b> <tt class="nav"><a class="nav" href="xml.dom.pulldom.parse" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>...</p>
+</dd>
+<dt class="function" id="parseString"><b>parseString(string[, parser])</b> <tt class="nav"><a class="nav" href="xml.dom.pulldom.parseString" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>...</p>
+</dd>
+<dt class="variable" id="default_bufsize"><b>default_bufsize</b> <tt class="nav"><a class="nav" href="xml.dom.pulldom.default_bufsize" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Default value for the <var>busize</var> parameter to <a class="link" href="#parse"><code>parse</code></a>.</p>
+
+<blockquote><span class="mark">@since</span> Changed in version
+2.1: The value of this variable can be changed before calling
+parse() and the new value will take effect.<br />
+</blockquote>
+</dd>
+</dl><div class="text">
+<h2 id="domeventstream-objects">DOMEventStream Objects <a class="nav" href="#domeventstream-objects">#</a></h2>
+</div>
+<dl><dt class="method" id="DOMEventStream.getEvent"><b>getEvent()</b> <tt class="nav"><a class="nav" href="xml.dom.pulldom.DOMEventStream.getEvent" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>...</p>
+</dd>
+<dt class="method" id="DOMEventStream.expandNode"><b>expandNode(node)</b> <tt class="nav"><a class="nav" href="xml.dom.pulldom.DOMEventStream.expandNode" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>...</p>
+</dd>
+<dt class="method" id="DOMEventStream.reset"><b>reset()</b> <tt class="nav"><a class="nav" href="xml.dom.pulldom.DOMEventStream.reset" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>...</p>
+</dd>
+</dl></div></body></html>

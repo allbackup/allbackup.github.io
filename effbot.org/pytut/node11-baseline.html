@@ -1,0 +1,395 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>Classes&nbsp;(introduction)</title> <script type="text/javascript">effbot_page_id=1900;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> <!--
+<p style='color: #8f8f8f; background: #fff5bf; padding: 5px 10px;'> <b>2008-07-15:</b> Selected articles
+
+now have experimental "comment" links in the left column and at the bottom.
+You're welcome to use them for commenting and voting on articles.
+For a bit more on this, see <a
+href="http://effbot.slinkset.com/links/Welcome_to_discuss_effbot_org">this
+page</a>. /F
+</p>
+--> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <h1 class="maintitle">Classes&nbsp;(introduction)</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p>COMMENT: <strong>This is my attempt at rewriting the introduction to the Classes section, to make it&#8230; useful. This was orginally hosted at parlar.infogami.com</strong></p><p>COMMENT: <strong>The target audience for this page is &#8220;people with some programming experience, but with little or no OO experience&#8221;.  For discussion, see the <a href="#end">comments section</a>.</strong></p><h2 id="whats-a-class">What&#8217;s a class?&#160;<a class="nav" href="#whats-a-class" title="bookmark!">#</a></h2><p>If you&#8217;re coming to Python from an object-oriented programming language (C#/Java/Smalltalk/Ruby, etc), then you can probably skip over this section (though you might want to skim over the parts where I discuss <code>self</code>)</p><p>If Python is your first programming language though, or your first encounter with object oriented programming, then you&#8217;re definitely going to want to read this.</p><h3 id="objects-and-classes">Objects and Classes&#160;<a class="nav" href="#objects-and-classes" title="bookmark!">#</a></h3><p>Without getting technical, an <strong>object</strong> is the basic Python building block, the &#8216;lego brick&#8217; with which every program is built.  All the elements that we&#8217;ve met up until now - integers, strings, lists, functions etc. -  they&#8217;re all objects.  And a <strong>class</strong> is simply a <em>user-defined</em> object that lets you keep a bunch of closely related things &#8220;together&#8221;. COMMENT:<strong>Not sure about this paragraph - Gerard</strong></p><p>Let&#8217;s take a simple example to see why you would want classes.  First we&#8217;ll write some code in a non-OO procedural fashion, and then we&#8217;ll see how the same code can be written with classes.</p><h3 id="the-procedural-approach">The Procedural Approach&#160;<a class="nav" href="#the-procedural-approach" title="bookmark!">#</a></h3><p>Imagine that you&#8217;re a teacher and, after going through the first few chapters of this tutorial, you&#8217;ve decided to build a little python program to keep track of some stats for your students.</p><p>So how do you start? Well, the first thing you want is a list of your students:</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><pre class="python wide wide">&gt;&gt;&gt; student_list = [<span class="pystring">"Simon"</span>, <span class="pystring">"Mal"</span>, <span class="pystring">"River"</span>, <span class="pystring">"Zoe"</span>, <span class="pystring">"Jane"</span>, <span class="pystring">"Kaylee"</span>, <span class="pystring">"Hoban"</span>]</pre></div><div class="yui-ge"><div class="yui-u first"><p>(We&#8217;ll implement the program in the interactive interpreter, for the sake of the example, but in real life, you&#8217;d put this stuff into actual modules. I&#8217;ll interspere the interpreter code with comments, but keep in mind that all this code goes together.)</p><p>You know how fickle the administration is, and with the housing market the way it is, people are moving all the time. So you&#8217;re definitely going to need ways to add and remove kids from the list.:</p><pre><code>&gt;&gt;&gt; def add_student(student):
+...     student_list.append(student)
+...
+&gt;&gt;&gt; def remove_student(student):
+...     student_list.remove(student)
+...
+&gt;&gt;&gt; remove_student("Mal")
+&gt;&gt;&gt; add_student("Bill")
+&gt;&gt;&gt; print student_list
+["Simon", "River", "Zoe", "Jane", "Kaylee", "Hoban", "Bill"]
+</code></pre><p>Ok, so that works nicely. What now? Well, it&#8217;d be nice to track the grades of each student. Probably the easiest way to do that is to create a dictionary, where each key in the dict is a student name, and each value is a list of their marks.</p><pre><code>&gt;&gt;&gt; student_marks = {}
+&gt;&gt;&gt; for student in student_list:
+...     student_marks[student] = []
+...
+</code></pre><p>So there we&#8217;ve initialized our <code>student_marks</code>, with no marks for any student yet. So now we should make a function to add marks.</p><pre><code>&gt;&gt;&gt; def add_mark(student, mark):
+...     student_marks[student].append(mark)
+...
+</code></pre><p>What if we want a function to change the mark though? That&#8217;s a lot tricker. To change a mark, we need to know a few things. First, we need to know the student, that&#8217;s easy. Second, we need to know <em>where</em> in the value of <code>student_marks[student]</code> the old mark existed, or we need to know what the old mark is. Here is a possible way to do this:</p><pre><code>&gt;&gt;&gt; def change_mark(student, oldmark, newmark):
+...     # If you know the old mark
+...     temp_mark_list = student_marks[student]
+...     position = temp_mark_list.index(oldmark)
+...     temp_mark_list[position] = newmark
+</code></pre><p>So we&#8217;ve given a simple way to change the marks, if you know the old mark and the new mark you want to use.</p><p>As a final function, let&#8217;s add a class attendance feature. We&#8217;ll assume that most days, the entire class will be there. So the function will, by default, say that everyone one was there on a certain day. We will though pass in an optional list of names of people who weren&#8217;t there.</p><p>First, we need another dictionary, to track attendance:</p><pre class="python">&gt;&gt;&gt; student_attendance = {}
+... <span class="pykeyword">for</span> student <span class="pykeyword">in</span> student_list:
+...     student_attendance[student] = 0</pre><p>This time, we&#8217;re initializing the list with zeros, ie. the number of days they&#8217;ve attended class. Every day, that number will increase by one for each student who is there.</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><pre class="wide wide"><code>&gt;&gt;&gt; def another_day(absent = []):
+...     for student in student_list:
+...         if student not in absent:
+...             old_attendance = student_attendance[student]
+...             student_attendance[student] = old_attendance + 1
+</code></pre></div><div class="yui-ge"><div class="yui-u first"><p>So now we can call <code>another_day</code>, and pass in an optional list of students who aren&#8217;t there. Everyone else will have their attendance increase by 1.</p><p>So this is great and all, and works fine right now. But what if want want to start adding a bunch of other teaching related functions, lists and dictionaries into this file? Suddenly, at the top level of the file, we&#8217;ll have a lot of different lists defined (like <code>student_attendance</code>, <code>student_marks</code>, etc.), a whole lot of functions (<code>another_day</code>, <code>add_mark</code>, etc.) and no way to tell what goes together with what. In other words, which functions need which variables, how is everything related?</p><p>And this is <em>essentially</em> what classes do. They provide &#8220;encapsulation&#8221;, a method of grouping together things that logically relate to each other.</p><h3 id="the-object-oriented-approach">The Object-Oriented Approach&#160;<a class="nav" href="#the-object-oriented-approach" title="bookmark!">#</a></h3><p>So how do we do this? The first thing we have to do is create a &#8220;class&#8221;. The class is the &#8220;thing&#8221; that will group together common elements.</p><h4>The <code>Student</code> Class</h4><p>So far, for each student in the class, we&#8217;ve been tracking a lot of different things, in different variables. We&#8217;re tracking the student&#8217;s name (in <code>student_list</code>), then we have a mapping between their name and their marks (<code>student_marks</code>), and a mapping between the name and their attendance (<code>student_attendance</code>). It&#8217;d be really nice to keep all the information for each student together, in one place. Hence, a <code>Student</code> class:</p><p>COMMENT: Original - <em>So how do we do this? The first thing we have to do is create a &#8220;class&#8221;. The class is the &#8220;thing&#8221; that will group together common elements. Let&#8217;s call our first class <code>Student</code>. For each student in the class, so far, we&#8217;re tracking a lot of different things, in different variables. We&#8217;re tracking the student&#8217;s name (in <code>student_list</code>), then we have a mapping between their name and their marks (<code>student_marks</code>), and a mapping between the name and their attendance (<code>student_attendance</code>). It&#8217;d be really nice to keep all the information for each student together, in one place.</em></p><pre><code>&gt;&gt;&gt; class Student:
+...     def __init__(self, name):
+...         self.name = name
+...         self.attendance = 0
+...         self.marks = []
+</code></pre><p>Ok, so some of that definitely looks kind of crazy at this point, but some probably makes some sense. For instance, <code>self.attendance = 0</code> and <code>self.marks = []</code> should look at least a bit familiar, and should make a little bit of sense.</p><p>But what exactly are we doing here? Well, first off, we&#8217;re declaring that we are creating a new class, with <code>class Student(object)</code>. The name of this class is <code>Student</code>.</p><p>So, that&#8217;s fine, nothing too tough there. But what is that next silly looking thing, the <code>__init__(self, name)</code>? That&#8217;s called a &#8220;constructor&#8221;. It is a special function of the class that is called whenever we create a new instance of the class. Wow, lots of terminology there. Maybe a simple example will help.</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><pre class="wide wide"><code>&gt;&gt;&gt; class ExampleClass:
+...     def __init__(self, some_message):
+...         self.message = some_message
+...         print "New ExampleClass instance created, with message:"
+...         print self.message
+...
+&gt;&gt;&gt; first_instance = ExampleClass("message1")
+New ExampleClass instance created, with message:
+message1
+&gt;&gt;&gt; second_instance = ExampleClass("message2")
+New ExampleClass instance created, with message:
+message2
+</code></pre></div><div class="yui-ge"><div class="yui-u first"><p>So what have we done there? Well, we created a new type of class, called <code>ExampleClass</code>. In the constructor (<code>__init__</code>), we print out a message when a new instance gets created. After defining the class, we created two new instances, <code>first_instance</code> and <code>second_instance</code>. When we created them, we can see that the <code>print</code> statements in the <code>__init__</code> function got called, and more importantly, the variable we passed to the class (ie. &#8220;message1&#8221; in <code>ExampleClass("message1"</code>), gets passed to the <code>__init__</code> function.</p><p>Ok, so that&#8217;s fine, but what&#8217;s up with the <code>self</code> as the first argument to the <code>__init__</code> function? Every function in a class (functions in classes are actually called &#8220;methods&#8221;, I&#8217;ll call them that from now on) has to take <code>self</code> as the first argument. For anyone coming from another object oriented language, this will seem VERY strange. For new programmers, it will just seem annoying. For now though, have faith that it&#8217;s needed, and you&#8217;ll understand why later.</p><p>After the <code>self</code>, you can start putting the &#8220;real&#8221; arguments to the method, the ones you care about. So what arguments did we define? Just <code>some_message</code>. And what is this <code>some_message</code> used for? Well, in this example, we used it when we did <code>print some_message</code>, but more interestingly, we used it to do <code>self.message = some_message</code>.</p><p>So what&#8217;s that all about? By doing <code>self.message =</code>, we created something called an &#8220;attribute&#8221;. An attribute (as the name implies), is a piece of information for the class. Once we assign that attribute, we can access it from outside the class, like so:</p><pre class="python">&gt;&gt;&gt; first_instance.message
+<span class="pystring">'message1'</span>
+&gt;&gt;&gt; second_instance.message
+<span class="pystring">'message2'</span></pre><p>See that? We assigned the attribute in the <code>__init__</code> constructor, and now, we can access that attribute from outside the class! Is the <code>Student</code> class making more sense now? Let&#8217;s create an example instance of it, and see what happens:</p><pre class="python">&gt;&gt;&gt; bobby = Student(<span class="pystring">"Bobby"</span>)
+&gt;&gt;&gt; bobby.name
+<span class="pystring">'Bobby'</span>
+&gt;&gt;&gt; bobby.attendance
+0
+&gt;&gt;&gt; bobby.marks
+[]</pre><p>Isn&#8217;t that MUCH nicer than having to keep three separate lists/dictionaries? All the information for the student &#8220;Bobby&#8221; is kept in one single place, an instance of the <code>Student</code> class.</p><p>And remember, it&#8217;s not just from <em>outside</em> the class that you can access these atributes. You can of course access them from within the class. Any attribute tied to <code>self</code> (like we did with <code>self.name</code>, <code>self.attendance</code> and <code>self.marks</code>) essentially becomes a global variable to that <em>instance</em>. So anytime you do anything with that instance, the value of the attribute is still around. Any variables you create inside a class, that aren&#8217;t prepended with <code>self</code> will be local variables, only around during a particular call to a function.</p><p>Let&#8217;s see an example of that. We&#8217;ll redefine our <code>Student</code> class as follows:</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><pre class="wide wide"><code>&gt;&gt;&gt; class Student:
+...     def __init__(self, name):
+...         self.name = name
+...         self.attendance = 0
+...         self.marks = []
+...         number_of_marks = len(self.marks)
+...         print "%s marks so far!" % number_of_marks
+... 
+&gt;&gt;&gt; b = Student("Bobby")
+0 marks so far!
+&gt;&gt;&gt; b.marks
+[]
+&gt;&gt;&gt; b.number_of_marks
+Traceback (most recent call last):
+  File "&lt;stdin&gt;", line 1, in ?
+AttributeError: Student instance has no attribute 'number_of_marks'
+&gt;&gt;&gt;
+</code></pre></div><div class="yui-ge"><div class="yui-u first"><p>So what happened there? In the <code>__init__</code> function, we created three attributes, <code>name</code>, <code>attendance</code> and <code>marks</code>. We know they are attributes because we put the <code>self</code> in front of them. We also created a local variable though, <code>number_of_marks</code>. As stated above, local variables only hang around for as long as the function is executing. Once the <code>__init__</code> function is done, any local variable created in it will go away. That&#8217;s why when we tried to do <code>b.number_of_marks</code>, we got an <code>AttributeError</code> exception.</p><p>And remember that values of attribute variables are unique to each instance. So if we do:</p><pre class="python">&gt;&gt;&gt; b = Student(<span class="pystring">"Bobby"</span>)
+&gt;&gt;&gt; m = Student(<span class="pystring">"Mary"</span>)
+&gt;&gt;&gt; b.name
+<span class="pystring">'Bobby'</span>
+&gt;&gt;&gt; m.name
+<span class="pystring">'Mary'</span></pre><p>We can see that the <code>b</code> instance has its own value for the attribute <code>name</code>, and the <code>m</code> instance has its own value for that attribute.</p><p>So let&#8217;s get a bit fancier, let&#8217;s create a <code>StudentTracker</code>. This tracker will receive a list of student names as an argument to its constructor, and then will create a <code>Student</code> instance for EACH of those names:</p><pre><code>&gt;&gt;&gt; class StudentTracker:
+...     def __init__(self, initial_student_list):
+...         self.student_names = initial_student_list
+...         self.students = {}
+...         for name in self.student_names:
+...             self.students[name] = Student(name)
+...
+</code></pre><p>So, we created a nice attribute, <code>self.students</code>, which is a dictionary of <code>Student</code> instances (or objects, it is common to call an instance an &#8220;object&#8221;). We still need to be able to do stuff with those instances though. The way we&#8217;ll do that is by defining some methods in the class.</p><p>A method is a function that is specific just to the class it&#8217;s defined in. Here&#8217;s a simple example:</p><pre><code>&gt;&gt;&gt; class Multiplier:
+...     def __init__(self, number):
+...         self.number = number
+...     def multiply_by(self, x):
+...         return self.number * x
+</code></pre><p>So this class will have one attribute, <code>self.number</code>. It also has one method, <code>multiply_by</code>, which takes another number, multiplies it by our original number, and returns the result. Let&#8217;s see it in action.</p><pre class="python">&gt;&gt;&gt; f = Multiplier(10)
+&gt;&gt;&gt; f.number
+10
+&gt;&gt;&gt; f.multiply_by(5)
+50
+&gt;&gt;&gt; f.number
+10</pre><p>Does that make sense? We created an instance, and called it <code>f</code>. We then showed the attribute, <code>f.number</code>. We then called the method on the class, by doing <code>f.multiply_by(5)</code>, which returned 5*10. Notice though that in our definition of <code>multiply_by</code>, we don&#8217;t change the value of <code>self.number</code>, which is why it remains 10.</p><p>It is important to note <em>how</em> we called the method. We can&#8217;t just do <code>multiply_by(5)</code>, we have to say <code>f.multiply_by(5)</code>. Why is that? Well, imagine what would happen if we had created two separate instances. How is Python supposed to know which one to call, unless you tell it?:</p><pre class="python">&gt;&gt;&gt; f = Multiplier(10)
+&gt;&gt;&gt; g = Multipler(20)
+&gt;&gt;&gt; f.multiply_by(5)
+50
+&gt;&gt;&gt; g.multiply_by(5)
+100</pre><p>So we told Python which instance to call <code>multiply_by</code> on, and it did it, and everything worked perfectly!</p><p>So let&#8217;s get back to our <code>StudentTracker</code>. We haven&#8217;t yet defined any regular methods for it (we defined <code>__init__</code>, but that&#8217;s a special method, you&#8217;re not supposed to call it yourself. Having <code>__</code> on both sides of the method means you&#8217;re not suposed to call it, it&#8217;s a special method that Python will call by itself).</p><p>Let&#8217;s redefine our <code>Student</code>, and <code>StudentTracker</code>, but this time with useful methods:</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><pre class="wide wide"><code>&gt;&gt;&gt; class Student:
+...     def __init__(self, name):
+...         self.name = name
+...         self.attendance = 0
+...         self.marks = []
+...     def add_mark(self, mark):
+...         self.marks.append(mark)
+...     def present(self):
+...         self.attendance = self.attendance + 1
+...     def get_average(self):
+...         return sum(self.marks) / len(self.marks)
+...     def change_mark(self, oldmark, newmark):
+...         position = self.marks.index(oldmark)
+...         self.marks[position] = newmark
+...     def __str__(self):
+...         message = "Name: " + self.name + " "
+...         message = message + "Attendance: " + str(self.attendance)
+...         message = message + "Average: " + str(self.get_average())
+...         return message
+&gt;&gt;&gt; class StudentTracker:
+...     def __init__(self, initial_student_list):
+...         self.student_names = initial_student_list
+...         self.students = {}
+...         for name in self.student_names:
+...             self.students[name] = Student(name)
+...     def another_day(self, absent = []):
+...         for name in self.student_names:
+...             if name not in absent:
+...                 self.students[name].present()
+...     def add_mark(self, name, mark):
+...         self.students[name].add_mark(mark)
+...     def change_mark(self, student, oldmark, newmark):
+...         self.students[name].change_mark(oldmark, newmark)
+...     def prettyprint_students(self):
+...         for student in self.students.values():
+...             print student
+</code></pre></div><div class="yui-ge"><div class="yui-u first"><p>Almost everything there should be pretty self explanatory at this point (except the <code>__str__</code>), but I&#8217;ll point out a few key ideas.</p><p>The <code>__str__</code> method is another special method. It gets called when Python is told to convert something to a string (using the <code>str()</code> function), or when Python is told to print an instance. A small example is as follows:</p><pre><code>&gt;&gt;&gt; class Foo:
+...     def __str__(self):
+...         return "I am an instance of Foo!!!"
+&gt;&gt;&gt; f = Foo()
+&gt;&gt;&gt; print f
+I am an instance of Foo!!!
+&gt;&gt;&gt; str(f)
+'I am an instance of Foo!!!'
+</code></pre><p>In our <code>__str__</code> method, we build up a nice long message, including the student&#8217;s name, attendance, and mark average, and return that.</p><p>Note that in our <code>__str__</code> method, we do <code>self.get_average()</code>. Just like when a class instance wants to access one of its own attributes, we must prepend the <code>self.</code> to the method call.</p><p>Reminder about <code>self</code>: Note again that all the methods we defined had <code>self</code> as their first argument, but when we actually call the method, it essentially gets ignored. That is a little bit of magic Python is doing for you. It should make sense when you get deeper into Python programming. For now, just trust that when you <em>define</em> a method, you need <code>self</code> as the first argument, but when you <em>call</em> a method, you can ignore the <code>self</code>.</p><p>Notice the short-hand in <code>another_day</code> and the <code>StudentTracker</code> versions of <code>add_mark</code> and <code>change_mark</code>. In <code>another_day</code>, we have the following line:</p><pre class="python">self.students[name].present()</pre><p>You&#8217;ve probably figured out what that does, but just in case, I&#8217;ll explain it. Remember what <code>self.students</code> is, right? It&#8217;s a dictionary, where the keys are the students&#8217; names, and the values are instances of the <code>Student</code> class. So if we do <code>self.students[name]</code>, that returns an instance, right? So, we would normally do:</p><pre class="python">student = self.students[name]
+student.present()</pre><p>But, if the only thing we need to do with the instance right now is called one method, why waste space? We can instead just do what we did above, namely:</p><pre class="python">self.students[name].present()</pre><p>So, the <code>self.students[name]</code> part of that is executed first, and it returns the instance object. It then does the <code>.present()</code> on the instance object. This is an idiom you&#8217;ll see all the time in Python code (and in most object-oriented programming languages), so make sure you understand it. We did the exact same thing in the <code>StudentTracker</code> version of <code>add_mark</code>, namely:</p><pre class="python">self.students[name].add_mark(mark)</pre><p>And that ends our mini introduction to what classes are. The further sections in this chapter will go into more detail. I leave it as an exercise to the reader to actually try these out. Create a <code>StudentTracker</code> instance with some names, play around a bit, try to break the code (there&#8217;s no error handling, so there should be a few ways to break it). Messing around and experimenting with it will be the best way to learn.</p><p>And to continue with Python, it is pretty important that you learn how classes work. Most Python code is written with classes, most of the standad library is written with classes, it&#8217;s just the way things are done. So even if you don&#8217;t want to ever write your own classes, you&#8217;ll have to understand how they work if you want to use other peoples&#8217; code.</p><hr /><h2 id="old-intro">Old Intro&#160;<a class="nav" href="#old-intro" title="bookmark!">#</a></h2><h3 id="whats-a-class">What&#8217;s a class?&#160;<a class="nav" href="#whats-a-class" title="bookmark!">#</a></h3><p>If you&#8217;re coming to Python from an object-oriented programming language (C#/Java/Smalltalk/Ruby, etc), then you can probably skip over this section (though you might want to skim over the parts where I discuss <code>self</code>).</p><p>If Python is your first programming language though, or your first encounter with object oriented programming, then you&#8217;re definitely going to want to read this.</p><p>A class, in simple terms, is a feature that lets you keep a bunch of closely related things &#8220;together&#8221;. Let&#8217;s take a simple example to see why you would want classes.</p><h3 id="3rd-grade-class">3rd Grade Class&#160;<a class="nav" href="#3rd-grade-class" title="bookmark!">#</a></h3><p>Assume that you&#8217;re the teacher of a 3rd grade class (you know, the type of class with a bunch of little kids running around, has nothing to do with programming languages). As the teacher, you&#8217;ve decided it&#8217;s a good idea to stay current with the hip, new technologies (like Python!) to keep your students from getting ahead of you.</p><p>So, after going through the first few chapters of this tutorial, you decided to build a little Python program to track some stats for your class. We&#8217;ll implement the program below in the interactive interpreter, for the sake of the example, but in real life, you&#8217;d put this stuff into actual modules. I&#8217;ll intersperse the interpreter code with comments, but keep in mind that all this code goes together.</p><p>So the first thing you want, is a list of students in your class. We&#8217;ll use a list, and not a tuple, because you never know when the administration is going to give you more students!:</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><pre class="python wide wide">&gt;&gt;&gt; student_list = [<span class="pystring">"Simon"</span>, <span class="pystring">"Mal"</span>, <span class="pystring">"River"</span>, <span class="pystring">"Zoe"</span>, <span class="pystring">"Jane"</span>, <span class="pystring">"Kaylee"</span>, <span class="pystring">"Hoban"</span>]</pre></div><div class="yui-ge"><div class="yui-u first"><p>You know how fickle the administration is, and with the housing market the way it is, people are moving all the time. So you&#8217;re definitely going to need ways to add and remove kids from your class list.:</p><pre><code>&gt;&gt;&gt; def add_student(student):
+...     student_list.append(student)
+...
+&gt;&gt;&gt; def remove_student(student):
+...     student_list.remove(student)
+...
+</code></pre><p>Ok, so that works nicely. What now? Well&#8230;</p><h3 id="the-object-oriented-approach">The Object-Oriented Approach&#160;<a class="nav" href="#the-object-oriented-approach" title="bookmark!">#</a></h3><p>So how do we do this? The first thing we have to do is create a &#8220;class&#8221;. The class is the &#8220;thing&#8221; that will group together common elements.</p><h4>The <code>Student</code> Class</h4><p>So far, for each student in the class, we&#8217;ve been tracking a lot of different things, in different variables. We&#8217;re tracking the student&#8217;s name (in <code>student_list</code>), then we have a mapping between their name and their marks (<code>student_marks</code>), and a mapping between the name and their attendance (<code>student_attendance</code>). It&#8217;d be really nice to keep all the information for each student together, in one place. Hence, a <code>Student</code> class:</p><pre><code>&gt;&gt;&gt; class Student(object):
+...     def __init__(self, name):
+...         self.name = name
+...         self.attendance = 0
+
+...         self.marks = []
+</code></pre><p>Ok&#8230;</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><div class='comment'>
+<p><b>Comment:</b></p>
+<p>
+That's kind of what I was thinking. Before we do that, I think I'd want to add some headers to break this up a bit better. Headers will also let us say "If you already understand the concept of classes, then skip ahead to X".
+
+I won't have time till next week though, all my school projects and exams will be done by Tuesday.</p>
+<p>Posted by <b class='author'><a href='http://pytut.infogami.com/node11-baseline.html/_comments/4p7n/_comments/4pgx/_comments/4plx'>infogami</a></b></p>
+</div>
+
+<div class='comment'>
+<p><b>Comment:</b></p>
+<p>
+If the goal was to create a nice hypertext version only, providing different paths through the tutorial would of course be easy.  But I'm pretty sure the powers-that-be won't accept a hypertext-only version as a replacement for the current tutorial.  Hmm.  Maybe it would work if we just inserted this one before the current one?</p>
+<p>Posted by <b class='author'><a href='http://pytut.infogami.com/node11-baseline.html/_comments/4p7n/_comments/4pgx'>infogami</a></b></p>
+</div>
+
+<div class='comment'>
+<p><b>Comment:</b></p>
+<p>
+Yeah, I like yours better. Feel free to put it in, I've got to go study!</p>
+<p>Posted by <b class='author'><a href='http://pytut.infogami.com/node11-baseline.html/_comments/4p7n/_comments/4q5b/_comments/4qgh/_comments/4ss3/_comments/4syq'>infogami</a></b></p>
+</div>
+
+<div class='comment'>
+<p><b>Comment:</b></p>
+<p>
+Well, it's just IMHO and all - maybe others would disagree. I suppose this is the difficulty of writing or evaluating a tutorial, you're always trying to put yourself in someone else's shoes.
+I've added an alternative intro anyway, if you'd like to consider it. (it's at the end)</p>
+<p>Posted by <b class='author'><a href='http://pytut.infogami.com/node11-baseline.html/_comments/4p7n/_comments/4q5b/_comments/4qgh/_comments/4ss3'>infogami</a></b></p>
+</div>
+
+<div class='comment'>
+<p><b>Comment:</b></p>
+<p>
+Yeah... I was trying to be funny by calling it "A 3rd Grade CLASS"... Mission failed, I suppose. I have no strong emotional attachment to it, or any other use of the word "class" in that context. I'll change that sometime next week (or of course anyone else is invited to do it for me).
+
+And I'm definitely not advocating that this become the new Classes document, I wrote it to be the new introduction. As Fredrik suggested, it might work if my new stuff was just inserted in front of the current intro. The stuff in the current intro _is_ useful, and should be around somewhere, but a new reader probably shouldn't be assaulted with scopes and namespaces before seeing a single example of a simple class.</p>
+<p>Posted by <b class='author'><a href='http://pytut.infogami.com/node11-baseline.html/_comments/4p7n/_comments/4q5b/_comments/4qgh'>infogami</a></b></p>
+</div>
+
+<div class='comment'>
+<p><b>Comment:</b></p>
+<p>
+Don't know if it works or not, but I've altered my alternative intro to mention objects, which would make it easier to write 'class Student(object)' but without having to talk about new-style/old-style.</p>
+<p>Posted by <b class='author'><a href='http://pytut.infogami.com/node11-baseline.html/_comments/4p7n/_comments/4q5b/_comments/4rrd/_comments/4v2t/_comments/53i5/_comments/546c/_comments/56tj'>infogami</a></b></p>
+</div>
+
+<div class='comment'>
+<p><b>Comment:</b></p>
+<p>
+"core of all objects" seems like it'd be an incredibly confusing statement or idea for a beginner. By using a new-style class right at the beginning, you suddenly have the user faced with the idea of inheritance, and of the base `object` type. 
+
+And I don't think we're putting a decision into the hands of the user in terms of whether they should use new or old style. I explcitly say in 9.2 that they should use new-style. It's only a problem to a user that decides to stop reading the tutorial right here.
+
+All I wanted to do with this section was introduce the concept and basic use of classes, which is easier when you're not adding new-style into the mix. Note again that in section 9.2, all the classes use new-style, because at that point, the user understands what a class is, and we can begin adding to that.</p>
+<p>Posted by <b class='author'><a href='http://pytut.infogami.com/node11-baseline.html/_comments/4p7n/_comments/4q5b/_comments/4rrd/_comments/4v2t/_comments/53i5/_comments/546c'>infogami</a></b></p>
+</div>
+
+<div class='comment'>
+<p><b>Comment:</b></p>
+<p>
++1 for using new-style classes from the beginning. Starting with tutorial, one presumably do not want to learn old features that are going to be deprecated later. And it is easy to understand that "object" means "the core of all objects". A small notice about old style classes somewhere would be fine. It is important (in a tutorial) to say "prefer this", "do not do this". Beginners (does not matter how experienced in other languages) need to be lead in the best direction. If they have to decide what is better to use on their own, they could be disappointed, misleaded, or simply delayed in the learning. Being a teacher, one have to show the authority to say "this is the best way for you, but not the only one".</p>
+<p>Posted by <b class='author'><a href='http://pytut.infogami.com/node11-baseline.html/_comments/4p7n/_comments/4q5b/_comments/4rrd/_comments/4v2t/_comments/53i5'>infogami</a></b></p>
+</div>
+
+<div class='comment'>
+<p><b>Comment:</b></p>
+<p>
+Wouldn't it be better to just use new-style classes from the start. You tell here that syntax is
+
+     class Student:
+
+you might as well tell that it's:
+
+     class Student(object):
+
+When people come back to the tutorial if they've forgotten how to create a class, and google sends them to this page, I think it would be better if it's written new-style here. </p>
+<p>Posted by <b class='author'><a href='http://pytut.infogami.com/node11-baseline.html/_comments/4p7n/_comments/4q5b/_comments/4rrd/_comments/4v2t'>infogami</a></b></p>
+</div>
+
+<div class='comment'>
+<p><b>Comment:</b></p>
+<p>
+Oh, and I forgot to mention, I purposely didn't use new-style classes for this introduction, because it means one less thing where we have to say "Trust us, we'll explain it later". Also note that I was the one that changed the current Classes documentation to use all new-style classes, so there is documentation describing one vs. the other.</p>
+<p>Posted by <b class='author'><a href='http://pytut.infogami.com/node11-baseline.html/_comments/4p7n/_comments/4q5b/_comments/4rrd'>infogami</a></b></p>
+</div>
+
+<div class='comment'>
+<p><b>Comment:</b></p>
+<p>
+I think this is a good, well-written tutorial, but (IMO) it's let down by your use of 'A 3rd Grade CLASS' as an example - the two uses of the word 'Class' are confusing I think, and i can only imagine that this will be the same for the target audience, some of whom may not have English as a first language. Maybe it's possible to cut out some of the 'academic class of students' classes, eg. '... a teacher of the third-grade...' not '...a teacher of a third-grade class'?
+I think this is a better *introduction* to classes than the existing one, but the existing one contains a lot of essential stuff too. Perhaps Classes I, Classes II, with your version (Classes I) after Node5-data structures?
+(Also, I think you should use new-style classes).</p>
+<p>Posted by <b class='author'><a href='http://pytut.infogami.com/node11-baseline.html/_comments/4p7n/_comments/4q5b'>infogami</a></b></p>
+</div>
+
+<div class='comment'>
+<p><b>Comment:</b></p>
+<p>
+_(update: fixed markup)_
+
+Just some more thoughts.  Although I really like the style of this new section - informal, chatty, hands-on - it's slightly at odds with the plainer, dryer style of  the rest of the tutorial.  It feels like it's for a different, less-experienced audience. This fits in with an idea I keep having when reading the wiki - what about two tutorials, a beginners' and an intermediate?  I imagine the Beginners tutorial as a kind of 'Python in 24 Hours' - something that someone serious could complete over a weekend, and that would give a good grounding in the basics.  Then the Intermediate tutorial would be more in-depth, more real-world - basically the existing tutorial, but without whatever is covered in the Beginners.
+
+Suggested Beginners' Tutorial:
+
+* Audience1 - someone with experience of another language(s) who wants to learn Python from the ground up, possibly no OOP experience
+* Audience2 - someone with no programming experience but who doesn't want their hand held and is prepared to roll their sleeves up, maybe a technical/scientific background.
+* Using Python as a calculator - basic numeric types and operations, logical operators, precedence
+* Strings, lists, dictionaries
+* Control flow: if, for, while, range()
+* Functions, *args/**kwargs
+* Introduction to classes/OOP
+
+I understand that there are existing Beginners tutorials but I'm also thinking of this as a 'pruning' operation for this wiki. Obviously it's a big departure from the existing situation, but food for thought at least.  </p>
+<p>Posted by <b class='author'><a href='http://pytut.infogami.com/node11-baseline.html/_comments/4p7n/_comments/4wo7'>infogami</a></b></p>
+</div>
+
+<div class='comment'>
+<p><b>Comment:</b></p>
+<p>
+So the only comment I ever got on this, when it lived at its old location, was that it missed the intended audience and should be in an appendix instead of as an intro to Classes. Thoughts on this?
+
+I do agree that I spend too much time describing what a class is (too much time for non-newbies), but I also believe that documentation filled with examples will teach a concept better than anything else.</p>
+<p>Posted by <b class='author'><a href='http://pytut.infogami.com/node11-baseline.html/_comments/4p7n'>infogami</a></b></p>
+</div>
+
+<div class='comment'>
+<p><b>Comment:</b></p>
+<p>
+I've put together a suggested reorganisation [here](http://pytut.infogami.com/beginners) which includes this section. ( Don't worry about commenting on all this if you have exams - hope they're going well!)</p>
+<p>Posted by <b class='author'><a href='http://pytut.infogami.com/node11-baseline.html/_comments/4wqx/_comments/4xti'>infogami</a></b></p>
+</div>
+
+<div class='comment'>
+<p><b>Comment:</b></p>
+<p>
+It is for a different audience, which is why I made the suggestion that a more advanced audience just skip over it. Something to think about though.
+
+And could you edit your list in the comment above? It's not wrapping around (Safari or Firefox), and now the screen scrolls pretty far to the right. (I'd do it, but it somehow feels wrong to edit someone else's comment)</p>
+<p>Posted by <b class='author'><a href='http://pytut.infogami.com/node11-baseline.html/_comments/4wqx'>infogami</a></b></p>
+</div>
+
+<div class='comment'>
+<p><b>Comment:</b></p>
+<p>
+I quite like this, *except* for the way discussion of the self parameter is handled (Don't Worry It's Magic). Instead, I suggest introducing methods by pointing out that a method can be retrieved just like any other attribute by doing Student.a_method, and then invoked like any other function Student.a_method(instance, arg).
+
+And only *then* introduce instance.a_method(arg) as a shorthand for the above. I believe this tendency of tutorials to treat method invocations as if they're deep dark magic is at the heart of the resentment of the 'self' parameter. The reason that parameter is there is precisely because methods really *aren't* magic. They're just normal class attributes that happen to be functions.</p>
+<p>Posted by <b class='author'><a href='http://pytut.infogami.com/node11-baseline.html/_comments/56hf'>infogami</a></b></p>
+</div>
+
+<div class='comment'>
+<p><b>Comment:</b></p>
+<p>
+Fixed. Feel free to change little ones like that yourself though.</p>
+<p>Posted by <b class='author'><a href='http://pytut.infogami.com/node11-baseline.html/_comments/5af7/_comments/5b3f'>infogami</a></b></p>
+</div>
+
+<div class='comment'>
+<p><b>Comment:</b></p>
+<p>
+Typo: &gt;&gt;&gt; second_instance = ExampleClass(message2")  needs another double quote within the parentheses.
+</p>
+<p>Posted by <b class='author'><a href='http://pytut.infogami.com/node11-baseline.html/_comments/5af7'>infogami</a></b></p>
+</div>
+
+<div class='comment'>
+<p><b>Comment:</b></p>
+<p>
+That's a good point. The analogy I'm thinking about is automobiles. The people at the factory have all the designs/blueprints for the car, but you can't drive a blueprint. You need to build actual instances of the plans to be able to do anything. And you can build multiple instances of a car from the same plans, all initially identical.
+
+Or something like that...</p>
+<p>Posted by <b class='author'><a href='http://pytut.infogami.com/node11-baseline.html/_comments/5byd/_comments/5drm'>infogami</a></b></p>
+</div>
+
+<div class='comment'>
+<p><b>Comment:</b></p>
+<p>
+I think you should be a little clearer about the making of instances.  Making a class then making an instance from it is a jump for a beginner.  Make some comment about a class being both a "container" that contains related stuff (as you did quite well) and also the class can be used as a template (cookie cutter) that can make a bunch of identical objects.</p>
+<p>Posted by <b class='author'><a href='http://pytut.infogami.com/node11-baseline.html/_comments/5byd'>infogami</a></b></p>
+</div>
+
+<div class='comment'>
+<p><b>Comment:</b></p>
+<p>
+I don't think that's implied. However, I prefer the version in the "Suggested Alternative Intro" anyway, so I'll probably change it to that sometime tomorrow.</p>
+<p>Posted by <b class='author'><a href='http://pytut.infogami.com/node11-baseline.html/_comments/5d2l/_comments/5dry'>infogami</a></b></p>
+</div>
+
+<div class='comment'>
+<p><b>Comment:</b></p>
+<p>
+It's probably a bad idea to imply that the only reason for choosing a list over a tuple is the tuple's fixed length/contents.  Tuples are most useful as weak structures for differenct kinds of objects.  That is, they're conceivably an alternative to classes, in some situations.</p>
+<p>Posted by <b class='author'><a href='http://pytut.infogami.com/node11-baseline.html/_comments/5d2l'>infogami</a></b></p>
+</div>
+
+<div class='comment'>
+<p><b>Comment:</b></p>
+<p>
+That sounds like a neat feature to try plugging into IPython. `doctest.DocTestParser` could be used at some level to parse out the interpreter characters and leave just the required code. Interesting...</p>
+<p>Posted by <b class='author'><a href='http://pytut.infogami.com/node11-baseline.html/_comments/5do3/_comments/5drw/_comments/5efv/_comments/5f1b'>infogami</a></b></p>
+</div>
+
+<div class='comment'>
+<p><b>Comment:</b></p>
+<p>
+It'd be pretty cool if the Python interpreter ignored those marks. Considering they're being used in stuff like `doctest` as well, this makes a lot of sense.</p>
+<p>Posted by <b class='author'><a href='http://pytut.infogami.com/node11-baseline.html/_comments/5do3/_comments/5drw/_comments/5efv'>infogami</a></b></p>
+</div>
+
+<div class='comment'>
+<p><b>Comment:</b></p>
+<p>
+The reason I personally like showing the interpreter output is because it's much easier to show... the interpreter output. Like where I wrote `bobby.marks` and the output (empty list) was shown on the next line.
+
+That's never as clear when you do it without the &gt;&gt;&gt; (and you can't copy and paste anyway, because if you start pasting in copied output, you'll get errors)</p>
+<p>Posted by <b class='author'><a href='http://pytut.infogami.com/node11-baseline.html/_comments/5do3/_comments/5drw'>infogami</a></b></p>
+</div>
+
+<div class='comment'>
+<p><b>Comment:</b></p>
+<p>
+Having &gt;&gt;&gt; or ... before every line of code makes it really hard to copy paste the stuff into the interpreter.  It seems like someone learning python might want to do that, instead of copying the code by hand to test things out.</p>
+<p>Posted by <b class='author'><a href='http://pytut.infogami.com/node11-baseline.html/_comments/5do3'>infogami</a></b></p>
+</div>
+</div> <!-- yui-g --></div> <!-- content --> </div> <!-- yui-b --> </div> <!-- yui-main --> <div class="yui-b"> <div id='menu'> <ul> <li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li> <li><b><a href="." title="Go to pytut index page.">::: pytut :::</a></b></li> </ul> <ul><li><b>::: contents</b></li></ul> <ul><li><ul><li><a href="#whats-a-class">What&#8217;s a class?</a></li><li><ul><li><a href="#objects-and-classes">Objects and Classes</a></li><li><a href="#the-procedural-approach">The Procedural Approach</a></li><li><a href="#the-object-oriented-approach">The Object-Oriented Approach</a></li></ul></li><li><a href="#old-intro">Old Intro</a></li><li><ul><li><a href="#whats-a-class">What&#8217;s a class?</a></li><li><a href="#3rd-grade-class">3rd Grade Class</a></li><li><a href="#the-object-oriented-approach">The Object-Oriented Approach</a></li></ul></li></ul></li></ul> </div> <!-- menu --> </div> <!-- yui-b --> </div> <!-- bd --> <div id="ft"> <!-- footer --> <p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15_grey.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;"></a>
+this page was rendered by a <a href="http://www.djangoproject.com/">django</a> application in 0.06s 2009-03-31 13:36:24.217565.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p> </div> <!-- ft --> </div> <!-- doc --> <script src="/media/js/effbot-min.js" type="text/javascript"> </script> </body> </html>

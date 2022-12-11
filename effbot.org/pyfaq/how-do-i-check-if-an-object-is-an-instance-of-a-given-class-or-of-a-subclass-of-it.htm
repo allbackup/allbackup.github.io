@@ -1,0 +1,31 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>How do I check if an object is an instance of a given class or of a subclass of&nbsp;it?</title></head><body data-page-id="779"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><p class="note" style="text-align: center"><strong>
+This is an old copy of the Python FAQ.  The information here may be
+outdated.
+</strong></p><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">How do I check if an object is an instance of a given class or of a subclass of&nbsp;it?</h1></div><div class="yui-ge"><div class="yui-u first"><p>Use the built-in function <a href="/pyref/isinstance.htm"><strong>isinstance</strong></a>.</p><pre class="python"><span class="pykeyword">if</span> isinstance(obj, MyClass):
+     <span class="pykeyword">print</span> <span class="pystring">"obj is my object"</span></pre><p>You can check if an object is an instance of any of a number of classes by providing a tuple instead of a single class, e.g.  isinstance(obj, (class1, class2, &#8230;)), and can also check whether an object is one of Python&#8217;s built-in types.  Examples:</p><pre class="python"><span class="pykeyword">if</span> isinstance(obj, str):
+     <span class="pykeyword">print</span> repr(obj), <span class="pystring">"is an 8-bit string"</span>
+
+<span class="pykeyword">if</span> isinstance(obj, basestring):
+     <span class="pykeyword">print</span> repr(obj), <span class="pystring">"is some kind of string"</span>
+
+<span class="pykeyword">if</span> isinstance(obj, (int, long, float, complex)):
+     <span class="pykeyword">print</span> obj, <span class="pystring">"is a built-in number type"</span>
+
+<span class="pykeyword">if</span> isinstance(obj, (tuple, list, dict, set)):
+     <span class="pykeyword">print</span> <span class="pystring">"object is a built-in container type"</span></pre><p>Note that most programs do not use <a href="/pyref/isinstance.htm"><strong>isinstance</strong></a> on user-defined classes very often. If you are developing the classes yourself, a more proper object-oriented style is to define methods on the classes that encapsulate a particular behaviour, instead of checking the object&#8217;s class and doing a different thing based on what class it is. For example, if you have a function that does something:</p><pre class="python"><span class="pykeyword">def</span> <span class="pyfunction">search</span>(obj):
+    <span class="pykeyword">if</span> isinstance(obj, Mailbox):
+        <span class="pykeyword">print</span> <span class="pystring">"search a mailbox"</span>
+    <span class="pykeyword">elif</span> isinstance(obj, Document):
+        <span class="pykeyword">print</span> <span class="pystring">"search a document"</span>
+    <span class="pykeyword">else</span>:
+        <span class="pykeyword">print</span> <span class="pystring">"unknown object"</span></pre><p>A better approach is to define a search() method on all the classes and just call it:</p><pre class="python"><span class="pykeyword">class</span> <span class="pyclass">Mailbox</span>:
+    <span class="pykeyword">def</span> <span class="pyfunction">search</span>(self):
+        <span class="pykeyword">print</span> <span class="pystring">"search a mailbox"</span>
+
+<span class="pykeyword">class</span> <span class="pyclass">Document</span>:
+    <span class="pykeyword">def</span> <span class="pyfunction">search</span>(self):
+        <span class="pykeyword">print</span> <span class="pystring">"search a document"</span>
+
+obj.search()</pre><p>CATEGORY: programming</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to pyfaq index page.">::: pyfaq :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

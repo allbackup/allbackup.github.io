@@ -1,0 +1,547 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>itertools</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-itertools.html'>original</a> :::
+<a href='itertools.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>itertools&#8212;Functions creating iterators for efficient
+looping</h1>
+
+<div class="toc"><dl><dt>On this page:</dt><dd><a href="#itertool-functions">Itertool functions</a></dd><dd><a href="#examples">Examples</a></dd><dd><a href="#recipes">Recipes</a></dd></dl></div><p>New in version 2.3.</p>
+
+<p>This module implements a number of iterator building blocks
+inspired by constructs from the Haskell and SML programming
+languages. Each has been recast in a form suitable for Python.</p>
+
+<p>The module standardizes a core set of fast, memory efficient
+tools that are useful by themselves or in combination.
+Standardization helps avoid the readability and reliability
+problems which arise when many different individuals create their
+own slightly varying implementations, each with their own quirks
+and naming conventions.</p>
+
+<p>The tools are designed to combine readily with one another. This
+makes it easy to construct more specialized tools succinctly and
+efficiently in pure Python.</p>
+
+<p>For instance, SML provides a tabulation tool: <code>
+tabulate(f)</code> which produces a sequence <code>f(0), f(1),
+...</code>. This toolbox provides <a class="link" href="#imap"><code>
+imap</code></a> and <a class="link" href="#count"><code>count</code></a> which can
+be combined to form <code>imap(f, count())</code> and produce an
+equivalent result.</p>
+
+<p>Likewise, the functional tools are designed to work well with
+the high-speed functions provided by the <code>operator</code> module.</p>
+
+<p>The module author welcomes suggestions for other basic building
+blocks to be added to future versions of the module.</p>
+
+<p>Whether cast in pure python form or compiled code, tools that
+use iterators are more memory efficient (and faster) than their
+list based counterparts. Adopting the principles of just-in-time
+manufacturing, they create data when and where needed instead of
+consuming memory with the computer equivalent of
+&#8220;inventory&#8221;.</p>
+
+<p>The performance advantage of iterators becomes more acute as the
+number of elements increases - at some point, lists grow large
+enough to severely impact memory cache performance and start
+running slowly.</p>
+
+<h2 id="itertool-functions">Itertool functions <a class="nav" href="#itertool-functions">#</a></h2>
+
+<p>The following module functions all construct and return
+iterators. Some provide streams of infinite length, so they should
+only be accessed by functions or loops that truncate the
+stream.</p>
+</div>
+<dl><dt class="function" id="chain"><b>chain(*iterables)</b> <tt class="nav"><a class="nav" href="itertools.chain" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Make an iterator that returns elements from the first iterable
+until it is exhausted, then proceeds to the next iterable, until
+all of the iterables are exhausted. Used for treating consecutive
+sequences as a single sequence. Equivalent to:</p>
+
+<pre>
+     def chain(*iterables):
+         for it in iterables:
+             for element in it:
+                 yield element
+</pre>
+</dd>
+<dt class="function" id="count"><b>count([n])</b> <tt class="nav"><a class="nav" href="itertools.count" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Make an iterator that returns consecutive integers starting with
+<var>n</var>. If not specified <var>n</var> defaults to zero. Does
+not currently support python long integers. Often used as an
+argument to <a class="link" href="#imap"><code>imap</code></a> to generate
+consecutive data points. Also, used with <a class="link" href="#izip"><code>izip</code></a> to add sequence numbers. Equivalent
+to:</p>
+
+<pre>
+     def count(n=0):
+         while True:
+             yield n
+             n += 1
+</pre>
+
+<p>Note, <a class="link" href="#count"><code>count</code></a> does not check
+for overflow and will return negative numbers after exceeding
+<code>sys.maxint</code>. This behavior may change in the
+future.</p>
+</dd>
+<dt class="function" id="cycle"><b>cycle(iterable)</b> <tt class="nav"><a class="nav" href="itertools.cycle" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Make an iterator returning elements from the iterable and saving
+a copy of each. When the iterable is exhausted, return elements
+from the saved copy. Repeats indefinitely. Equivalent to:</p>
+
+<pre>
+     def cycle(iterable):
+         saved = []
+         for element in iterable:
+             yield element
+             saved.append(element)
+         while saved:
+             for element in saved:
+                   yield element
+</pre>
+
+<p>Note, this member of the toolkit may require significant
+auxiliary storage (depending on the length of the iterable).</p>
+</dd>
+<dt class="function" id="dropwhile"><b>dropwhile(predicate, iterable)</b> <tt class="nav"><a class="nav" href="itertools.dropwhile" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Make an iterator that drops elements from the iterable as long
+as the predicate is true; afterwards, returns every element. Note,
+the iterator does not produce <em>any</em> output until the
+predicate is true, so it may have a lengthy start-up time.
+Equivalent to:</p>
+
+<pre>
+     def dropwhile(predicate, iterable):
+         iterable = iter(iterable)
+         for x in iterable:
+             if not predicate(x):
+                 yield x
+                 break
+         for x in iterable:
+             yield x
+</pre>
+</dd>
+<dt class="function" id="groupby"><b>groupby(iterable[, key])</b> <tt class="nav"><a class="nav" href="itertools.groupby" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Make an iterator that returns consecutive keys and groups from
+the <var>iterable</var>. The <var>key</var> is a function computing
+a key value for each element. If not specified or is <code>
+None</code>, <var>key</var> defaults to an identity function and
+returns the element unchanged. Generally, the iterable needs to
+already be sorted on the same key function.</p>
+
+<p>The returned group is itself an iterator that shares the
+underlying iterable with <a class="link" href="#groupby"><code>
+groupby</code></a>. Because the source is shared, when the <a class="link" href="#groupby"><code>groupby</code></a> object is advanced, the previous
+group is no longer visible. So, if that data is needed later, it
+should be stored as a list:</p>
+
+<pre>
+    groups = []
+    uniquekeys = []
+    for k, g in groupby(data, keyfunc):
+        groups.append(list(g))      # Store group iterator as a list
+        uniquekeys.append(k)
+</pre>
+
+<p><a class="link" href="#groupby"><code>groupby</code></a> is equivalent
+to:</p>
+
+<pre>
+    class groupby(object):
+        def __init__(self, iterable, key=None):
+            if key is None:
+                key = lambda x: x
+            self.keyfunc = key
+            self.it = iter(iterable)
+            self.tgtkey = self.currkey = self.currvalue = xrange(0)
+        def __iter__(self):
+            return self
+        def next(self):
+            while self.currkey == self.tgtkey:
+                self.currvalue = self.it.next() # Exit on StopIteration
+                self.currkey = self.keyfunc(self.currvalue)
+            self.tgtkey = self.currkey
+            return (self.currkey, self._grouper(self.tgtkey))
+        def _grouper(self, tgtkey):
+            while self.currkey == tgtkey:
+                yield self.currvalue
+                self.currvalue = self.it.next() # Exit on StopIteration
+                self.currkey = self.keyfunc(self.currvalue)
+</pre>
+
+<blockquote><span class="mark">@since</span> New in version
+2.4.<br />
+</blockquote>
+</dd>
+<dt class="function" id="ifilter"><b>ifilter(predicate, iterable)</b> <tt class="nav"><a class="nav" href="itertools.ifilter" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Make an iterator that filters elements from iterable returning
+only those for which the predicate is <code>True</code>. If <var>predicate</var> is <code>None</code>, return the items that are
+true. Equivalent to:</p>
+
+<pre>
+     def ifilter(predicate, iterable):
+         if predicate is None:
+             predicate = bool
+         for x in iterable:
+             if predicate(x):
+                 yield x
+</pre>
+</dd>
+<dt class="function" id="ifilterfalse"><b>ifilterfalse(predicate, iterable)</b> <tt class="nav"><a class="nav" href="itertools.ifilterfalse" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Make an iterator that filters elements from iterable returning
+only those for which the predicate is <code>False</code>. If <var>predicate</var> is <code>None</code>, return the items that are
+false. Equivalent to:</p>
+
+<pre>
+     def ifilterfalse(predicate, iterable):
+         if predicate is None:
+             predicate = bool
+         for x in iterable:
+             if not predicate(x):
+                 yield x
+</pre>
+</dd>
+<dt class="function" id="imap"><b>imap(function, *iterables)</b> <tt class="nav"><a class="nav" href="itertools.imap" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Make an iterator that computes the function using arguments from
+each of the iterables. If <var>function</var> is set to <code>
+None</code>, then <a class="link" href="#imap"><code>imap</code></a> returns
+the arguments as a tuple. Like <code>
+map</code> but stops when the shortest iterable is exhausted instead
+of filling in <code>None</code> for shorter
+iterables. The reason for the difference is that infinite iterator
+arguments are typically an error for <code>map</code> (because the output is fully evaluated) but
+represent a common and useful way of supplying arguments to <a class="link" href="#imap"><code>imap</code></a>. Equivalent to:</p>
+
+<pre>
+     def imap(function, *iterables):
+         iterables = map(iter, iterables)
+         while True:
+             args = [i.next() for i in iterables]
+             if function is None:
+                 yield tuple(args)
+             else:
+                 yield function(*args)
+</pre>
+</dd>
+<dt class="function" id="islice"><b>islice(iterable, [start,] stop [, step])</b> <tt class="nav"><a class="nav" href="itertools.islice" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Make an iterator that returns selected elements from the
+iterable. If <var>start</var> is non-zero, then elements from the
+iterable are skipped until start is reached. Afterward, elements
+are returned consecutively unless <var>step</var> is set higher
+than one which results in items being skipped. If <var>stop</var>
+is <code>None</code>, then iteration
+continues until the iterator is exhausted, if at all; otherwise, it
+stops at the specified position. Unlike regular slicing, <a class="link" href="#islice"><code>islice</code></a> does not support
+negative values for <var>start</var>, <var>stop</var>, or <var>
+step</var>. Can be used to extract related fields from data where
+the internal structure has been flattened (for example, a
+multi-line report may list a name field on every third line).
+Equivalent to:</p>
+
+<pre>
+     def islice(iterable, *args):
+         s = slice(*args)
+         it = iter(xrange(s.start or 0, s.stop or sys.maxint, s.step or 1))
+         nexti = it.next()
+         for i, element in enumerate(iterable):
+             if i == nexti:
+                 yield element
+                 nexti = it.next()
+</pre>
+</dd>
+<dt class="function" id="izip"><b>izip(*iterables)</b> <tt class="nav"><a class="nav" href="itertools.izip" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Make an iterator that aggregates elements from each of the
+iterables. Like <code>zip</code> except that
+it returns an iterator instead of a list. Used for lock-step
+iteration over several iterables at a time. Equivalent to:</p>
+
+<pre>
+     def izip(*iterables):
+         iterables = map(iter, iterables)
+         while iterables:
+             result = [i.next() for i in iterables]
+             yield tuple(result)
+</pre>
+
+<blockquote><span class="mark">@since</span> Changed in version
+2.4: When no iterables are specified, returns a zero length
+iterator instead of raising a TypeError exception.<br />
+</blockquote>
+</dd>
+<dt class="function" id="repeat"><b>repeat(object[, times])</b> <tt class="nav"><a class="nav" href="itertools.repeat" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Make an iterator that returns <var>object</var> over and over
+again. Runs indefinitely unless the <var>times</var> argument is
+specified. Used as argument to <a class="link" href="#imap"><code>
+imap</code></a> for invariant parameters to the called function. Also used
+with <a class="link" href="#izip"><code>izip</code></a> to create an
+invariant part of a tuple record. Equivalent to:</p>
+
+<pre>
+     def repeat(object, times=None):
+         if times is None:
+             while True:
+                 yield object
+         else:
+             for i in xrange(times):
+                 yield object
+</pre>
+</dd>
+<dt class="function" id="starmap"><b>starmap(function, iterable)</b> <tt class="nav"><a class="nav" href="itertools.starmap" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Make an iterator that computes the function using arguments
+tuples obtained from the iterable. Used instead of <a class="link" href="#imap"><code>imap</code></a> when argument parameters are already
+grouped in tuples from a single iterable (the data has been
+&#8220;pre-zipped&#8221;). The difference between <a class="link" href="#imap"><code>imap</code></a> and <a class="link" href="#starmap"><code>
+starmap</code></a> parallels the distinction between <code>
+function(a,b)</code> and <code>function(*c)</code>. Equivalent
+to:</p>
+
+<pre>
+     def starmap(function, iterable):
+         iterable = iter(iterable)
+         while True:
+             yield function(*iterable.next())
+</pre>
+</dd>
+<dt class="function" id="takewhile"><b>takewhile(predicate, iterable)</b> <tt class="nav"><a class="nav" href="itertools.takewhile" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Make an iterator that returns elements from the iterable as long
+as the predicate is true. Equivalent to:</p>
+
+<pre>
+     def takewhile(predicate, iterable):
+         for x in iterable:
+             if predicate(x):
+                 yield x
+             else:
+                 break
+</pre>
+</dd>
+<dt class="function" id="tee"><b>tee(iterable[, n=2])</b> <tt class="nav"><a class="nav" href="itertools.tee" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return <var>n</var> independent iterators from a single
+iterable. The case where <code>n==2</code> is equivalent to:</p>
+
+<pre>
+     def tee(iterable):
+         def gen(next, data={}, cnt=[0]):
+             for i in count():
+                 if i == cnt[0]:
+                     item = data[i] = next()
+                     cnt[0] += 1
+                 else:
+                     item = data.pop(i)
+                 yield item
+         it = iter(iterable)
+         return (gen(it.next), gen(it.next))
+</pre>
+
+<p>Note, once <a class="link" href="#tee"><code>tee</code></a> has made a
+split, the original <var>iterable</var> should not be used anywhere
+else; otherwise, the <var>iterable</var> could get advanced without
+the tee objects being informed.</p>
+
+<p>Note, this member of the toolkit may require significant
+auxiliary storage (depending on how much temporary data needs to be
+stored). In general, if one iterator is going to use most or all of
+the data before the other iterator, it is faster to use <code>list</code> instead of <a class="link" href="#tee"><code>tee</code></a>.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.4.<br />
+</blockquote>
+</dd>
+</dl><div class="text">
+<h2 id="examples">Examples <a class="nav" href="#examples">#</a></h2>
+
+<p>The following examples show common uses for each tool and
+demonstrate ways they can be combined.</p>
+
+<pre>
+&gt;&gt;&gt; amounts = [120.15, 764.05, 823.14]
+&gt;&gt;&gt; for checknum, amount in izip(count(1200), amounts):
+...     print 'Check %d is for $%.2f' % (checknum, amount)
+...
+Check 1200 is for $120.15
+Check 1201 is for $764.05
+Check 1202 is for $823.14
+
+&gt;&gt;&gt; import operator
+&gt;&gt;&gt; for cube in imap(operator.pow, xrange(1,5), repeat(3)):
+...    print cube
+...
+1
+8
+27
+64
+
+&gt;&gt;&gt; reportlines = ['EuroPython', 'Roster', '', 'alex', '', 'laura',
+                  '', 'martin', '', 'walter', '', 'mark']
+&gt;&gt;&gt; for name in islice(reportlines, 3, None, 2):
+...    print name.title()
+...
+Alex
+Laura
+Martin
+Walter
+Mark
+
+# Show a dictionary sorted and grouped by value
+&gt;&gt;&gt; from operator import itemgetter
+&gt;&gt;&gt; d = dict(a=1, b=2, c=1, d=2, e=1, f=2, g=3)
+&gt;&gt;&gt; di = sorted(d.iteritems(), key=itemgetter(1))
+&gt;&gt;&gt; for k, g in groupby(di, key=itemgetter(1)):
+...     print k, map(itemgetter(0), g)
+...
+1 ['a', 'c', 'e']
+2 ['b', 'd', 'f']
+3 ['g']
+
+# Find runs of consecutive numbers using groupby.  The key to the solution
+# is differencing with a range so that consecutive numbers all appear in
+# same group.
+&gt;&gt;&gt; data = [ 1,  4,5,6, 10, 15,16,17,18, 22, 25,26,27,28]
+&gt;&gt;&gt; for k, g in groupby(enumerate(data), lambda (i,x):i-x):
+...     print map(operator.itemgetter(1), g)
+... 
+[1]
+[4, 5, 6]
+[10]
+[15, 16, 17, 18]
+[22]
+[25, 26, 27, 28]
+</pre>
+
+<h2 id="recipes">Recipes <a class="nav" href="#recipes">#</a></h2>
+
+<p>This section shows recipes for creating an extended toolset
+using the existing itertools as building blocks.</p>
+
+<p>The extended tools offer the same high performance as the
+underlying toolset. The superior memory performance is kept by
+processing elements one at a time rather than bringing the whole
+iterable into memory all at once. Code volume is kept small by
+linking the tools together in a functional style which helps
+eliminate temporary variables. High speed is retained by preferring
+&#8220;vectorized&#8221; building blocks over the use of for-loops
+and generators which incur interpreter overhead.</p>
+
+<pre>
+def take(n, seq):
+    return list(islice(seq, n))
+
+def enumerate(iterable):
+    return izip(count(), iterable)
+
+def tabulate(function):
+    "Return function(0), function(1), ..."
+    return imap(function, count())
+
+def iteritems(mapping):
+    return izip(mapping.iterkeys(), mapping.itervalues())
+
+def nth(iterable, n):
+    "Returns the nth item"
+    return list(islice(iterable, n, n+1))
+
+def all(seq, pred=bool):
+    "Returns True if pred(x) is True for every element in the iterable"
+    for elem in ifilterfalse(pred, seq):
+        return False
+    return True
+
+def any(seq, pred=bool):
+    "Returns True if pred(x) is True for at least one element in the iterable"
+    for elem in ifilter(pred, seq):
+        return True
+    return False
+
+def no(seq, pred=bool):
+    "Returns True if pred(x) is False for every element in the iterable"
+    for elem in ifilter(pred, seq):
+        return False
+    return True
+
+def quantify(seq, pred=bool):
+    "Count how many times the predicate is True in the sequence"
+    return sum(imap(pred, seq))
+
+def padnone(seq):
+    """Returns the sequence elements and then returns None indefinitely.
+
+    Useful for emulating the behavior of the built-in map() function.
+    """
+    return chain(seq, repeat(None))
+
+def ncycles(seq, n):
+    "Returns the sequence elements n times"
+    return chain(*repeat(seq, n))
+
+def dotproduct(vec1, vec2):
+    return sum(imap(operator.mul, vec1, vec2))
+
+def flatten(listOfLists):
+    return list(chain(*listOfLists))
+
+def repeatfunc(func, times=None, *args):
+    """Repeat calls to func with specified arguments.
+    
+    Example:  repeatfunc(random.random)
+    """
+    if times is None:
+        return starmap(func, repeat(args))
+    else:
+        return starmap(func, repeat(args, times))
+
+def pairwise(iterable):
+    "s -&gt; (s0,s1), (s1,s2), (s2, s3), ..."
+    a, b = tee(iterable)
+    try:
+        b.next()
+    except StopIteration:
+        pass
+    return izip(a, b)
+</pre>
+</div>
+</div></body></html>

@@ -1,0 +1,52 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>The Tkinter Toplevel&nbsp;Widget</title> <script type="text/javascript">effbot_page_id=1975;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> <!--
+<p style='color: #8f8f8f; background: #fff5bf; padding: 5px 10px;'> <b>2008-07-15:</b> Selected articles
+ (including this one) 
+now have experimental "comment" links in the left column and at the bottom.
+You're welcome to use them for commenting and voting on articles.
+For a bit more on this, see <a
+href="http://effbot.slinkset.com/links/Welcome_to_discuss_effbot_org">this
+page</a>. /F
+</p>
+--> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <p><a href="text.htm">back</a> <a href="widget.htm">next</a></p> <h1 class="maintitle">The Tkinter Toplevel&nbsp;Widget</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p>The <b>Toplevel</b> widget work pretty much like <b>Frame</b>,
+but it is displayed in a separate, top-level window. Such windows
+usually have title bars, borders, and other &#8220;window
+decorations&#8221;.</p><h2>When to use the Toplevel Widget</h2><p>The Toplevel widget is used to display extra application
+windows, dialogs, and other &#8220;pop-up&#8221; windows.</p><h2 id="patterns">Patterns&#160;<a class="nav" href="#patterns" title="bookmark!">#</a></h2><pre class="python">
+...
+
+top = Toplevel()
+top.title(<span class="pystring">"About this application..."</span>)
+
+msg = Message(top, text=about_message)
+msg.pack()
+
+button = Button(top, text=<span class="pystring">"Dismiss"</span>, command=top.destroy)
+button.pack()</pre><pre>
+<img alt="" height="97" src="/media/cache/665fb3b76cc7cc8345c254aa228e81ff.png" width="112" />
+</pre><p class="fixme">FIXME: add more patterns</p><h2 id="reference">Reference&#160;<a class="nav" href="#reference" title="bookmark!">#</a></h2><div class="zone:include"><dl><dt><b>Toplevel(master=None, **options)</b> (class) [<a href="#Tkinter.Toplevel-class">#</a>]</dt><dd>
+<p>A widget container placed in a new top level window.</p><dl><dt><i>master</i></dt><dd>
+Parent widget.</dd>
+<dt><i>**options</i></dt><dd>
+Widget options.  See the description of
+   the <a class="link" href="#toplevel.Toplevel.config-method"><b>config</b></a> method for a list of available
+   options.
+</dd>
+</dl><br />
+</dd>
+<dt><a id="Tkinter.Toplevel.config-method" name="Tkinter.Toplevel.config-method"><b>config(**options)</b></a> [<a href="#Tkinter.Toplevel.config-method">#</a>]</dt><dd>
+<p>Modifies one or more widget options.  If no options are given,
+the method returns a dictionary containing all current option
+values.</p><dl><dt><i>**options</i></dt><dd>
+Widget options.</dd>
+<dt><i>background=</i></dt><dd>
+The background color to use in this toplevel.
+    This defaults to the application background color. To prevent
+    updates, set the color to an empty string.
+    (the option database name is background, the class is Background)</dd>
+<dt><i>bg=</i></dt><dd>
+Same as <b>background</b>.
+</dd>
+<dt><i>borderwidth=</i></dt><dd>
+Width of th

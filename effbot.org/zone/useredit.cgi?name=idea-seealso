@@ -1,0 +1,294 @@
+<html>
+<head>
+<title>idea-seealso ::: www.effbot.org</title>
+<link rel='stylesheet' href='/effbot.css' type='text/css' media='screen' />
+</head>
+<body bgcolor='#ccffcc'>
+<div>[<a href='idea-seealso.htm'>back</a>]</div>
+<h3>Welcome to the effbot.org user editor!</h3>
+
+
+<p><b>Note: This is not a contact form!  Support questions, spam, and
+other off-topic stuff will be ignored.</b></p>
+
+<p>To suggest changes, edit the HTML fragment in the text box below.
+You can use the 'update preview' button to check your changes (the
+preview is displayed beneath the text box).  When done, fill in the
+name and address fields (optional) and click 'submit patch' to mail
+the patch to me.  (I reserve the right to decide which patches to
+include, of course.)  Thanks! /F</p>
+
+<form method='post' id='useredit'>
+<input type='hidden' name='name' value='idea-seealso'/>
+<p>
+<input type='submit' name='preview' value='update preview' style='background:#084; color:white; width:200px; font-weight:bold;' >
+&nbsp;&nbsp;&nbsp;
+<input type='submit' name='submit' value='submit patch'  style='background:#084; color:white; width:200px; font-weight:bold;' >
+</p>
+<textarea name='text' rows='30' cols='80'>The SeeAlso Markup Language (Version 0.1)
+
+&lt;p class='info'&gt;Fredrik Lundh | May 2005&lt;/p&gt;
+
+&lt;p&gt;The &lt;em&gt;SeeAlso Markup Language&lt;/em&gt; is a minimal XML dialect that can
+be used to generate links between different web-based documentation sets.
+A documentation generator can use one or more SeeAlso files to add outbound
+links to related documents at other sites.  A documention generator can also
+generate SeeAlso files, for use by other sites.&lt;/p&gt;
+
+&lt;p&gt;(To view it another way, a SeeAlso file is a collection of
+&lt;a href="http://www.sixapart.com/pronet/docs/trackback_spec"&gt;trackbacks&lt;/a&gt;,
+stored in a single XML file.)&lt;/p&gt;
+
+&lt;p&gt;Here's a small SeeAlso file, which contains a single link:&lt;/p&gt;
+
+&lt;pre class='xml'&gt;
+&amp;lt;seealso src='http://effbot.org/python-seealso.xml'&gt;
+  &amp;lt;item href='http://www.effbot.org/librarybook/atexit.htm'&gt;
+    &amp;lt;title&gt;Using the &amp;lt;em&gt;atexit&amp;lt;/em&gt; module&amp;lt;/title&gt;
+    &amp;lt;target&gt;atexit&amp;lt;/target&gt;
+    &amp;lt;target&gt;atexit.register&amp;lt;/target&gt;
+  &amp;lt;/item&gt;
+&amp;lt;/seealso&gt;
+&lt;/pre&gt;
+
+&lt;p&gt;Larger examples can be found
+&lt;a href="http://effbot.org/librarybook/seealso.xml"&gt;here&lt;/a&gt; and
+&lt;a href="http://effbot.org/zone/seealso-python-library.xml"&gt;here&lt;/a&gt;.
+
+&lt;p class='fixme'&gt;FIXME: Use a namespace?&lt;/p&gt;
+
+&lt;h2 id='elements'&gt;Elements&lt;/h2&gt;
+
+&lt;h3&gt;The seealso Element&lt;/h3&gt;
+
+&lt;p&gt;This is the document root element.  It can contain zero or one
+&lt;b&gt;info&lt;/b&gt; element, followed by zero or more &lt;b&gt;item&lt;/b&gt; elements.&lt;/p&gt;
+
+&lt;p&gt;The &lt;b&gt;src&lt;/b&gt; attribute contains the source URI for this document.
+An application may use this URI to look for a newer version of the file.
+The &lt;b&gt;src&lt;/b&gt; attribute is optional; if omitted, the application will
+have to keep track of the source location in some other way.&lt;/p&gt;
+
+&lt;h3&gt;The info Element&lt;/h3&gt;
+
+&lt;p&gt;This element contains information about the SeeAlso origin site,
+such as site name, contact addresses, etc.  There are no standard
+subelements defined at this time, but you can use custom elements as
+long as they live in a distinct namespace.&lt;/p&gt;
+
+&lt;p&gt;Providing relevant &lt;a href="http://dublincore.org/documents/dc-xml-guidelines/"&gt;Dublin Core properties&lt;/a&gt; as &lt;b&gt;info&lt;/b&gt; subelements is
+encouraged.&lt;/p&gt;
+
+&lt;h3&gt;The item Element&lt;/h3&gt;
+
+&lt;p&gt;This element contains information for a single SeeAlso item.  It
+should contain an &lt;b&gt;href&lt;/b&gt; attribute that points to the associated
+resource.&lt;/p&gt;
+
+&lt;p&gt;This element can have zero or more &lt;b&gt;title&lt;/b&gt;, &lt;b&gt;excerpt&lt;/b&gt;,
+and &lt;b&gt;target&lt;/b&gt; elements.  For maximum interoperability, you
+should include a &lt;b&gt;title&lt;/b&gt; and a &lt;b&gt;target&lt;/b&gt; element for
+each SeeAlso item.&lt;/p&gt;
+
+&lt;h3&gt;The title Element&lt;/h3&gt;
+
+&lt;p&gt;The title of the SeeAlso item.  An item should have at least
+one title.  Multiple titles are allowed, but should be avoided
+(if used, applications are free to use any of them).&lt;/p&gt;
+
+&lt;p&gt;The title should contain plain text, but the &lt;b&gt;em&lt;/b&gt; element
+can be used to emphasize words or phrases.  No other HTML markup
+can be used.&lt;/p&gt;
+
+&lt;h3&gt;The excerpt Element&lt;/h3&gt;
+
+&lt;p&gt;An excerpt from the SeeAlso item, or any other description that
+is relevant.  As for titles, multiple excerpts are allowed, but should
+be avoided (if multiple excerpts are present, applications are free
+to use any of them).
+
+&lt;p&gt;The excerpt should contain plain text, but the &lt;b&gt;em&lt;/b&gt; element
+can be used to emphasize words or phrases.  No other HTML markup
+can be used.&lt;/p&gt;
+
+&lt;h3&gt;The target Element&lt;/h3&gt;
+
+&lt;p&gt;The target resource for this SeeAlso item (that is, the resource
+which will link back to this item).&lt;/p&gt;
+
+&lt;p&gt;The target can be a URI, or use any other form relevant for the
+application.  For example, objects in the Python standard library
+can be identified by a dotted path (e.g. &lt;b&gt;Tkinter.Canvas.move&lt;/b&gt;
+or &lt;b&gt;atexit.register&lt;/b&gt;).&lt;/p&gt;
+
+&lt;p&gt;An item should have at least one target.  Multiple targets can be
+used, where appropriate.&lt;/p&gt;
+
+&lt;p class='fixme'&gt;FIXME: Add some mechanism to specify "target domains"?
+Current effbot.org samples use a &lt;b&gt;target-domain&lt;/b&gt; attribute in the
+&lt;b&gt;seealso&lt;/b&gt; element.&lt;/p&gt;
+
+&lt;h3&gt;The em Element&lt;/h3&gt;
+
+&lt;p&gt;This element can be used to emphasize portions of a title or
+excerpt.  Applications are free to render emphasized portions in
+a suitable way (e.g. use italics), or to treat them as ordinary
+text.&lt;/p&gt;
+
+&lt;p class='fixme'&gt;FIXME: Put this tag in the XHTML namespace?&lt;/p&gt;
+
+&lt;h2&gt;Using Custom Elements&lt;/h2&gt;
+
+&lt;p&gt;Other elements can be used freely, as long as they live in a
+distinct namespace.  You can for example use Dublin Core elements,
+RSS elements, or more extensive XHTML markup.&lt;/p&gt;
+
+&lt;p&gt;For interoperability, custom elements should be placed after
+the standard elements, and the document should be designed to make
+sense also if all custom elements are ignored.&lt;/p&gt;</textarea>
+<table>
+<tr><td><label for='author'>Name:</label></td><td>
+<div><input name='author' value="" size=40></div>
+</td><td>(Optional)</td></tr>
+<tr><td><label for='email'>Mail:</label></td><td>
+<div><input name='email' value="" size=40></div>
+</td><td>(Optional)</td></tr>
+<tr><td><label for='note'>Comment:</label></td><td>
+<div><input name='note' value="" size=40></div>
+</td><td>(Optional)</td></tr>
+<tr><td><label for='password'>Password:</label></td><td>
+<div><input name='password' value="(replace with the sum of 7+4)" size=40></div>
+</td><td>(Required)</td></tr>
+</table>
+<p>
+<input type='submit' name='preview' value='update preview' style='background:#084; color:white; width:200px; font-weight:bold;' >
+&nbsp;&nbsp;&nbsp;
+<input type='submit' name='submit' value='submit patch'  style='background:#084; color:white; width:200px; font-weight:bold;' >
+</p>
+<p>&nbsp;</p>
+</form>
+<div style='background: white; border: 2px solid #084; padding: 0px 20px;'>
+<h2>The SeeAlso Markup Language (Version 0.1)</h2>
+
+<p class='info'>Fredrik Lundh | May 2005</p>
+
+<p>The <em>SeeAlso Markup Language</em> is a minimal XML dialect that can
+be used to generate links between different web-based documentation sets.
+A documentation generator can use one or more SeeAlso files to add outbound
+links to related documents at other sites.  A documention generator can also
+generate SeeAlso files, for use by other sites.</p>
+
+<p>(To view it another way, a SeeAlso file is a collection of
+<a href="http://www.sixapart.com/pronet/docs/trackback_spec">trackbacks</a>,
+stored in a single XML file.)</p>
+
+<p>Here's a small SeeAlso file, which contains a single link:</p>
+
+<pre class='xml'>
+&lt;seealso src='http://effbot.org/python-seealso.xml'>
+  &lt;item href='http://www.effbot.org/librarybook/atexit.htm'>
+    &lt;title>Using the &lt;em>atexit&lt;/em> module&lt;/title>
+    &lt;target>atexit&lt;/target>
+    &lt;target>atexit.register&lt;/target>
+  &lt;/item>
+&lt;/seealso>
+</pre>
+
+<p>Larger examples can be found
+<a href="http://effbot.org/librarybook/seealso.xml">here</a> and
+<a href="http://effbot.org/zone/seealso-python-library.xml">here</a>.
+
+<p class='fixme'>FIXME: Use a namespace?</p>
+
+<h2 id='elements'>Elements</h2>
+
+<h3>The seealso Element</h3>
+
+<p>This is the document root element.  It can contain zero or one
+<b>info</b> element, followed by zero or more <b>item</b> elements.</p>
+
+<p>The <b>src</b> attribute contains the source URI for this document.
+An application may use this URI to look for a newer version of the file.
+The <b>src</b> attribute is optional; if omitted, the application will
+have to keep track of the source location in some other way.</p>
+
+<h3>The info Element</h3>
+
+<p>This element contains information about the SeeAlso origin site,
+such as site name, contact addresses, etc.  There are no standard
+subelements defined at this time, but you can use custom elements as
+long as they live in a distinct namespace.</p>
+
+<p>Providing relevant <a href="http://dublincore.org/documents/dc-xml-guidelines/">Dublin Core properties</a> as <b>info</b> subelements is
+encouraged.</p>
+
+<h3>The item Element</h3>
+
+<p>This element contains information for a single SeeAlso item.  It
+should contain an <b>href</b> attribute that points to the associated
+resource.</p>
+
+<p>This element can have zero or more <b>title</b>, <b>excerpt</b>,
+and <b>target</b> elements.  For maximum interoperability, you
+should include a <b>title</b> and a <b>target</b> element for
+each SeeAlso item.</p>
+
+<h3>The title Element</h3>
+
+<p>The title of the SeeAlso item.  An item should have at least
+one title.  Multiple titles are allowed, but should be avoided
+(if used, applications are free to use any of them).</p>
+
+<p>The title should contain plain text, but the <b>em</b> element
+can be used to emphasize words or phrases.  No other HTML markup
+can be used.</p>
+
+<h3>The excerpt Element</h3>
+
+<p>An excerpt from the SeeAlso item, or any other description that
+is relevant.  As for titles, multiple excerpts are allowed, but should
+be avoided (if multiple excerpts are present, applications are free
+to use any of them).
+
+<p>The excerpt should contain plain text, but the <b>em</b> element
+can be used to emphasize words or phrases.  No other HTML markup
+can be used.</p>
+
+<h3>The target Element</h3>
+
+<p>The target resource for this SeeAlso item (that is, the resource
+which will link back to this item).</p>
+
+<p>The target can be a URI, or use any other form relevant for the
+application.  For example, objects in the Python standard library
+can be identified by a dotted path (e.g. <b>Tkinter.Canvas.move</b>
+or <b>atexit.register</b>).</p>
+
+<p>An item should have at least one target.  Multiple targets can be
+used, where appropriate.</p>
+
+<p class='fixme'>FIXME: Add some mechanism to specify "target domains"?
+Current effbot.org samples use a <b>target-domain</b> attribute in the
+<b>seealso</b> element.</p>
+
+<h3>The em Element</h3>
+
+<p>This element can be used to emphasize portions of a title or
+excerpt.  Applications are free to render emphasized portions in
+a suitable way (e.g. use italics), or to treat them as ordinary
+text.</p>
+
+<p class='fixme'>FIXME: Put this tag in the XHTML namespace?</p>
+
+<h2>Using Custom Elements</h2>
+
+<p>Other elements can be used freely, as long as they live in a
+distinct namespace.  You can for example use Dublin Core elements,
+RSS elements, or more extensive XHTML markup.</p>
+
+<p>For interoperability, custom elements should be placed after
+the standard elements, and the document should be designed to make
+sense also if all custom elements are ignored.</p>
+</div>
+</body>
+</html>

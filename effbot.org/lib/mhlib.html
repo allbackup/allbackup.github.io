@@ -1,0 +1,216 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>mhlib</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-mhlib.html'>original</a> :::
+<a href='mhlib.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>mhlib&#8212;Access to MH mailboxes</h1>
+
+<div class="toc"><dl><dt>On this page:</dt><dd><a href="#mh-objects">MH Objects</a></dd><dd><a href="#folder-objects">Folder Objects</a></dd><dd><a href="#message-objects">Message Objects</a></dd></dl></div><p>The <code>mhlib</code> module provides
+a Python interface to MH folders and their contents.</p>
+
+<p>The module contains three basic classes, <a class="link" href="#MH"><code>MH</code></a>, which represents a particular collection of
+folders, <a class="link" href="#Folder"><code>Folder</code></a>, which
+represents a single folder, and <a class="link" href="#Message"><code>Message</code></a>, which represents a single
+message.</p>
+</div>
+<dl><dt class="class" id="MH"><b>class MH([path[, profile]])</b> <tt class="nav"><a class="nav" href="mhlib.MH" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p><a class="link" href="#MH"><code>MH</code></a> represents a collection of
+MH folders.</p>
+</dd>
+<dt class="class" id="Folder"><b>class Folder(mh, name)</b> <tt class="nav"><a class="nav" href="mhlib.Folder" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>The <a class="link" href="#Folder"><code>Folder</code></a> class
+represents a single folder and its messages.</p>
+</dd>
+<dt class="class" id="Message"><b>class Message(folder, number[, name])</b> <tt class="nav"><a class="nav" href="mhlib.Message" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p><a class="link" href="#Message"><code>Message</code></a> objects
+represent individual messages in a folder. The Message class is
+derived from <code>
+mimetools.Message</code>.</p>
+</dd>
+</dl><div class="text">
+<h2 id="mh-objects">MH Objects <a class="nav" href="#mh-objects">#</a></h2>
+
+<p><a class="link" href="#MH"><code>MH</code></a> instances have the
+following methods:</p>
+</div>
+<dl><dt class="method" id="MH.error"><b>error(format[, ...])</b> <tt class="nav"><a class="nav" href="mhlib.MH.error" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Print an error message - can be overridden.</p>
+</dd>
+<dt class="method" id="MH.getprofile"><b>getprofile(key)</b> <tt class="nav"><a class="nav" href="mhlib.MH.getprofile" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return a profile entry (<code>None</code> if not set).</p>
+</dd>
+<dt class="method" id="MH.getpath"><b>getpath()</b> <tt class="nav"><a class="nav" href="mhlib.MH.getpath" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return the mailbox pathname.</p>
+</dd>
+<dt class="method" id="MH.getcontext"><b>getcontext()</b> <tt class="nav"><a class="nav" href="mhlib.MH.getcontext" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return the current folder name.</p>
+</dd>
+<dt class="method" id="MH.setcontext"><b>setcontext(name)</b> <tt class="nav"><a class="nav" href="mhlib.MH.setcontext" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Set the current folder name.</p>
+</dd>
+<dt class="method" id="MH.listfolders"><b>listfolders()</b> <tt class="nav"><a class="nav" href="mhlib.MH.listfolders" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return a list of top-level folders.</p>
+</dd>
+<dt class="method" id="MH.listallfolders"><b>listallfolders()</b> <tt class="nav"><a class="nav" href="mhlib.MH.listallfolders" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return a list of all folders.</p>
+</dd>
+<dt class="method" id="MH.listsubfolders"><b>listsubfolders(name)</b> <tt class="nav"><a class="nav" href="mhlib.MH.listsubfolders" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return a list of direct subfolders of the given folder.</p>
+</dd>
+<dt class="method" id="MH.listallsubfolders"><b>listallsubfolders(name)</b> <tt class="nav"><a class="nav" href="mhlib.MH.listallsubfolders" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return a list of all subfolders of the given folder.</p>
+</dd>
+<dt class="method" id="MH.makefolder"><b>makefolder(name)</b> <tt class="nav"><a class="nav" href="mhlib.MH.makefolder" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Create a new folder.</p>
+</dd>
+<dt class="method" id="MH.deletefolder"><b>deletefolder(name)</b> <tt class="nav"><a class="nav" href="mhlib.MH.deletefolder" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Delete a folder - must have no subfolders.</p>
+</dd>
+<dt class="method" id="MH.openfolder"><b>openfolder(name)</b> <tt class="nav"><a class="nav" href="mhlib.MH.openfolder" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return a new open folder object.</p>
+</dd>
+</dl><div class="text">
+<h2 id="folder-objects">Folder Objects <a class="nav" href="#folder-objects">#</a></h2>
+
+<p><a class="link" href="#Folder"><code>Folder</code></a> instances
+represent open folders and have the following methods:</p>
+</div>
+<dl><dt class="method" id="Folder.error"><b>error(format[, ...])</b> <tt class="nav"><a class="nav" href="mhlib.Folder.error" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Print an error message - can be overridden.</p>
+</dd>
+<dt class="method" id="Folder.getfullname"><b>getfullname()</b> <tt class="nav"><a class="nav" href="mhlib.Folder.getfullname" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return the folder's full pathname.</p>
+</dd>
+<dt class="method" id="Folder.getsequencesfilename"><b>getsequencesfilename()</b> <tt class="nav"><a class="nav" href="mhlib.Folder.getsequencesfilename" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return the full pathname of the folder's sequences file.</p>
+</dd>
+<dt class="method" id="Folder.getmessagefilename"><b>getmessagefilename(n)</b> <tt class="nav"><a class="nav" href="mhlib.Folder.getmessagefilename" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return the full pathname of message <var>n</var> of the
+folder.</p>
+</dd>
+<dt class="method" id="Folder.listmessages"><b>listmessages()</b> <tt class="nav"><a class="nav" href="mhlib.Folder.listmessages" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return a list of messages in the folder (as numbers).</p>
+</dd>
+<dt class="method" id="Folder.getcurrent"><b>getcurrent()</b> <tt class="nav"><a class="nav" href="mhlib.Folder.getcurrent" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return the current message number.</p>
+</dd>
+<dt class="method" id="Folder.setcurrent"><b>setcurrent(n)</b> <tt class="nav"><a class="nav" href="mhlib.Folder.setcurrent" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Set the current message number to <var>n</var>.</p>
+</dd>
+<dt class="method" id="Folder.parsesequence"><b>parsesequence(seq)</b> <tt class="nav"><a class="nav" href="mhlib.Folder.parsesequence" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Parse msgs syntax into list of messages.</p>
+</dd>
+<dt class="method" id="Folder.getlast"><b>getlast()</b> <tt class="nav"><a class="nav" href="mhlib.Folder.getlast" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Get last message, or <code>0</code> if no messages are in the
+folder.</p>
+</dd>
+<dt class="method" id="Folder.setlast"><b>setlast(n)</b> <tt class="nav"><a class="nav" href="mhlib.Folder.setlast" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Set last message (internal use only).</p>
+</dd>
+<dt class="method" id="Folder.getsequences"><b>getsequences()</b> <tt class="nav"><a class="nav" href="mhlib.Folder.getsequences" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return dictionary of sequences in folder. The sequence names are
+used as keys, and the values are the lists of message numbers in
+the sequences.</p>
+</dd>
+<dt class="method" id="Folder.putsequences"><b>putsequences(dict)</b> <tt class="nav"><a class="nav" href="mhlib.Folder.putsequences" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return dictionary of sequences in folder name: list.</p>
+</dd>
+<dt class="method" id="Folder.removemessages"><b>removemessages(list)</b> <tt class="nav"><a class="nav" href="mhlib.Folder.removemessages" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Remove messages in list from folder.</p>
+</dd>
+<dt class="method" id="Folder.refilemessages"><b>refilemessages(list, tofolder)</b> <tt class="nav"><a class="nav" href="mhlib.Folder.refilemessages" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Move messages in list to other folder.</p>
+</dd>
+<dt class="method" id="Folder.movemessage"><b>movemessage(n, tofolder, ton)</b> <tt class="nav"><a class="nav" href="mhlib.Folder.movemessage" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Move one message to a given destination in another folder.</p>
+</dd>
+<dt class="method" id="Folder.copymessage"><b>copymessage(n, tofolder, ton)</b> <tt class="nav"><a class="nav" href="mhlib.Folder.copymessage" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Copy one message to a given destination in another folder.</p>
+</dd>
+</dl><div class="text">
+<h2 id="message-objects">Message Objects <a class="nav" href="#message-objects">#</a></h2>
+
+<p>The <a class="link" href="#Message"><code>Message</code></a> class adds
+one method to those of <code>mimetools.Message</code>:</p>
+</div>
+<dl><dt class="method" id="Message.openmessage"><b>openmessage(n)</b> <tt class="nav"><a class="nav" href="mhlib.Message.openmessage" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return a new open message object (costs a file descriptor).</p>
+</dd>
+</dl></div></body></html>

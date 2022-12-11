@@ -1,0 +1,52 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>The fcntl&nbsp;module</title></head><body data-page-id="532"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">The fcntl&nbsp;module</h1></div><div class="yui-ge"><div class="yui-u first"><p>(Unix only). This module provides an interface to the
+<b>ioctl</b> and <b>fcntl</b> functions on Unix. They are used
+for <span>&#8220;out of band&#8221;</span> operations on file handles and I/O
+device handles. This includes things like reading extended
+attributes, controlling blocking, modifying terminal behavior,
+etc.</p><p>Exactly how to use these functions are highly platform
+dependent. For more information on what you can do on your
+platform, check the corresponding Unix manual pages.</p><p>This module also provides an interface to Unix&#8217; file locking
+mechanisms. The following example uses the <b>flock</b> function
+to place an <i>advisory lock</i> on the file, while it is being
+updated.</p><p>The output shown below was obtained by running three instances
+of the program in parallel, like this: <b>python
+fcntl-example-1.py&amp; python fcntl-example-1.py&amp; python
+fcntl-example-1.py&amp;</b> (all on one command line). If you
+comment out the call to <b>flock</b>, the counter will not be
+updated properly.</p><div class="example">
+<b style="example">Example: Using the fcntl module for locking</b>
+<pre>
+# File: <a href="fcntl/fcntl-example-1.py">fcntl-example-1.py</a>
+
+import fcntl, FCNTL
+import os, time
+
+FILE = "counter.txt"
+
+if not os.path.exists(FILE):
+    # <i>create the counter file if it doesn't exist</i>
+    file = open(FILE, "w")
+    file.write("0")
+    file.close()
+
+for i in range(20):
+    # <i>increment the counter</i>
+    file = open(FILE, "r+")
+    fcntl.flock(file.fileno(), FCNTL.LOCK_EX)
+    counter = int(file.readline()) + 1
+    file.seek(0)
+    file.write(str(counter))
+    file.close() # <i>unlocks the file</i>
+    print os.getpid(), "=&gt;", counter
+    time.sleep(0.1)
+</pre><pre class="computeroutput" moreinfo="NONE">
+$ python fcntl-example-1.py
+30940 =&gt; 1
+30942 =&gt; 2
+30941 =&gt; 3
+30940 =&gt; 4
+30941 =&gt; 5
+30942 =&gt; 6
+</pre></div></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to librarybook index page.">::: librarybook :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

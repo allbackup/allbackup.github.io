@@ -1,0 +1,14 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>The Image&nbsp;Module</title> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> <div style='padding-top: 1em'> <p class="note" align="center">This is an excerpt from  <a href="/imagingbook/">The Python Imaging Library Handbook</a>, taken from the chapter <a href="/imagingbook/image.htm"><cite>The Image Module</cite></a>.</p> </div> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <h1 class="maintitle">The Image&nbsp;Module</h1> </div> <!-- yui-g --><h3 id="tag-Image.Image.info">info&#160;<a class="nav" href="http://effbot.org/imagingbook/image.htm#tag-Image.Image.info" title="bookmark!">#</a></h3><div class="attribute" id="image-info-attribute"><p><b>im.info</b>
+<span>&#8658; dictionary</span></p><p>A dictionary holding data associated with the image.  This
+dictionary is used by file handlers to pass on various non-image
+information read from the file.  See documentation for the various
+file handlers for details.</p><p>Most methods ignore the dictionary when returning new images; since
+the keys are not standardized, it&#8217;s not possible for a method to know
+if the operation affects the dictionary.  If you need the information
+later on, keep a reference to the <b>info</b> dictionary returned from
+the <a href="http://effbot.org/tag/PIL.Image.open"><b>open</b></a> method.
+
+</p></div><p>[<a href="/imagingbook/image.htm#tag-Image.Image.info">read this entry in context</a>]</p><div class="yui-g"></div> <!-- yui-g --></div> <!-- content --> </div> <!-- yui-b --> </div> <!-- yui-main --> <div class="yui-b"> <div id='menu'> </div> <!-- menu --> </div> <!-- yui-b --> </div> <!-- bd --> <div id="ft"> <!-- footer --> <p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;"></a>
+this page was rendered by a <a href="http://www.djangoproject.com/">django</a> application in 0.00s 2013-02-08 00:09:12.501430.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p> </div> <!-- ft --> </div> <!-- doc --> <script src="/media/js/effbot-min.js" type="text/javascript"> </script> </body> </html>

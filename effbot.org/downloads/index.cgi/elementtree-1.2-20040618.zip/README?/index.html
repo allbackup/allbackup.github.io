@@ -1,0 +1,215 @@
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>downloads.effbot.org ::: www.effbot.org</title>
+<link rel="stylesheet" href="/effbot2.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="/effbotprint.css" type="text/css" media="print" />
+</head>
+
+<body bgcolor="white">
+
+<div id="effbot-page">
+
+<div id="effbot-head">
+<a href="/"><b>effbot.org</b></a> ::: 
+<a href="/zone/"><b>zone</b></a> :::
+<b>downloads.effbot.org</b>
+</div>
+
+<div id="effbot-nav">
+
+<div style="margin-top: 10px;" class='small'>Think this article can be improved? <a href='#add-comment'>Check</a> for comments, or <a href='/comment/zone/zone-template-downloads.htm'>add your own</a>!</div>
+
+</div>
+
+<div id="effbot-body">
+
+
+<h1 class="title">downloads.effbot.org</h1>
+<p>
+[<a href="/">home</a>]
+[<a href="/zone">zone</a>]
+[<a href="http://online.effbot.org">blog</a>]
+
+</p><p>Assorted software, most of it shipped under an OSI-compatible <a href="/zone/copyright.htm">old-style Python license</a>.  If you want
+to support development, you can always <a href="http://www.amazon.co.uk/gp/registry/2QZDLLDVBENMC">buy me some refreshments</a>.
+
+<h3>Contents:</h3>
+
+
+<p>
+Contents of <b>downloads/elementtree-1.2-20040618.zip/README</b>:
+</p>
+<pre>
+$Id: <a href='README'>README</a> 1864 2004-06-18 13:11:12Z Fredrik $
+
+=======================
+The elementtree library
+=======================
+
+This kit contains the ElementTree library, a light-weight toolkit for
+XML processing in Python.
+
+For more information on this library, see:
+
+    <a href='docs/index.html'>docs/index.html</a>
+    <a href='http://effbot.org/zone/element.htm'>http://effbot.org/zone/element.htm</a>
+
+The modules are designed to work with Python 2.1 and newer.  The core
+ElementTree module and the SimpleXMLTreeBuilder class also works under
+1.5.2 and 2.0.
+
+Enjoy /F
+
+fredrik@pythonware.com
+<a href='http://www.pythonware.com'>http://www.pythonware.com</a>
+
+--------------------------------------------------------------------
+The ElementTree Library is
+
+Copyright (c) 1999-2004 by Secret Labs AB
+Copyright (c) 1999-2004 by Fredrik Lundh
+
+By obtaining, using, and/or copying this software and/or its
+associated documentation, you agree that you have read, understood,
+and will comply with the following terms and conditions:
+
+Permission to use, copy, modify, and distribute this software and its
+associated documentation for any purpose and without fee is hereby
+granted, provided that the above copyright notice appears in all
+copies, and that both that copyright notice and this permission notice
+appear in supporting documentation, and that the name of Secret Labs
+AB or the author not be used in advertising or publicity pertaining to
+distribution of the software without specific, written prior
+permission.
+
+SECRET LABS AB AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH REGARD TO
+THIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND
+FITNESS.  IN NO EVENT SHALL SECRET LABS AB OR THE AUTHOR BE LIABLE FOR
+ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
+OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+--------------------------------------------------------------------
+
+release info
+------------
+
+This is release 1.2 of the ElementTree library.
+
+For a list of changes in this release, see the <a href='CHANGES'>CHANGES</a> document.
+
+The latest version of this library can be downloaded from:
+
+    <a href='http://effbot.org/downloads'>http://effbot.org/downloads</a>
+
+Comments, bug reports, and patches are welcome.  Send them to
+fredrik@pythonware.com.
+
+Note that this is free software, with limited support.  If you need
+commercial support on this module, contact fredrik@pythonware.com.
+
+--------------------------------------------------------------------
+contents
+--------------------------------------------------------------------
+
+<a href='README'>README</a>                        This file
+
+<a href='CHANGES'>CHANGES</a>                       List of changes in this release.
+
+elementtree/
+
+  ElementTree.py              Element tree implementation.  For a minimal
+                              install, this file is all you need.
+
+  ElementPath.py              Element path support module.  Adds limited
+                              XPath support to find/findtext/findall.
+
+  ElementInclude.py           Element include support module.  Adds limited
+                              XInclude support.
+
+  HTMLTreeBuilder.py          Element tree builder for HTML.  This only
+                              works for mostly well-formed HTML; if you
+                              need something that can parse arbitrary
+                              HTML at least as good as your browser, use
+                              TidyHTMLTreeBuilder or TidyTools (see below).
+
+  XMLTreeBuilder.py           Element tree builder for XML (compatibility;
+                              new code should use the tree builder in the
+                              ElementTree module).
+
+  TidyHTMLTreeBuilder.py      Element tree builder for HTML, based on the
+                              tidylib library.  This tree builder requires
+                              the _elementtidy extension module (available
+                              from <a href='http://effbot.org/downloads'>http://effbot.org/downloads</a>).
+
+  SimpleXMLTreeBuilder.py     Old element tree builder for XML, based on
+                              xmllib, for Python versions where "expat" is
+                              not available.   Due to bugs in xmllib, the
+                              namespace support is not reliable (run the
+                              module as a script to find out exactly how
+                              unreliable it is on your Python version...)
+
+  SgmlopXMLTreeBuilder.py     Simple element tree builder based on the
+                              SGMLOP parser.  Note: The current version
+                              does not support namespaces.
+
+  SimpleXMLWriter.py          Simple XML writer
+
+  TidyTools.py                Build element trees from HTML, using the
+                              external 'tidy' utility.
+
+setup.py                      Build/installation script
+
+<a href='docs/index.html'>docs/index.html</a>		      API reference pages.
+docs/*
+
+demo*.py                      Sample scripts
+samples/*                     Sample data
+
+selftest.py                   Selftest (requires Python 2.1)
+tidytest.py                   Selftest for TidyHTMLTreeBuilder components.
+
+benchmark.py                  Benchmark script (usage: benchmark.py file)
+</pre>
+
+
+
+
+
+</p>
+
+
+<hr />
+
+<div class='navigate'>
+<div  style='float: right;'>
+admin:
+[<a href='/zone/edit/?name=zone-template-downloads'>edit</a>]
+[<a href='/zone/edit/?action=new'>new</a>]
+[<a href='http://validator.w3.org/check?uri=http://effbot.org/zone/zone-template-downloads.htm'>validate</a>]
+[<a href='http://tinyurl.com/api-create.php?uri=http://effbot.org/zone/zone-template-downloads.htm'>tinyurl</a>]
+</div>
+<div>
+[<a id="add-comment" href='/comment/zone/zone-template-downloads.htm'><b>add a comment!</b></a>]
+[<a href="/random/zone">random page</a>]
+</div>
+</div>
+
+<p class='small'>Copyright &copy; 2002-2006 by Fredrik Lundh.</p>
+
+</div> <!-- effbot-body -->
+</div> <!-- effbot-page -->
+
+<script src="/effbot.js" type="text/javascript"></script>
+<script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-578832-1";
+urchinTracker();
+</script>
+
+</body>
+</html>

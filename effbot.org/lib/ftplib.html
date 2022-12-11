@@ -1,0 +1,345 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>ftplib</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-ftplib.html'>original</a> :::
+<a href='ftplib.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>ftplib&#8212;FTP protocol client</h1>
+
+<div class="toc"><dl><dt>On this page:</dt><dd><a href="#ftp-objects">FTP Objects</a></dd></dl></div><p>This module defines the class <a class="link" href="#FTP"><code>
+FTP</code></a> and a few related items. The <a class="link" href="#FTP"><code>FTP</code></a> class implements the client side of the FTP
+protocol. You can use this to write Python programs that perform a
+variety of automated FTP jobs, such as mirroring other ftp servers.
+It is also used by the module <code>
+urllib</code> to handle URLs that use FTP. For more information on FTP
+(File Transfer Protocol), see Internet <a class="link" href="http://www.faqs.org/rfcs/rfc959.html">RFC 959</a>.</p>
+
+<p>Here's a sample session using the <code>ftplib</code> module:</p>
+
+<pre>
+&gt;&gt;&gt; from ftplib import FTP
+&gt;&gt;&gt; ftp = FTP('ftp.cwi.nl')   # connect to host, default port
+&gt;&gt;&gt; ftp.login()               # user anonymous, passwd anonymous@
+&gt;&gt;&gt; ftp.retrlines('LIST')     # list directory contents
+total 24418
+drwxrwsr-x   5 ftp-usr  pdmaint     1536 Mar 20 09:48 .
+dr-xr-srwt 105 ftp-usr  pdmaint     1536 Mar 21 14:32 ..
+-rw-r--r--   1 ftp-usr  pdmaint     5305 Mar 20 09:48 INDEX
+ .
+ .
+ .
+&gt;&gt;&gt; ftp.retrbinary('RETR README', open('README', 'wb').write)
+'226 Transfer complete.'
+&gt;&gt;&gt; ftp.quit()
+</pre>
+
+<p>The module defines the following items:</p>
+</div>
+<dl><dt class="class" id="FTP"><b>class FTP([host[, user[, passwd[, acct]]]])</b> <tt class="nav"><a class="nav" href="ftplib.FTP" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>Return a new instance of the <a class="link" href="#FTP"><code>
+FTP</code></a> class. When <var>host</var> is given, the method call
+<code>connect(</code><var>host</var>) is made. When <var>user</var>
+is given, additionally the method call <code>
+login(</code><var>user</var>, <var>passwd</var>, <var>acct</var>)
+is made (where <var>passwd</var> and <var>acct</var> default to the
+empty string when not given).</p>
+</dd>
+<dt class="variable" id="all_errors"><b>all_errors</b> <tt class="nav"><a class="nav" href="ftplib.all_errors" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>The set of all exceptions (as a tuple) that methods of <a class="link" href="#FTP"><code>FTP</code></a> instances may raise as a
+result of problems with the FTP connection (as opposed to
+programming errors made by the caller). This set includes the four
+exceptions listed below as well as <code>socket.error</code> and <code>exceptions.IOError</code>.</p>
+</dd>
+<dt class="exception" id="error_reply"><b>exception error_reply</b> <tt class="nav"><a class="nav" href="ftplib.error_reply" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="exception">
+<p>Exception raised when an unexpected reply is received from the
+server.</p>
+</dd>
+<dt class="exception" id="error_temp"><b>exception error_temp</b> <tt class="nav"><a class="nav" href="ftplib.error_temp" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="exception">
+<p>Exception raised when an error code in the range 400-499 is
+received.</p>
+</dd>
+<dt class="exception" id="error_perm"><b>exception error_perm</b> <tt class="nav"><a class="nav" href="ftplib.error_perm" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="exception">
+<p>Exception raised when an error code in the range 500-599 is
+received.</p>
+</dd>
+<dt class="exception" id="error_proto"><b>exception error_proto</b> <tt class="nav"><a class="nav" href="ftplib.error_proto" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="exception">
+<p>Exception raised when a reply is received from the server that
+does not begin with a digit in the range 1-5.</p>
+</dd>
+</dl><div class="text"><span class="mark">@see</span> <code>Module netrc</code> Parser for the .netrc file
+format. The file .netrc is typically used by FTP clients to load
+user authentication information before prompting the user. 
+
+<h2 id="ftp-objects">FTP Objects <a class="nav" href="#ftp-objects">#</a></h2>
+
+<p>Several methods are available in two flavors: one for handling
+text files and another for binary files. These are named for the
+command which is used followed by "<code>lines</code>" for the text
+version or "<code>binary</code>" for the binary version.</p>
+
+<p><a class="link" href="#FTP"><code>FTP</code></a> instances have the
+following methods:</p>
+</div>
+<dl><dt class="method" id="FTP.set_debuglevel"><b>set_debuglevel(level)</b> <tt class="nav"><a class="nav" href="ftplib.FTP.set_debuglevel" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Set the instance's debugging level. This controls the amount of
+debugging output printed. The default, <code>0</code>, produces no
+debugging output. A value of <code>1</code> produces a moderate
+amount of debugging output, generally a single line per request. A
+value of <code>2</code> or higher produces the maximum amount of
+debugging output, logging each line sent and received on the
+control connection.</p>
+</dd>
+<dt class="method" id="FTP.connect"><b>connect(host[, port])</b> <tt class="nav"><a class="nav" href="ftplib.FTP.connect" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Connect to the given host and port. The default port number is
+<code>21</code>, as specified by the FTP protocol specification. It
+is rarely needed to specify a different port number. This function
+should be called only once for each instance; it should not be
+called at all if a host was given when the instance was created.
+All other methods can only be used after a connection has been
+made.</p>
+</dd>
+<dt class="method" id="FTP.getwelcome"><b>getwelcome()</b> <tt class="nav"><a class="nav" href="ftplib.FTP.getwelcome" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return the welcome message sent by the server in reply to the
+initial connection. (This message sometimes contains disclaimers or
+help information that may be relevant to the user.)</p>
+</dd>
+<dt class="method" id="FTP.login"><b>login([user[, passwd[, acct]]])</b> <tt class="nav"><a class="nav" href="ftplib.FTP.login" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Log in as the given <var>user</var>. The <var>passwd</var> and
+<var>acct</var> parameters are optional and default to the empty
+string. If no <var>user</var> is specified, it defaults to <code>
+'anonymous'</code>. If <var>user</var> is <code>'anonymous'</code>,
+the default <var>passwd</var> is <code>'anonymous@'</code>. This
+function should be called only once for each instance, after a
+connection has been established; it should not be called at all if
+a host and user were given when the instance was created. Most FTP
+commands are only allowed after the client has logged in.</p>
+</dd>
+<dt class="method" id="FTP.abort"><b>abort()</b> <tt class="nav"><a class="nav" href="ftplib.FTP.abort" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Abort a file transfer that is in progress. Using this does not
+always work, but it's worth a try.</p>
+</dd>
+<dt class="method" id="FTP.sendcmd"><b>sendcmd(command)</b> <tt class="nav"><a class="nav" href="ftplib.FTP.sendcmd" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Send a simple command string to the server and return the
+response string.</p>
+</dd>
+<dt class="method" id="FTP.voidcmd"><b>voidcmd(command)</b> <tt class="nav"><a class="nav" href="ftplib.FTP.voidcmd" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Send a simple command string to the server and handle the
+response. Return nothing if a response code in the range 200-299 is
+received. Raise an exception otherwise.</p>
+</dd>
+<dt class="method" id="FTP.retrbinary"><b>retrbinary(command, callback[, maxblocksize[,
+rest]])</b> <tt class="nav"><a class="nav" href="ftplib.FTP.retrbinary" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Retrieve a file in binary transfer mode. <var>command</var>
+should be an appropriate "<code>RETR</code>" command: <code>
+'RETR</code> <var>filename</var>'. The <var>callback</var> function
+is called for each block of data received, with a single string
+argument giving the data block. The optional <var>
+maxblocksize</var> argument specifies the maximum chunk size to
+read on the low-level socket object created to do the actual
+transfer (which will also be the largest size of the data blocks
+passed to <var>callback</var>). A reasonable default is chosen.
+<var>rest</var> means the same thing as in the <code>transfercmd</code> method.</p>
+</dd>
+<dt class="method" id="FTP.retrlines"><b>retrlines(command[, callback])</b> <tt class="nav"><a class="nav" href="ftplib.FTP.retrlines" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Retrieve a file or directory listing in ASCII transfer mode.
+<var>command</var> should be an appropriate "<code>RETR</code>"
+command (see <code>retrbinary</code>)
+or a "<code>LIST</code>" command (usually just the string <code>
+'LIST'</code>). The <var>callback</var> function is called for each
+line, with the trailing CRLF stripped. The default <var>
+callback</var> prints the line to <code>sys.stdout</code>.</p>
+</dd>
+<dt class="method" id="FTP.set_pasv"><b>set_pasv(boolean)</b> <tt class="nav"><a class="nav" href="ftplib.FTP.set_pasv" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Enable &#8220;passive&#8221; mode if <var>boolean</var> is true,
+other disable passive mode. (In Python 2.0 and before, passive mode
+was off by default; in Python 2.1 and later, it is on by
+default.)</p>
+</dd>
+<dt class="method" id="FTP.storbinary"><b>storbinary(command, file[, blocksize])</b> <tt class="nav"><a class="nav" href="ftplib.FTP.storbinary" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Store a file in binary transfer mode. <var>command</var> should
+be an appropriate "<code>STOR</code>" command: <code>"STOR</code>
+<var>filename</var>". <var>file</var> is an open file object which
+is read until EOF using its <code>
+read</code> method in blocks of size <var>blocksize</var> to provide
+the data to be stored. The <var>blocksize</var> argument defaults
+to 8192.</p>
+
+<blockquote><span class="mark">@since</span> Changed in version
+2.1: default for blocksize added.<br />
+</blockquote>
+</dd>
+<dt class="method" id="FTP.storlines"><b>storlines(command, file)</b> <tt class="nav"><a class="nav" href="ftplib.FTP.storlines" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Store a file in ASCII transfer mode. <var>command</var> should
+be an appropriate "<code>STOR</code>" command (see <code>storbinary</code>). Lines are read until EOF
+from the open file object <var>file</var> using its <code>readline</code> method to provide the data to be
+stored.</p>
+</dd>
+<dt class="method" id="FTP.transfercmd"><b>transfercmd(cmd[, rest])</b> <tt class="nav"><a class="nav" href="ftplib.FTP.transfercmd" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Initiate a transfer over the data connection. If the transfer is
+active, send a "<code>EPRT</code>" or "<code>PORT</code>" command
+and the transfer command specified by <var>cmd</var>, and accept
+the connection. If the server is passive, send a
+"<code>EPSV</code>" or "<code>PASV</code>" command, connect to it,
+and start the transfer command. Either way, return the socket for
+the connection.</p>
+
+<p>If optional <var>rest</var> is given, a "<code>REST</code>"
+command is sent to the server, passing <var>rest</var> as an
+argument. <var>rest</var> is usually a byte offset into the
+requested file, telling the server to restart sending the file's
+bytes at the requested offset, skipping over the initial bytes.
+Note however that RFC 959 requires only that <var>rest</var> be a
+string containing characters in the printable range from ASCII code
+33 to ASCII code 126. The <code>
+transfercmd</code> method, therefore, converts <var>rest</var> to a
+string, but no check is performed on the string's contents. If the
+server does not recognize the "<code>REST</code>" command, an <a class="link" href="#error_reply"><code>error_reply</code></a> exception will
+be raised. If this happens, simply call <code>transfercmd</code> without a <var>rest</var>
+argument.</p>
+</dd>
+<dt class="method" id="FTP.ntransfercmd"><b>ntransfercmd(cmd[, rest])</b> <tt class="nav"><a class="nav" href="ftplib.FTP.ntransfercmd" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Like <code>transfercmd</code>,
+but returns a tuple of the data connection and the expected size of
+the data. If the expected size could not be computed, <code>None</code> will be returned as the
+expected size. <var>cmd</var> and <var>rest</var> means the same
+thing as in <code>
+transfercmd</code>.</p>
+</dd>
+<dt class="method" id="FTP.nlst"><b>nlst(argument[, ...])</b> <tt class="nav"><a class="nav" href="ftplib.FTP.nlst" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return a list of files as returned by the "<code>NLST</code>"
+command. The optional <var>argument</var> is a directory to list
+(default is the current server directory). Multiple arguments can
+be used to pass non-standard options to the "<code>NLST</code>"
+command.</p>
+</dd>
+<dt class="method" id="FTP.dir"><b>dir(argument[, ...])</b> <tt class="nav"><a class="nav" href="ftplib.FTP.dir" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Produce a directory listing as returned by the
+"<code>LIST</code>" command, printing it to standard output. The
+optional <var>argument</var> is a directory to list (default is the
+current server directory). Multiple arguments can be used to pass
+non-standard options to the "<code>LIST</code>"command. If the last
+argument is a function, it is used as a <var>callback</var>
+function as for <code>
+retrlines</code>; the default prints to <code>sys.stdout</code>. This
+method returns <code>None</code>.</p>
+</dd>
+<dt class="method" id="FTP.rename"><b>rename(fromname, toname)</b> <tt class="nav"><a class="nav" href="ftplib.FTP.rename" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Rename file <var>fromname</var> on the server to <var>
+toname</var>.</p>
+</dd>
+<dt class="method" id="FTP.delete"><b>delete(filename)</b> <tt class="nav"><a class="nav" href="ftplib.FTP.delete" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Remove the file named <var>filename</var> from the server. If
+successful, returns the text of the response, otherwise raises <a class="link" href="#error_perm"><code>error_perm</code></a> on permission
+errors or <a class="link" href="#error_reply"><code>error_reply</code></a>
+on other errors.</p>
+</dd>
+<dt class="method" id="FTP.cwd"><b>cwd(pathname)</b> <tt class="nav"><a class="nav" href="ftplib.FTP.cwd" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Set the current directory on the server.</p>
+</dd>
+<dt class="method" id="FTP.mkd"><b>mkd(pathname)</b> <tt class="nav"><a class="nav" href="ftplib.FTP.mkd" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Create a new directory on the server.</p>
+</dd>
+<dt class="method" id="FTP.pwd"><b>pwd()</b> <tt class="nav"><a class="nav" href="ftplib.FTP.pwd" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return the pathname of the current directory on the server.</p>
+</dd>
+<dt class="method" id="FTP.rmd"><b>rmd(dirname)</b> <tt class="nav"><a class="nav" href="ftplib.FTP.rmd" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Remove the directory named <var>dirname</var> on the server.</p>
+</dd>
+<dt class="method" id="FTP.size"><b>size(filename)</b> <tt class="nav"><a class="nav" href="ftplib.FTP.size" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Request the size of the file named <var>filename</var> on the
+server. On success, the size of the file is returned as an integer,
+otherwise <code>None</code> is returned.
+Note that the "<code>SIZE</code>" command is not standardized, but
+is supported by many common server implementations.</p>
+</dd>
+<dt class="method" id="FTP.quit"><b>quit()</b> <tt class="nav"><a class="nav" href="ftplib.FTP.quit" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Send a "<code>QUIT</code>&quot; command to the server and close the
+connection. This is the &#8220;polite&#8221; way to close a
+connection, but it may raise an exception of the server reponds
+with an error to the &quot;<code>QUIT</code>" command. This implies a
+call to the <code>close</code> method
+which renders the <a class="link" href="#FTP"><code>FTP</code></a> instance
+useless for subsequent calls (see below).</p>
+</dd>
+<dt class="method" id="FTP.close"><b>close()</b> <tt class="nav"><a class="nav" href="ftplib.FTP.close" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Close the connection unilaterally. This should not be applied to
+an already closed connection such as after a successful call to <code>quit</code>. After this call the <a class="link" href="#FTP"><code>FTP</code></a> instance should not be used
+any more (after a call to <code>
+close</code> or <code>quit</code> you cannot
+reopen the connection by issuing another <code>login</code> method).</p>
+</dd>
+</dl></div></body></html>

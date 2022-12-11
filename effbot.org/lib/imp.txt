@@ -1,0 +1,268 @@
+
+@@module imp
+
+<h1>imp&#8212;Access the import internals</h1>
+
+<p>This module provides an interface to the mechanisms used to implement
+the {@link import} statement. It defines the following constants and
+functions:
+
+@@function get_magic()
+
+<p>Return the magic string value used to recognize byte-compiled code
+files (.pyc files). (This value may be different for each Python
+version.)
+
+@@function get_suffixes()
+
+<p>Return a list of triples, each describing a particular type of
+module. Each triple has the form {@code (}{@var suffix}, {@var mode},
+{@var type}), where {@var suffix} is a string to be appended to the
+module name to form the filename to search for, {@var mode} is the mode
+string to pass to the built-in {@link open} function to open the file
+(this can be {@code 'r'} for text files or {@code 'rb'} for binary
+files), and {@var type} is the file type, which has one of the values
+{@code PY_SOURCE}, {@code PY_COMPILED}, or {@code C_EXTENSION},
+described below.
+
+@@function find_module(name[, path])
+
+<p>Try to find the module {@var name} on the search path {@var path}. If
+{@var path} is a list of directory names, each directory is searched for
+files with any of the suffixes returned by {@link get_suffixes} above.
+Invalid names in the list are silently ignored (but all list items must
+be strings). If {@var path} is omitted or {@link None}, the list of
+directory names given by {@code sys.path} is searched, but first it
+searches a few special places: it tries to find a built-in module with
+the given name ({@code C_BUILTIN}), then a frozen module ({@code
+PY_FROZEN}), and on some systems some other places are looked in as well
+(on the Mac, it looks for a resource ({@code PY_RESOURCE}); on Windows,
+it looks in the registry which may point to a specific file).
+
+<p>If search is successful, the return value is a triple {@code (}{@var
+file}, {@var pathname}, {@var description}) where {@var file} is an open
+file object positioned at the beginning, {@var pathname} is the pathname
+of the file found, and {@var description} is a triple as contained in
+the list returned by {@link get_suffixes} describing the kind of module
+found. If the module does not live in a file, the returned {@var file}
+is {@link None}, {@var filename} is the empty string, and the {@var
+description} tuple contains empty strings for its suffix and mode; the
+module type is as indicate in parentheses above. If the search is
+unsuccessful, {@link exceptions.ImportError} is raised. Other exceptions
+indicate problems with the arguments or environment.
+
+<p>This function does not handle hierarchical module names (names
+containing dots). In order to find {@var P}.{@var M}, that is, submodule
+{@var M} of package {@var P}, use {@link find_module} and {@link
+load_module} to find and load package {@var P}, and then use {@link
+find_module} with the {@var path} argument set to {@var P}.__path__.
+When {@var P} itself has a dotted name, apply this recipe recursively.
+
+@@function load_module(name, file, filename, description)
+
+<p>Load a module that was previously found by {@link find_module} (or by
+an otherwise conducted search yielding compatible results). This
+function does more than importing the module: if the module was already
+imported, it is equivalent to a {@link reload}! The {@var name} argument
+indicates the full module name (including the package name, if this is a
+submodule of a package). The {@var file} argument is an open file, and
+{@var filename} is the corresponding file name; these can be {@link
+None} and {@code &#8221;}, respectively, when the module is not being
+loaded from a file. The {@var description} argument is a tuple, as would
+be returned by {@link get_suffixes}, describing what kind of module must
+be loaded.
+
+<p>If the load is successful, the return value is the module object;
+otherwise, an exception (usually {@link exceptions.ImportError}) is
+raised.
+
+<p>Important: the caller is responsible for closing the {@var file}
+argument, if it was not {@code None}, even when an exception is raised.
+This is best done using a {@link try} ... {@link finally} statement.
+
+@@function new_module(name)
+
+<p>Return a new empty module object called {@var name}. This object is
+{@em not} inserted in {@code sys.modules}.
+
+@@function lock_held()
+
+<p>Return {@link True} if the import lock is currently held, else {@link
+False}. On platforms without threads, always return {@link False}.
+
+<p>On platforms with threads, a thread executing an import holds an
+internal lock until the import is complete. This lock blocks other
+threads from doing an import until the original import completes, which
+in turn prevents other threads from seeing incomplete module objects
+constructed by the original thread while in the process of completing
+its import (and the imports, if any, triggered by that).
+
+@@function acquire_lock()
+
+<p>Acquires the interpreter's import lock for the current thread. This
+lock should be used by import hooks to ensure thread-safety when
+importing modules. On platforms without threads, this function does
+nothing.
+<blockquote>
+@since New in version
+2.3. <br />
+</blockquote>
+
+@@function release_lock()
+
+<p>Release the interpreter's import lock. On platforms without threads,
+this function does nothing.
+<blockquote>
+@since New
+in version 2.3. <br />
+</blockquote>
+
+@@text 
+
+<p>The following constants with integer values, defined in this module,
+are used to indicate the search result of {@link find_module}.
+
+@@variable PY_SOURCE
+
+<p>The module was found as a source file.
+
+@@variable PY_COMPILED
+
+<p>The module was found as a compiled code object file.
+
+@@variable C_EXTENSION
+
+<p>The module was found as dynamically loadable shared library.
+
+@@variable PY_RESOURCE
+
+<p>The module was found as a Mac OS 9 resource. This value can only be
+returned on a Mac OS 9 or earlier Macintosh.
+
+@@variable PKG_DIRECTORY
+
+<p>The module was found as a package directory.
+
+@@variable C_BUILTIN
+
+<p>The module was found as a built-in module.
+
+@@variable PY_FROZEN
+
+<p>The module was found as a frozen module (see {@link init_frozen}).
+
+@@text 
+
+<p>The following constant and functions are obsolete; their
+functionality is available through {@link find_module} or {@link
+load_module}. They are kept around for backward compatibility:
+
+@@variable SEARCH_ERROR
+
+<p>Unused.
+
+@@function init_builtin(name)
+
+<p>Initialize the built-in module called {@var name} and return its
+module object. If the module was already initialized, it will be
+initialized {@em again}. A few modules cannot be initialized twice --
+attempting to initialize these again will raise an {@link
+exceptions.ImportError} exception. If there is no built-in module called
+{@var name}, {@link None} is returned.
+
+@@function init_frozen(name)
+
+<p>Initialize the frozen module called {@var name} and return its module
+object. If the module was already initialized, it will be initialized
+{@em again}. If there is no frozen module called {@var name}, {@link
+None} is returned. (Frozen modules are modules written in Python whose
+compiled byte-code object is incorporated into a custom-built Python
+interpreter by Python's freeze utility. See Tools/freeze/ for now.)
+
+@@function is_builtin(name)
+
+<p>Return {@code 1} if there is a built-in module called {@var name}
+which can be initialized again. Return {@code -1} if there is a built-in
+module called {@var name} which cannot be initialized again (see {@link
+init_builtin}). Return {@code 0} if there is no built-in module called
+{@var name}.
+
+@@function is_frozen(name)
+
+<p>Return {@link True} if there is a frozen module (see {@link
+init_frozen}) called {@var name}, or {@link False} if there is no such
+module.
+
+@@function load_compiled(name, pathname, [file])
+
+<p>Load and initialize a module implemented as a byte-compiled code file
+and return its module object. If the module was already initialized, it
+will be initialized {@em again}. The {@var name} argument is used to
+create or access a module object. The {@var pathname} argument points to
+the byte-compiled code file. The {@var file} argument is the
+byte-compiled code file, open for reading in binary mode, from the
+beginning. It must currently be a real file object, not a user-defined
+class emulating a file.
+
+@@function load_dynamic(name, pathname[, file])
+
+<p>Load and initialize a module implemented as a dynamically loadable
+shared library and return its module object. If the module was already
+initialized, it will be initialized {@em again}. Some modules don't like
+that and may raise an exception. The {@var pathname} argument must point
+to the shared library. The {@var name} argument is used to construct the
+name of the initialization function: an external C function called
+"{@code init}{@var name}()" in the shared library is called. The
+optional {@var file} argument is ignored. (Note: using shared libraries
+is highly system dependent, and not all systems support it.)
+
+@@function load_source(name, pathname[, file])
+
+<p>Load and initialize a module implemented as a Python source file and
+return its module object. If the module was already initialized, it will
+be initialized {@em again}. The {@var name} argument is used to create
+or access a module object. The {@var pathname} argument points to the
+source file. The {@var file} argument is the source file, open for
+reading as text, from the beginning. It must currently be a real file
+object, not a user-defined class emulating a file. Note that if a
+properly matching byte-compiled file (with suffix .pyc or .pyo) exists,
+it will be used instead of parsing the given source file.
+
+@@text 
+
+<h2>Examples</h2>
+
+<p>The following function emulates what was the standard import
+statement up to Python 1.4 (no hierarchical module names). (This {@em
+implementation} wouldn't work in that version, since {@link find_module}
+has been extended and {@link load_module} has been added in 1.4.)
+
+<pre>
+import imp
+import sys
+
+def __import__(name, globals=None, locals=None, fromlist=None):
+    # Fast path: see if the module has already been imported.
+    try:
+        return sys.modules[name]
+    except KeyError:
+        pass
+
+    # If any of the following calls raises an exception,
+    # there's a problem we can't handle -- let the caller handle it.
+
+    fp, pathname, description = imp.find_module(name)
+    
+    try:
+        return imp.load_module(name, fp, pathname, description)
+    finally:
+        # Since we may exit via an exception, close fp explicitly.
+        if fp:
+            fp.close()
+</pre>
+
+
+<p>A more complete example that implements hierarchical module names and
+includes a {@link reload} function can be found in the module {@link
+knee}. The {@link knee} module can be found in Demo/imputil/ in the
+Python source distribution.

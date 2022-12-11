@@ -1,0 +1,371 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>shlex</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-shlex.html'>original</a> :::
+<a href='shlex.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>shlex&#8212;Simple lexical analysis</h1>
+
+<div class="toc"><dl><dt>On this page:</dt><dd><a href="#shlex-objects">shlex Objects</a></dd><dd><a href="#parsing-rules">Parsing Rules</a></dd></dl></div><p>New in version 1.5.2.</p>
+
+<p>The <a class="link" href="#shlex"><code>shlex</code></a> class makes it
+easy to write lexical analyzers for simple syntaxes resembling that
+of the Unix shell. This will often be useful for writing
+minilanguages, (for example, in run control files for Python
+applications) or for parsing quoted strings.</p>
+
+<p>The <a class="link" href="#shlex"><code>shlex</code></a> module defines
+the following functions:</p>
+</div>
+<dl><dt class="function" id="split"><b>split(s[, comments])</b> <tt class="nav"><a class="nav" href="shlex.split" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Split the string <var>s</var> using shell-like syntax. If <var>
+comments</var> is <code>False</code> (the default), the parsing of
+comments in the given string will be disabled (setting the <code>commenters</code> member of the <a class="link" href="#shlex"><code>shlex</code></a> instance to the empty
+string). This function operates in POSIX mode.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.3.<br />
+</blockquote>
+</dd>
+</dl><div class="text">
+<p>The <a class="link" href="#shlex"><code>shlex</code></a> module defines
+the following class:</p>
+</div>
+<dl><dt class="class" id="shlex"><b>class shlex([instream[, infile[, posix]]])</b> <tt class="nav"><a class="nav" href="shlex.shlex" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>A <a class="link" href="#shlex"><code>shlex</code></a> instance or
+subclass instance is a lexical analyzer object. The initialization
+argument, if present, specifies where to read characters from. It
+must be a file-/stream-like object with <code>read</code> and <code>
+readline</code> methods, or a string (strings are accepted since
+Python 2.3). If no argument is given, input will be taken from
+<code>sys.stdin</code>. The second optional argument is a filename
+string, which sets the initial value of the <code>infile</code> member. If the <var>instream</var>
+argument is omitted or equal to <code>sys.stdin</code>, this second
+argument defaults to &#8220;stdin&#8221;. The <var>posix</var>
+argument was introduced in Python 2.3, and defines the operational
+mode. When <var>posix</var> is not true (default), the <a class="link" href="#shlex"><code>shlex</code></a> instance will operate in
+compatibility mode. When operating in POSIX mode, <a class="link" href="#shlex"><code>shlex</code></a> will try to be as close as possible to
+the POSIX shell parsing rules. See section <code>
+shlex-objects.html#shlex-objects</code>.</p>
+</dd>
+</dl><div class="text"><span class="mark">@see</span> <code>Module ConfigParser</code> Parser for
+configuration files similar to the Windows .ini files. 
+
+<h2 id="shlex-objects">shlex Objects <a class="nav" href="#shlex-objects">#</a></h2>
+
+<p>A <a class="link" href="#shlex"><code>shlex</code></a> instance has the
+following methods:</p>
+</div>
+<dl><dt class="method" id="shlex.get_token"><b>get_token()</b> <tt class="nav"><a class="nav" href="shlex.shlex.get_token" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return a token. If tokens have been stacked using <code>push_token</code>, pop a token off
+the stack. Otherwise, read one from the input stream. If reading
+encounters an immediate end-of-file, <code>self.eof</code> is returned (the empty string
+(<code>&#8221;</code>) in non-POSIX mode, and <code>None</code> in
+POSIX mode).</p>
+</dd>
+<dt class="method" id="shlex.push_token"><b>push_token(str)</b> <tt class="nav"><a class="nav" href="shlex.shlex.push_token" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Push the argument onto the token stack.</p>
+</dd>
+<dt class="method" id="shlex.read_token"><b>read_token()</b> <tt class="nav"><a class="nav" href="shlex.shlex.read_token" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Read a raw token. Ignore the pushback stack, and do not
+interpret source requests. (This is not ordinarily a useful entry
+point, and is documented here only for the sake of
+completeness.)</p>
+</dd>
+<dt class="method" id="shlex.sourcehook"><b>sourcehook(filename)</b> <tt class="nav"><a class="nav" href="shlex.shlex.sourcehook" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>When <a class="link" href="#shlex"><code>shlex</code></a> detects a
+source request (see <code>source</code>
+below) this method is given the following token as argument, and
+expected to return a tuple consisting of a filename and an open
+file-like object.</p>
+
+<p>Normally, this method first strips any quotes off the argument.
+If the result is an absolute pathname, or there was no previous
+source request in effect, or the previous source was a stream (such
+as <code>sys.stdin</code>), the result is left alone. Otherwise, if
+the result is a relative pathname, the directory part of the name
+of the file immediately before it on the source inclusion stack is
+prepended (this behavior is like the way the C preprocessor handles
+<code>#include "file.h"</code>).</p>
+
+<p>The result of the manipulations is treated as a filename, and
+returned as the first component of the tuple, with <code>open</code> called on it to yield the second
+component. (Note: this is the reverse of the order of arguments in
+instance initialization!)</p>
+
+<p>This hook is exposed so that you can use it to implement
+directory search paths, addition of file extensions, and other
+namespace hacks. There is no corresponding `close' hook, but a
+shlex instance will call the <code>
+close</code> method of the sourced input stream when it returns
+EOF.</p>
+
+<p>For more explicit control of source stacking, use the <code>push_source</code> and <code>pop_source</code> methods.</p>
+</dd>
+<dt class="method" id="shlex.push_source"><b>push_source(stream[, filename])</b> <tt class="nav"><a class="nav" href="shlex.shlex.push_source" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Push an input source stream onto the input stack. If the
+filename argument is specified it will later be available for use
+in error messages. This is the same method used internally by the
+<code>sourcehook</code> method.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.1.<br />
+</blockquote>
+</dd>
+<dt class="method" id="shlex.pop_source"><b>pop_source()</b> <tt class="nav"><a class="nav" href="shlex.shlex.pop_source" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Pop the last-pushed input source from the input stack. This is
+the same method used internally when the lexer reaches EOF on a
+stacked input stream.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.1.<br />
+</blockquote>
+</dd>
+<dt class="method" id="shlex.error_leader"><b>error_leader([file[, line]])</b> <tt class="nav"><a class="nav" href="shlex.shlex.error_leader" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>This method generates an error message leader in the format of a
+Unix C compiler error label; the format is <code>'"%s", line %d:
+'</code>, where the "<code>%s</code>" is replaced with the name of
+the current source file and the "<code>%d</code>" with the current
+input line number (the optional arguments can be used to override
+these).</p>
+
+<p>This convenience is provided to encourage <a class="link" href="#shlex"><code>shlex</code></a> users to generate error messages in the
+standard, parseable format understood by Emacs and other Unix
+tools.</p>
+</dd>
+</dl><div class="text">
+<p>Instances of <a class="link" href="#shlex"><code>shlex</code></a>
+subclasses have some public instance variables which either control
+lexical analysis or can be used for debugging:</p>
+</div>
+<dl><dt class="attribute" id="shlex.commenters"><b>commenters</b> <tt class="nav"><a class="nav" href="shlex.shlex.commenters" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>The string of characters that are recognized as comment
+beginners. All characters from the comment beginner to end of line
+are ignored. Includes just "<code>#</code>" by default.</p>
+</dd>
+<dt class="attribute" id="shlex.wordchars"><b>wordchars</b> <tt class="nav"><a class="nav" href="shlex.shlex.wordchars" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>The string of characters that will accumulate into
+multi-character tokens. By default, includes all ASCII
+alphanumerics and underscore.</p>
+</dd>
+<dt class="attribute" id="shlex.whitespace"><b>whitespace</b> <tt class="nav"><a class="nav" href="shlex.shlex.whitespace" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>Characters that will be considered whitespace and skipped.
+Whitespace bounds tokens. By default, includes space, tab, linefeed
+and carriage-return.</p>
+</dd>
+<dt class="attribute" id="shlex.escape"><b>escape</b> <tt class="nav"><a class="nav" href="shlex.shlex.escape" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>Characters that will be considered as escape. This will be only
+used in POSIX mode, and includes just "<code>\</code>" by
+default.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.3.<br />
+</blockquote>
+</dd>
+<dt class="attribute" id="shlex.quotes"><b>quotes</b> <tt class="nav"><a class="nav" href="shlex.shlex.quotes" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>Characters that will be considered string quotes. The token
+accumulates until the same quote is encountered again (thus,
+different quote types protect each other as in the shell.) By
+default, includes ASCII single and double quotes.</p>
+</dd>
+<dt class="attribute" id="shlex.escapedquotes"><b>escapedquotes</b> <tt class="nav"><a class="nav" href="shlex.shlex.escapedquotes" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>Characters in <code>quotes</code> that
+will interpret escape characters defined in <code>escape</code>. This is only used in POSIX mode, and
+includes just "<code>"</code>" by default.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.3.<br />
+</blockquote>
+</dd>
+<dt class="attribute" id="shlex.whitespace_split"><b>whitespace_split</b> <tt class="nav"><a class="nav" href="shlex.shlex.whitespace_split" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>If <code>True</code>, tokens will only
+be split in whitespaces. This is useful, for example, for parsing
+command lines with <a class="link" href="#shlex"><code>shlex</code></a>,
+getting tokens in a similar way to shell arguments.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.3.<br />
+</blockquote>
+</dd>
+<dt class="attribute" id="shlex.infile"><b>infile</b> <tt class="nav"><a class="nav" href="shlex.shlex.infile" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>The name of the current input file, as initially set at class
+instantiation time or stacked by later source requests. It may be
+useful to examine this when constructing error messages.</p>
+</dd>
+<dt class="attribute" id="shlex.instream"><b>instream</b> <tt class="nav"><a class="nav" href="shlex.shlex.instream" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>The input stream from which this <a class="link" href="#shlex"><code>shlex</code></a> instance is reading characters.</p>
+</dd>
+<dt class="attribute" id="shlex.source"><b>source</b> <tt class="nav"><a class="nav" href="shlex.shlex.source" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>This member is <code>None</code> by
+default. If you assign a string to it, that string will be
+recognized as a lexical-level inclusion request similar to the
+"<code>source</code>" keyword in various shells. That is, the
+immediately following token will opened as a filename and input
+taken from that stream until EOF, at which point the <code>close</code> method of that stream will
+be called and the input source will again become the original input
+stream. Source requests may be stacked any number of levels
+deep.</p>
+</dd>
+<dt class="attribute" id="shlex.debug"><b>debug</b> <tt class="nav"><a class="nav" href="shlex.shlex.debug" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>If this member is numeric and <code>1</code> or more, a <a class="link" href="#shlex"><code>shlex</code></a> instance will print
+verbose progress output on its behavior. If you need to use this,
+you can read the module source code to learn the details.</p>
+</dd>
+<dt class="attribute" id="shlex.lineno"><b>lineno</b> <tt class="nav"><a class="nav" href="shlex.shlex.lineno" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>Source line number (count of newlines seen so far plus one).</p>
+</dd>
+<dt class="attribute" id="shlex.token"><b>token</b> <tt class="nav"><a class="nav" href="shlex.shlex.token" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>The token buffer. It may be useful to examine this when catching
+exceptions.</p>
+</dd>
+<dt class="attribute" id="shlex.eof"><b>eof</b> <tt class="nav"><a class="nav" href="shlex.shlex.eof" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>Token used to determine end of file. This will be set to the
+empty string (<code>&#8221;</code>), in non-POSIX mode, and to
+<code>None</code> in POSIX mode.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.3.<br />
+</blockquote>
+</dd>
+</dl><div class="text">
+<h2 id="parsing-rules">Parsing Rules <a class="nav" href="#parsing-rules">#</a></h2>
+
+<p>When operating in non-POSIX mode, <a class="link" href="#shlex"><code>shlex</code></a> will try to obey to the following
+rules.</p>
+
+<ul>
+<li>
+<p>Quote characters are not recognized within words
+(<code>Do"Not"Separate</code> is parsed as the single word <code>
+Do"Not"Separate</code>);</p>
+</li>
+
+<li>
+<p>Escape characters are not recognized;</p>
+</li>
+
+<li>
+<p>Enclosing characters in quotes preserve the literal value of all
+characters within the quotes;</p>
+</li>
+
+<li>
+<p>Closing quotes separate words (<code>"Do"Separate</code> is
+parsed as <code>"Do"</code> and <code>Separate</code>);</p>
+</li>
+
+<li>
+<p>If <code>
+whitespace_split</code> is <code>False</code>, any character not
+declared to be a word character, whitespace, or a quote will be
+returned as a single-character token. If it is <code>True</code>, <a class="link" href="#shlex"><code>
+shlex</code></a> will only split words in whitespaces;</p>
+</li>
+
+<li>
+<p>EOF is signaled with an empty string (<code>&#8221;</code>);</p>
+</li>
+
+<li>
+<p>It's not possible to parse empty strings, even if quoted.</p>
+</li>
+</ul>
+
+<p>When operating in POSIX mode, <a class="link" href="#shlex"><code>
+shlex</code></a> will try to obey to the following parsing rules.</p>
+
+<ul>
+<li>
+<p>Quotes are stripped out, and do not separate words
+(<code>"Do"Not"Separate"</code> is parsed as the single word <code>
+DoNotSeparate</code>);</p>
+</li>
+
+<li>
+<p>Non-quoted escape characters (e.g. "<code>\</code>") preserve
+the literal value of the next character that follows;</p>
+</li>
+
+<li>
+<p>Enclosing characters in quotes which are not part of <code>escapedquotes</code> (e.g.
+"<code>'</code>") preserve the literal value of all characters
+within the quotes;</p>
+</li>
+
+<li>
+<p>Enclosing characters in quotes which are part of <code>escapedquotes</code> (e.g. "<code>"</code>")
+preserves the literal value of all characters within the quotes,
+with the exception of the characters mentioned in <code>escape</code>. The escape characters retain its
+special meaning only when followed by the quote in use, or the
+escape character itself. Otherwise the escape character will be
+considered a normal character.</p>
+</li>
+
+<li>
+<p>EOF is signaled with a <code>None</code> value;</p>
+</li>
+
+<li>
+<p>Quoted empty strings (<code>&#8221;</code>) are allowed;</p>
+</li>
+</ul>
+</div>
+</div></body></html>

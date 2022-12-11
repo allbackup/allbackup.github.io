@@ -1,0 +1,26 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>How do I make public and private attributes and methods in my&nbsp;classes?</title></head><body data-page-id="881"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><p class="note" style="text-align: center"><strong>
+This is an old copy of the Python FAQ.  The information here may be
+outdated.
+</strong></p><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">How do I make public and private attributes and methods in my&nbsp;classes?</h1></div><div class="yui-ge"><div class="yui-u first"><p>Python follows the philosophy of <q>we&#8217;re all adults here</q> with
+respect to hiding attributes and methods; i.e. you should trust the
+other programmers who will use your classes.  Use plain attributes
+whenever possible.</p><p>You might be tempted to use getter and setter methods instead of
+attributes, but the only reason to use getters and setters is so you
+can change the implementation later if you need to.  However, Python
+2.2 and later allows you to do this with properties:</p><blockquote><p><a href="http://www.python.org/download/releases/2.2.3/descrintro/#property">http://www.python.org/download/releases/2.2.3/descrintro/#property</a></p></blockquote><p>If you really must hide an attribute or method, Python does provide a
+simple form of name mangling.  By putting two underscores before the
+attribute or method name and not putting two underscores after the
+name, Python will change all uses of the name <em>inside</em> the class by
+putting the class name in front of it:</p><pre class="python"><span class="pykeyword">class</span> <span class="pyclass">MyClass</span>:
+    <span class="pykeyword">def</span> <span class="pyfunction">public</span>(self):
+        <span class="pykeyword">pass</span>
+    <span class="pykeyword">def</span> <span class="pyfunction">__private</span>(self):
+        <span class="pycomment"># mangled to _MyClass__private</span>
+        <span class="pykeyword">pass</span>
+
+c = MyClass()
+c.public() <span class="pycomment"># this works</span>
+c.__private() <span class="pycomment"># this doesn't</span></pre><p>You can still call the method using its mangled name, so this feature
+doesn&#8217;t provide much protection.</p><p>(Based on a post to comp.lang.python by Steven Bethard)</p><p>CATEGORY: tutor</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to pyfaq index page.">::: pyfaq :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

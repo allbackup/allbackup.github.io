@@ -1,0 +1,281 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>sgmllib</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-sgmllib.html'>original</a> :::
+<a href='sgmllib.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>sgmllib&#8212;Simple SGML parser</h1>
+
+<p>This module defines a class <a class="link" href="#SGMLParser"><code>SGMLParser</code></a> which serves as the basis for
+parsing text files formatted in SGML (Standard Generalized Mark-up
+Language). In fact, it does not provide a full SGML parser -- it
+only parses SGML insofar as it is used by HTML, and the module only
+exists as a base for the <code>
+htmllib</code> module. Another HTML parser which supports XHTML and
+offers a somewhat different interface is available in the <code>HTMLParser</code> module.</p>
+</div>
+<dl><dt class="class" id="SGMLParser"><b>class SGMLParser()</b> <tt class="nav"><a class="nav" href="sgmllib.SGMLParser" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>The <a class="link" href="#SGMLParser"><code>SGMLParser</code></a> class
+is instantiated without arguments. The parser is hardcoded to
+recognize the following constructs:</p>
+
+<ul>
+<li>
+<p>Opening and closing tags of the form
+"<code>&lt;</code><var>tag</var> <var>attr</var>="<var>value</var>"
+...&gt;" and "<code>&lt;/</code><var>tag</var>&gt;",
+respectively.</p>
+</li>
+
+<li>
+<p>Numeric character references of the form
+"<code>&amp;#</code><var>name</var>;".</p>
+</li>
+
+<li>
+<p>Entity references of the form
+"<code>&amp;</code><var>name</var>;".</p>
+</li>
+
+<li>
+<p>SGML comments of the form
+"<code>&lt;!--</code><var>text</var>--&gt;". Note that spaces,
+tabs, and newlines are allowed between the trailing
+"<code>&gt;</code>" and the immediately preceding
+"<code>--</code>".</p>
+</li>
+</ul>
+</dd>
+</dl><div class="text">
+<p>A single exception is defined as well:</p>
+</div>
+<dl><dt class="exception" id="SGMLParseError"><b>exception SGMLParseError</b> <tt class="nav"><a class="nav" href="sgmllib.SGMLParseError" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="exception">
+<p>Exception raised by the <a class="link" href="#SGMLParser"><code>
+SGMLParser</code></a> class when it encounters an error while parsing.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.1.<br />
+</blockquote>
+</dd>
+</dl><div class="text">
+<p><a class="link" href="#SGMLParser"><code>SGMLParser</code></a> instances
+have the following methods:</p>
+</div>
+<dl><dt class="method" id="SGMLParser.reset"><b>reset()</b> <tt class="nav"><a class="nav" href="sgmllib.SGMLParser.reset" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Reset the instance. Loses all unprocessed data. This is called
+implicitly at instantiation time.</p>
+</dd>
+<dt class="method" id="SGMLParser.setnomoretags"><b>setnomoretags()</b> <tt class="nav"><a class="nav" href="sgmllib.SGMLParser.setnomoretags" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Stop processing tags. Treat all following input as literal input
+(CDATA). (This is only provided so the HTML tag <code>
+&amp;ltPLAINTEXT&gt;</code> can be implemented.)</p>
+</dd>
+<dt class="method" id="SGMLParser.setliteral"><b>setliteral()</b> <tt class="nav"><a class="nav" href="sgmllib.SGMLParser.setliteral" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Enter literal mode (CDATA mode).</p>
+</dd>
+<dt class="method" id="SGMLParser.feed"><b>feed(data)</b> <tt class="nav"><a class="nav" href="sgmllib.SGMLParser.feed" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Feed some text to the parser. It is processed insofar as it
+consists of complete elements; incomplete data is buffered until
+more data is fed or <code>close</code> is
+called.</p>
+</dd>
+<dt class="method" id="SGMLParser.close"><b>close()</b> <tt class="nav"><a class="nav" href="sgmllib.SGMLParser.close" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Force processing of all buffered data as if it were followed by
+an end-of-file mark. This method may be redefined by a derived
+class to define additional processing at the end of the input, but
+the redefined version should always call <code>close</code>.</p>
+</dd>
+<dt class="method" id="SGMLParser.get_starttag_text"><b>get_starttag_text()</b> <tt class="nav"><a class="nav" href="sgmllib.SGMLParser.get_starttag_text" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return the text of the most recently opened start tag. This
+should not normally be needed for structured processing, but may be
+useful in dealing with HTML &#8220;as deployed&#8221; or for
+re-generating input with minimal changes (whitespace between
+attributes can be preserved, etc.).</p>
+</dd>
+<dt class="method" id="SGMLParser.handle_starttag"><b>handle_starttag(tag, method,
+attributes)</b> <tt class="nav"><a class="nav" href="sgmllib.SGMLParser.handle_starttag" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>This method is called to handle start tags for which either a <code>start_</code><var>tag</var>() or <code>do_</code><var>tag</var>() method has
+been defined. The <var>tag</var> argument is the name of the tag
+converted to lower case, and the <var>method</var> argument is the
+bound method which should be used to support semantic
+interpretation of the start tag. The <var>attributes</var> argument
+is a list of <code>(</code><var>name</var>, <var>value</var>) pairs
+containing the attributes found inside the tag's <code>
+&lt;&gt;</code> brackets. The <var>name</var> has been translated
+to lower case and double quotes and backslashes in the <var>
+value</var> have been interpreted. For instance, for the tag <code>
+&amp;ltA HREF="http://www.cwi.nl/"&gt;</code>, this method would be
+called as "<code>unknown_starttag('a', [('href',
+'http://www.cwi.nl/')])</code>". The base implementation simply
+calls <var>method</var> with <var>attributes</var> as the only
+argument.</p>
+</dd>
+<dt class="method" id="SGMLParser.handle_endtag"><b>handle_endtag(tag, method)</b> <tt class="nav"><a class="nav" href="sgmllib.SGMLParser.handle_endtag" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>This method is called to handle endtags for which an <code>end_</code><var>tag</var>() method has
+been defined. The <var>tag</var> argument is the name of the tag
+converted to lower case, and the <var>method</var> argument is the
+bound method which should be used to support semantic
+interpretation of the end tag. If no <code>end_</code><var>tag</var>() method is defined for the
+closing element, this handler is not called. The base
+implementation simply calls <var>method</var>.</p>
+</dd>
+<dt class="method" id="SGMLParser.handle_data"><b>handle_data(data)</b> <tt class="nav"><a class="nav" href="sgmllib.SGMLParser.handle_data" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>This method is called to process arbitrary data. It is intended
+to be overridden by a derived class; the base class implementation
+does nothing.</p>
+</dd>
+<dt class="method" id="SGMLParser.handle_charref"><b>handle_charref(ref)</b> <tt class="nav"><a class="nav" href="sgmllib.SGMLParser.handle_charref" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>This method is called to process a character reference of the
+form "<code>&amp;#</code><var>ref</var>;". In the base
+implementation, <var>ref</var> must be a decimal number in the
+range 0-255. It translates the character to ASCII and calls the
+method <code>handle_data</code> with
+the character as argument. If <var>ref</var> is invalid or out of
+range, the method <code>unknown_charref(</code><var>ref</var>) is
+called to handle the error. A subclass must override this method to
+provide support for named character entities.</p>
+</dd>
+<dt class="method" id="SGMLParser.handle_entityref"><b>handle_entityref(ref)</b> <tt class="nav"><a class="nav" href="sgmllib.SGMLParser.handle_entityref" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>This method is called to process a general entity reference of
+the form "<code>&amp;</code><var>ref</var>;" where <var>ref</var>
+is an general entity reference. It looks for <var>ref</var> in the
+instance (or class) variable <code>entitydefs</code> which should be a mapping
+from entity names to corresponding translations. If a translation
+is found, it calls the method <code>handle_data</code> with the translation;
+otherwise, it calls the method <code>
+unknown_entityref(</code><var>ref</var>). The default <code>entitydefs</code> defines
+translations for <code>&amp;amp;</code>, <code>&amp;apos</code>,
+<code>&amp;gt;</code>, <code>&amp;lt;</code>, and <code>
+&amp;quot;</code>.</p>
+</dd>
+<dt class="method" id="SGMLParser.handle_comment"><b>handle_comment(comment)</b> <tt class="nav"><a class="nav" href="sgmllib.SGMLParser.handle_comment" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>This method is called when a comment is encountered. The <var>
+comment</var> argument is a string containing the text between the
+"<code>&lt;!--</code>" and "<code>--&gt;</code>" delimiters, but
+not the delimiters themselves. For example, the comment
+"<code>&lt;!--text--&gt;</code>" will cause this method to be
+called with the argument <code>'text'</code>. The default method
+does nothing.</p>
+</dd>
+<dt class="method" id="SGMLParser.handle_decl"><b>handle_decl(data)</b> <tt class="nav"><a class="nav" href="sgmllib.SGMLParser.handle_decl" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Method called when an SGML declaration is read by the parser. In
+practice, the <code>DOCTYPE</code> declaration is the only thing
+observed in HTML, but the parser does not discriminate among
+different (or broken) declarations. Internal subsets in a <code>
+DOCTYPE</code> declaration are not supported. The <var>data</var>
+parameter will be the entire contents of the declaration inside the
+<code>&lt;!</code>...<code>&gt;</code> markup. The default
+implementation does nothing.</p>
+</dd>
+<dt class="method" id="SGMLParser.report_unbalanced"><b>report_unbalanced(tag)</b> <tt class="nav"><a class="nav" href="sgmllib.SGMLParser.report_unbalanced" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>This method is called when an end tag is found which does not
+correspond to any open element.</p>
+</dd>
+<dt class="method" id="SGMLParser.unknown_starttag"><b>unknown_starttag(tag, attributes)</b> <tt class="nav"><a class="nav" href="sgmllib.SGMLParser.unknown_starttag" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>This method is called to process an unknown start tag. It is
+intended to be overridden by a derived class; the base class
+implementation does nothing.</p>
+</dd>
+<dt class="method" id="SGMLParser.unknown_endtag"><b>unknown_endtag(tag)</b> <tt class="nav"><a class="nav" href="sgmllib.SGMLParser.unknown_endtag" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>This method is called to process an unknown end tag. It is
+intended to be overridden by a derived class; the base class
+implementation does nothing.</p>
+</dd>
+<dt class="method" id="SGMLParser.unknown_charref"><b>unknown_charref(ref)</b> <tt class="nav"><a class="nav" href="sgmllib.SGMLParser.unknown_charref" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>This method is called to process unresolvable numeric character
+references. Refer to <code>
+handle_charref</code> to determine what is handled by default. It is
+intended to be overridden by a derived class; the base class
+implementation does nothing.</p>
+</dd>
+<dt class="method" id="SGMLParser.unknown_entityref"><b>unknown_entityref(ref)</b> <tt class="nav"><a class="nav" href="sgmllib.SGMLParser.unknown_entityref" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>This method is called to process an unknown entity reference. It
+is intended to be overridden by a derived class; the base class
+implementation does nothing.</p>
+</dd>
+</dl><div class="text">
+<p>Apart from overriding or extending the methods listed above,
+derived classes may also define methods of the following form to
+define processing of specific tags. Tag names in the input stream
+are case independent; the <var>tag</var> occurring in method names
+must be in lower case:</p>
+</div>
+<div class="unknown">
+<p>This method is called to process an opening tag <var>tag</var>.
+It has preference over <code>
+do_</code><var>tag</var>(). The <var>attributes</var> argument has the
+same meaning as described for <code>handle_starttag</code> above.</p>
+</div>
+<div class="unknown">
+<p>This method is called to process an opening tag <var>tag</var>
+that does not come with a matching closing tag. The <var>
+attributes</var> argument has the same meaning as described for <code>handle_starttag</code>
+above.</p>
+</div>
+<div class="unknown">
+<p>This method is called to process a closing tag <var>
+tag</var>.</p>
+</div>
+<div class="text">
+<p>Note that the parser maintains a stack of open elements for
+which no end tag has been found yet. Only tags processed by <code>start_</code><var>tag</var>() are
+pushed on this stack. Definition of an <code>end_</code><var>tag</var>() method is optional for
+these tags. For tags processed by <code>
+do_</code><var>tag</var>() or by <code>unknown_tag</code>, no <code>end_</code><var>tag</var>() method must be defined;
+if defined, it will not be used. If both <code>start_</code><var>tag</var>() and <code>do_</code><var>tag</var>() methods exist for a tag,
+the <code>start_</code><var>tag</var>()
+method takes precedence.</p>
+</div>
+</div></body></html>

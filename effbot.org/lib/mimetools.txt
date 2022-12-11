@@ -1,0 +1,117 @@
+
+@@module mimetools
+
+<h1>mimetools&#8212;Tools for parsing MIME messages</h1>
+@@error unexpected div versionnote
+
+<p>This module defines a subclass of the {@link rfc822} module's {@link
+Message} class and a number of utility functions that are useful for the
+manipulation for MIME multipart or encoded message.
+
+<p>It defines the following items:
+
+@@class Message(fp[, seekable])
+
+<p>Return a new instance of the {@link Message} class. This is a
+subclass of the {@link rfc822.Message} class, with some additional
+methods (see below). The {@var seekable} argument has the same meaning
+as for {@link rfc822.Message}.
+
+@@function choose_boundary()
+
+<p>Return a unique string that has a high likelihood of being usable as
+a part boundary. The string has the form {@code '}{@var
+hostipaddr}.{@var uid}.{@var pid}.{@var timestamp}.{@var random}'.
+
+@@function decode(input, output, encoding)
+
+<p>Read data encoded using the allowed MIME {@var encoding} from open
+file object {@var input} and write the decoded data to open file object
+{@var output}. Valid values for {@var encoding} include {@code
+'base64'}, {@code 'quoted-printable'}, {@code 'uuencode'}, {@code
+'x-uuencode'}, {@code 'uue'}, {@code 'x-uue'}, {@code '7bit'}, and
+{@code '8bit'}. Decoding messages encoded in {@code '7bit'} or {@code
+'8bit'} has no effect. The input is simply copied to the output.
+
+@@function encode(input, output, encoding)
+
+<p>Read data from open file object {@var input} and write it encoded
+using the allowed MIME {@var encoding} to open file object {@var
+output}. Valid values for {@var encoding} are the same as for {@link
+decode}.
+
+@@function copyliteral(input, output)
+
+<p>Read lines from open file {@var input} until EOF and write them to
+open file {@var output}.
+
+@@function copybinary(input, output)
+
+<p>Read blocks until EOF from open file {@var input} and write them to
+open file {@var output}. The block size is currently fixed at 8192.
+
+@@text 
+
+@see 
+{@link email Module email}
+
+Comprehensive email handling package; supersedes the mimetools module.
+@see 
+{@link rfc822 Module rfc822}
+
+Provides the base class for mimetools.Message.
+@see 
+{@link multifile Module multifile}
+
+Support for reading files which contain distinct parts, such as MIME
+data.
+@see 
+{@link http://www.cs.uu.nl/wais/html/na-dir/mail/mime-faq/.html http://www.cs.uu.nl/wais/html/na-dir/mail/mime-faq/.html}
+
+The MIME Frequently Asked Questions document. For an overview of MIME,
+see the answer to question 1.1 in Part 1 of this document.
+
+<h2>Additional Methods of Message Objects</h2>
+
+<p>The {@link Message} class defines the following methods in addition
+to the {@link rfc822.Message} methods:
+
+@@method getplist()
+
+<p>Return the parameter list of the Content-Type: header. This is a list
+of strings. For parameters of the form "{@var key}={@var value}", {@var
+key} is converted to lower case but {@var value} is not. For example, if
+the message contains the header "{@code Content-type: text/html; spam=1;
+Spam=2; Spam}" then {@link getplist} will return the Python list {@code
+['spam=1', 'spam=2', 'Spam']}.
+
+@@method getparam(name)
+
+<p>Return the {@var value} of the first parameter (as returned by {@link
+getplist}) of the form "{@var name}={@var value}" for the given {@var
+name}. If {@var value} is surrounded by quotes of the form `{@code
+&lt}...{@code >}' or `{@code "}...{@code "}', these are removed.
+
+@@method getencoding()
+
+<p>Return the encoding specified in the Content-Transfer-Encoding:
+message header. If no such header exists, return {@code '7bit'}. The
+encoding is converted to lower case.
+
+@@method gettype()
+
+<p>Return the message type (of the form "{@var type}/{@var subtype}") as
+specified in the Content-Type: header. If no such header exists, return
+{@code 'text/plain'}. The type is converted to lower case.
+
+@@method getmaintype()
+
+<p>Return the main type as specified in the Content-Type: header. If no
+such header exists, return {@code 'text'}. The main type is converted to
+lower case.
+
+@@method getsubtype()
+
+<p>Return the subtype as specified in the Content-Type: header. If no
+such header exists, return {@code 'plain'}. The subtype is converted to
+lower case.

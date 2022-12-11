@@ -1,0 +1,36 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>How do I iterate over a sequence in reverse&nbsp;order?</title></head><body data-page-id="806"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><p class="note" style="text-align: center"><strong>
+This is an old copy of the Python FAQ.  The information here may be
+outdated.
+</strong></p><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">How do I iterate over a sequence in reverse&nbsp;order?</h1></div><div class="yui-ge"><div class="yui-u first"><p>Python 2.4 and later has a built-in <a href="/pyref/reversed.htm"><strong>reversed</strong></a> iterator, which
+takes an arbitrary sequence, and iterates over it backwards:</p><pre class="python"><span class="pykeyword">for</span> x <span class="pykeyword">in</span> reversed(L):
+    <span class="pykeyword">print</span> x <span class="pycomment"># do something with x</span></pre><p>For earlier versions, it&#8217;s usually fastest to simply reverse the list
+during the loop:</p><pre class="python">L.reverse()
+<span class="pykeyword">try</span>:
+    <span class="pykeyword">for</span> x <span class="pykeyword">in</span> L:
+        <span class="pykeyword">print</span> x <span class="pycomment"># do something with x</span>
+<span class="pykeyword">finally</span>:
+    L.reverse()</pre><p>This has the disadvantage that while you are in the loop, the list is
+temporarily reversed.  If this is a problem, you can make a copy
+instead:</p><pre class="python">rev = L[:]
+rev.reverse()
+<span class="pykeyword">for</span> x <span class="pykeyword">in</span> rev:
+    <span class="pykeyword">print</span> x <span class="pycomment"># do something with x</span></pre><p>Note that both <a href="/pyref/list.reverse.htm"><strong>reverse</strong></a> and the copy operation
+only copies object references, so they&#8217;re a lot faster than they may
+appear (performance depends on the number of items in the list, not the
+size of those items).</p><p>If the sequence is not a list, but supports extended slicing, you can
+do:</p><pre class="python"><span class="pykeyword">for</span> x <span class="pykeyword">in</span> sequence[::-1]:
+    <span class="pykeyword">print</span> x <span class="pycomment"># do something with x</span></pre><p>For arbitrary sequences, you can do:</p><pre class="python"><span class="pykeyword">for</span> i <span class="pykeyword">in</span> xrange(len(sequence)-1, -1, -1):
+    x = sequence[i]
+    <span class="pykeyword">print</span> x <span class="pycomment"># do something with x</span></pre><p>Finally, you can define your own version of 2.4&#8217;s reversed:</p><pre class="python"><span class="pykeyword">class</span> <span class="pyclass">Reversed</span>:
+    <span class="pykeyword">def</span> <span class="pyfunction">__init__</span>(self, seq):
+        self.seq = seq
+    <span class="pykeyword">def</span> <span class="pyfunction">__len__</span>(self):
+        <span class="pykeyword">return</span> len(self.seq)
+    <span class="pykeyword">def</span> <span class="pyfunction">__getitem__</span>(self, i):
+        <span class="pykeyword">return</span> self.seq[-(i + 1)]
+
+<span class="pykeyword">for</span> x <span class="pykeyword">in</span> Reversed(sequence):
+    <span class="pykeyword">print</span> x <span class="pycomment"># do something with x</span></pre><p>However, this solution is slower than the other examples shown here,
+due to the method call overhead.</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to pyfaq index page.">::: pyfaq :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

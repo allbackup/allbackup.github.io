@@ -1,0 +1,193 @@
+
+@@module bsddb
+
+<h1>bsddb&#8212;Interface to Berkeley DB library</h1>
+
+<p>Availability: Unix, Windows.
+
+<p>The {@link bsddb} module provides an interface to the Berkeley DB
+library. Users can create hash, btree or record based library files
+using the appropriate open call. Bsddb objects behave generally like
+dictionaries. Keys and values must be strings, however, so to use other
+objects as keys or to store other kinds of objects the user must
+serialize them somehow, typically using marshal.dumps or pickle.dumps.
+
+<p>Starting with Python 2.3 the {@link bsddb} module requires the
+Berkeley DB library version 3.2 or later (it is known to work with 3.2
+through 4.3 at the time of this writing).
+
+@see 
+{@link http://pybsddb.sourceforge.net/ http://pybsddb.sourceforge.net/}
+
+Website with documentation for the new python Berkeley DB interface that
+closely mirrors the sleepycat object oriented interface provided in
+Berkeley DB 3 and 4.
+@see 
+{@link http://www.sleepycat.com/ http://www.sleepycat.com/}
+
+Sleepycat Software produces the modern Berkeley DB library.
+
+<p>The following is a description of the legacy {@link bsddb} interface
+compatible with the old python bsddb module. For details about the more
+modern Db and DbEnv object oriented interface see the above mentioned
+pybsddb URL.
+
+<p>The {@link bsddb} module defines the following functions that create
+objects that access the appropriate type of Berkeley DB file. The first
+two arguments of each function are the same. For ease of portability,
+only the first two arguments should be used in most instances.
+
+@@function hashopen(filename[, flag[, mode[, bsize[, ffactor[, nelem[, cachesize[, hash[, lorder]]]]]]]])
+
+<p>Open the hash format file named {@var filename}. Files never intended
+to be preserved on disk may be created by passing {@link None} as the
+{@var filename}. The optional {@var flag} identifies the mode used to
+open the file. It may be "{@code r}" (read only), "{@code w}"
+(read-write) , "{@code c}" (read-write - create if necessary; the
+default) or "{@code n}" (read-write - truncate to zero length). The
+other arguments are rarely used and are just passed to the low-level
+{@link c:dbopen} function. Consult the Berkeley DB documentation for
+their use and interpretation.
+
+@@function btopen(filename[, flag[, mode[, btflags[, cachesize[, maxkeypage[, minkeypage[, pgsize[, lorder]]]]]]]])
+
+<p>Open the btree format file named {@var filename}. Files never
+intended to be preserved on disk may be created by passing {@link None}
+as the {@var filename}. The optional {@var flag} identifies the mode
+used to open the file. It may be "{@code r}" (read only), "{@code w}"
+(read-write), "{@code c}" (read-write - create if necessary; the
+default) or "{@code n}" (read-write - truncate to zero length). The
+other arguments are rarely used and are just passed to the low-level
+dbopen function. Consult the Berkeley DB documentation for their use and
+interpretation.
+
+@@function rnopen(filename[, flag[, mode[, rnflags[, cachesize[, pgsize[, lorder[, reclen[, bval[, bfname]]]]]]]]])
+
+<p>Open a DB record format file named {@var filename}. Files never
+intended to be preserved on disk may be created by passing {@link None}
+as the {@var filename}. The optional {@var flag} identifies the mode
+used to open the file. It may be "{@code r}" (read only), "{@code w}"
+(read-write), "{@code c}" (read-write - create if necessary; the
+default) or "{@code n}" (read-write - truncate to zero length). The
+other arguments are rarely used and are just passed to the low-level
+dbopen function. Consult the Berkeley DB documentation for their use and
+interpretation.
+
+@@text 
+
+
+<p class='note'><b>Note:</b> Beginning in 2.3 some Unix versions of
+Python may have a {@link bsddb185} module. This is present {@em only} to
+allow backwards compatibility with systems which ship with the old
+Berkeley DB 1.85 database library. The {@link bsddb185} module should
+never be used directly in new code.
+
+@see 
+{@link dbhash Module dbhash}
+
+DBM-style interface to the bsddb.
+
+<h2>Hash, BTree and Record Objects</h2>
+
+<p>Once instantiated, hash, btree and record objects support the same
+methods as dictionaries. In addition, they support the methods listed
+below. Changed in version 2.3.1: Added dictionary methods.
+
+@@method close()
+
+<p>Close the underlying file. The object can no longer be accessed.
+Since there is no open {@link open} method for these objects, to open
+the file again a new {@link bsddb} module open function must be called.
+
+@@method keys()
+
+<p>Return the list of keys contained in the DB file. The order of the
+list is unspecified and should not be relied on. In particular, the
+order of the list returned is different for different file formats.
+
+@@method has_key(key)
+
+<p>Return {@code 1} if the DB file contains the argument as a key.
+
+@@method set_location(key)
+
+<p>Set the cursor to the item indicated by {@var key} and return a tuple
+containing the key and its value. For binary tree databases (opened
+using {@link btopen}), if {@var key} does not actually exist in the
+database, the cursor will point to the next item in sorted order and
+return that key and value. For other databases, {@link
+exceptions.KeyError} will be raised if {@var key} is not found in the
+database.
+
+@@method first()
+
+<p>Set the cursor to the first item in the DB file and return it. The
+order of keys in the file is unspecified, except in the case of B-Tree
+databases. This method raises {@link bsddb.error} if the database is
+empty.
+
+@@method next()
+
+<p>Set the cursor to the next item in the DB file and return it. The
+order of keys in the file is unspecified, except in the case of B-Tree
+databases.
+
+@@method previous()
+
+<p>Set the cursor to the previous item in the DB file and return it. The
+order of keys in the file is unspecified, except in the case of B-Tree
+databases. This is not supported on hashtable databases (those opened
+with {@link hashopen}).
+
+@@method last()
+
+<p>Set the cursor to the last item in the DB file and return it. The
+order of keys in the file is unspecified. This is not supported on
+hashtable databases (those opened with {@link hashopen}). This method
+raises {@link bsddb.error} if the database is empty.
+
+@@method sync()
+
+<p>Synchronize the database on disk.
+
+@@text 
+
+<p>Example:
+
+<pre>
+&gt;&gt;&gt; import bsddb
+&gt;&gt;&gt; db = bsddb.btopen('/tmp/spam.db', 'c')
+&gt;&gt;&gt; for i in range(10): db['%d'%i] = '%d'% (i*i)
+... 
+&gt;&gt;&gt; db['3']
+'9'
+&gt;&gt;&gt; db.keys()
+['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
+&gt;&gt;&gt; db.first()
+('0', '0')
+&gt;&gt;&gt; db.next()
+('1', '1')
+&gt;&gt;&gt; db.last()
+('9', '81')
+&gt;&gt;&gt; db.set_location('2')
+('2', '4')
+&gt;&gt;&gt; db.previous() 
+('1', '1')
+&gt;&gt;&gt; for k, v in db.iteritems():
+...     print k, v
+0 0
+1 1
+2 4
+3 9
+4 16
+5 25
+6 36
+7 49
+8 64
+9 81
+&gt;&gt;&gt; '8' in db
+True
+&gt;&gt;&gt; db.sync()
+0
+</pre>
+

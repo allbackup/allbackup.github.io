@@ -1,0 +1,175 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>The Tkinter Grid&nbsp;Class</title></head><body data-page-id="1941"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">The Tkinter Grid&nbsp;Class</h1></div><div class="yui-ge"><div class="yui-u first"><dl><dt><b>Grid</b> (class)  [<a href="#Tkinter.Grid-class">#</a>]</dt><dd>
+<p>Grid geometry manager.  This is an implementation class; all the
+methods described below are available on all widget classes.</p></dd>
+<dt><a id="Tkinter.Grid.grid-method" name="Tkinter.Grid.grid-method"><b>grid(**options)</b></a> [<a href="#Tkinter.Grid.grid-method">#</a>]</dt><dd>
+<p>Place the widget in a grid as described by the options.</p><dl><dt><i>**options</i></dt><dd>
+Geometry options.</dd>
+<dt><i>column=</i></dt><dd>
+Insert the widget at this column.  Column
+   numbers start with 0.  If omitted, defaults to 0.</dd>
+<dt><i>columnspan=</i></dt><dd>
+If given, indicates that the widget
+   cell should span multiple columns.  The default is 1.</dd>
+<dt><i>in=</i></dt><dd>
+<p>Place widget inside to the given widget. You
+   can only place a widget inside its parent, or in any
+   decendant of its parent. If this option is not given,
+   it defaults to the parent.
+   </p><p>
+   Note that <b>in</b> is a reserved word in Python.
+   To use it as a keyword option, append an underscore
+   (<b>in_</b>).
+</p></dd>
+<dt><i>in_=</i></dt><dd>
+Same as in.  See above.</dd>
+<dt><i>ipadx=</i></dt><dd>
+Optional horizontal internal padding. Works
+   like <b>padx</b>, but the padding is added <i>inside</i>
+   the widget borders. Default is 0.
+</dd>
+<dt><i>ipady=</i></dt><dd>
+Optional vertical internal padding. Works
+   like <b>pady</b>, but the padding is added <i>inside</i>
+   the widget borders. Default is 0.
+</dd>
+<dt><i>padx=</i></dt><dd>
+Optional horizontal padding to place around
+   the widget in a cell. Default is 0.</dd>
+<dt><i>pady=</i></dt><dd>
+Optional vertical padding to place around
+   the widget in a cell. Default is 0.</dd>
+<dt><i>row=</i></dt><dd>
+Insert the widget at this row. Row numbers
+   start with 0. If omitted, defaults to the first empty
+   row in the grid.</dd>
+<dt><i>rowspan=</i></dt><dd>
+If given, indicates that the widget cell
+   should span multiple rows.  Default is 1.</dd>
+<dt><i>sticky=</i></dt><dd>
+<p>Defines how to expand the widget if the
+   resulting cell is larger than the widget itself. This
+   can be any combination of the constants <b>S</b>, <b>N</b>,
+   <b>E</b>, and <b>W</b>, or <b>NW</b>, <b>NE</b>, <b>SW</b>,
+   and <b>SE</b>.
+   </p><p>
+   For example, <b>W</b> (west) means that the widget should
+   be aligned to the left cell border. <b>W+E</b> means that
+   the widget should be stretched horizontally to fill the
+   whole cell. <b>W+E+N+S</b> means that the widget should
+   be expanded in both directions.  Default is to center the
+   widget in the cell.
+</p></dd>
+</dl><br />
+</dd>
+<dt><a id="Tkinter.Grid.grid_bbox-method" name="Tkinter.Grid.grid_bbox-method"><b>grid_bbox(column=None, row=None, col2=None, row2=None)</b></a> [<a href="#Tkinter.Grid.grid_bbox-method">#</a>]</dt><dd>
+<p>The grid_bbox method.</p><dl><dt><i>column</i></dt><dd>
+</dd>
+<dt><i>row</i></dt><dd>
+</dd>
+<dt><i>col2</i></dt><dd>
+</dd>
+<dt><i>row2</i></dt><dd>
+</dd>
+</dl><br />
+</dd>
+<dt><a id="Tkinter.Grid.grid_columnconfigure-method" name="Tkinter.Grid.grid_columnconfigure-method"><b>grid_columnconfigure(index, **options)</b></a> [<a href="#Tkinter.Grid.grid_columnconfigure-method">#</a>]</dt><dd>
+<p>Set options for a cell column.
+</p><p>
+To change this for a given widget, you have to call this
+method on the widget&#8217;s parent.
+
+</p><dl><dt><i>index</i></dt><dd>
+Column index.</dd>
+<dt><i>**options</i></dt><dd>
+Column options.</dd>
+<dt><i>minsize=</i></dt><dd>
+Defines the minimum size for the column.
+   Note that if a column is completely empty, it will not
+   be displayed, even if this option is set.</dd>
+<dt><i>pad=</i></dt><dd>
+Padding to add to the size of the largest widget
+   in the column when setting the size of the whole column.</dd>
+<dt><i>weight=</i></dt><dd>
+A relative weight used to distribute additional
+   space between columns. A column with the weight 2 will grow
+   twice as fast as a column with weight 1. The default is 0,
+   which means that the column will not grow at all.</dd>
+</dl><br />
+</dd>
+<dt><a id="Tkinter.Grid.grid_configure-method" name="Tkinter.Grid.grid_configure-method"><b>grid_configure(**options)</b></a> [<a href="#Tkinter.Grid.grid_configure-method">#</a>]</dt><dd>
+<p>Same as <a class="link" href="#grid.Grid.grid-method"><b>grid</b></a>.
+
+</p></dd>
+<dt><a id="Tkinter.Grid.grid_forget-method" name="Tkinter.Grid.grid_forget-method"><b>grid_forget()</b></a> [<a href="#Tkinter.Grid.grid_forget-method">#</a>]</dt><dd>
+<p>Remove this widget from the grid manager.  The widget is not
+destroyed, and can be displayed again by <b>grid</b> or any
+other manager.
+</p></dd>
+<dt><a id="Tkinter.Grid.grid_info-method" name="Tkinter.Grid.grid_info-method"><b>grid_info()</b></a> [<a href="#Tkinter.Grid.grid_info-method">#</a>]</dt><dd>
+<p>Return a dictionary containing the current cell options for
+the cell used by this widget.</p><dl><dt>Returns:</dt><dd>
+A dictionary containing grid grid management options.</dd>
+</dl><br />
+</dd>
+<dt><a id="Tkinter.Grid.grid_location-method" name="Tkinter.Grid.grid_location-method"><b>grid_location(x, y)</b></a> [<a href="#Tkinter.Grid.grid_location-method">#</a>]</dt><dd>
+<p>Returns the grid cell under (or closest to) a given pixel.</p><dl><dt><i>x</i></dt><dd>
+</dd>
+<dt><i>y</i></dt><dd>
+</dd>
+<dt>Returns:</dt><dd>
+A tuple containing the column and row index.</dd>
+</dl><br />
+</dd>
+<dt><a id="Tkinter.Grid.grid_propagate-method" name="Tkinter.Grid.grid_propagate-method"><b>grid_propagate(flag)</b></a> [<a href="#Tkinter.Grid.grid_propagate-method">#</a>]</dt><dd>
+<p>Enables or disables geometry propagation.  When enabled, a grid
+manager connected to this widget attempts to change the size of
+the widget whenever a child widget changes size.  Propagation is
+always enabled by  default.</p><dl><dt><i>flag</i></dt><dd>
+True to enable propagation.</dd>
+</dl><br />
+</dd>
+<dt><a id="Tkinter.Grid.grid_remove-method" name="Tkinter.Grid.grid_remove-method"><b>grid_remove()</b></a> [<a href="#Tkinter.Grid.grid_remove-method">#</a>]</dt><dd>
+<p>Remove this widget from the grid manager. The widget is not
+destroyed, and can be displayed again by <b>grid</b> or any
+other manager.
+</p></dd>
+<dt><a id="Tkinter.Grid.grid_rowconfigure-method" name="Tkinter.Grid.grid_rowconfigure-method"><b>grid_rowconfigure(index, **options)</b></a> [<a href="#Tkinter.Grid.grid_rowconfigure-method">#</a>]</dt><dd>
+<p>Set options for a row of cells.
+</p><p>
+To change this for a given widget, you have to call this
+method on the widget&#8217;s parent.
+
+</p><dl><dt><i>index</i></dt><dd>
+Row index.</dd>
+<dt><i>**options</i></dt><dd>
+Row options.</dd>
+<dt><i>minsize=</i></dt><dd>
+Defines the minimum size for the row.
+   Note that if a row is completely empty, it will not
+   be displayed, even if this option is set.</dd>
+<dt><i>pad=</i></dt><dd>
+Padding to add to the size of the largest widget
+   in the row when setting the size of the whole row.</dd>
+<dt><i>weight=</i></dt><dd>
+A relative weight used to distribute additional
+   space between rows.  A row with the weight 2 will grow
+   twice as fast as a row with weight 1. The default is 0,
+   which means that the row will not grow at all.</dd>
+</dl><br />
+</dd>
+<dt><a id="Tkinter.Grid.grid_size-method" name="Tkinter.Grid.grid_size-method"><b>grid_size()</b></a> [<a href="#Tkinter.Grid.grid_size-method">#</a>]</dt><dd>
+<p>Returns the current grid size for the geometry manager attached
+to this widget.  This is defined as indexes  of the first empty
+column and row in the grid, in that order.</p><dl><dt>Returns:</dt><dd>
+A 2-tuple containing the number of columns and rows.</dd>
+</dl><br />
+</dd>
+<dt><a id="Tkinter.Grid.grid_slaves-method" name="Tkinter.Grid.grid_slaves-method"><b>grid_slaves(row=None, column=None)</b></a> [<a href="#Tkinter.Grid.grid_slaves-method">#</a>]</dt><dd>
+<p>Returns a list of the &#8220;slave&#8221; widgets managed by this widget.
+The widgets are returned as Tkinter widget references.</p><dl><dt>Returns:</dt><dd>
+A list of widgets.</dd>
+</dl><br />
+</dd>
+</dl></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to tkinterbook index page.">::: tkinterbook :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

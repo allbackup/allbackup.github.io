@@ -1,0 +1,107 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>copy</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-copy.html'>original</a> :::
+<a href='copy.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>copy&#8212;Shallow and deep copy operations</h1>
+
+<p>This module provides generic (shallow and deep) copying
+operations.</p>
+
+<p>Interface summary:</p>
+
+<pre>
+import copy
+
+x = copy.copy(y)        # make a shallow copy of y
+x = copy.deepcopy(y)    # make a deep copy of y
+</pre>
+
+<p>For module specific errors, <code>copy.error</code> is raised.</p>
+
+<p>The difference between shallow and deep copying is only relevant
+for compound objects (objects that contain other objects, like
+lists or class instances):</p>
+
+<ul>
+<li>
+<p>A <em>shallow copy</em> constructs a new compound object and
+then (to the extent possible) inserts <em>references</em> into it
+to the objects found in the original.</p>
+</li>
+
+<li>
+<p>A <em>deep copy</em> constructs a new compound object and then,
+recursively, inserts <em>copies</em> into it of the objects found
+in the original.</p>
+</li>
+</ul>
+
+<p>Two problems often exist with deep copy operations that don't
+exist with shallow copy operations:</p>
+
+<ul>
+<li>
+<p>Recursive objects (compound objects that, directly or
+indirectly, contain a reference to themselves) may cause a
+recursive loop.</p>
+</li>
+
+<li>
+<p>Because deep copy copies <em>everything</em> it may copy too
+much, e.g., administrative data structures that should be shared
+even between copies.</p>
+</li>
+</ul>
+
+<p>The <code>deepcopy</code> function
+avoids these problems by:</p>
+
+<ul>
+<li>
+<p>keeping a &#8220;memo&#8221; dictionary of objects already
+copied during the current copying pass; and</p>
+</li>
+
+<li>
+<p>letting user-defined classes override the copying operation or
+the set of components copied.</p>
+</li>
+</ul>
+
+<p>This version does not copy types like module, class, function,
+method, stack trace, stack frame, file, socket, window, array, or
+any similar types.</p>
+
+<p>Classes can use the same interfaces to control copying that they
+use to control pickling. See the description of module <code>pickle</code> for information on these
+methods. The <code>copy</code> module does
+not use the <code>copy_reg</code>
+registration module.</p>
+
+<p>In order for a class to define its own copy implementation, it
+can define special methods <code>
+__copy__</code> and <code>
+__deepcopy__</code>. The former is called to implement the shallow
+copy operation; no additional arguments are passed. The latter is
+called to implement the deep copy operation; it is passed one
+argument, the memo dictionary. If the <code>__deepcopy__</code> implementation needs to
+make a deep copy of a component, it should call the <code>deepcopy</code> function with the component as
+first argument and the memo dictionary as second argument. <span class="mark">@see</span> <code>Module
+pickle</code> Discussion of the special methods used to support object
+state retrieval and restoration.</p>
+</div>
+</div></body></html>

@@ -1,0 +1,18 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>How do I use Py_BuildValue() to create a tuple of arbitrary&nbsp;length?</title></head><body data-page-id="824"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><p class="note" style="text-align: center"><strong>
+This is an old copy of the Python FAQ.  The information here may be
+outdated.
+</strong></p><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">How do I use Py_BuildValue() to create a tuple of arbitrary&nbsp;length?</h1></div><div class="yui-ge"><div class="yui-u first"><p>You can&#8217;t. Use <strong>PyTuple_New</strong> instead, and fill it with objects using  <strong>PyTuple_SetItem</strong> &#8212; note that this &#8220;eats&#8221; a reference count of the inserted object, so if you&#8217;re inserting an existing object, you have to <strong>Py_INCREF</strong> it.</p><pre><code>result = PyTuple_New(count);
+if (!result)
+    return NULL;
+
+for (i = 0; i &lt; count; i++) {
+    value = PyInt_FromLong(i);
+    if (!value) {
+        Py_DECREF(result);
+        return NULL;
+    }
+    PyTuple_SetItem(result, i, value);
+}
+</code></pre><p>Lists have similar functions <strong>PyList_New</strong> and <strong>PyList_SetItem</strong>. Note that you <em>must</em> set all the tuple items to some value before you pass the tuple to Python code &#8212; <strong>PyTuple_New</strong> initializes them to NULL, which isn&#8217;t a valid Python value.</p><p>CATEGORY: extending</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to pyfaq index page.">::: pyfaq :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

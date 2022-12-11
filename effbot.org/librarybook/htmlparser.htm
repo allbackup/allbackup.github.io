@@ -1,0 +1,59 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>The HTMLParser&nbsp;Module</title></head><body data-page-id="555"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">The HTMLParser&nbsp;Module</h1></div><div class="yui-ge"><div class="yui-u first"><p>(New in 2.2) An improved HTML parser.  Can be used to replace
+<b>sgmllib</b>, in many cases.</p><p>Like the other parsers in the standard library, this parser
+implements the standard feed/close consumer protocol, and calls
+methods on itself to handle the various parts of the HTML
+document.  To use the parser, create a subclass where you
+override the methods you&#8217;re interested in.
+
+</p><p>This example extracts anchor links from an HTML document:</p><pre class="python">
+<span class="pykeyword">import</span> HTMLParser
+
+<span class="pykeyword">class</span> <span class="pyclass">AnchorParser</span>(HTMLParser.HTMLParser):
+
+    <span class="pykeyword">def</span> <span class="pyfunction">__init__</span>(self):
+        self.anchors = []
+        self.reset()
+
+    <span class="pykeyword">def</span> <span class="pyfunction">handle_starttag</span>(self, tag, attrs):
+        <span class="pykeyword">if</span> tag == <span class="pystring">"a"</span>:
+            <span class="pykeyword">for</span> k, v <span class="pykeyword">in</span> attrs:
+                <span class="pykeyword">if</span> k == <span class="pystring">"href"</span>:
+                    self.anchors.append(v)
+                    <span class="pykeyword">break</span>
+
+f = open(<span class="pystring">"sample.html"</span>)
+
+p = AnchorParser()
+p.feed(f.read())
+p.close()
+
+<span class="pykeyword">print</span> p.anchors</pre><p>Here&#8217;s an alternate driver that lets you iterate over the anchors, as they are found by the parser:</p><pre class="python">
+<span class="pykeyword">class</span> <span class="pyclass">AnchorParser</span>:
+    ...
+
+<span class="pykeyword">def</span> <span class="pyfunction">getanchors</span>(file):
+    p = AnchorParser()
+    <span class="pykeyword">while</span> 1:
+        <span class="pycomment"># get some data from the source</span>
+        s = file.read(16384)
+        <span class="pykeyword">if</span> s:
+            p.feed(s)
+        <span class="pykeyword">else</span>:
+            p.close()
+        <span class="pycomment"># return anchors to caller</span>
+        <span class="pykeyword">for</span> anchor <span class="pykeyword">in</span> p.anchors:
+            <span class="pykeyword">yield</span> anchor
+        <span class="pykeyword">if</span> <span class="pykeyword">not</span> s:
+            <span class="pykeyword">break</span>
+        p.anchors[:] = [] <span class="pycomment"># reset the list</span>
+
+<span class="pycomment"># read from a file</span>
+<span class="pykeyword">for</span> anchor <span class="pykeyword">in</span> getanchors(open(<span class="pystring">"index.html"</span>)):
+    <span class="pykeyword">print</span> anchor
+
+<span class="pycomment"># read from a remote site</span>
+<span class="pykeyword">from</span> urllib <span class="pykeyword">import</span> urlopen
+<span class="pykeyword">for</span> anchor <span class="pykeyword">in</span> getanchors(urlopen(<span class="pystring">"http://www.python.org"</span>)):
+    <span class="pykeyword">print</span> anchor</pre></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to librarybook index page.">::: librarybook :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

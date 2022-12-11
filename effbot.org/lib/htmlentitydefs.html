@@ -1,0 +1,56 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>htmlentitydefs</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-htmlentitydefs.html'>original</a> :::
+<a href='htmlentitydefs.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>htmlentitydefs&#8212;Definitions of HTML general entities</h1>
+
+<p>This module defines three dictionaries, <code>
+name2codepoint</code>, <code>codepoint2name</code>, and <code>
+entitydefs</code>. <code>entitydefs</code> is used by the <code>htmllib</code> module to provide the
+<a class="link" href="#entitydefs"><code>entitydefs</code></a> member of the
+<code>HTMLParser</code> class. The
+definition provided here contains all the entities defined by XHTML
+1.0 that can be handled using simple textual substitution in the
+Latin-1 character set (ISO-8859-1).</p>
+</div>
+<dl><dt class="variable" id="entitydefs"><b>entitydefs</b> <tt class="nav"><a class="nav" href="htmlentitydefs.entitydefs" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>A dictionary mapping XHTML 1.0 entity definitions to their
+replacement text in ISO Latin-1.</p>
+</dd>
+<dt class="variable" id="name2codepoint"><b>name2codepoint</b> <tt class="nav"><a class="nav" href="htmlentitydefs.name2codepoint" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>A dictionary that maps HTML entity names to the Unicode
+codepoints.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.3.<br />
+</blockquote>
+</dd>
+<dt class="variable" id="codepoint2name"><b>codepoint2name</b> <tt class="nav"><a class="nav" href="htmlentitydefs.codepoint2name" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>A dictionary that maps Unicode codepoints to HTML entity
+names.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.3.<br />
+</blockquote>
+</dd>
+</dl></div></body></html>

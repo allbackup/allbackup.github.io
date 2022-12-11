@@ -1,0 +1,50 @@
+
+@@module tabnanny
+
+<h1>tabnanny&#8212;Detection of ambiguous indentation</h1>
+
+<p>For the time being this module is intended to be called as a script.
+However it is possible to import it into an IDE and use the function
+{@link check} described below.
+
+
+<p class='warning'><b>Warning:</b> The API provided by this module is
+likely to change in future releases; such changes may not be backward
+compatible.
+
+@@function check(file_or_dir)
+
+<p>If {@var file_or_dir} is a directory and not a symbolic link, then
+recursively descend the directory tree named by {@var file_or_dir},
+checking all .py files along the way. If {@var file_or_dir} is an
+ordinary Python source file, it is checked for whitespace related
+problems. The diagnostic messages are written to standard output using
+the print statement.
+
+@@variable verbose
+
+<p>Flag indicating whether to print verbose messages. This is
+incremented by the {@code -v} option if called as a script.
+
+@@variable filename_only
+
+<p>Flag indicating whether to print only the filenames of files
+containing whitespace related problems. This is set to true by the
+{@code -q} option if called as a script.
+
+@@exception NannyNag
+
+<p>Raised by {@link tokeneater} if detecting an ambiguous indent.
+Captured and handled in {@link check}.
+
+@@function tokeneater(type, token, start, end, line)
+
+<p>This function is used by {@link check} as a callback parameter to the
+function {@link tokenize.tokenize}.
+
+@@text 
+
+@see 
+{@link tokenize Module tokenize}
+
+Lexical scanner for Python source code.

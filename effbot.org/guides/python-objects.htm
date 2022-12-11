@@ -1,0 +1,22 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>Python&nbsp;Objects</title> <script type="text/javascript">effbot_page_id=221;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> <!--
+<p style='color: #8f8f8f; background: #fff5bf; padding: 5px 10px;'> <b>2008-07-15:</b> Selected articles
+ (including this one) 
+now have experimental "comment" links in the left column and at the bottom.
+You're welcome to use them for commenting and voting on articles.
+For a bit more on this, see <a
+href="http://effbot.slinkset.com/links/Welcome_to_discuss_effbot_org">this
+page</a>. /F
+</p>
+--> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <h1 class="maintitle">Python&nbsp;Objects</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p class="info">December 12, 2000 | Fredrik Lundh</p><h2 id="introduction">Introduction&#160;<a class="nav" href="#introduction" title="bookmark!">#</a></h2><p>Reset your brain.</p><h2 id="objects">Objects&#160;<a class="nav" href="#objects" title="bookmark!">#</a></h2><p>All Python objects have this:</p><ul><li>a unique identity (an integer, returned by <i>id(x)</i>)</li><li>a type (returned by <i>type(x)</i>)</li><li>some content</li></ul><p>You cannot change the identity.</p><p>You cannot change the type.</p><p>Some objects allow you to change their <i>content</i> (without
+changing the identity or the type, that is).</p><p>Some objects don&#8217;t allow you to change their content (more
+below).</p><p>The type is represented by a type object, which knows more about
+objects of this type (how many bytes of memory they usually occupy,
+what methods they have, etc).</p><p>(<i>Update: In CPython 2.2 and later, you can change the type under
+<a href="http://article.gmane.org/gmane.comp.python.general/427452">some
+rather limited circumstances</a></i>.)</p><h2 id="more-about-objects">More about objects&#160;<a class="nav" href="#more-about-objects" title="bookmark!">#</a></h2><p>Objects may also have this:</p><ul><li>zero or more methods (provided by the type object)</li><li>zero or more names</li></ul><p>Some objects have methods that allow you to change the contents
+of the object (modify it in place, that is).</p><p>Some objects only have methods that allow you to access the
+contents, not change it.</p><p>Some objects don&#8217;t have any methods at all.</p><p>Even if they have methods, you can never change the type, nor
+the identity.</p><p>Things like attribute assignment and item references are just
+syntactic sugar (more below).</p><h2 id="names">Names&#160;<a class="nav" href="#names" 

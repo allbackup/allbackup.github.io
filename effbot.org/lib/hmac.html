@@ -1,0 +1,69 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>hmac</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-hmac.html'>original</a> :::
+<a href='hmac.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>hmac&#8212;Keyed-Hashing for Message Authentication</h1>
+
+<p>New in version 2.2.</p>
+
+<p>This module implements the HMAC algorithm as described by <a class="link" href="http://www.faqs.org/rfcs/rfc2104.html">RFC
+2104</a>.</p>
+</div>
+<dl><dt class="function" id="new"><b>new(key[, msg[, digestmod]])</b> <tt class="nav"><a class="nav" href="hmac.new" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return a new hmac object. If <var>msg</var> is present, the
+method call <code>update(</code><var>msg</var>) is made. <var>
+digestmod</var> is the digest module for the HMAC object to use. It
+defaults to the <code>md5</code> module.</p>
+</dd>
+</dl><div class="text">
+<p>An HMAC object has the following methods:</p>
+</div>
+<dl><dt class="method" id="HMAC.update"><b>update(msg)</b> <tt class="nav"><a class="nav" href="hmac.HMAC.update" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Update the hmac object with the string <var>msg</var>. Repeated
+calls are equivalent to a single call with the concatenation of all
+the arguments: <code>m.update(a); m.update(b)</code> is equivalent
+to <code>m.update(a + b)</code>.</p>
+</dd>
+<dt class="method" id="HMAC.digest"><b>digest()</b> <tt class="nav"><a class="nav" href="hmac.HMAC.digest" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return the digest of the strings passed to the <code>update</code> method so far. This is a 16-byte
+string (for <code>md5</code>) or a 20-byte
+string (for <code>sha</code>) which may
+contain non-ASCII characters, including NUL bytes.</p>
+</dd>
+<dt class="method" id="HMAC.hexdigest"><b>hexdigest()</b> <tt class="nav"><a class="nav" href="hmac.HMAC.hexdigest" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Like <code>digest</code> except the
+digest is returned as a string of length 32 for <code>md5</code> (40 for <code>
+sha</code>), containing only hexadecimal digits. This may be used to
+exchange the value safely in email or other non-binary
+environments.</p>
+</dd>
+<dt class="method" id="HMAC.copy"><b>copy()</b> <tt class="nav"><a class="nav" href="hmac.HMAC.copy" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return a copy (&#8220;clone&#8221;) of the hmac object. This can
+be used to efficiently compute the digests of strings that share a
+common initial substring.</p>
+</dd>
+</dl></div></body></html>

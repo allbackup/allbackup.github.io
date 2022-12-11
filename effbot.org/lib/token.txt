@@ -1,0 +1,39 @@
+
+@@module token
+
+<h1>token&#8212;Constants used with Python parse trees</h1>
+
+<p>This module provides constants which represent the numeric values of
+leaf nodes of the parse tree (terminal tokens). Refer to the file
+Grammar/Grammar in the Python distribution for the definitions of the
+names in the context of the language grammar. The specific numeric
+values which the names map to may change between Python versions.
+
+<p>This module also provides one data object and some functions. The
+functions mirror definitions in the Python C header files.
+
+@@variable tok_name
+
+<p>Dictionary mapping the numeric values of the constants defined in
+this module back to name strings, allowing more human-readable
+representation of parse trees to be generated.
+
+@@function ISTERMINAL(x)
+
+<p>Return true for terminal token values.
+
+@@function ISNONTERMINAL(x)
+
+<p>Return true for non-terminal token values.
+
+@@function ISEOF(x)
+
+<p>Return true if {@var x} is the marker indicating the end of input.
+
+@@text 
+
+@see 
+{@link parser Module parser}
+
+The second example for the parser module shows how to use the symbol
+module.

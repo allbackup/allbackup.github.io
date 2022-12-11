@@ -1,0 +1,30 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>ElementTree: Working with Qualified&nbsp;Names</title> <script type="text/javascript">effbot_page_id=86;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> <!--
+<p style='color: #8f8f8f; background: #fff5bf; padding: 5px 10px;'> <b>2008-07-15:</b> Selected articles
+
+now have experimental "comment" links in the left column and at the bottom.
+You're welcome to use them for commenting and voting on articles.
+For a bit more on this, see <a
+href="http://effbot.slinkset.com/links/Welcome_to_discuss_effbot_org">this
+page</a>. /F
+</p>
+--> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <h1 class="maintitle">ElementTree: Working with Qualified&nbsp;Names</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p class="info">Updated December 8, 2005 | July 27, 2002 | Fredrik Lundh</p><p>The <b>elementtree</b> module supports <b>qualified names</b> (QNames)
+for element tags and attribute names.  A qualified name consists of a (uri,
+local name) pair.</p><p>Qualified names was introduced with the <a href="http://www.w3.org/TR/REC-xml-names/">XML Namespace specification</a>.</p><h3>Storing Qualified Names in Element Trees</h3><p>The element tree represents a qualified name pair as
+a string of the form &#8220;<b>{uri}local</b>&#8220;.</p><p>The following example creates an element where the tag
+is the qualified name pair <b>(http://spam.effbot.org, egg)</b>.</p><pre class="python">
+elem = Element(<span class="pystring">"{http://spam.effbot.org}egg"</span>}</pre><p>To check if a name is a qualified name, you can do:</p><pre class="python">
+<span class="pykeyword">if</span> elem.tag[0] == <span class="pystring">"{"</span>:
+    ...</pre><p>(you can also use <b>startswith</b>, but the method call overhead
+makes that a lot slower in current Python versions.)</p><h3>Storing Qualified Names in XML Files</h3><p>In theory, we could store qualified names right away
+in XML files.  For example, let&#8217;s use the <b>{uri}local</b>
+notation in the file itself:</p><pre>
+&lt;{http://spam.effbot.org}egg&gt;
+some content
+&lt;/{http://spam.effbot.org}egg&gt;
+</pre><p>There are two problems with this approach.  One is the
+according to the XML base specification, { and } cannot be
+used in element tags and attribute names.  Another, more
+important problem is bloat; even with a short uri like the
+one used in the example above, we&#821

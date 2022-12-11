@@ -1,0 +1,224 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>textwrap</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-textwrap.html'>original</a> :::
+<a href='textwrap.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>textwrap&#8212;Text wrapping and filling</h1>
+
+<p>New in version 2.3.</p>
+
+<p>The <code>textwrap</code> module
+provides two convenience functions, <a class="link" href="#wrap"><code>wrap</code></a> and <a class="link" href="#fill"><code>
+fill</code></a>, as well as <a class="link" href="#TextWrapper"><code>
+TextWrapper</code></a>, the class that does all the work, and a utility
+function <a class="link" href="#dedent"><code>dedent</code></a>. If you're
+just wrapping or filling one or two text strings, the convenience
+functions should be good enough; otherwise, you should use an
+instance of <a class="link" href="#TextWrapper"><code>TextWrapper</code></a>
+for efficiency.</p>
+</div>
+<dl><dt class="function" id="wrap"><b>wrap(text[, width[, ...]])</b> <tt class="nav"><a class="nav" href="textwrap.wrap" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Wraps the single paragraph in <var>text</var> (a string) so
+every line is at most <var>width</var> characters long. Returns a
+list of output lines, without final newlines.</p>
+
+<p>Optional keyword arguments correspond to the instance attributes
+of <a class="link" href="#TextWrapper"><code>TextWrapper</code></a>,
+documented below. <var>width</var> defaults to <code>70</code>.</p>
+</dd>
+<dt class="function" id="fill"><b>fill(text[, width[, ...]])</b> <tt class="nav"><a class="nav" href="textwrap.fill" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Wraps the single paragraph in <var>text</var>, and returns a
+single string containing the wrapped paragraph. <a class="link" href="#fill"><code>fill</code></a> is shorthand for</p>
+
+<pre>
+"\n".join(wrap(text, ...))
+</pre>
+
+<p>In particular, <a class="link" href="#fill"><code>fill</code></a> accepts
+exactly the same keyword arguments as <a class="link" href="#wrap"><code>wrap</code></a>.</p>
+</dd>
+</dl><div class="text">
+<p>Both <a class="link" href="#wrap"><code>wrap</code></a> and <a class="link" href="#fill"><code>fill</code></a> work by creating a <a class="link" href="#TextWrapper"><code>TextWrapper</code></a> instance and
+calling a single method on it. That instance is not reused, so for
+applications that wrap/fill many text strings, it will be more
+efficient for you to create your own <a class="link" href="#TextWrapper"><code>TextWrapper</code></a> object.</p>
+
+<p>An additional utility function, <a class="link" href="#dedent"><code>dedent</code></a>, is provided to remove indentation
+from strings that have unwanted whitespace to the left of the
+text.</p>
+</div>
+<dl><dt class="function" id="dedent"><b>dedent(text)</b> <tt class="nav"><a class="nav" href="textwrap.dedent" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Remove any whitespace that can be uniformly removed from the
+left of every line in <var>text</var>.</p>
+
+<p>This is typically used to make triple-quoted strings line up
+with the left edge of screen/whatever, while still presenting it in
+the source code in indented form.</p>
+
+<p>For example:</p>
+
+<pre>
+def test():
+    # end first line with \ to avoid the empty line!
+    s = '''\
+    hello
+      world
+    '''
+    print repr(s)          # prints '    hello\n      world\n    '
+    print repr(dedent(s))  # prints 'hello\n  world\n'
+</pre>
+</dd>
+<dt class="class" id="TextWrapper"><b>class TextWrapper(...)</b> <tt class="nav"><a class="nav" href="textwrap.TextWrapper" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>The <a class="link" href="#TextWrapper"><code>TextWrapper</code></a>
+constructor accepts a number of optional keyword arguments. Each
+argument corresponds to one instance attribute, so for example</p>
+
+<pre>
+wrapper = TextWrapper(initial_indent="* ")
+</pre>
+
+<p>is the same as</p>
+
+<pre>
+wrapper = TextWrapper()
+wrapper.initial_indent = "* "
+</pre>
+
+<p>You can re-use the same <a class="link" href="#TextWrapper"><code>
+TextWrapper</code></a> object many times, and you can change any of its
+options through direct assignment to instance attributes between
+uses.</p>
+</dd>
+</dl><div class="text">
+<p>The <a class="link" href="#TextWrapper"><code>TextWrapper</code></a>
+instance attributes (and keyword arguments to the constructor) are
+as follows:</p>
+</div>
+<dl><dt class="attribute" id="TextWrapper.width"><b>width</b> <tt class="nav"><a class="nav" href="textwrap.TextWrapper.width" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>(default: <code>70</code>) The maximum length of wrapped lines.
+As long as there are no individual words in the input text longer
+than <code>width</code>, <a class="link" href="#TextWrapper"><code>TextWrapper</code></a> guarantees that no output
+line will be longer than <code>
+width</code> characters.</p>
+</dd>
+<dt class="attribute" id="TextWrapper.expand_tabs"><b>expand_tabs</b> <tt class="nav"><a class="nav" href="textwrap.TextWrapper.expand_tabs" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>(default: <code>True</code>) If true,
+then all tab characters in <var>text</var> will be expanded to
+spaces using the <code>
+expandtabs</code> method of <var>text</var>.</p>
+</dd>
+<dt class="attribute" id="TextWrapper.replace_whitespace"><b>replace_whitespace</b> <tt class="nav"><a class="nav" href="textwrap.TextWrapper.replace_whitespace" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>(default: <code>True</code>) If true,
+each whitespace character (as defined by <code>
+string.whitespace</code>) remaining after tab expansion will be
+replaced by a single space. Note: If <code>expand_tabs</code> is false and <code>replace_whitespace</code>
+is true, each tab character will be replaced by a single space,
+which is <em>not</em> the same as tab expansion.</p>
+</dd>
+<dt class="attribute" id="TextWrapper.initial_indent"><b>initial_indent</b> <tt class="nav"><a class="nav" href="textwrap.TextWrapper.initial_indent" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>(default: <code>&#8221;</code>) String that will be prepended to
+the first line of wrapped output. Counts towards the length of the
+first line.</p>
+</dd>
+<dt class="attribute" id="TextWrapper.subsequent_indent"><b>subsequent_indent</b> <tt class="nav"><a class="nav" href="textwrap.TextWrapper.subsequent_indent" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>(default: <code>&#8221;</code>) String that will be prepended to
+all lines of wrapped output except the first. Counts towards the
+length of each line except the first.</p>
+</dd>
+<dt class="attribute" id="TextWrapper.fix_sentence_endings"><b>fix_sentence_endings</b> <tt class="nav"><a class="nav" href="textwrap.TextWrapper.fix_sentence_endings" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>(default: <code>False</code>) If true,
+<a class="link" href="#TextWrapper"><code>TextWrapper</code></a> attempts to
+detect sentence endings and ensure that sentences are always
+separated by exactly two spaces. This is generally desired for text
+in a monospaced font. However, the sentence detection algorithm is
+imperfect: it assumes that a sentence ending consists of a
+lowercase letter followed by one of "<code>.</code>",
+"<code>!</code>", or "<code>?</code>", possibly followed by one of
+"<code>"</code>" or "<code>'</code>&quot;, followed by a space. One
+problem with this is algorithm is that it is unable to detect the
+difference between &#8220;Dr.&#8221; in</p>
+
+<pre>
+[...] Dr. Frankenstein's monster [...]
+</pre>
+
+<p>and &#8220;Spot.&#8221; in</p>
+
+<pre>
+[...] See Spot. See Spot run [...]
+</pre>
+
+<p><code>
+fix_sentence_endings</code> is false by default.</p>
+
+<p>Since the sentence detection algorithm relies on <code>
+string.lowercase</code> for the definition of &#8220;lowercase
+letter,&#8221; and a convention of using two spaces after a period
+to separate sentences on the same line, it is specific to
+English-language texts.</p>
+</dd>
+<dt class="attribute" id="TextWrapper.break_long_words"><b>break_long_words</b> <tt class="nav"><a class="nav" href="textwrap.TextWrapper.break_long_words" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>(default: <code>True</code>) If true,
+then words longer than <code>width</code>
+will be broken in order to ensure that no lines are longer than <code>width</code>. If it is false, long
+words will not be broken, and some lines may be longer than <code>width</code>. (Long words will be put
+on a line by themselves, in order to minimize the amount by which
+<code>width</code> is exceeded.)</p>
+</dd>
+</dl><div class="text">
+<p><a class="link" href="#TextWrapper"><code>TextWrapper</code></a> also
+provides two public methods, analogous to the module-level
+convenience functions:</p>
+</div>
+<dl><dt class="method" id="TextWrapper.wrap"><b>wrap(text)</b> <tt class="nav"><a class="nav" href="textwrap.TextWrapper.wrap" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Wraps the single paragraph in <var>text</var> (a string) so
+every line is at most <code>width</code>
+characters long. All wrapping options are taken from instance
+attributes of the <a class="link" href="#TextWrapper"><code>
+TextWrapper</code></a> instance. Returns a list of output lines, without
+final newlines.</p>
+</dd>
+<dt class="method" id="TextWrapper.fill"><b>fill(text)</b> <tt class="nav"><a class="nav" href="textwrap.TextWrapper.fill" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Wraps the single paragraph in <var>text</var>, and returns a
+single string containing the wrapped paragraph.</p>
+</dd>
+</dl></div></body></html>

@@ -1,0 +1,135 @@
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>downloads.effbot.org ::: www.effbot.org</title>
+<link rel="stylesheet" href="/effbot2.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="/effbotprint.css" type="text/css" media="print" />
+</head>
+
+<body bgcolor="white">
+
+<script src="/effbot.js" type="text/javascript"></script>
+<script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-578832-1";
+urchinTracker();
+</script>
+
+<div id="effbot-page">
+
+<div id="effbot-nav">
+<div><a href="/"><b>effbot.org</b></a></div>
+<div style="margin-left: 5px;"><a href="/zone/"><b>zone</b></a></div>
+<div style="margin-left: 10px;"><b>downloads.effbot.org</b></div>
+
+<div style="margin-top: 10px;" class='small'>Think this article can be improved? <a href='#add-comment'>Check</a> for comments, or <a href='/comment/zone/zone-template-downloads.htm'>add your own</a>!</div>
+
+</div>
+
+<div id="effbot-body">
+
+
+<h1 class="title">downloads.effbot.org</h1>
+<p>
+[<a href="/">home</a>]
+[<a href="/zone">zone</a>]
+[<a href="http://online.effbot.org">blog</a>]
+
+</p><p>Assorted software, most of it shipped under an OSI-compatible <a href="/zone/copyright.htm">old-style Python license</a>.  If you want
+to support development, you can always <a href="http://www.amazon.co.uk/gp/registry/2QZDLLDVBENMC">buy me some refreshments</a>.
+
+<h3>Contents:</h3>
+
+
+<p>
+Contents of <b>downloads/elementtidy-1.0-20050212.zip</b> [<a href='/downloads/elementtidy-1.0-20050212.zip'>download</a>]:
+</p>
+<pre>
+elementtidy-1.0-20050212/PKG-INFO [1k]
+    Metadata-Version: 1.0
+    Name: elementtidy
+    Version: 1.0-20050212
+    Summary: ElementTidy - a tidylib interface for ElementTree
+    Home-page: <a href='http://effbot.org/zone/element-tidylib.htm'>http://effbot.org/zone/element-tidylib.htm</a>
+    Author: Fredrik Lundh
+    Author-email: fredrik at pythonware.com
+<a href='elementtidy-1.0-20050212.zip/README'>elementtidy-1.0-20050212/README</a> [5k]
+elementtidy-1.0-20050212/selftest.py [2k]
+elementtidy-1.0-20050212/setup.py [1k]
+elementtidy-1.0-20050212/_elementtidy.c [4k]
+elementtidy-1.0-20050212/elementtidy/TidyHTMLTreeBuilder.py [4k]
+elementtidy-1.0-20050212/elementtidy/__init__.py [1k]
+elementtidy-1.0-20050212/tidylib/include/buffio.h [3k]
+elementtidy-1.0-20050212/tidylib/include/fileio.h [1k]
+elementtidy-1.0-20050212/tidylib/include/platform.h [13k]
+elementtidy-1.0-20050212/tidylib/include/tidy.h [34k]
+elementtidy-1.0-20050212/tidylib/include/tidyenum.h [24k]
+elementtidy-1.0-20050212/tidylib/src/access.c [122k]
+elementtidy-1.0-20050212/tidylib/src/access.h [11k]
+elementtidy-1.0-20050212/tidylib/src/alloc.c [2k]
+elementtidy-1.0-20050212/tidylib/src/attrask.c [5k]
+elementtidy-1.0-20050212/tidylib/src/attrdict.c [198k]
+elementtidy-1.0-20050212/tidylib/src/attrdict.h [4k]
+elementtidy-1.0-20050212/tidylib/src/attrget.c [6k]
+elementtidy-1.0-20050212/tidylib/src/attrs.c [55k]
+elementtidy-1.0-20050212/tidylib/src/attrs.h [21k]
+elementtidy-1.0-20050212/tidylib/src/buffio.c [4k]
+elementtidy-1.0-20050212/tidylib/src/charsets.h [1k]
+elementtidy-1.0-20050212/tidylib/src/clean.c [62k]
+elementtidy-1.0-20050212/tidylib/src/clean.h [3k]
+elementtidy-1.0-20050212/tidylib/src/config.c [50k]
+elementtidy-1.0-20050212/tidylib/src/config.h [6k]
+elementtidy-1.0-20050212/tidylib/src/entities.c [14k]
+elementtidy-1.0-20050212/tidylib/src/entities.h [1k]
+elementtidy-1.0-20050212/tidylib/src/fileio.c [2k]
+elementtidy-1.0-20050212/tidylib/src/forward.h [1k]
+elementtidy-1.0-20050212/tidylib/src/iconvtc.h [1k]
+elementtidy-1.0-20050212/tidylib/src/istack.c [7k]
+elementtidy-1.0-20050212/tidylib/src/lexer.c [107k]
+elementtidy-1.0-20050212/tidylib/src/lexer.h [16k]
+elementtidy-1.0-20050212/tidylib/src/localize.c [41k]
+elementtidy-1.0-20050212/tidylib/src/message.h [7k]
+elementtidy-1.0-20050212/tidylib/src/parser.c [122k]
+elementtidy-1.0-20050212/tidylib/src/parser.h [2k]
+elementtidy-1.0-20050212/tidylib/src/pprint.c [70k]
+elementtidy-1.0-20050212/tidylib/src/pprint.h [3k]
+elementtidy-1.0-20050212/tidylib/src/streamio.c [34k]
+elementtidy-1.0-20050212/tidylib/src/streamio.h [5k]
+elementtidy-1.0-20050212/tidylib/src/tagask.c [8k]
+elementtidy-1.0-20050212/tidylib/src/tags.c [47k]
+elementtidy-1.0-20050212/tidylib/src/tags.h [9k]
+elementtidy-1.0-20050212/tidylib/src/tidy-int.h [5k]
+elementtidy-1.0-20050212/tidylib/src/tidylib.c [40k]
+elementtidy-1.0-20050212/tidylib/src/tmbstr.c [5k]
+elementtidy-1.0-20050212/tidylib/src/tmbstr.h [2k]
+elementtidy-1.0-20050212/tidylib/src/utf8.c [16k]
+elementtidy-1.0-20050212/tidylib/src/utf8.h [1k]
+elementtidy-1.0-20050212/tidylib/src/win32tc.h [1k]
+</pre>
+
+
+
+
+
+</p>
+
+
+<hr />
+
+<div class='navigate'>
+[<a id="add-comment" href='/comment/zone/zone-template-downloads.htm'><b>add a comment!</b></a>]
+[<a href='/zone/edit/?name=zone-template-downloads'>edit</a>]
+[<a href='/zone/edit/?action=new'>new</a>]
+[<a href='http://validator.w3.org/check?uri=http://effbot.org/zone/zone-template-downloads.htm'>validate</a>]
+</div>
+
+<p class='small'>Copyright &copy; 2002-2006 by Fredrik Lundh.</p>
+
+</div> <!-- effbot-body -->
+</div> <!-- effbot-page -->
+
+</body>
+</html>

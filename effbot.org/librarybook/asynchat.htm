@@ -1,0 +1,212 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>The asynchat&nbsp;module</title></head><body data-page-id="468"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">The asynchat&nbsp;module</h1></div><div class="yui-ge"><div class="yui-u first"><p>This module is an extension to <a href="asyncore"><b>asyncore</b></a>.
+It provides additional support for line oriented protocols. It also provides
+improved buffering support, via the <b>push</b> methods and the
+<span>&#8220;producer&#8221;</span> mechanism.</p><p>To configure the class, call the <b>set_terminator</b> method to
+specify what terminator to use.  The asyncore layer will then call <b>collect_incoming_data</b> repeatedly, as data arrives, until it
+sees the given terminator, and calls <b>found_terminator</b>.
+
+</p><p>To read a given number of bytes without checking for terminators
+(e.g. a HTTP body), you can set the terminator to a byte count (an
+integer).  To disable the terminator check, set the terminator to
+<b>None</b>.
+
+</p><p>The following example implements a very minimal HTTP responder.
+It simply returns a HTML document containing information from HTTP
+request (the output appears in the browser window):</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><div class="example wide">
+<b style="example">Example: Using the asynchat
+module to implement a minimal HTTP server</b>
+<pre class="wide">
+# File: <a href="asynchat/asynchat-example-1.py">asynchat-example-1.py</a>
+
+import asyncore, asynchat
+import os, socket, string
+
+PORT = 8000
+
+class HTTPChannel(asynchat.async_chat):
+
+    def __init__(self, server, sock, addr):
+        asynchat.async_chat.__init__(self, sock)
+        self.set_terminator("\r\n")
+        self.request = None
+        self.data = ""
+        self.shutdown = 0
+
+    def collect_incoming_data(self, data):
+        self.data = self.data + data
+
+    def found_terminator(self):
+        if not self.request:
+            # got the request line
+            self.request = string.split(self.data, None, 2)
+            if len(self.request) != 3:
+                self.shutdown = 1
+            else:
+                self.push("HTTP/1.0 200 OK\r\n")
+                self.push("Content-type: text/html\r\n")
+                self.push("\r\n")
+            self.data = self.data + "\r\n"
+            self.set_terminator("\r\n\r\n") # look for end of headers
+        else:
+            # return payload.
+            self.push("&lt;html&gt;&lt;body&gt;&lt;pre&gt;\r\n")
+            self.push(self.data)
+            self.push("&lt;/pre&gt;&lt;/body&gt;&lt;/html&gt;\r\n")
+            self.close_when_done()
+
+class HTTPServer(asyncore.dispatcher):
+
+    def __init__(self, port):
+        asyncore.dispatcher.__init__(self)
+        self.create_socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.bind(("", port))
+        self.listen(5)
+
+    def handle_accept(self):
+        conn, addr = self.accept()
+        HTTPChannel(self, conn, addr)
+
+#
+# try it out
+
+s = HTTPServer(PORT)
+print "serving at port", PORT, "..."
+asyncore.loop()
+
+</pre><pre class="computeroutput wide" moreinfo="NONE">
+GET / HTTP/1.1
+Accept: */*
+Accept-Language: en, sv
+Accept-Encoding: gzip, deflate
+User-Agent: Mozilla/4.0 (compatible; Bruce/1.0)
+Host: localhost:8000
+Connection: Keep-Alive
+</pre></div></div><div class="yui-ge"><div class="yui-u first"><p>The producer interface allows you to <span>&#8220;push&#8221;</span> objects
+that are too large to store in memory. <b>asyncore</b> calls the
+producer&#8217;s <b>more</b> method whenever it needs more data. To
+signal end of file, just return an empty string.</p><p>The following example implements a very simple file-based HTTP
+server, using a simple <b>FileProducer</b> class that reads data
+from a file, a few kilobytes at the time.</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><div class="example wide">
+<b style="example">Example: Using the asynchat
+module to implement a simple HTTP server</b>
+<pre class="wide">
+# File: <a href="asynchat/asynchat-example-2.py">asynchat-example-2.py</a>
+
+import asyncore, asynchat
+import os, socket, string, sys
+import StringIO, mimetools
+
+ROOT = "."
+
+PORT = 8000
+
+class HTTPChannel(asynchat.async_chat):
+
+    def __init__(self, server, sock, addr):
+        asynchat.async_chat.__init__(self, sock)
+        self.server = server
+        self.set_terminator("\r\n\r\n")
+        self.header = None
+        self.data = ""
+        self.shutdown = 0
+
+    def collect_incoming_data(self, data):
+        self.data = self.data + data
+        if len(self.data) &gt; 16384:
+            # limit the header size to prevent attacks
+            self.shutdown = 1
+
+    def found_terminator(self):
+        if not self.header:
+            # parse http header
+            fp = StringIO.StringIO(self.data)
+            request = string.split(fp.readline(), None, 2)
+            if len(request) != 3:
+                # badly formed request; just shut down
+                self.shutdown = 1
+            else:
+                # parse message header
+                self.header = mimetools.Message(fp)
+                self.set_terminator("\r\n")
+                self.server.handle_request(
+                    self, request[0], request[1], self.header
+                    )
+                self.close_when_done()
+            self.data = ""
+        else:
+            pass # ignore body data, for now
+
+    def pushstatus(self, status, explanation="OK"):
+        self.push("HTTP/1.0 %d %s\r\n" % (status, explanation))
+
+
+class FileProducer:
+    # a producer which reads data from a file object
+
+    def __init__(self, file):
+        self.file = file
+
+    def more(self):
+        if self.file:
+            data = self.file.read(2048)
+            if data:
+                return data
+            self.file = None
+        return ""
+
+
+class HTTPServer(asyncore.dispatcher):
+
+    def __init__(self, port=None, request=None):
+        asyncore.dispatcher.__init__(self)
+        if not port:
+            port = 80
+        self.port = port
+        if request:
+            self.handle_request = request # external request handler
+        self.create_socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.bind(("", port))
+        self.listen(5)
+
+    def handle_accept(self):
+        conn, addr = self.accept()
+        HTTPChannel(self, conn, addr)
+
+    def handle_request(self, channel, method, path, header):
+        try:
+            # this is not safe!
+            while path[:1] == "/":
+                path = path[1:]
+            filename = os.path.join(ROOT, path)
+            print path, "=&gt;", filename
+            file = open(filename, "r")
+        except IOError:
+            channel.pushstatus(404, "Not found")
+            channel.push("Content-type: text/html\r\n")
+            channel.push("\r\n")
+            channel.push("&lt;html&gt;&lt;body&gt;File not found.&lt;/body&gt;&lt;/html&gt;\r\n")
+        else:
+            channel.pushstatus(200, "OK")
+            channel.push("Content-type: text/html\r\n")
+            channel.push("\r\n")
+            channel.push_with_producer(FileProducer(file))
+
+#
+# try it out
+
+s = HTTPServer(PORT)
+print "serving at port", PORT
+asyncore.loop()
+
+</pre><pre class="computeroutput wide" moreinfo="NONE">
+serving at port 8000
+log: adding channel &lt;HTTPServer  at 8e54d0&gt;
+log: adding channel &lt;HTTPChannel  at 8e64a0&gt;
+samples/sample.htm =&gt; .\samples/sample.htm
+log: closing channel 96:&lt;HTTPChannel connected at 8e64a0&gt;
+</pre></div></div><div class="yui-ge"><div class="yui-u first"><p class="note"><b>Note:</b>
+In Python 2.4 and later, you must call the parent&#8217;s <b>__init__</b> method
+when you subclass from <b>asyncore.dispatcher</b>.  In earlier versions,
+that call is optional.</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to librarybook index page.">::: librarybook :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

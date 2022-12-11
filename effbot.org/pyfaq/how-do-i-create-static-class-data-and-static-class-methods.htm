@@ -1,0 +1,22 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>How do I create static class data and static class&nbsp;methods?</title></head><body data-page-id="789"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><p class="note" style="text-align: center"><strong>
+This is an old copy of the Python FAQ.  The information here may be
+outdated.
+</strong></p><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">How do I create static class data and static class&nbsp;methods?</h1></div><div class="yui-ge"><div class="yui-u first"><p>Static data (in the sense of C++ or Java) is easy; static methods (again in the sense of C++ or Java) are only supported for new-style classes.</p><p>For static data, simply define a class attribute. To assign a new value to the attribute, you have to explicitly use the class name in the assignment:</p><pre class="python"><span class="pykeyword">class</span> <span class="pyclass">C</span>:
+    count = 0   <span class="pycomment"># number of times C.__init__ called</span>
+
+    <span class="pykeyword">def</span> <span class="pyfunction">__init__</span>(self):
+        C.count = C.count + 1
+
+    <span class="pykeyword">def</span> <span class="pyfunction">getcount</span>(self):
+        <span class="pykeyword">return</span> C.count  <span class="pycomment"># or return self.count</span></pre><p>c.count also refers to C.count for any c such that isinstance(c, C) holds, unless overridden by c itself or by some class on the base-class search path from c.__class__ back to  C.</p><p>Caution: within a method of C, an assignment like self.count = 42 creates a new and unrelated instance attribute named &#8220;count&#8221; in self&#8217;s own dict. Rebinding of a class-static data name must always specify the class whether inside a method or not:</p><pre class="python">C.count = 314</pre><p>Static methods are possible when you&#8217;re using new-style classes:</p><pre class="python"><span class="pykeyword">class</span> <span class="pyclass">C</span>:
+
+    @<span class="pydecorator">staticmethod</span>
+    <span class="pykeyword">def</span> <span class="pyfunction">static</span>(arg1, arg2, arg3):
+        <span class="pycomment"># No 'self' parameter!</span>
+        ...</pre><p>However, a far more straightforward way to get the effect of a static method is via a simple module-level function:</p><pre class="python"><span class="pykeyword">class</span> <span class="pyclass">C</span>:
+    ...
+
+<span class="pykeyword">def</span> <span class="pyfunction">getcount</span>():
+    <span class="pykeyword">return</span> C.count</pre><p>If your code is structured so as to define one class (or tightly related class hierarchy) per module, this supplies the desired encapsulation.</p><p>CATEGORY: programming</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to pyfaq index page.">::: pyfaq :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

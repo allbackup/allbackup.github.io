@@ -1,0 +1,47 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>type-method</title> <script type="text/javascript">effbot_page_id=1720;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <h1 class="maintitle">type-method</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p><strong>User-defined methods</strong></p><p>A user-defined method object combines a class, a class instance (or
+<a href="None.htm"><strong>None</strong></a>) and any callable object (normally a user-defined function).</p><p>Special read-only attributes:</p><ul><li>im_self is the class instance object.</li><li>im_func is the function object</li><li>im_class is the class of im_self for bound methods or the class.
+that asked for the method for unbound methods.</li><li><a href="__doc__.htm"><strong>__doc__</strong></a> is the method&#8217;s documentation (same as <code>im_func.__doc__</code>).</li><li><a href="__name__.htm"><strong>__name__</strong></a> is the method name (same as <code>im_func.__name__</code>)</li><li><a href="__module__.htm"><strong>__module__</strong></a> is the name of the module the method was defined in, or <a href="None.htm"><strong>None</strong></a> if unavailable.</li></ul><p>Changed in version 2.2: im_self used to refer to the class that
+defined the method.</p><p>Methods also support accessing (but not setting) the arbitrary
+function attributes on the underlying function object.</p><p>User-defined method objects may be created when getting an attribute
+of a class (perhaps via an instance of that class), if that attribute
+is a user-defined function object, an unbound user-defined method
+object, or a class method object. When the attribute is a user-defined
+method object, a new method object is only created if the class from
+which it is being retrieved is the same as, or a derived class of, the
+class stored in the original method object; otherwise, the original
+method object is used as it is.</p><p>When a user-defined method object is created by retrieving a
+user-defined function object from a class, its im_self attribute is
+<a href="None.htm"><strong>None</strong></a> and the method object is said to be unbound. When one is
+created by retrieving a user-defined function object from a class via
+one of its instances, its im_self attribute is the instance, and the
+method object is said to be bound. In either case, the new method&#8217;s
+im_class attribute is the class from which the retrieval takes place,
+and its im_func attribute is the original function object.</p><p>When a user-defined method object is created by retrieving another
+method object from a class or instance, the behaviour is the same as
+for a function object, except that the im_func attribute of the new
+instance is not the original method object but its im_func attribute.</p><p>When a user-defined method object is created by retrieving a class
+method object from a class or instance, its im_self attribute is the
+class itself (the same as the im_class attribute), and its im_func
+attribute is the function object underlying the class method.</p><p>When an unbound user-defined method object is called, the underlying
+function (im_func) is called, with the restriction that the first
+argument must be an instance of the proper class (im_class) or of a
+derived class thereof.</p><p>When a bound user-defined method object is called, the underlying
+function (im_func) is called, inserting the class instance (im_self)
+in front of the argument list. For instance, when C is a class which
+contains a definition for a function f(), and <code>x</code> is an instance of C,
+calling <code>x.f(1)</code> is equivalent to calling <code>C.f(x, 1)</code>.</p><p>When a user-defined method object is derived from a class method
+object, the <q>class instance</q> stored in im_self will actually be the
+class itself, so that calling either <code>x.f(1)</code> or <code>C.f(1)</code> is
+equivalent to calling <code>f(C,1)</code> where <code>f</code> is the underlying function.</p><p>Note that the transformation from function object to (unbound or
+bound) method object happens each time the attribute is retrieved from
+the class or instance. In some cases, a fruitful optimization is to
+assign the attribute to a local variable and call that local
+variable. Also notice that this transformation only happens for
+user-defined functions; other callable objects (and all non-callable
+objects) are retrieved without transformation. It is also important to
+note that user-defined functions which are attributes of a class
+instance are not converted to bound methods; this <em>only</em> happens when
+the function is an attribute of the class.</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div> <!-- yui-g --></div> <!-- content --> </div> <!-- yui-b --> </div> <!-- yui-main --> <div class="yui-b"> <div id='menu'> <ul> <li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li> <li><b><a href="." title="Go to pyref index page.">::: pyref :::</a></b></li> </ul> </div> <!-- menu --> </div> <!-- yui-b --> </div> <!-- bd --> <div id="ft"> <!-- footer --> <p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;"></a>
+this page was rendered by a <a href="http://www.djangoproject.com/">django</a> application in 0.02s 2011-06-21 22:29:13.287759.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p> </div> <!-- ft --> </div> <!-- doc --> <script src="/media/js/effbot-min.js" type="text/javascript"> </script> </body> </html>

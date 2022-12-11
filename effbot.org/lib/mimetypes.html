@@ -1,0 +1,251 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>mimetypes</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-mimetypes.html'>original</a> :::
+<a href='mimetypes.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>mimetypes&#8212;Map filenames to MIME types</h1>
+
+<div class="toc"><dl><dt>On this page:</dt><dd><a href="#mimetypes-objects">MimeTypes Objects</a></dd></dl></div><p>The <code>mimetypes</code> module
+converts between a filename or URL and the MIME type associated
+with the filename extension. Conversions are provided from filename
+to MIME type and from MIME type to filename extension; encodings
+are not supported for the latter conversion.</p>
+
+<p>The module provides one class and a number of convenience
+functions. The functions are the normal interface to this module,
+but some applications may be interested in the class as well.</p>
+
+<p>The functions described below provide the primary interface for
+this module. If the module has not been initialized, they will call
+<a class="link" href="#init"><code>init</code></a> if they rely on the
+information <a class="link" href="#init"><code>init</code></a> sets up.</p>
+</div>
+<dl><dt class="function" id="guess_type"><b>guess_type(filename[, strict])</b> <tt class="nav"><a class="nav" href="mimetypes.guess_type" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Guess the type of a file based on its filename or URL, given by
+<var>filename</var>. The return value is a tuple <code>
+(</code><var>type</var>, <var>encoding</var>) where <var>type</var>
+is <code>None</code> if the type can't be
+guessed (missing or unknown suffix) or a string of the form <code>
+'</code><var>type</var>/<var>subtype</var>', usable for a MIME
+content-type: header.</p>
+
+<p><var>encoding</var> is <code>None</code>
+for no encoding or the name of the program used to encode (e.g.
+compress or gzip). The encoding is suitable for use as a
+Content-Encoding: header, <em>not</em> as a
+Content-Transfer-Encoding: header. The mappings are table driven.
+Encoding suffixes are case sensitive; type suffixes are first tried
+case sensitively, then case insensitively.</p>
+
+<p>Optional <var>strict</var> is a flag specifying whether the list
+of known MIME types is limited to only the official types <a class="link" href="http://www.isi.edu/in-notes/iana/assignments/media-types">
+registered with IANA</a> are recognized. When <var>strict</var> is
+true (the default), only the IANA types are supported; when <var>
+strict</var> is false, some additional non-standard but commonly
+used MIME types are also recognized.</p>
+</dd>
+<dt class="function" id="guess_all_extensions"><b>guess_all_extensions(type[, strict])</b> <tt class="nav"><a class="nav" href="mimetypes.guess_all_extensions" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Guess the extensions for a file based on its MIME type, given by
+<var>type</var>. The return value is a list of strings giving all
+possible filename extensions, including the leading dot
+("<code>.</code>"). The extensions are not guaranteed to have been
+associated with any particular data stream, but would be mapped to
+the MIME type <var>type</var> by <a class="link" href="#guess_type"><code>guess_type</code></a>.</p>
+
+<p>Optional <var>strict</var> has the same meaning as with the <a class="link" href="#guess_type"><code>guess_type</code></a> function.</p>
+</dd>
+<dt class="function" id="guess_extension"><b>guess_extension(type[, strict])</b> <tt class="nav"><a class="nav" href="mimetypes.guess_extension" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Guess the extension for a file based on its MIME type, given by
+<var>type</var>. The return value is a string giving a filename
+extension, including the leading dot ("<code>.</code>"). The
+extension is not guaranteed to have been associated with any
+particular data stream, but would be mapped to the MIME type <var>
+type</var> by <a class="link" href="#guess_type"><code>
+guess_type</code></a>. If no extension can be guessed for <var>type</var>,
+<code>None</code> is returned.</p>
+
+<p>Optional <var>strict</var> has the same meaning as with the <a class="link" href="#guess_type"><code>guess_type</code></a> function.</p>
+</dd>
+</dl><div class="text">
+<p>Some additional functions and data items are available for
+controlling the behavior of the module.</p>
+</div>
+<dl><dt class="function" id="init"><b>init([files])</b> <tt class="nav"><a class="nav" href="mimetypes.init" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Initialize the internal data structures. If given, <var>
+files</var> must be a sequence of file names which should be used
+to augment the default type map. If omitted, the file names to use
+are taken from <code>knownfiles</code>. Each file named in <var>
+files</var> or <code>knownfiles</code> takes precedence over those
+named before it. Calling <a class="link" href="#init"><code>init</code></a>
+repeatedly is allowed.</p>
+</dd>
+<dt class="function" id="read_mime_types"><b>read_mime_types(filename)</b> <tt class="nav"><a class="nav" href="mimetypes.read_mime_types" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Load the type map given in the file <var>filename</var>, if it
+exists. The type map is returned as a dictionary mapping filename
+extensions, including the leading dot ("<code>.</code>"), to
+strings of the form <code>
+'</code><var>type</var>/<var>subtype</var>'. If the file <var>
+filename</var> does not exist or cannot be read, <code>None</code> is returned.</p>
+</dd>
+<dt class="function" id="add_type"><b>add_type(type, ext[, strict])</b> <tt class="nav"><a class="nav" href="mimetypes.add_type" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Add a mapping from the mimetype <var>type</var> to the extension
+<var>ext</var>. When the extension is already known, the new type
+will replace the old one. When the type is already known the
+extension will be added to the list of known extensions.</p>
+
+<p>When <var>strict</var> is the mapping will added to the official
+MIME types, otherwise to the non-standard ones.</p>
+</dd>
+<dt class="variable" id="inited"><b>inited</b> <tt class="nav"><a class="nav" href="mimetypes.inited" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Flag indicating whether or not the global data structures have
+been initialized. This is set to true by <a class="link" href="#init"><code>init</code></a>.</p>
+</dd>
+<dt class="variable" id="knownfiles"><b>knownfiles</b> <tt class="nav"><a class="nav" href="mimetypes.knownfiles" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>List of type map file names commonly installed. These files are
+typically named mime.types and are installed in different locations
+by different packages.</p>
+</dd>
+<dt class="variable" id="suffix_map"><b>suffix_map</b> <tt class="nav"><a class="nav" href="mimetypes.suffix_map" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Dictionary mapping suffixes to suffixes. This is used to allow
+recognition of encoded files for which the encoding and the type
+are indicated by the same extension. For example, the .tgz
+extension is mapped to .tar.gz to allow the encoding and type to be
+recognized separately.</p>
+</dd>
+<dt class="variable" id="encodings_map"><b>encodings_map</b> <tt class="nav"><a class="nav" href="mimetypes.encodings_map" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Dictionary mapping filename extensions to encoding types.</p>
+</dd>
+<dt class="variable" id="types_map"><b>types_map</b> <tt class="nav"><a class="nav" href="mimetypes.types_map" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Dictionary mapping filename extensions to MIME types.</p>
+</dd>
+<dt class="variable" id="common_types"><b>common_types</b> <tt class="nav"><a class="nav" href="mimetypes.common_types" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Dictionary mapping filename extensions to non-standard, but
+commonly found MIME types.</p>
+</dd>
+</dl><div class="text">
+<p>The <a class="link" href="#MimeTypes"><code>MimeTypes</code></a> class
+may be useful for applications which may want more than one
+MIME-type database:</p>
+</div>
+<dl><dt class="class" id="MimeTypes"><b>class MimeTypes([filenames])</b> <tt class="nav"><a class="nav" href="mimetypes.MimeTypes" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>This class represents a MIME-types database. By default, it
+provides access to the same database as the rest of this module.
+The initial database is a copy of that provided by the module, and
+may be extended by loading additional mime.types-style files into
+the database using the <code>read</code> or
+<code>readfp</code> methods. The mapping
+dictionaries may also be cleared before loading additional data if
+the default data is not desired.</p>
+
+<p>The optional <var>filenames</var> parameter can be used to cause
+additional files to be loaded &#8220;on top&#8221; of the default
+database.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.2.<br />
+</blockquote>
+</dd>
+</dl><div class="text">
+<h2 id="mimetypes-objects">MimeTypes Objects <a class="nav" href="#mimetypes-objects">#</a></h2>
+
+<p><a class="link" href="#MimeTypes"><code>MimeTypes</code></a> instances
+provide an interface which is very like that of the <code>mimetypes</code> module.</p>
+</div>
+<dl><dt class="variable"><b>suffix_map</b> <tt class="nav"><a class="nav" href="mimetypes.suffix_map" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Dictionary mapping suffixes to suffixes. This is used to allow
+recognition of encoded files for which the encoding and the type
+are indicated by the same extension. For example, the .tgz
+extension is mapped to .tar.gz to allow the encoding and type to be
+recognized separately. This is initially a copy of the global
+<code>suffix_map</code> defined in the module.</p>
+</dd>
+<dt class="variable"><b>encodings_map</b> <tt class="nav"><a class="nav" href="mimetypes.encodings_map" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Dictionary mapping filename extensions to encoding types. This
+is initially a copy of the global <code>encodings_map</code>
+defined in the module.</p>
+</dd>
+<dt class="variable"><b>types_map</b> <tt class="nav"><a class="nav" href="mimetypes.types_map" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Dictionary mapping filename extensions to MIME types. This is
+initially a copy of the global <code>types_map</code> defined in
+the module.</p>
+</dd>
+<dt class="variable"><b>common_types</b> <tt class="nav"><a class="nav" href="mimetypes.common_types" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Dictionary mapping filename extensions to non-standard, but
+commonly found MIME types. This is initially a copy of the global
+<code>common_types</code> defined in the module.</p>
+</dd>
+<dt class="method" id="MimeTypes.guess_extension"><b>guess_extension(type[, strict])</b> <tt class="nav"><a class="nav" href="mimetypes.MimeTypes.guess_extension" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Similar to the <a class="link" href="#guess_extension"><code>
+guess_extension</code></a> function, using the tables stored as part of
+the object.</p>
+</dd>
+<dt class="method" id="MimeTypes.guess_type"><b>guess_type(url[, strict])</b> <tt class="nav"><a class="nav" href="mimetypes.MimeTypes.guess_type" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Similar to the <a class="link" href="#guess_type"><code>
+guess_type</code></a> function, using the tables stored as part of the
+object.</p>
+</dd>
+<dt class="method" id="MimeTypes.read"><b>read(path)</b> <tt class="nav"><a class="nav" href="mimetypes.MimeTypes.read" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Load MIME information from a file named <var>path</var>. This
+uses <code>readfp</code> to parse the
+file.</p>
+</dd>
+<dt class="method" id="MimeTypes.readfp"><b>readfp(file)</b> <tt class="nav"><a class="nav" href="mimetypes.MimeTypes.readfp" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Load MIME type information from an open file. The file must have
+the format of the standard mime.types files.</p>
+</dd>
+</dl></div></body></html>

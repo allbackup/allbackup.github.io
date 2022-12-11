@@ -1,0 +1,137 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>SimpleXMLRPCServer -- Basic XML-RPC&nbsp;server</title> <script type="text/javascript">effbot_page_id=1124;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <h1 class="maintitle">SimpleXMLRPCServer -- Basic XML-RPC&nbsp;server</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><div class="module"><p>The <a class="link" href="SimpleXMLRPCServer.htm#SimpleXMLRPCServer.SimpleXMLRPCServer">
+SimpleXMLRPCServer</a> module provides a basic server framework for
+XML-RPC servers written in Python. Servers can either be free
+standing, using <a class="link" href="SimpleXMLRPCServer.htm#SimpleXMLRPCServer.SimpleXMLRPCServer">
+SimpleXMLRPCServer</a>, or embedded in a CGI environment, using <a class="link" href="SimpleXMLRPCServer.htm#SimpleXMLRPCServer.CGIXMLRPCRequestHandler">
+CGIXMLRPCRequestHandler</a>.</p></div><dl><dt class="class" id="SimpleXMLRPCServer.SimpleXMLRPCServer"><b>class SimpleXMLRPCServer(addr[, requestHandler[,
+logRequests]])</b> <tt class="mark"><a href="#SimpleXMLRPCServer.SimpleXMLRPCServer" title="bookmark">#</a>|<a href="/comment/pylib/SimpleXMLRPCServer.htm%23SimpleXMLRPCServer.SimpleXMLRPCServer" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="class">
+<p>Create a new server instance. The <var>requestHandler</var>
+parameter should be a factory for request handler instances; it
+defaults to <a class="link" href="SimpleXMLRPCServer.htm#SimpleXMLRPCServer.SimpleXMLRPCRequestHandler">
+SimpleXMLRPCRequestHandler</a>. The <var>addr</var> and <var>
+requestHandler</var> parameters are passed to the <a class="link" href="SocketServer.htm#SocketServer">SocketServer</a>.TCPServer constructor. If
+<var>logRequests</var> is true (the default), requests will be
+logged; setting this parameter to false will turn off logging. This
+class provides methods for registration of functions that can be
+called by the XML-RPC protocol.</p></dd>
+<dt class="class" id="SimpleXMLRPCServer.CGIXMLRPCRequestHandler"><b>class CGIXMLRPCRequestHandler()</b> <tt class="mark"><a href="#SimpleXMLRPCServer.CGIXMLRPCRequestHandler" title="bookmark">#</a>|<a href="/comment/pylib/SimpleXMLRPCServer.htm%23SimpleXMLRPCServer.CGIXMLRPCRequestHandler" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="class">
+<p>Create a new instance to handle XML-RPC requests in a CGI
+environment.</p><blockquote><span class="mark">@since</span> New in version
+2.3.<br />
+</blockquote></dd>
+<dt class="class" id="SimpleXMLRPCServer.SimpleXMLRPCRequestHandler"><b>class SimpleXMLRPCRequestHandler()</b> <tt class="mark"><a href="#SimpleXMLRPCServer.SimpleXMLRPCRequestHandler" title="bookmark">#</a>|<a href="/comment/pylib/SimpleXMLRPCServer.htm%23SimpleXMLRPCServer.SimpleXMLRPCRequestHandler" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="class">
+<p>Create a new request handler instance. This request handler
+supports <code>POST</code> requests and modifies logging so that
+the <var>logRequests</var> parameter to the <a class="link" href="SimpleXMLRPCServer.htm#SimpleXMLRPCServer.SimpleXMLRPCServer">SimpleXMLRPCServer</a> constructor
+parameter is honored.</p></dd>
+</dl><div class="text"><h2 id="simplexmlrpcserver-objects">SimpleXMLRPCServer Objects&#160;<a class="nav" href="#simplexmlrpcserver-objects" title="bookmark!">#</a></h2><p>The <a class="link" href="SimpleXMLRPCServer.htm#SimpleXMLRPCServer.SimpleXMLRPCServer">
+SimpleXMLRPCServer</a> class is based on <a class="link" href="SocketServer.htm#SocketServer.TCPServer">SocketServer.TCPServer</a> and
+provides a means of creating simple, stand alone XML-RPC
+servers.</p></div><dl><dt class="method" id="SimpleXMLRPCServer.SimpleXMLRPCServer.register_function"><b>register_function(function[,
+name])</b> <tt class="mark"><a href="#SimpleXMLRPCServer.SimpleXMLRPCServer.register_function" title="bookmark">#</a>|<a href="/comment/pylib/SimpleXMLRPCServer.htm%23SimpleXMLRPCServer.SimpleXMLRPCServer.register_function" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="method">
+<p>Register a function that can respond to XML-RPC requests. If
+<var>name</var> is given, it will be the method name associated
+with <var>function</var>, otherwise <var>function</var>.__name__
+will be used. <var>name</var> can be either a normal or Unicode
+string, and may contain characters not legal in Python identifiers,
+including the period character.</p></dd>
+<dt class="method" id="SimpleXMLRPCServer.SimpleXMLRPCServer.register_instance"><b>register_instance(instance[,
+allow_dotted_names])</b> <tt class="mark"><a href="#SimpleXMLRPCServer.SimpleXMLRPCServer.register_instance" title="bookmark">#</a>|<a href="/comment/pylib/SimpleXMLRPCServer.htm%23SimpleXMLRPCServer.SimpleXMLRPCServer.register_instance" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="method">
+<p>Register an object which is used to expose method names which
+have not been registered using <a class="link" href="register_function.htm#register_function">register_function</a>. If <var>
+instance</var> contains a <a class="link" href="_dispatch.htm#_dispatch">
+_dispatch</a> method, it is called with the requested method name
+and the parameters from the request. Its API is <code>def</code> <a class="link" href="_dispatch.htm#_dispatch">_dispatch</a>(self, method,
+params) (note that <var>params</var> does not represent a variable
+argument list). If it calls an underlying function to perform its
+task, that function is called as <code>func(*params)</code>,
+expanding the parameter list. The return value from <a class="link" href="_dispatch.htm#_dispatch">_dispatch</a> is returned to the client as
+the result. If <var>instance</var> does not have a <a class="link" href="_dispatch.htm#_dispatch">_dispatch</a> method, it is searched for an
+attribute matching the name of the requested method.</p><p>If the optional <var>allow_dotted_names</var> argument is true
+and the instance does not have a <a class="link" href="_dispatch.htm#_dispatch">_dispatch</a> method, then if the requested
+method name contains periods, each component of the method name is
+searched for individually, with the effect that a simple
+hierarchical search is performed. The value found from this search
+is then called with the parameters from the request, and the return
+value is passed back to the client.</p><p class="warning"><b>Warning:</b> Enabling the <var>
+allow_dotted_names</var> option allows intruders to access your
+module&#8217;s global variables and may allow intruders to execute
+arbitrary code on your machine. Only use this option on a secure,
+closed network.</p><blockquote><span class="mark">@since</span> Changed in version
+2.3.5, 2.4.1: allow_dotted_names was added to plug a security hole;
+prior versions are insecure.<br />
+</blockquote></dd>
+<dt class="method"><b>
+SimpleXMLRPCServer.register_introspection_functions()</b> </dt><dd class="method">
+<p>Registers the XML-RPC introspection functions <code>
+system.listMethods</code>, <code>system.methodHelp</code> and
+<code>system.methodSignature</code>.</p><blockquote><span class="mark">@since</span> New in version
+2.3.<br />
+</blockquote></dd>
+<dt class="method"><b>
+SimpleXMLRPCServer.register_multicall_functions()</b> </dt><dd class="method">
+<p>Registers the XML-RPC multicall function system.multicall.</p></dd>
+</dl><div class="text"><p>Example:</p><pre>
+class MyFuncs:
+    def div(self, x, y) : return x // y
+
+
+server = SimpleXMLRPCServer(("localhost", 8000))
+server.register_function(pow)
+server.register_function(lambda x,y: x+y, 'add')
+server.register_introspection_functions()
+server.register_instance(MyFuncs())
+server.serve_forever()
+</pre><h2 id="cgixmlrpcrequesthandler">CGIXMLRPCRequestHandler&#160;<a class="nav" href="#cgixmlrpcrequesthandler" title="bookmark!">#</a></h2><p>The <a class="link" href="SimpleXMLRPCServer.htm#SimpleXMLRPCServer.CGIXMLRPCRequestHandler">
+CGIXMLRPCRequestHandler</a> class can be used to handle XML-RPC
+requests sent to Python CGI scripts.</p></div><dl><dt class="method"><b>register_function(function[,
+name])</b> </dt><dd class="method">
+<p>Register a function that can respond to XML-RPC requests. If
+<var>name</var> is given, it will be the method name associated
+with function, otherwise <var>function.__name__</var> will be used.
+<var>name</var> can be either a normal or Unicode string, and may
+contain characters not legal in Python identifiers, including the
+period character.</p></dd>
+<dt class="method"><b>
+SimpleXMLRPCServer.register_instance(instance)</b> </dt><dd class="method">
+<p>Register an object which is used to expose method names which
+have not been registered using <a class="link" href="register_function.htm#register_function">register_function</a>. If instance
+contains a <a class="link" href="_dispatch.htm#_dispatch">_dispatch</a>
+method, it is called with the requested method name and the
+parameters from the request; the return value is returned to the
+client as the result. If instance does not have a <a class="link" href="_dispatch.htm#_dispatch">_dispatch</a> method, it is searched for an
+attribute matching the name of the requested method; if the
+requested method name contains periods, each component of the
+method name is searched for individually, with the effect that a
+simple hierarchical search is performed. The value found from this
+search is then called with the parameters from the request, and the
+return value is passed back to the client.</p></dd>
+<dt class="method"><b>
+SimpleXMLRPCServer.register_introspection_functions()</b> </dt><dd class="method">
+<p>Register the XML-RPC introspection functions <code>
+system.listMethods</code>, <code>system.methodHelp</code> and
+<code>system.methodSignature</code>.</p></dd>
+<dt class="method"><b>
+SimpleXMLRPCServer.register_multicall_functions()</b> </dt><dd class="method">
+<p>Register the XML-RPC multicall function <code>
+system.multicall</code>.</p></dd>
+<dt class="method" id="SimpleXMLRPCServer.SimpleXMLRPCServer.handle_request"><b>handle_request([request_text =
+None])</b> <tt class="mark"><a href="#SimpleXMLRPCServer.SimpleXMLRPCServer.handle_request" title="bookmark">#</a>|<a href="/comment/pylib/SimpleXMLRPCServer.htm%23SimpleXMLRPCServer.SimpleXMLRPCServer.handle_request" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="method">
+<p>Handle a XML-RPC request. If <var>request_text</var> is given,
+it should be the POST data provided by the HTTP server, otherwise
+the contents of stdin will be used.</p></dd>
+</dl><div class="text"><p>Example:</p><pre>
+class MyFuncs:
+    def div(self, x, y) : return div(x,y)
+
+
+handler = CGIXMLRPCRequestHandler()
+handler.register_function(pow)
+handler.register_function(lambda x,y: x+y, 'add')
+handler.register_introspection_functions()
+handler.register_instance(MyFuncs())
+handler.handle_request()
+</pre></div></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div> <!-- yui-g --></div> <!-- content --> </div> <!-- yui-b --> </div> <!-- yui-main --> <div class="yui-b"> <div id='menu'> <ul> <li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li> <li><b><a href="." title="Go to pylib index page.">::: pylib :::</a></b></li> </ul> <ul><li><b>::: contents</b></li></ul> <ul><li><ul><li><a href="#simplexmlrpcserver-objects">SimpleXMLRPCServer Objects</a></li><li><a href="#cgixmlrpcrequesthandler">CGIXMLRPCRequestHandler</a></li></ul></li></ul> </div> <!-- menu --> </div> <!-- yui-b --> </div> <!-- bd --> <div id="ft"> <!-- footer --> <p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;"></a>
+this page was rendered by a <a href="http://www.djangoproject.com/">django</a> application in 0.01s 2012-05-02 14:31:44.187625.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p> </div> <!-- ft --> </div> <!-- doc --> <script src="/media/js/effbot-min.js" type="text/javascript"> </script> </body> </html>

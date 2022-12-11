@@ -1,0 +1,682 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>gettext</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-gettext.html'>original</a> :::
+<a href='gettext.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>gettext&#8212;Multilingual internationalization services</h1>
+
+<div class="toc"><dl><dt>On this page:</dt><dd><a href="#gnu-gettext-api">GNU gettext API</a></dd><dd><a href="#class-based-api">Class-based API</a></dd><dd><a href="#internationalizing-your-programs-and-modules">Internationalizing your programs and modules</a></dd></dl></div><p>The <a class="link" href="#gettext"><code>gettext</code></a> module
+provides internationalization (I18N) and localization (L10N)
+services for your Python modules and applications. It supports both
+the GNU <code>gettext</code> message catalog API and a higher
+level, class-based API that may be more appropriate for Python
+files. The interface described below allows you to write your
+module and application messages in one natural language, and
+provide a catalog of translated messages for running under
+different natural languages.</p>
+
+<p>Some hints on localizing your Python modules and applications
+are also given.</p>
+
+<h2 id="gnu-gettext-api">GNU gettext API <a class="nav" href="#gnu-gettext-api">#</a></h2>
+
+<p>The <a class="link" href="#gettext"><code>gettext</code></a> module
+defines the following API, which is very similar to the GNU gettext
+API. If you use this API you will affect the translation of your
+entire application globally. Often this is what you want if your
+application is monolingual, with the choice of language dependent
+on the locale of your user. If you are localizing a Python module,
+or if your application needs to switch languages on the fly, you
+probably want to use the class-based API instead.</p>
+</div>
+<dl><dt class="function" id="bindtextdomain"><b>bindtextdomain(domain[, localedir])</b> <tt class="nav"><a class="nav" href="gettext.bindtextdomain" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Bind the <var>domain</var> to the locale directory <var>
+localedir</var>. More concretely, <a class="link" href="#gettext"><code>gettext</code></a> will look for binary .mo files for
+the given domain using the path (on Unix): <var>
+localedir</var>/<var>language</var>/LC_MESSAGES/<var>domain</var>.mo,
+where <var>languages</var> is searched for in the environment
+variables LANGUAGE, LC_ALL, LC_MESSAGES, and LANG respectively.</p>
+
+<p>If <var>localedir</var> is omitted or <code>None</code>, then the current binding for <var>
+domain</var> is returned.<code>footnote:36716</code></p>
+</dd>
+<dt class="function" id="bind_textdomain_codeset"><b>bind_textdomain_codeset(domain[, codeset])</b> <tt class="nav"><a class="nav" href="gettext.bind_textdomain_codeset" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Bind the <var>domain</var> to <var>codeset</var>, changing the
+encoding of strings returned by the <a class="link" href="#gettext"><code>gettext</code></a> family of functions. If <var>
+codeset</var> is omitted, then the current binding is returned.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.4.<br />
+</blockquote>
+</dd>
+<dt class="function" id="textdomain"><b>textdomain([domain])</b> <tt class="nav"><a class="nav" href="gettext.textdomain" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Change or query the current global domain. If <var>domain</var>
+is <code>None</code>, then the current
+global domain is returned, otherwise the global domain is set to
+<var>domain</var>, which is returned.</p>
+</dd>
+<dt class="function" id="gettext"><b>gettext(message)</b> <tt class="nav"><a class="nav" href="gettext.gettext" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return the localized translation of <var>message</var>, based on
+the current global domain, language, and locale directory. This
+function is usually aliased as <code>_</code>
+in the local namespace (see examples below).</p>
+</dd>
+<dt class="function" id="lgettext"><b>lgettext(message)</b> <tt class="nav"><a class="nav" href="gettext.lgettext" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Equivalent to <a class="link" href="#gettext"><code>gettext</code></a>,
+but the translation is returned in the preferred system encoding,
+if no other encoding was explicitly set with <a class="link" href="#bind_textdomain_codeset"><code>
+bind_textdomain_codeset</code></a>.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.4.<br />
+</blockquote>
+</dd>
+<dt class="function" id="dgettext"><b>dgettext(domain, message)</b> <tt class="nav"><a class="nav" href="gettext.dgettext" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Like <a class="link" href="#gettext"><code>gettext</code></a>, but look
+the message up in the specified <var>domain</var>.</p>
+</dd>
+<dt class="function" id="ldgettext"><b>ldgettext(domain, message)</b> <tt class="nav"><a class="nav" href="gettext.ldgettext" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Equivalent to <a class="link" href="#dgettext"><code>dgettext</code></a>,
+but the translation is returned in the preferred system encoding,
+if no other encoding was explicitly set with <a class="link" href="#bind_textdomain_codeset"><code>
+bind_textdomain_codeset</code></a>.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.4.<br />
+</blockquote>
+</dd>
+<dt class="function" id="ngettext"><b>ngettext(singular, plural, n)</b> <tt class="nav"><a class="nav" href="gettext.ngettext" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Like <a class="link" href="#gettext"><code>gettext</code></a>, but
+consider plural forms. If a translation is found, apply the plural
+formula to <var>n</var>, and return the resulting message (some
+languages have more than two plural forms). If no translation is
+found, return <var>singular</var> if <var>n</var> is 1; return
+<var>plural</var> otherwise.</p>
+
+<p>The Plural formula is taken from the catalog header. It is a C
+or Python expression that has a free variable n; the expression
+evaluates to the index of the plural in the catalog. See the GNU
+gettext documentation for the precise syntax to be used in .po
+files, and the formulas for a variety of languages.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.3.<br />
+</blockquote>
+</dd>
+<dt class="function" id="lngettext"><b>lngettext(singular, plural, n)</b> <tt class="nav"><a class="nav" href="gettext.lngettext" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Equivalent to <a class="link" href="#ngettext"><code>ngettext</code></a>,
+but the translation is returned in the preferred system encoding,
+if no other encoding was explicitly set with <a class="link" href="#bind_textdomain_codeset"><code>
+bind_textdomain_codeset</code></a>.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.4.<br />
+</blockquote>
+</dd>
+<dt class="function" id="dngettext"><b>dngettext(domain, singular, plural, n)</b> <tt class="nav"><a class="nav" href="gettext.dngettext" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Like <a class="link" href="#ngettext"><code>ngettext</code></a>, but look
+the message up in the specified <var>domain</var>.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.3.<br />
+</blockquote>
+</dd>
+<dt class="function" id="ldngettext"><b>ldngettext(domain, singular, plural, n)</b> <tt class="nav"><a class="nav" href="gettext.ldngettext" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Equivalent to <a class="link" href="#dngettext"><code>
+dngettext</code></a>, but the translation is returned in the preferred
+system encoding, if no other encoding was explicitly set with <a class="link" href="#bind_textdomain_codeset"><code>
+bind_textdomain_codeset</code></a>.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.4.<br />
+</blockquote>
+</dd>
+</dl><div class="text">
+<p>Note that GNU gettext also defines a <code>dcgettext</code> method, but this was deemed not
+useful and so it is currently unimplemented.</p>
+
+<p>Here's an example of typical usage for this API:</p>
+
+<pre>
+import gettext
+gettext.bindtextdomain('myapplication', '/path/to/my/language/directory')
+gettext.textdomain('myapplication')
+_ = gettext.gettext
+# ...
+print _('This is a translatable string.')
+</pre>
+
+<h4>Footnotes</h4>
+</div>
+<dl><dt class="variable" id="..."><b>... returned.6.2</b> <tt class="nav"><a class="nav" href="gettext...." title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>The default locale directory is system dependent; for example,
+on RedHat Linux it is /usr/share/locale, but on Solaris it is
+/usr/lib/locale. The <a class="link" href="#gettext"><code>
+gettext</code></a> module does not try to support these system dependent
+defaults; instead its default is <code>
+sys.prefix</code>/share/locale. For this reason, it is always best
+to call <a class="link" href="#bindtextdomain"><code>
+bindtextdomain</code></a> with an explicit absolute path at the start of
+your application.</p>
+</dd>
+</dl><div class="text">
+<h2 id="class-based-api">Class-based API <a class="nav" href="#class-based-api">#</a></h2>
+
+<p>The class-based API of the <a class="link" href="#gettext"><code>
+gettext</code></a> module gives you more flexibility and greater
+convenience than the GNU gettext API. It is the recommended way of
+localizing your Python applications and modules. <a class="link" href="#gettext"><code>gettext</code></a> defines a
+&#8220;translations&#8221; class which implements the parsing of
+GNU .mo format files, and has methods for returning either standard
+8-bit strings or Unicode strings. Instances of this
+&#8220;translations&#8221; class can also install themselves in the
+built-in namespace as the function <code>
+_</code>.</p>
+</div>
+<dl><dt class="function" id="find"><b>find(domain[, localedir[, languages[,
+all]]])</b> <tt class="nav"><a class="nav" href="gettext.find" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>This function implements the standard .mo file search algorithm.
+It takes a <var>domain</var>, identical to what <a class="link" href="#textdomain"><code>textdomain</code></a> takes. Optional <var>
+localedir</var> is as in <a class="link" href="#bindtextdomain"><code>bindtextdomain</code></a> Optional <var>
+languages</var> is a list of strings, where each string is a
+language code.</p>
+
+<p>If <var>localedir</var> is not given, then the default system
+locale directory is used.<code>footnote:36704</code> If <var>
+languages</var> is not given, then the following environment
+variables are searched: LANGUAGE, LC_ALL, LC_MESSAGES, and LANG.
+The first one returning a non-empty value is used for the <var>
+languages</var> variable. The environment variables should contain
+a colon separated list of languages, which will be split on the
+colon to produce the expected list of language code strings.</p>
+
+<p><a class="link" href="#find"><code>find</code></a> then expands and
+normalizes the languages, and then iterates through them, searching
+for an existing file built of these components:</p>
+
+<p><var>
+localedir</var>/<var>language</var>/LC_MESSAGES/<var>domain</var>.mo</p>
+
+<p>The first such file name that exists is returned by <a class="link" href="#find"><code>find</code></a>. If no such file is found,
+then <code>None</code> is returned. If <var>all</var> is given, it
+returns a list of all file names, in the order in which they appear
+in the languages list or the environment variables.</p>
+</dd>
+<dt class="function" id="translation"><b>translation(domain[, localedir[, languages[,
+class_[, fallback[, codeset]]]]])</b> <tt class="nav"><a class="nav" href="gettext.translation" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return a <code>
+Translations</code> instance based on the <var>domain</var>, <var>
+localedir</var>, and <var>languages</var>, which are first passed
+to <a class="link" href="#find"><code>find</code></a> to get a list of the
+associated .mo file paths. Instances with identical .mo file names
+are cached. The actual class instantiated is either <var>
+class_</var> if provided, otherwise <code>GNUTranslations</code>. The class's
+constructor must take a single file object argument. If provided,
+<var>codeset</var> will change the charset used to encode
+translated strings.</p>
+
+<p>If multiple files are found, later files are used as fallbacks
+for earlier ones. To allow setting the fallback, <code>copy.copy</code> is used to clone each
+translation object from the cache; the actual instance data is
+still shared with the cache.</p>
+
+<p>If no .mo file is found, this function raises <code>exceptions.IOError</code> if <var>
+fallback</var> is false (which is the default), and returns a <code>NullTranslations</code>
+instance if <var>fallback</var> is true.</p>
+
+<blockquote><span class="mark">@since</span> Changed in version
+2.4: Added the codeset parameter.<br />
+</blockquote>
+</dd>
+<dt class="function" id="install"><b>install(domain[, localedir[, unicode [,
+codeset]]])</b> <tt class="nav"><a class="nav" href="gettext.install" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>This installs the function <code>_</code>
+in Python's builtin namespace, based on <var>domain</var>, <var>
+localedir</var>, and <var>codeset</var> which are passed to the
+function <a class="link" href="#translation"><code>translation</code></a>.
+The <var>unicode</var> flag is passed to the resulting translation
+object's <a class="link" href="#install"><code>install</code></a>
+method.</p>
+
+<p>As seen below, you usually mark the strings in your application
+that are candidates for translation, by wrapping them in a call to
+the <code>_</code> function, like this:</p>
+
+<pre>
+print _('This string will be translated.')
+</pre>
+
+<p>For convenience, you want the <code>
+_</code> function to be installed in Python's builtin namespace, so it
+is easily accessible in all modules of your application.</p>
+
+<blockquote><span class="mark">@since</span> Changed in version
+2.4: Added the codeset parameter.<br />
+</blockquote>
+</dd>
+</dl><div class="text">
+<h4>Footnotes</h4>
+</div>
+<dl><dt class="variable"><b>... used.6.3</b> <tt class="nav"><a class="nav" href="gettext...." title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>See the footnote for <a class="link" href="#bindtextdomain"><code>
+bindtextdomain</code></a> above.</p>
+</dd>
+</dl><div class="error">
+<h3>The NullTranslations class</h3>
+</div>
+<dl><dt class="method" id="__init__"><b>__init__([fp])</b> <tt class="nav"><a class="nav" href="gettext.__init__" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Takes an optional file object <var>fp</var>, which is ignored by
+the base class. Initializes &#8220;protected&#8221; instance
+variables <var>_info</var> and <var>_charset</var> which are set by
+derived classes, as well as <var>_fallback</var>, which is set
+through <a class="link" href="#add_fallback"><code>add_fallback</code></a>.
+It then calls <code>self._parse(fp)</code> if <var>fp</var> is not
+<code>None</code>.</p>
+</dd>
+<dt class="method" id="_parse"><b>_parse(fp)</b> <tt class="nav"><a class="nav" href="gettext._parse" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>No-op'd in the base class, this method takes file object <var>
+fp</var>, and reads the data from the file, initializing its
+message catalog. If you have an unsupported message catalog file
+format, you should override this method to parse your format.</p>
+</dd>
+<dt class="method" id="add_fallback"><b>add_fallback(fallback)</b> <tt class="nav"><a class="nav" href="gettext.add_fallback" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Add <var>fallback</var> as the fallback object for the current
+translation object. A translation object should consult the
+fallback if it cannot provide a translation for a given
+message.</p>
+</dd>
+<dt class="method"><b>gettext(message)</b> <tt class="nav"><a class="nav" href="gettext.gettext" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>If a fallback has been set, forward <a class="link" href="#gettext"><code>gettext</code></a> to the fallback. Otherwise, return
+the translated message. Overridden in derived classes.</p>
+</dd>
+<dt class="method"><b>lgettext(message)</b> <tt class="nav"><a class="nav" href="gettext.lgettext" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>If a fallback has been set, forward <a class="link" href="#lgettext"><code>lgettext</code></a> to the fallback. Otherwise,
+return the translated message. Overridden in derived classes.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.4.<br />
+</blockquote>
+</dd>
+<dt class="method" id="ugettext"><b>ugettext(message)</b> <tt class="nav"><a class="nav" href="gettext.ugettext" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>If a fallback has been set, forward <a class="link" href="#ugettext"><code>ugettext</code></a> to the fallback. Otherwise,
+return the translated message as a Unicode string. Overridden in
+derived classes.</p>
+</dd>
+<dt class="method"><b>ngettext(singular, plural, n)</b> <tt class="nav"><a class="nav" href="gettext.ngettext" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>If a fallback has been set, forward <a class="link" href="#ngettext"><code>ngettext</code></a> to the fallback. Otherwise,
+return the translated message. Overridden in derived classes.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.3.<br />
+</blockquote>
+</dd>
+<dt class="method"><b>lngettext(singular, plural, n)</b> <tt class="nav"><a class="nav" href="gettext.lngettext" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>If a fallback has been set, forward <a class="link" href="#ngettext"><code>ngettext</code></a> to the fallback. Otherwise,
+return the translated message. Overridden in derived classes.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.4.<br />
+</blockquote>
+</dd>
+<dt class="method" id="ungettext"><b>ungettext(singular, plural, n)</b> <tt class="nav"><a class="nav" href="gettext.ungettext" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>If a fallback has been set, forward <a class="link" href="#ungettext"><code>ungettext</code></a> to the fallback. Otherwise,
+return the translated message as a Unicode string. Overridden in
+derived classes.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.3.<br />
+</blockquote>
+</dd>
+<dt class="method" id="info"><b>info()</b> <tt class="nav"><a class="nav" href="gettext.info" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return the &#8220;protected&#8221; <code>_info</code> variable.</p>
+</dd>
+<dt class="method" id="charset"><b>charset()</b> <tt class="nav"><a class="nav" href="gettext.charset" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return the &#8220;protected&#8221; <code>_charset</code> variable.</p>
+</dd>
+<dt class="method" id="output_charset"><b>output_charset()</b> <tt class="nav"><a class="nav" href="gettext.output_charset" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return the &#8220;protected&#8221; <code>_output_charset</code> variable, which
+defines the encoding used to return translated messages.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.4.<br />
+</blockquote>
+</dd>
+<dt class="method" id="set_output_charset"><b>set_output_charset(charset)</b> <tt class="nav"><a class="nav" href="gettext.set_output_charset" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Change the &#8220;protected&#8221; <code>_output_charset</code> variable, which
+defines the encoding used to return translated messages.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.4.<br />
+</blockquote>
+</dd>
+<dt class="method"><b>install([unicode])</b> <tt class="nav"><a class="nav" href="gettext.install" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>If the <var>unicode</var> flag is false, this method installs <code>self.gettext</code> into the
+built-in namespace, binding it to "<code>_</code>". If <var>
+unicode</var> is true, it binds <code>self.ugettext</code> instead. By default,
+<var>unicode</var> is false.</p>
+
+<p>Note that this is only one way, albeit the most convenient way,
+to make the <code>_</code> function available
+to your application. Because it affects the entire application
+globally, and specifically the built-in namespace, localized
+modules should never install <code>_</code>.
+Instead, they should use this code to make <code>_</code> available to their module:</p>
+
+<pre>
+import gettext
+t = gettext.translation('mymodule', ...)
+_ = t.gettext
+</pre>
+
+<p>This puts <code>_</code> only in the
+module's global namespace and so only affects calls within this
+module.</p>
+</dd>
+</dl><div class="text">
+<h3>The GNUTranslations class</h3>
+
+<p>The <a class="link" href="#gettext"><code>gettext</code></a> module
+provides one additional class derived from <code>NullTranslations</code>: <code>GNUTranslations</code>. This class
+overrides <a class="link" href="#_parse"><code>_parse</code></a> to enable
+reading GNU gettext format .mo files in both big-endian and
+little-endian format. It also coerces both message ids and message
+strings to Unicode.</p>
+
+<p><code>GNUTranslations</code>
+parses optional meta-data out of the translation catalog. It is
+convention with GNU gettext to include meta-data as the translation
+for the empty string. This meta-data is in <a class="link" href="http://www.faqs.org/rfcs/rfc822.html">RFC 822</a>-style
+<code>key: value</code> pairs, and should contain the <code>
+Project-Id-Version</code> key. If the key <code>Content-Type</code>
+is found, then the <code>charset</code> property is used to
+initialize the &#8220;protected&#8221; <code>_charset</code> instance variable, defaulting to
+<code>None</code> if not found. If the
+charset encoding is specified, then all message ids and message
+strings read from the catalog are converted to Unicode using this
+encoding. The <a class="link" href="#ugettext"><code>ugettext</code></a>
+method always returns a Unicode, while the <a class="link" href="#gettext"><code>gettext</code></a> returns an encoded 8-bit string.
+For the message id arguments of both methods, either Unicode
+strings or 8-bit strings containing only US-ASCII characters are
+acceptable. Note that the Unicode version of the methods (i.e. <a class="link" href="#ugettext"><code>ugettext</code></a> and <a class="link" href="#ungettext"><code>ungettext</code></a>) are the recommended interface
+to use for internationalized Python programs.</p>
+
+<p>The entire set of key/value pairs are placed into a dictionary
+and set as the &#8220;protected&#8221; <code>_info</code> instance variable.</p>
+
+<p>If the .mo file's magic number is invalid, or if other problems
+occur while reading the file, instantiating a <code>GNUTranslations</code> class can raise <code>
+exceptions.IOError</code>.</p>
+
+<p>The following methods are overridden from the base class
+implementation:</p>
+</div>
+<dl><dt class="method"><b>gettext(message)</b> <tt class="nav"><a class="nav" href="gettext.gettext" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Look up the <var>message</var> id in the catalog and return the
+corresponding message string, as an 8-bit string encoded with the
+catalog's charset encoding, if known. If there is no entry in the
+catalog for the <var>message</var> id, and a fallback has been set,
+the look up is forwarded to the fallback's <a class="link" href="#gettext"><code>gettext</code></a> method. Otherwise, the <var>
+message</var> id is returned.</p>
+</dd>
+<dt class="method"><b>lgettext(message)</b> <tt class="nav"><a class="nav" href="gettext.lgettext" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Equivalent to <a class="link" href="#gettext"><code>gettext</code></a>,
+but the translation is returned in the preferred system encoding,
+if no other encoding was explicitly set with <a class="link" href="#set_output_charset"><code>set_output_charset</code></a>.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.4.<br />
+</blockquote>
+</dd>
+<dt class="method"><b>ugettext(message)</b> <tt class="nav"><a class="nav" href="gettext.ugettext" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Look up the <var>message</var> id in the catalog and return the
+corresponding message string, as a Unicode string. If there is no
+entry in the catalog for the <var>message</var> id, and a fallback
+has been set, the look up is forwarded to the fallback's <a class="link" href="#ugettext"><code>ugettext</code></a> method. Otherwise,
+the <var>message</var> id is returned.</p>
+</dd>
+<dt class="method"><b>ngettext(singular, plural, n)</b> <tt class="nav"><a class="nav" href="gettext.ngettext" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Do a plural-forms lookup of a message id. <var>singular</var> is
+used as the message id for purposes of lookup in the catalog, while
+<var>n</var> is used to determine which plural form to use. The
+returned message string is an 8-bit string encoded with the
+catalog's charset encoding, if known.</p>
+
+<p>If the message id is not found in the catalog, and a fallback is
+specified, the request is forwarded to the fallback's <a class="link" href="#ngettext"><code>ngettext</code></a> method. Otherwise,
+when <var>n</var> is 1 <var>singular</var> is returned, and <var>
+plural</var> is returned in all other cases.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.3.<br />
+</blockquote>
+</dd>
+<dt class="method"><b>lngettext(singular, plural, n)</b> <tt class="nav"><a class="nav" href="gettext.lngettext" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Equivalent to <a class="link" href="#gettext"><code>gettext</code></a>,
+but the translation is returned in the preferred system encoding,
+if no other encoding was explicitly set with <a class="link" href="#set_output_charset"><code>set_output_charset</code></a>.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.4.<br />
+</blockquote>
+</dd>
+<dt class="method"><b>ungettext(singular, plural, n)</b> <tt class="nav"><a class="nav" href="gettext.ungettext" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Do a plural-forms lookup of a message id. <var>singular</var> is
+used as the message id for purposes of lookup in the catalog, while
+<var>n</var> is used to determine which plural form to use. The
+returned message string is a Unicode string.</p>
+
+<p>If the message id is not found in the catalog, and a fallback is
+specified, the request is forwarded to the fallback's <a class="link" href="#ungettext"><code>ungettext</code></a> method. Otherwise,
+when <var>n</var> is 1 <var>singular</var> is returned, and <var>
+plural</var> is returned in all other cases.</p>
+
+<p>Here is an example:</p>
+
+<pre>
+n = len(os.listdir('.'))
+cat = GNUTranslations(somefile)
+message = cat.ungettext(
+    'There is %(num)d file in this directory',
+    'There are %(num)d files in this directory',
+    n) % {'num': n}
+</pre>
+
+<blockquote><span class="mark">@since</span> New in version
+2.3.<br />
+</blockquote>
+</dd>
+</dl><div class="text">
+<h3>Solaris message catalog support</h3>
+
+<p>The Solaris operating system defines its own binary .mo file
+format, but since no documentation can be found on this format, it
+is not supported at this time.</p>
+
+<h3>The Catalog constructor</h3>
+
+<p>GNOME uses a version of the <a class="link" href="#gettext"><code>
+gettext</code></a> module by James Henstridge, but this version has a
+slightly different API. Its documented usage was:</p>
+
+<pre>
+import gettext
+cat = gettext.Catalog(domain, localedir)
+_ = cat.gettext
+print _('hello world')
+</pre>
+
+<p>For compatibility with this older module, the function <code>Catalog</code> is an alias for the <a class="link" href="#translation"><code>translation</code></a> function
+described above.</p>
+
+<p>One difference between this module and Henstridge's: his catalog
+objects supported access through a mapping API, but this appears to
+be unused and so is not currently supported.</p>
+
+<h2 id="internationalizing-your-programs-and-modules">Internationalizing your programs and modules <a class="nav" href="#internationalizing-your-programs-and-modules">#</a></h2>
+
+<ol>
+<li>
+<p>prepare your program or module by specially marking translatable
+strings</p>
+</li>
+
+<li>
+<p>run a suite of tools over your marked files to generate raw
+messages catalogs</p>
+</li>
+
+<li>
+<p>create language specific translations of the message
+catalogs</p>
+</li>
+
+<li>
+<p>use the <a class="link" href="#gettext"><code>gettext</code></a> module
+so that message strings are properly translated</p>
+</li>
+</ol>
+
+<p>In order to prepare your code for I18N, you need to look at all
+the strings in your files. Any string that needs to be translated
+should be marked by wrapping it in <code>_('...')</code> -- that
+is, a call to the function <code>_</code>. For
+example:</p>
+
+<pre>
+filename = 'mylog.txt'
+message = _('writing a log message')
+fp = open(filename, 'w')
+fp.write(message)
+fp.close()
+</pre>
+
+<p>In this example, the string <code>'writing a log message'</code>
+is marked as a candidate for translation, while the strings <code>
+'mylog.txt'</code> and <code>'w'</code> are not.</p>
+
+<p>The Python distribution comes with two tools which help you
+generate the message catalogs once you've prepared your source
+code. These may or may not be available from a binary distribution,
+but they can be found in a source distribution, in the Tools/i18n
+directory.</p>
+
+<p>The pygettext<code>footnote:36712</code> program scans all
+your Python source code looking for the strings you previously
+marked as translatable. It is similar to the GNU gettext program
+except that it understands all the intricacies of Python source
+code, but knows nothing about C or C++ source code. You don't need
+GNU <code>gettext</code> unless you're also going to be translating
+C code (such as C extension modules).</p>
+
+<p>pygettext generates textual Uniforum-style human readable
+message catalog .pot files, essentially structured human readable
+files which contain every marked string in the source code, along
+with a placeholder for the translation strings. pygettext is a
+command line script that supports a similar command line interface
+as xgettext; for details on its use, run:</p>
+
+<pre>
+pygettext.py --help
+</pre>
+
+<p>Copies of these .pot files are then handed over to the
+individual human translators who write language-specific versions
+for every supported natural language. They send you back the filled
+in language-specific versions as a .po file. Using the msgfmt.py<code>footnote:36713</code> program
+(in the Tools/i18n directory), you take the .po files from your
+translators and generate the machine-readable .mo binary catalog
+files. The .mo files are what the <a class="link" href="#gettext"><code>gettext</code></a> module uses for the actual
+translation processing during run-time.</p>
+
+<p>How you use the <a class="link" href="#gettext"><code>gettext</code></a>
+module in your code depends on whether you are internationalizing
+your entire application or a single module.</p>
+
+<h4>Footnotes</h4>
+</div>
+</div></body></html>

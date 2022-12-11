@@ -1,0 +1,108 @@
+<html>
+<head>
+<title>pythondoc-index ::: www.effbot.org</title>
+<link rel='stylesheet' href='/effbot.css' type='text/css' media='screen' />
+</head>
+<body bgcolor='#ccffcc'>
+<div>[<a href='pythondoc-index.htm'>back</a>]</div>
+<h3>Welcome to the effbot.org user editor!</h3>
+
+
+<p><b>Note: This is not a contact form!  Support questions, spam, and
+other off-topic stuff will be ignored.</b></p>
+
+<p>To suggest changes, edit the HTML fragment in the text box below.
+You can use the 'update preview' button to check your changes (the
+preview is displayed beneath the text box).  When done, fill in the
+name and address fields (optional) and click 'submit patch' to mail
+the patch to me.  (I reserve the right to decide which patches to
+include, of course.)  Thanks! /F</p>
+
+<form method='post' id='useredit'>
+<input type='hidden' name='name' value='pythondoc-index'/>
+<p>
+<input type='submit' name='preview' value='update preview' style='background:#084; color:white; width:200px; font-weight:bold;' >
+&nbsp;&nbsp;&nbsp;
+<input type='submit' name='submit' value='submit patch'  style='background:#084; color:white; width:200px; font-weight:bold;' >
+</p>
+<textarea name='text' rows='30' cols='80'>The PythonDoc Documentation Tool
+
+&lt;!-- ADSENSE --&gt;
+
+&lt;div id="effbot_download"&gt;
+&lt;div class="source highlight"&gt;
+&lt;p&gt;&lt;b&gt;&lt;a href="/downloads#pythondoc"&gt;Download Source Code&lt;/a&gt;&lt;/b&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;p&gt;The PythonDoc tool generates API documentation in HTML and other
+formats, based on descriptions in Python source files.&lt;p&gt;
+
+&lt;p&gt;PythonDoc is a Python implementation of the JavaDoc&amp;trade; tool.&lt;/p&gt;
+
+&lt;p&gt;Resources:&lt;/p&gt;
+
+&lt;dl&gt;
+&lt;dt&gt;&lt;a href="pythondoc.htm"&gt;PythonDoc home page&lt;/a&gt;&lt;/dt&gt;
+&lt;/dl&gt;
+
+&lt;p&gt;Articles:&lt;/p&gt;
+
+&lt;dl&gt;
+&lt;dt&gt;&lt;a href="pythondoc-infoset.htm"&gt;&lt;cite&gt;The PythonDoc Infoset&lt;/cite&gt;&lt;/a&gt;&lt;/dt&gt;
+&lt;dt&gt;&lt;a href="pythondoc-plugins.htm"&gt;&lt;cite&gt;Writing PythonDoc Plugins&lt;/cite&gt;&lt;/a&gt;&lt;/dt&gt;
+&lt;dt&gt;&lt;a href="http://effbot.org/zone/pythondoc-merge.htm"&gt;&lt;cite&gt;Generating PythonDoc Pages for Virtual Modules&lt;/a&gt;&lt;/dt&gt;
+&lt;/dl&gt;</textarea>
+<table>
+<tr><td><label for='author'>Name:</label></td><td>
+<div><input name='author' value="" size=40></div>
+</td><td>(Optional)</td></tr>
+<tr><td><label for='email'>Mail:</label></td><td>
+<div><input name='email' value="" size=40></div>
+</td><td>(Optional)</td></tr>
+<tr><td><label for='note'>Comment:</label></td><td>
+<div><input name='note' value="" size=40></div>
+</td><td>(Optional)</td></tr>
+<tr><td><label for='password'>Password:</label></td><td>
+<div><input name='password' value="(replace with the sum of 7+4)" size=40></div>
+</td><td>(Required)</td></tr>
+</table>
+<p>
+<input type='submit' name='preview' value='update preview' style='background:#084; color:white; width:200px; font-weight:bold;' >
+&nbsp;&nbsp;&nbsp;
+<input type='submit' name='submit' value='submit patch'  style='background:#084; color:white; width:200px; font-weight:bold;' >
+</p>
+<p>&nbsp;</p>
+</form>
+<div style='background: white; border: 2px solid #084; padding: 0px 20px;'>
+<h2>The PythonDoc Documentation Tool</h2>
+
+<!-- ADSENSE -->
+
+<div id="effbot_download">
+<div class="source highlight">
+<p><b><a href="/downloads#pythondoc">Download Source Code</a></b></p>
+</div>
+</div>
+
+<p>The PythonDoc tool generates API documentation in HTML and other
+formats, based on descriptions in Python source files.<p>
+
+<p>PythonDoc is a Python implementation of the JavaDoc&trade; tool.</p>
+
+<p>Resources:</p>
+
+<dl>
+<dt><a href="pythondoc.htm">PythonDoc home page</a></dt>
+</dl>
+
+<p>Articles:</p>
+
+<dl>
+<dt><a href="pythondoc-infoset.htm"><cite>The PythonDoc Infoset</cite></a></dt>
+<dt><a href="pythondoc-plugins.htm"><cite>Writing PythonDoc Plugins</cite></a></dt>
+<dt><a href="http://effbot.org/zone/pythondoc-merge.htm"><cite>Generating PythonDoc Pages for Virtual Modules</a></dt>
+</dl>
+</div>
+</body>
+</html>

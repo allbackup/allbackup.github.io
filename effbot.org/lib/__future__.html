@@ -1,0 +1,92 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>__future__</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-__future__.html'>original</a> :::
+<a href='__future__.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>__future__&#8212;Future statement definitions</h1>
+
+<p><code>__future__</code> is a real
+module, and serves three purposes:</p>
+
+<ul>
+<li>
+<p>To avoid confusing existing tools that analyze import statements
+and expect to find the modules they're importing.</p>
+</li>
+
+<li>
+<p>To ensure that future_statements run under releases prior to 2.1
+at least yield runtime exceptions (the import of <code>__future__</code> will fail, because there was
+no module of that name prior to 2.1).</p>
+</li>
+
+<li>
+<p>To document when incompatible changes were introduced, and when
+they will be -- or were -- made mandatory. This is a form of
+executable documentation, and can be inspected programatically via
+importing <code>__future__</code> and
+examining its contents.</p>
+</li>
+</ul>
+
+<p>Each statement in __future__.py is of the form:</p>
+
+<pre>
+<tt>FeatureName = "_Feature(" <var>OptionalRelease</var> "," <var>MandatoryRelease</var> ","
+                         <var>CompilerFlag</var> ")"
+</tt>
+</pre>
+
+<p>where, normally, <var>OptionalRelease</var> is less than <var>
+MandatoryRelease</var>, and both are 5-tuples of the same form as
+<code>sys.version_info</code>:</p>
+
+<pre>
+    (PY_MAJOR_VERSION, # the 2 in 2.1.0a3; an int
+     PY_MINOR_VERSION, # the 1; an int
+     PY_MICRO_VERSION, # the 0; an int
+     PY_RELEASE_LEVEL, # "alpha", "beta", "candidate" or "final"; string
+     PY_RELEASE_SERIAL # the 3; an int
+    )
+</pre>
+
+<p><var>OptionalRelease</var> records the first release in which
+the feature was accepted.</p>
+
+<p>In the case of a <var>MandatoryRelease</var> that has not yet
+occurred, <var>MandatoryRelease</var> predicts the release in which
+the feature will become part of the language.</p>
+
+<p>Else <var>MandatoryRelease</var> records when the feature became
+part of the language; in releases at or after that, modules no
+longer need a future statement to use the feature in question, but
+may continue to use such imports.</p>
+
+<p><var>MandatoryRelease</var> may also be <code>None</code>, meaning that a planned feature got
+dropped.</p>
+
+<p>Instances of class <code>
+_Feature</code> have two corresponding methods, <code>getOptionalRelease</code> and <code>
+getMandatoryRelease</code>.</p>
+
+<p><var>CompilerFlag</var> is the (bitfield) flag that should be
+passed in the fourth argument to the builtin function <code>compile</code> to enable the feature
+in dynamically compiled code. This flag is stored in the <code>compiler_flag</code> attribute
+on <code>_Future</code> instances.</p>
+
+<p>No feature description will ever be deleted from <code>__future__</code>.</p>
+</div>
+</div></body></html>

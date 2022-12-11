@@ -1,0 +1,74 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>UserList</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-UserList.html'>original</a> :::
+<a href='UserList.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>UserList&#8212;Class wrapper for list objects</h1>
+
+<p class="note"><b>Note:</b> This module is available for backward
+compatibility only. If you are writing code that does not need to
+work with versions of Python earlier than Python 2.2, please
+consider subclassing directly from the built-in <code>list</code> type.</p>
+
+<p>This module defines a class that acts as a wrapper around list
+objects. It is a useful base class for your own list-like classes,
+which can inherit from them and override existing methods or add
+new ones. In this way one can add new behaviors to lists.</p>
+
+<p>The <a class="link" href="#UserList"><code>UserList</code></a> module
+defines the <a class="link" href="#UserList"><code>UserList</code></a>
+class:</p>
+</div>
+<dl><dt class="class" id="UserList"><b>class UserList([list])</b> <tt class="nav"><a class="nav" href="UserList.UserList" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>Class that simulates a list. The instance's contents are kept in
+a regular list, which is accessible via the <code>data</code> attribute of <a class="link" href="#UserList"><code>UserList</code></a> instances. The instance's
+contents are initially set to a copy of <var>list</var>, defaulting
+to the empty list <code>[]</code>. <var>list</var> can be either a
+regular Python list, or an instance of <a class="link" href="#UserList"><code>UserList</code></a> (or a subclass).</p>
+</dd>
+</dl><div class="text">
+<p>In addition to supporting the methods and operations of mutable
+sequences (see section <code>typesseq.html#typesseq</code>), <a class="link" href="#UserList"><code>UserList</code></a> instances provide
+the following attribute:</p>
+</div>
+<dl><dt class="attribute" id="UserList.data"><b>data</b> <tt class="nav"><a class="nav" href="UserList.UserList.data" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>A real Python list object used to store the contents of the <a class="link" href="#UserList"><code>UserList</code></a> class.</p>
+</dd>
+</dl><div class="text">
+<p>Subclassing requirements: Subclasses of <a class="link" href="#UserList"><code>UserList</code></a> are expect to offer a constructor
+which can be called with either no arguments or one argument. List
+operations which return a new sequence attempt to create an
+instance of the actual implementation class. To do so, it assumes
+that the constructor can be called with a single parameter, which
+is a sequence object used as a data source.</p>
+
+<p>If a derived class does not wish to comply with this
+requirement, all of the special methods supported by this class
+will need to be overridden; please consult the sources for
+information about the methods which need to be provided in that
+case.</p>
+
+<p>Changed in version 2.0: Python versions 1.5.2 and 1.6 also
+required that the constructor be callable with no parameters, and
+offer a mutable <code>data</code>
+attribute. Earlier versions of Python did not attempt to create
+instances of the derived class.</p>
+</div>
+</div></body></html>

@@ -1,0 +1,70 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>nis</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-nis.html'>original</a> :::
+<a href='nis.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>nis&#8212;Interface to Sun's NIS (Yellow Pages)</h1>
+
+<p>Availability: UNIX.</p>
+
+<p>The <code>nis</code> module gives a thin
+wrapper around the NIS library, useful for central administration
+of several hosts.</p>
+
+<p>Because NIS exists only on Unix systems, this module is only
+available for Unix.</p>
+
+<p>The <code>nis</code> module defines the
+following functions:</p>
+</div>
+<dl><dt class="function" id="match"><b>match(key, mapname)</b> <tt class="nav"><a class="nav" href="nis.match" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return the match for <var>key</var> in map <var>mapname</var>,
+or raise an error (<code>nis.error</code>) if there is none. Both should
+be strings, <var>key</var> is 8-bit clean. Return value is an
+arbitrary array of bytes (may contain <code>NULL</code> and other
+joys).</p>
+
+<p>Note that <var>mapname</var> is first checked if it is an alias
+to another name.</p>
+</dd>
+<dt class="function" id="cat"><b>cat(mapname)</b> <tt class="nav"><a class="nav" href="nis.cat" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return a dictionary mapping <var>key</var> to <var>value</var>
+such that <code>match(</code><var>key</var>, <var>
+mapname</var>)==<var>value</var>. Note that both keys and values of
+the dictionary are arbitrary arrays of bytes.</p>
+
+<p>Note that <var>mapname</var> is first checked if it is an alias
+to another name.</p>
+</dd>
+<dt class="function" id="maps"><b>maps()</b> <tt class="nav"><a class="nav" href="nis.maps" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return a list of all valid maps.</p>
+</dd>
+</dl><div class="text">
+<p>The <code>nis</code> module defines the
+following exception:</p>
+</div>
+<dl><dt class="exception" id="error"><b>exception error</b> <tt class="nav"><a class="nav" href="nis.error" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="exception">
+<p>An error raised when a NIS function returns an error code.</p>
+</dd>
+</dl></div></body></html>

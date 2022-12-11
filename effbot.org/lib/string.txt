@@ -1,0 +1,475 @@
+
+@@module string
+
+<h1>string&#8212;Common string operations</h1>
+
+<p>The {@link string} module contains a number of useful constants and
+classes, as well as some deprecated legacy functions that are also
+available as methods on strings. See the module {@link re} for string
+functions based on regular expressions.
+
+<h2>String constants</h2>
+
+<p>The constants defined in this module are:
+
+@@variable ascii_letters
+
+<p>The concatenation of the {@code ascii_lowercase} and {@code
+ascii_uppercase} constants described below. This value is not
+locale-dependent.
+
+@@variable ascii_lowercase
+
+<p>The lowercase letters {@code 'abcdefghijklmnopqrstuvwxyz'}. This
+value is not locale-dependent and will not change.
+
+@@variable ascii_uppercase
+
+<p>The uppercase letters {@code 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'}. This
+value is not locale-dependent and will not change.
+
+@@variable digits
+
+<p>The string {@code '0123456789'}.
+
+@@variable hexdigits
+
+<p>The string {@code '0123456789abcdefABCDEF'}.
+
+@@variable letters
+
+<p>The concatenation of the strings {@code lowercase} and {@code
+uppercase} described below. The specific value is locale-dependent, and
+will be updated when {@link locale.setlocale} is called.
+
+@@variable lowercase
+
+<p>A string containing all the characters that are considered lowercase
+letters. On most systems this is the string {@code
+'abcdefghijklmnopqrstuvwxyz'}. Do not change its definition -- the
+effect on the routines {@link upper} and {@link swapcase} is undefined.
+The specific value is locale-dependent, and will be updated when {@link
+locale.setlocale} is called.
+
+@@variable octdigits
+
+<p>The string {@code '01234567'}.
+
+@@variable punctuation
+
+<p>String of ASCII characters which are considered punctuation
+characters in the "{@code C}" locale.
+
+@@variable printable
+
+<p>String of characters which are considered printable. This is a
+combination of {@code digits}, {@code letters}, {@code punctuation}, and
+{@code whitespace}.
+
+@@variable uppercase
+
+<p>A string containing all the characters that are considered uppercase
+letters. On most systems this is the string {@code
+'ABCDEFGHIJKLMNOPQRSTUVWXYZ'}. Do not change its definition -- the
+effect on the routines {@link lower} and {@link swapcase} is undefined.
+The specific value is locale-dependent, and will be updated when {@link
+locale.setlocale} is called.
+
+@@variable whitespace
+
+<p>A string containing all characters that are considered whitespace. On
+most systems this includes the characters space, tab, linefeed, return,
+formfeed, and vertical tab. Do not change its definition -- the effect
+on the routines {@link strip} and {@link split} is undefined.
+
+@@text 
+
+<h2>Template strings</h2>
+
+<p>Templates provide simpler string substitutions as described in {@link
+http://www.python.org/peps/pep-0292.html PEP 292}. Instead of the normal
+"{@code %}"-based substitutions, Templates support "{@code $}"-based
+substitutions, using the following rules:
+<ul>
+<li>
+<p>"{@code $$}" is an escape; it is replaced with a single "{@code $}".
+<li>
+<p>"{@code $identifier}" names a substitution placeholder matching a
+mapping key of "identifier". By default, "identifier" must spell a
+Python identifier. The first non-identifier character after the "{@code
+$}" character terminates this placeholder specification.
+<li>
+<p>"{@code ${identifier}}" is equivalent to "{@code $identifier}". It is
+required when valid identifier characters follow the placeholder but are
+not part of the placeholder, such as "${noun}ification".
+</ul>
+
+<p>Any other appearance of "{@code $}" in the string will result in a
+{@link exceptions.ValueError} being raised.
+
+<p>New in version 2.4.
+
+<p>The {@link string} module provides a {@link Template} class that
+implements these rules. The methods of {@link Template} are:
+
+@@class Template(template)
+
+<p>The constructor takes a single argument which is the template string.
+
+@@method Template.substitute(mapping[, **kws])
+
+<p>Performs the template substitution, returning a new string. {@var
+mapping} is any dictionary-like object with keys that match the
+placeholders in the template. Alternatively, you can provide keyword
+arguments, where the keywords are the placeholders. When both {@var
+mapping} and {@var kws} are given and there are duplicates, the
+placeholders from {@var kws} take precedence.
+
+@@method Template.safe_substitute(mapping[, **kws])
+
+<p>Like {@link substitute}, except that if placeholders are missing from
+{@var mapping} and {@var kws}, instead of raising a {@link
+exceptions.KeyError} exception, the original placeholder will appear in
+the resulting string intact. Also, unlike with {@link substitute}, any
+other appearances of the "{@code $}" will simply return "{@code $}"
+instead of raising {@link exceptions.ValueError}.
+
+<p>While other exceptions may still occur, this method is called
+&#8220;safe&#8221; because substitutions always tries to return a usable
+string instead of raising an exception. In another sense, {@link
+safe_substitute} may be anything other than safe, since it will silently
+ignore malformed templates containing dangling delimiters, unmatched
+braces, or placeholders that are not valid Python identifiers.
+
+@@text 
+
+<p>{@link Template} instances also provide one public data attribute:
+
+@@attribute Template.template
+
+<p>This is the object passed to the constructor's {@var template}
+argument. In general, you shouldn't change it, but read-only access is
+not enforced.
+
+@@text 
+
+<p>Here is an example of how to use a Template:
+
+<pre>
+&gt;&gt;&gt; from string import Template
+&gt;&gt;&gt; s = Template('$who likes $what')
+&gt;&gt;&gt; s.substitute(who='tim', what='kung pao')
+'tim likes kung pao'
+&gt;&gt;&gt; d = dict(who='tim')
+&gt;&gt;&gt; Template('Give $who $100').substitute(d)
+Traceback (most recent call last):
+[...]
+ValueError: Invalid placeholder in string: line 1, col 10
+&gt;&gt;&gt; Template('$who likes $what').substitute(d)
+Traceback (most recent call last):
+[...]
+KeyError: 'what'
+&gt;&gt;&gt; Template('$who likes $what').safe_substitute(d)
+'tim likes $what'
+</pre>
+
+
+<p>Advanced usage: you can derive subclasses of {@link Template} to
+customize the placeholder syntax, delimiter character, or the entire
+regular expression used to parse template strings. To do this, you can
+override these class attributes:
+<ul>
+<li>
+<p>{@var delimiter} - This is the literal string describing a
+placeholder introducing delimiter. The default value "{@code $}". Note
+that this should {@em not} be a regular expression, as the
+implementation will call {@link re.escape} on this string as needed.
+<li>
+<p>{@var idpattern} - This is the regular expression describing the
+pattern for non-braced placeholders (the braces will be added
+automatically as appropriate). The default value is the regular
+expression "{@code [_a-z][_a-z0-9]*}".
+</ul>
+
+<p>Alternatively, you can provide the entire regular expression pattern
+by overriding the class attribute {@var pattern}. If you do this, the
+value must be a regular expression object with four named capturing
+groups. The capturing groups correspond to the rules given above, along
+with the invalid placeholder rule:
+<ul>
+<li>
+<p>{@var escaped} - This group matches the escape sequence, e.g. "{@code
+$$}", in the default pattern.
+<li>
+<p>{@var named} - This group matches the unbraced placeholder name; it
+should not include the delimiter in capturing group.
+<li>
+<p>{@var braced} - This group matches the brace enclosed placeholder
+name; it should not include either the delimiter or braces in the
+capturing group.
+<li>
+<p>{@var invalid} - This group matches any other delimiter pattern
+(usually a single delimiter), and it should appear last in the regular
+expression.
+</ul>
+
+<h2>String functions</h2>
+
+<p>The following functions are available to operate on string and
+Unicode objects. They are not available as string methods.
+
+@@function capwords(s)
+
+<p>Split the argument into words using {@link split}, capitalize each
+word using {@link capitalize}, and join the capitalized words using
+{@link join}. Note that this replaces runs of whitespace characters by a
+single space, and removes leading and trailing whitespace.
+
+@@function maketrans(from, to)
+
+<p>Return a translation table suitable for passing to {@link translate}
+or {@link regex.compile}, that will map each character in {@var from}
+into the character at the same position in {@var to}; {@var from} and
+{@var to} must have the same length.
+
+<p class='warning'><b>Warning:</b> Don't use strings derived from {@code
+lowercase} and {@code uppercase} as arguments; in some locales, these
+don't have the same length. For case conversions, always use {@link
+lower} and {@link upper}.
+
+@@text 
+
+<h2>Deprecated string functions</h2>
+
+<p>The following list of functions are also defined as methods of string
+and Unicode objects; see &#8220;String Methods&#8221; (section {@link
+string-methods.html#string-methods}) for more information on those. You
+should consider these functions as deprecated, although they will not be
+removed until Python 3.0. The functions defined in this module are:
+
+@@function atof(s)
+
+
+<p>Deprecated since release 2.0. Use the {@link float} built-in
+function.
+
+<p>Convert a string to a floating point number. The string must have the
+standard syntax for a floating point literal in Python, optionally
+preceded by a sign ("{@code +}" or "{@code -}"). Note that this behaves
+identical to the built-in function {@link float} when passed a string.
+
+<p class='note'><b>Note:</b> When passing in a string, values for NaN
+and Infinity may be returned, depending on the underlying C library. The
+specific set of strings accepted which cause these values to be returned
+depends entirely on the C library and is known to vary.
+
+@@function atoi(s[, base])
+
+
+<p>Deprecated since release 2.0. Use the {@link int} built-in function.
+
+<p>Convert string {@var s} to an integer in the given {@var base}. The
+string must consist of one or more digits, optionally preceded by a sign
+("{@code +}" or "{@code -}"). The {@var base} defaults to 10. If it is
+0, a default base is chosen depending on the leading characters of the
+string (after stripping the sign): "{@code 0x}" or "{@code 0X}" means
+16, "{@code 0}" means 8, anything else means 10. If {@var base} is 16, a
+leading "{@code 0x}" or "{@code 0X}" is always accepted, though not
+required. This behaves identically to the built-in function {@link int}
+when passed a string. (Also note: for a more flexible interpretation of
+numeric literals, use the built-in function {@link eval}.)
+
+@@function atol(s[, base])
+
+
+<p>Deprecated since release 2.0. Use the {@link long} built-in function.
+
+<p>Convert string {@var s} to a long integer in the given {@var base}.
+The string must consist of one or more digits, optionally preceded by a
+sign ("{@code +}" or "{@code -}"). The {@var base} argument has the same
+meaning as for {@link atoi}. A trailing "{@code l}" or "{@code L}" is
+not allowed, except if the base is 0. Note that when invoked without
+{@var base} or with {@var base} set to 10, this behaves identical to the
+built-in function {@link long} when passed a string.
+
+@@function capitalize(word)
+
+<p>Return a copy of {@var word} with only its first character
+capitalized.
+
+@@function expandtabs(s[, tabsize])
+
+<p>Expand tabs in a string replacing them by one or more spaces,
+depending on the current column and the given tab size. The column
+number is reset to zero after each newline occurring in the string. This
+doesn't understand other non-printing characters or escape sequences.
+The tab size defaults to 8.
+
+@@function find(s, sub[, start[,end]])
+
+<p>Return the lowest index in {@var s} where the substring {@var sub} is
+found such that {@var sub} is wholly contained in {@var s}[{@var
+start}:{@var end}]. Return {@code -1} on failure. Defaults for {@var
+start} and {@var end} and interpretation of negative values is the same
+as for slices.
+
+@@function rfind(s, sub[, start[, end]])
+
+<p>Like {@link find} but find the highest index.
+
+@@function index(s, sub[, start[, end]])
+
+<p>Like {@link find} but raise {@link exceptions.ValueError} when the
+substring is not found.
+
+@@function rindex(s, sub[, start[, end]])
+
+<p>Like {@link rfind} but raise {@link exceptions.ValueError} when the
+substring is not found.
+
+@@function count(s, sub[, start[, end]])
+
+<p>Return the number of (non-overlapping) occurrences of substring {@var
+sub} in string {@var s}[{@var start}:{@var end}]. Defaults for {@var
+start} and {@var end} and interpretation of negative values are the same
+as for slices.
+
+@@function lower(s)
+
+<p>Return a copy of {@var s}, but with upper case letters converted to
+lower case.
+
+@@function split(s[, sep[, maxsplit]])
+
+<p>Return a list of the words of the string {@var s}. If the optional
+second argument {@var sep} is absent or {@code None}, the words are
+separated by arbitrary strings of whitespace characters (space, tab,
+newline, return, formfeed). If the second argument {@var sep} is present
+and not {@code None}, it specifies a string to be used as the word
+separator. The returned list will then have one more item than the
+number of non-overlapping occurrences of the separator in the string.
+The optional third argument {@var maxsplit} defaults to 0. If it is
+nonzero, at most {@var maxsplit} number of splits occur, and the
+remainder of the string is returned as the final element of the list
+(thus, the list will have at most {@var maxsplit}+1 elements).
+
+<p>The behavior of split on an empty string depends on the value of
+{@var sep}. If {@var sep} is not specified, or specified as {@link
+None}, the result will be an empty list. If {@var sep} is specified as
+any string, the result will be a list containing one element which is an
+empty string.
+
+@@function rsplit(s[, sep[, maxsplit]])
+
+<p>Return a list of the words of the string {@var s}, scanning {@var s}
+from the end. To all intents and purposes, the resulting list of words
+is the same as returned by {@link split}, except when the optional third
+argument {@var maxsplit} is explicitly specified and nonzero. When {@var
+maxsplit} is nonzero, at most {@var maxsplit} number of splits - the
+{@em rightmost} ones - occur, and the remainder of the string is
+returned as the first element of the list (thus, the list will have at
+most {@var maxsplit}+1 elements).
+<blockquote>
+@since New in
+version 2.4. <br />
+</blockquote>
+
+@@function splitfields(s[, sep[, maxsplit]])
+
+<p>This function behaves identically to {@link split}. (In the past,
+{@link split} was only used with one argument, while {@link splitfields}
+was only used with two arguments.)
+
+@@function join(words[, sep])
+
+<p>Concatenate a list or tuple of words with intervening occurrences of
+{@var sep}. The default value for {@var sep} is a single space
+character. It is always true that "{@code
+string.join(string.split(}{@var s}, {@var sep}), {@var sep})" equals
+{@var s}.
+
+@@function joinfields(words[, sep])
+
+<p>This function behaves identically to {@link join}. (In the past,
+{@link join} was only used with one argument, while {@link joinfields}
+was only used with two arguments.) Note that there is no {@link
+joinfields} method on string objects; use the {@link join} method
+instead.
+
+@@function lstrip(s[, chars])
+
+<p>Return a copy of the string with leading characters removed. If {@var
+chars} is omitted or {@link None}, whitespace characters are removed. If
+given and not {@link None}, {@var chars} must be a string; the
+characters in the string will be stripped from the beginning of the
+string this method is called on.
+<blockquote>
+@since Changed in version 2.2.3: The chars parameter was added. The chars parameter
+cannot be passed in earlier 2.2 versions. <br />
+</blockquote>
+
+@@function rstrip(s[, chars])
+
+<p>Return a copy of the string with trailing characters removed. If
+{@var chars} is omitted or {@link None}, whitespace characters are
+removed. If given and not {@link None}, {@var chars} must be a string;
+the characters in the string will be stripped from the end of the string
+this method is called on.
+<blockquote>
+@since Changed in version 2.2.3: The chars
+parameter was added. The chars parameter cannot be
+passed in earlier 2.2 versions. <br />
+</blockquote>
+
+@@function strip(s[, chars])
+
+<p>Return a copy of the string with leading and trailing characters
+removed. If {@var chars} is omitted or {@code None}, whitespace
+characters are removed. If given and not {@link None}, {@var chars} must
+be a string; the characters in the string will be stripped from the both
+ends of the string this method is called on.
+<blockquote>
+@since Changed
+in version 2.2.3: The chars parameter was added. The
+chars parameter cannot be passed in earlier 2.2
+versions. <br />
+</blockquote>
+
+@@function swapcase(s)
+
+<p>Return a copy of {@var s}, but with lower case letters converted to
+upper case and vice versa.
+
+@@function translate(s, table[, deletechars])
+
+<p>Delete all characters from {@var s} that are in {@var deletechars}
+(if present), and then translate the characters using {@var table},
+which must be a 256-character string giving the translation for each
+character value, indexed by its ordinal.
+
+@@function upper(s)
+
+<p>Return a copy of {@var s}, but with lower case letters converted to
+upper case.
+
+@@function ljust(s, width)
+@@function rjust(s, width)
+@@function center(s, width)
+
+<p>These functions respectively left-justify, right-justify and center a
+string in a field of given width. They return a string that is at least
+{@var width} characters wide, created by padding the string {@var s}
+with spaces until the given width on the right, left or both sides. The
+string is never truncated.
+
+@@function zfill(s, width)
+
+<p>Pad a numeric string on the left with zero digits until the given
+width is reached. Strings starting with a sign are handled correctly.
+
+@@function replace(str, old, new[, maxreplace])
+
+<p>Return a copy of string {@var str} with all occurrences of substring
+{@var old} replaced by {@var new}. If the optional argument {@var
+maxreplace} is given, the first {@var maxreplace} occurrences are
+replaced.

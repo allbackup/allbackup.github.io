@@ -1,0 +1,55 @@
+
+@@module xml.dom.pulldom
+
+<h1>xml.dom.pulldom&#8212;Support for building partial DOM trees</h1>
+
+<p>New in version 2.0.
+
+<p>{@link xml.dom.pulldom} allows building only selected portions of a
+Document Object Model representation of a document from SAX events.
+
+@@class PullDOM([documentFactory])
+
+<p>{@link xml.sax.handler.ContentHandler} implementation that ...
+
+@@class DOMEventStream(stream, parser, bufsize)
+
+<p>...
+
+@@class SAX2DOM([documentFactory])
+
+<p>{@link xml.sax.handler.ContentHandler} implementation that ...
+
+@@function parse(stream_or_string[, parser[, bufsize]])
+
+<p>...
+
+@@function parseString(string[, parser])
+
+<p>...
+
+@@variable default_bufsize
+
+<p>Default value for the {@var busize} parameter to {@link parse}.
+<blockquote>
+@since Changed in
+version 2.1: The value of this variable can be changed before
+calling parse() and the new value will
+take effect. <br />
+</blockquote>
+
+@@text 
+
+<h2>DOMEventStream Objects</h2>
+
+@@method DOMEventStream.getEvent()
+
+<p>...
+
+@@method DOMEventStream.expandNode(node)
+
+<p>...
+
+@@method DOMEventStream.reset()
+
+<p>...

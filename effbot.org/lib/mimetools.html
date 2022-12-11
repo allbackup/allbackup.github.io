@@ -1,0 +1,144 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>mimetools</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-mimetools.html'>original</a> :::
+<a href='mimetools.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>mimetools&#8212;Tools for parsing MIME messages</h1>
+<div class="toc"><dl><dt>On this page:</dt><dd><a href="#additional-methods-of-message-objects">Additional Methods of Message Objects</a></dd></dl></div></div>
+<div class="error">
+<p>This module defines a subclass of the <code>rfc822</code> module's <a class="link" href="#Message"><code>Message</code></a> class and a number of utility
+functions that are useful for the manipulation for MIME multipart
+or encoded message.</p>
+
+<p>It defines the following items:</p>
+</div>
+<dl><dt class="class" id="Message"><b>class Message(fp[, seekable])</b> <tt class="nav"><a class="nav" href="mimetools.Message" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>Return a new instance of the <a class="link" href="#Message"><code>Message</code></a> class. This is a subclass of the <code>rfc822.Message</code> class,
+with some additional methods (see below). The <var>seekable</var>
+argument has the same meaning as for <code>rfc822.Message</code>.</p>
+</dd>
+<dt class="function" id="choose_boundary"><b>choose_boundary()</b> <tt class="nav"><a class="nav" href="mimetools.choose_boundary" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return a unique string that has a high likelihood of being
+usable as a part boundary. The string has the form <code>
+'</code><var>hostipaddr</var>.<var>uid</var>.<var>pid</var>.<var>timestamp</var>.<var>
+random</var>'.</p>
+</dd>
+<dt class="function" id="decode"><b>decode(input, output, encoding)</b> <tt class="nav"><a class="nav" href="mimetools.decode" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Read data encoded using the allowed MIME <var>encoding</var>
+from open file object <var>input</var> and write the decoded data
+to open file object <var>output</var>. Valid values for <var>
+encoding</var> include <code>'base64'</code>, <code>
+'quoted-printable'</code>, <code>'uuencode'</code>, <code>
+'x-uuencode'</code>, <code>'uue'</code>, <code>'x-uue'</code>,
+<code>'7bit'</code>, and <code>'8bit'</code>. Decoding messages
+encoded in <code>'7bit'</code> or <code>'8bit'</code> has no
+effect. The input is simply copied to the output.</p>
+</dd>
+<dt class="function" id="encode"><b>encode(input, output, encoding)</b> <tt class="nav"><a class="nav" href="mimetools.encode" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Read data from open file object <var>input</var> and write it
+encoded using the allowed MIME <var>encoding</var> to open file
+object <var>output</var>. Valid values for <var>encoding</var> are
+the same as for <a class="link" href="#decode"><code>decode</code></a>.</p>
+</dd>
+<dt class="function" id="copyliteral"><b>copyliteral(input, output)</b> <tt class="nav"><a class="nav" href="mimetools.copyliteral" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Read lines from open file <var>input</var> until EOF and write
+them to open file <var>output</var>.</p>
+</dd>
+<dt class="function" id="copybinary"><b>copybinary(input, output)</b> <tt class="nav"><a class="nav" href="mimetools.copybinary" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Read blocks until EOF from open file <var>input</var> and write
+them to open file <var>output</var>. The block size is currently
+fixed at 8192.</p>
+</dd>
+</dl><div class="text"><span class="mark">@see</span> <code>Module email</code> Comprehensive email handling
+package; supersedes the mimetools module. <span class="mark">
+@see</span> <code>Module rfc822</code>
+Provides the base class for mimetools.Message. <span class="mark">
+@see</span> <code>Module
+multifile</code> Support for reading files which contain distinct
+parts, such as MIME data. <span class="mark">@see</span> <a class="link" href="http://www.cs.uu.nl/wais/html/na-dir/mail/mime-faq/.html">
+http://www.cs.uu.nl/wais/html/na-dir/mail/mime-faq/.html</a> The
+MIME Frequently Asked Questions document. For an overview of MIME,
+see the answer to question 1.1 in Part 1 of this document. 
+
+<h2 id="additional-methods-of-message-objects">Additional Methods of Message Objects <a class="nav" href="#additional-methods-of-message-objects">#</a></h2>
+
+<p>The <a class="link" href="#Message"><code>Message</code></a> class
+defines the following methods in addition to the <code>rfc822.Message</code> methods:</p>
+</div>
+<dl><dt class="method" id="getplist"><b>getplist()</b> <tt class="nav"><a class="nav" href="mimetools.getplist" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return the parameter list of the Content-Type: header. This is a
+list of strings. For parameters of the form
+"<var>key</var>=<var>value</var>", <var>key</var> is converted to
+lower case but <var>value</var> is not. For example, if the message
+contains the header "<code>Content-type: text/html; spam=1; Spam=2;
+Spam</code>" then <a class="link" href="#getplist"><code>getplist</code></a>
+will return the Python list <code>['spam=1', 'spam=2',
+'Spam']</code>.</p>
+</dd>
+<dt class="method" id="getparam"><b>getparam(name)</b> <tt class="nav"><a class="nav" href="mimetools.getparam" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return the <var>value</var> of the first parameter (as returned
+by <a class="link" href="#getplist"><code>getplist</code></a>) of the form
+"<var>name</var>=<var>value</var>" for the given <var>name</var>.
+If <var>value</var> is surrounded by quotes of the form
+`<code>&lt;</code>...<code>&gt;</code>' or
+`<code>"</code>...<code>"</code>', these are removed.</p>
+</dd>
+<dt class="method" id="getencoding"><b>getencoding()</b> <tt class="nav"><a class="nav" href="mimetools.getencoding" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return the encoding specified in the Content-Transfer-Encoding:
+message header. If no such header exists, return <code>
+'7bit'</code>. The encoding is converted to lower case.</p>
+</dd>
+<dt class="method" id="gettype"><b>gettype()</b> <tt class="nav"><a class="nav" href="mimetools.gettype" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return the message type (of the form
+"<var>type</var>/<var>subtype</var>") as specified in the
+Content-Type: header. If no such header exists, return <code>
+'text/plain'</code>. The type is converted to lower case.</p>
+</dd>
+<dt class="method" id="getmaintype"><b>getmaintype()</b> <tt class="nav"><a class="nav" href="mimetools.getmaintype" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return the main type as specified in the Content-Type: header.
+If no such header exists, return <code>'text'</code>. The main type
+is converted to lower case.</p>
+</dd>
+<dt class="method" id="getsubtype"><b>getsubtype()</b> <tt class="nav"><a class="nav" href="mimetools.getsubtype" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return the subtype as specified in the Content-Type: header. If
+no such header exists, return <code>'plain'</code>. The subtype is
+converted to lower case.</p>
+</dd>
+</dl></div></body></html>

@@ -1,0 +1,520 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>urllib</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-urllib.html'>original</a> :::
+<a href='urllib.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>urllib&#8212;Open arbitrary resources by URL</h1>
+
+<div class="toc"><dl><dt>On this page:</dt><dd><a href="#urlopener-objects">URLopener Objects</a></dd><dd><a href="#examples">Examples</a></dd></dl></div><p>This module provides a high-level interface for fetching data
+across the World Wide Web. In particular, the <a class="link" href="#urlopen"><code>urlopen</code></a> function is similar to the built-in
+function <code>open</code>, but accepts
+Universal Resource Locators (URLs) instead of filenames. Some
+restrictions apply -- it can only open URLs for reading, and no
+seek operations are available.</p>
+
+<p>It defines the following public functions:</p>
+</div>
+<dl><dt class="function" id="urlopen"><b>urlopen(url[, data[, proxies]])</b> <tt class="nav"><a class="nav" href="urllib.urlopen" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Open a network object denoted by a URL for reading. If the URL
+does not have a scheme identifier, or if it has file: as its scheme
+identifier, this opens a local file (without universal newlines);
+otherwise it opens a socket to a server somewhere on the network.
+If the connection cannot be made, or if the server returns an error
+code, the <code>
+exceptions.IOError</code> exception is raised. If all went well, a
+file-like object is returned. This supports the following methods:
+<code>read</code>, <code>readline</code>, <code>readlines</code>, <code>fileno</code>, <code>
+close</code>, <code>info</code> and <code>geturl</code>. It also has proper
+support for the iterator protocol. One caveat: the <code>read</code> method, if the size argument is omitted
+or negative, may not read until the end of the data stream; there
+is no good way to determine that the entire stream from a socket
+has been read in the general case.</p>
+
+<p>Except for the <code>info</code> and <code>geturl</code> methods, these methods
+have the same interface as for file objects -- see section <code>
+bltin-file-objects.html#bltin-file-objects</code> in this manual. (It
+is not a built-in file object, however, so it can't be used at
+those few places where a true built-in file object is
+required.)</p>
+
+<p>The <code>info</code> method returns an
+instance of the class <code>mimetools.Message</code> containing
+meta-information associated with the URL. When the method is HTTP,
+these headers are those returned by the server at the head of the
+retrieved HTML page (including Content-Length and Content-Type).
+When the method is FTP, a Content-Length header will be present if
+(as is now usual) the server passed back a file length in response
+to the FTP retrieval request. A Content-Type header will be present
+if the MIME type can be guessed. When the method is local-file,
+returned headers will include a Date representing the file's
+last-modified time, a Content-Length giving file size, and a
+Content-Type containing a guess at the file's type. See also the
+description of the <code>
+mimetools</code> module.</p>
+
+<p>The <code>geturl</code> method returns
+the real URL of the page. In some cases, the HTTP server redirects
+a client to another URL. The <a class="link" href="#urlopen"><code>
+urlopen</code></a> function handles this transparently, but in some cases
+the caller needs to know which URL the client was redirected to.
+The <code>geturl</code> method can be
+used to get at this redirected URL.</p>
+
+<p>If the <var>url</var> uses the http: scheme identifier, the
+optional <var>data</var> argument may be given to specify a <code>
+POST</code> request (normally the request type is <code>
+GET</code>). The <var>data</var> argument must be in standard
+application/x-www-form-urlencoded format; see the <a class="link" href="#urlencode"><code>urlencode</code></a> function below.</p>
+
+<p>The <a class="link" href="#urlopen"><code>urlopen</code></a> function
+works transparently with proxies which do not require
+authentication. In a Unix or Windows environment, set the
+http_proxy, ftp_proxy or gopher_proxy environment variables to a
+URL that identifies the proxy server before starting the Python
+interpreter. For example (the "<code>%</code>" is the command
+prompt):</p>
+
+<pre>
+% http_proxy="http://www.someproxy.com:3128"
+% export http_proxy
+% python
+...
+</pre>
+
+<p>In a Windows environment, if no proxy environment variables are
+set, proxy settings are obtained from the registry's Internet
+Settings section.</p>
+
+<p>In a Macintosh environment, <a class="link" href="#urlopen"><code>
+urlopen</code></a> will retrieve proxy information from Internet
+Config.</p>
+
+<p>Alternatively, the optional <var>proxies</var> argument may be
+used to explicitly specify proxies. It must be a dictionary mapping
+scheme names to proxy URLs, where an empty dictionary causes no
+proxies to be used, and <code>None</code>
+(the default value) causes environmental proxy settings to be used
+as discussed above. For example:</p>
+
+<pre>
+# Use http://www.someproxy.com:3128 for http proxying
+proxies = {'http': 'http://www.someproxy.com:3128'}
+filehandle = urllib.urlopen(some_url, proxies=proxies)
+# Don't use any proxies
+filehandle = urllib.urlopen(some_url, proxies={})
+# Use proxies from environment - both versions are equivalent
+filehandle = urllib.urlopen(some_url, proxies=None)
+filehandle = urllib.urlopen(some_url)
+</pre>
+
+<p>The <a class="link" href="#urlopen"><code>urlopen</code></a> function
+does not support explicit proxy specification. If you need to
+override environmental proxy settings, use <a class="link" href="#URLopener"><code>URLopener</code></a>, or a subclass such as <a class="link" href="#FancyURLopener"><code>FancyURLopener</code></a>.</p>
+
+<p>Proxies which require authentication for use are not currently
+supported; this is considered an implementation limitation.</p>
+
+<blockquote><span class="mark">@since</span> Changed in version
+2.3: Added the proxies support.<br />
+</blockquote>
+</dd>
+<dt class="function" id="urlretrieve"><b>urlretrieve(url[, filename[, reporthook[,
+data]]])</b> <tt class="nav"><a class="nav" href="urllib.urlretrieve" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Copy a network object denoted by a URL to a local file, if
+necessary. If the URL points to a local file, or a valid cached
+copy of the object exists, the object is not copied. Return a tuple
+<code>(</code><var>filename</var>, <var>headers</var>) where <var>
+filename</var> is the local file name under which the object can be
+found, and <var>headers</var> is whatever the <code>info</code> method of the object returned by <a class="link" href="#urlopen"><code>urlopen</code></a> returned (for a remote
+object, possibly cached). Exceptions are the same as for <a class="link" href="#urlopen"><code>urlopen</code></a>.</p>
+
+<p>The second argument, if present, specifies the file location to
+copy to (if absent, the location will be a tempfile with a
+generated name). The third argument, if present, is a hook function
+that will be called once on establishment of the network connection
+and once after each block read thereafter. The hook will be passed
+three arguments; a count of blocks transferred so far, a block size
+in bytes, and the total size of the file. The third argument may be
+<code>-1</code> on older FTP servers which do not return a file
+size in response to a retrieval request.</p>
+
+<p>If the <var>url</var> uses the http: scheme identifier, the
+optional <var>data</var> argument may be given to specify a <code>
+POST</code> request (normally the request type is <code>
+GET</code>). The <var>data</var> argument must in standard
+application/x-www-form-urlencoded format; see the <a class="link" href="#urlencode"><code>urlencode</code></a> function below.</p>
+</dd>
+<dt class="variable" id="_urlopener"><b>_urlopener</b> <tt class="nav"><a class="nav" href="urllib._urlopener" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>The public functions <a class="link" href="#urlopen"><code>
+urlopen</code></a> and <a class="link" href="#urlretrieve"><code>
+urlretrieve</code></a> create an instance of the <a class="link" href="#FancyURLopener"><code>FancyURLopener</code></a> class and use it to
+perform their requested actions. To override this functionality,
+programmers can create a subclass of <a class="link" href="#URLopener"><code>URLopener</code></a> or <a class="link" href="#FancyURLopener"><code>FancyURLopener</code></a>, then assign an
+instance of that class to the <code>urllib._urlopener</code>
+variable before calling the desired function. For example,
+applications may want to specify a different User-Agent: header
+than <a class="link" href="#URLopener"><code>URLopener</code></a> defines.
+This can be accomplished with the following code:</p>
+
+<pre>
+import urllib
+
+class AppURLopener(urllib.FancyURLopener):
+    version = "App/1.7"
+
+urllib._urlopener = AppURLopener()
+</pre>
+</dd>
+<dt class="function" id="urlcleanup"><b>urlcleanup()</b> <tt class="nav"><a class="nav" href="urllib.urlcleanup" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Clear the cache that may have been built up by previous calls to
+<a class="link" href="#urlretrieve"><code>urlretrieve</code></a>.</p>
+</dd>
+<dt class="function" id="quote"><b>quote(string[, safe])</b> <tt class="nav"><a class="nav" href="urllib.quote" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Replace special characters in <var>string</var> using the
+"<code>%xx</code>" escape. Letters, digits, and the characters
+"<code>_.-</code>" are never quoted. The optional <var>safe</var>
+parameter specifies additional characters that should not be quoted
+-- its default value is <code>'/'</code>.</p>
+
+<p>Example: <code>quote('/~connolly/')</code> yields <code>
+'/%7econnolly/'</code>.</p>
+</dd>
+<dt class="function" id="quote_plus"><b>quote_plus(string[, safe])</b> <tt class="nav"><a class="nav" href="urllib.quote_plus" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Like <a class="link" href="#quote"><code>quote</code></a>, but also
+replaces spaces by plus signs, as required for quoting HTML form
+values. Plus signs in the original string are escaped unless they
+are included in <var>safe</var>. It also does not have <var>
+safe</var> default to <code>'/'</code>.</p>
+</dd>
+<dt class="function" id="unquote"><b>unquote(string)</b> <tt class="nav"><a class="nav" href="urllib.unquote" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Replace "<code>%xx</code>" escapes by their single-character
+equivalent.</p>
+
+<p>Example: <code>unquote('/%7Econnolly/')</code> yields <code>
+'/~connolly/'</code>.</p>
+</dd>
+<dt class="function" id="unquote_plus"><b>unquote_plus(string)</b> <tt class="nav"><a class="nav" href="urllib.unquote_plus" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Like <a class="link" href="#unquote"><code>unquote</code></a>, but also
+replaces plus signs by spaces, as required for unquoting HTML form
+values.</p>
+</dd>
+<dt class="function" id="urlencode"><b>urlencode(query[, doseq])</b> <tt class="nav"><a class="nav" href="urllib.urlencode" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Convert a mapping object or a sequence of two-element tuples to
+a &#8220;url-encoded&#8221; string, suitable to pass to <a class="link" href="#urlopen"><code>urlopen</code></a> above as the optional
+<var>data</var> argument. This is useful to pass a dictionary of
+form fields to a <code>POST</code> request. The resulting string is
+a series of <var>key</var>=<var>value</var> pairs separated by
+"<code>&amp;</code>" characters, where both <var>key</var> and
+<var>value</var> are quoted using <a class="link" href="#quote_plus"><code>quote_plus</code></a> above. If the optional
+parameter <var>doseq</var> is present and evaluates to true,
+individual <var>key</var>=<var>value</var> pairs are generated for
+each element of the sequence. When a sequence of two-element tuples
+is used as the <var>query</var> argument, the first element of each
+tuple is a key and the second is a value. The order of parameters
+in the encoded string will match the order of parameter tuples in
+the sequence. The <code>cgi</code> module
+provides the functions <code>
+parse_qs</code> and <code>
+parse_qsl</code> which are used to parse query strings into Python
+data structures.</p>
+</dd>
+<dt class="function" id="pathname2url"><b>pathname2url(path)</b> <tt class="nav"><a class="nav" href="urllib.pathname2url" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Convert the pathname <var>path</var> from the local syntax for a
+path to the form used in the path component of a URL. This does not
+produce a complete URL. The return value will already be quoted
+using the <a class="link" href="#quote"><code>quote</code></a> function.</p>
+</dd>
+<dt class="function" id="url2pathname"><b>url2pathname(path)</b> <tt class="nav"><a class="nav" href="urllib.url2pathname" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Convert the path component <var>path</var> from an encoded URL
+to the local syntax for a path. This does not accept a complete
+URL. This function uses <a class="link" href="#unquote"><code>
+unquote</code></a> to decode <var>path</var>.</p>
+</dd>
+<dt class="class" id="URLopener"><b>class URLopener([proxies[, **x509]])</b> <tt class="nav"><a class="nav" href="urllib.URLopener" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>Base class for opening and reading URLs. Unless you need to
+support opening objects using schemes other than http:, ftp:,
+gopher: or file:, you probably want to use <a class="link" href="#FancyURLopener"><code>FancyURLopener</code></a>.</p>
+
+<p>By default, the <a class="link" href="#URLopener"><code>
+URLopener</code></a> class sends a User-Agent: header of
+"<code>urllib/</code><var>VVV</var>", where <var>VVV</var> is the
+<code>urllib</code> version number.
+Applications can define their own User-Agent: header by subclassing
+<a class="link" href="#URLopener"><code>URLopener</code></a> or <a class="link" href="#FancyURLopener"><code>FancyURLopener</code></a> and
+setting the class attribute <code>
+version</code> to an appropriate string value in the subclass
+definition.</p>
+
+<p>The optional <var>proxies</var> parameter should be a dictionary
+mapping scheme names to proxy URLs, where an empty dictionary turns
+proxies off completely. Its default value is <code>None</code>, in which case environmental proxy
+settings will be used if present, as discussed in the definition of
+<a class="link" href="#urlopen"><code>urlopen</code></a>, above.</p>
+
+<p>Additional keyword parameters, collected in <var>x509</var>, are
+used for authentication with the https: scheme. The keywords <var>
+key_file</var> and <var>cert_file</var> are supported; both are
+needed to actually retrieve a resource at an https: URL.</p>
+</dd>
+<dt class="class" id="FancyURLopener"><b>class FancyURLopener(...)</b> <tt class="nav"><a class="nav" href="urllib.FancyURLopener" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p><a class="link" href="#FancyURLopener"><code>FancyURLopener</code></a>
+subclasses <a class="link" href="#URLopener"><code>URLopener</code></a>
+providing default handling for the following HTTP response codes:
+301, 302, 303, 307 and 401. For the 30x response codes listed
+above, the Location: header is used to fetch the actual URL. For
+401 response codes (authentication required), basic HTTP
+authentication is performed. For the 30x response codes, recursion
+is bounded by the value of the <var>maxtries</var> attribute, which
+defaults to 10.</p>
+
+<p class="note"><b>Note:</b> According to the letter of <a class="link" href="http://www.faqs.org/rfcs/rfc2616.html">RFC
+2616</a>, 301 and 302 responses to POST requests must not be
+automatically redirected without confirmation by the user. In
+reality, browsers do allow automatic redirection of these
+responses, changing the POST to a GET, and <code>urllib</code> reproduces this behaviour.</p>
+
+<p>The parameters to the constructor are the same as those for <a class="link" href="#URLopener"><code>URLopener</code></a>.</p>
+
+<p class="note"><b>Note:</b> When performing basic authentication,
+a <a class="link" href="#FancyURLopener"><code>FancyURLopener</code></a>
+instance calls its <code>
+prompt_user_passwd</code> method. The default implementation asks the
+users for the required information on the controlling terminal. A
+subclass may override this method to support more appropriate
+behavior if needed.</p>
+</dd>
+</dl><div class="text">
+<p>Restrictions:</p>
+
+<ul>
+<li>
+<p>Currently, only the following protocols are supported: HTTP,
+(versions 0.9 and 1.0), Gopher (but not Gopher-+), FTP, and local
+files.</p>
+</li>
+
+<li>
+<p>The caching feature of <a class="link" href="#urlretrieve"><code>
+urlretrieve</code></a> has been disabled until I find the time to hack
+proper processing of Expiration time headers.</p>
+</li>
+
+<li>
+<p>There should be a function to query whether a particular URL is
+in the cache.</p>
+</li>
+
+<li>
+<p>For backward compatibility, if a URL appears to point to a local
+file but the file can't be opened, the URL is re-interpreted using
+the FTP protocol. This can sometimes cause confusing error
+messages.</p>
+</li>
+
+<li>
+<p>The <a class="link" href="#urlopen"><code>urlopen</code></a> and <a class="link" href="#urlretrieve"><code>urlretrieve</code></a> functions can
+cause arbitrarily long delays while waiting for a network
+connection to be set up. This means that it is difficult to build
+an interactive Web client using these functions without using
+threads.</p>
+</li>
+
+<li>
+<p>The data returned by <a class="link" href="#urlopen"><code>
+urlopen</code></a> or <a class="link" href="#urlretrieve"><code>
+urlretrieve</code></a> is the raw data returned by the server. This may be
+binary data (e.g. an image), plain text or (for example) HTML. The
+HTTP protocol provides type information in the reply header, which
+can be inspected by looking at the Content-Type: header. For the
+Gopher protocol, type information is encoded in the URL; there is
+currently no easy way to extract it. If the returned data is HTML,
+you can use the module <code>
+htmllib</code> to parse it.</p>
+</li>
+
+<li>
+<p>The code handling the FTP protocol cannot differentiate between
+a file and a directory. This can lead to unexpected behavior when
+attempting to read a URL that points to a file that is not
+accessible. If the URL ends in a <code>/</code>, it is assumed to
+refer to a directory and will be handled accordingly. But if an
+attempt to read a file leads to a 550 error (meaning the URL cannot
+be found or is not accessible, often for permission reasons), then
+the path is treated as a directory in order to handle the case when
+a directory is specified by a URL but the trailing <code>/</code>
+has been left off. This can cause misleading results when you try
+to fetch a file whose read permissions make it inaccessible; the
+FTP code will try to read it, fail with a 550 error, and then
+perform a directory listing for the unreadable file. If
+fine-grained control is needed, consider using the <code>ftplib</code> module, subclassing <code>FancyURLOpener</code>, or changing <var>
+_urlopener</var> to meet your needs.</p>
+</li>
+
+<li>
+<p>This module does not support the use of proxies which require
+authentication. This may be implemented in the future.</p>
+</li>
+
+<li>
+<p>Although the <code>urllib</code>
+module contains (undocumented) routines to parse and unparse URL
+strings, the recommended interface for URL manipulation is in
+module <code>urlparse</code>.</p>
+</li>
+</ul>
+
+<h2 id="urlopener-objects">URLopener Objects <a class="nav" href="#urlopener-objects">#</a></h2>
+
+<p><a class="link" href="#URLopener"><code>URLopener</code></a> and <a class="link" href="#FancyURLopener"><code>FancyURLopener</code></a> objects
+have the following attributes.</p>
+</div>
+<dl><dt class="method" id="URLopener.open"><b>open(fullurl[, data])</b> <tt class="nav"><a class="nav" href="urllib.URLopener.open" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Open <var>fullurl</var> using the appropriate protocol. This
+method sets up cache and proxy information, then calls the
+appropriate open method with its input arguments. If the scheme is
+not recognized, <code>
+open_unknown</code> is called. The <var>data</var> argument has the
+same meaning as the <var>data</var> argument of <a class="link" href="#urlopen"><code>urlopen</code></a>.</p>
+</dd>
+<dt class="method" id="URLopener.open_unknown"><b>open_unknown(fullurl[, data])</b> <tt class="nav"><a class="nav" href="urllib.URLopener.open_unknown" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Overridable interface to open unknown URL types.</p>
+</dd>
+<dt class="method" id="URLopener.retrieve"><b>retrieve(url[, filename[, reporthook[,
+data]]])</b> <tt class="nav"><a class="nav" href="urllib.URLopener.retrieve" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Retrieves the contents of <var>url</var> and places it in <var>
+filename</var>. The return value is a tuple consisting of a local
+filename and either a <code>mimetools.Message</code> object
+containing the response headers (for remote URLs) or <code>
+None</code> (for local URLs). The caller must then open and read
+the contents of <var>filename</var>. If <var>filename</var> is not
+given and the URL refers to a local file, the input filename is
+returned. If the URL is non-local and <var>filename</var> is not
+given, the filename is the output of <code>tempfile.mktemp</code> with a suffix that
+matches the suffix of the last path component of the input URL. If
+<var>reporthook</var> is given, it must be a function accepting
+three numeric parameters. It will be called after each chunk of
+data is read from the network. <var>reporthook</var> is ignored for
+local URLs.</p>
+
+<p>If the <var>url</var> uses the http: scheme identifier, the
+optional <var>data</var> argument may be given to specify a <code>
+POST</code> request (normally the request type is <code>
+GET</code>). The <var>data</var> argument must in standard
+application/x-www-form-urlencoded format; see the <a class="link" href="#urlencode"><code>urlencode</code></a> function below.</p>
+</dd>
+<dt class="attribute" id="URLopener.version"><b>version</b> <tt class="nav"><a class="nav" href="urllib.URLopener.version" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>Variable that specifies the user agent of the opener object. To
+get <code>urllib</code> to tell servers
+that it is a particular user agent, set this in a subclass as a
+class variable or in the constructor before calling the base
+constructor.</p>
+</dd>
+</dl><div class="text">
+<p>The <a class="link" href="#FancyURLopener"><code>
+FancyURLopener</code></a> class offers one additional method that should
+be overloaded to provide the appropriate behavior:</p>
+</div>
+<dl><dt class="method" id="URLopener.prompt_user_passwd"><b>prompt_user_passwd(host, realm)</b> <tt class="nav"><a class="nav" href="urllib.URLopener.prompt_user_passwd" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return information needed to authenticate the user at the given
+host in the specified security realm. The return value should be a
+tuple, <code>(</code><var>user</var>, <var>password</var>), which
+can be used for basic authentication.</p>
+
+<p>The implementation prompts for this information on the terminal;
+an application should override this method to use an appropriate
+interaction model in the local environment.</p>
+</dd>
+</dl><div class="text">
+<h2 id="examples">Examples <a class="nav" href="#examples">#</a></h2>
+
+<p>Here is an example session that uses the "<code>GET</code>"
+method to retrieve a URL containing parameters:</p>
+
+<pre>
+&gt;&gt;&gt; import urllib
+&gt;&gt;&gt; params = urllib.urlencode({'spam': 1, 'eggs': 2, 'bacon': 0})
+&gt;&gt;&gt; f = urllib.urlopen("http://www.musi-cal.com/cgi-bin/query?%s" % params)
+&gt;&gt;&gt; print f.read()
+</pre>
+
+<p>The following example uses the "<code>POST</code>" method
+instead:</p>
+
+<pre>
+&gt;&gt;&gt; import urllib
+&gt;&gt;&gt; params = urllib.urlencode({'spam': 1, 'eggs': 2, 'bacon': 0})
+&gt;&gt;&gt; f = urllib.urlopen("http://www.musi-cal.com/cgi-bin/query", params)
+&gt;&gt;&gt; print f.read()
+</pre>
+
+<p>The following example uses an explicitly specified HTTP proxy,
+overriding environment settings:</p>
+
+<pre>
+&gt;&gt;&gt; import urllib
+&gt;&gt;&gt; proxies = {'http': 'http://proxy.example.com:8080/'}
+&gt;&gt;&gt; opener = urllib.FancyURLopener(proxies)
+&gt;&gt;&gt; f = opener.open("http://www.python.org")
+&gt;&gt;&gt; f.read()
+</pre>
+
+<p>The following example uses no proxies at all, overriding
+environment settings:</p>
+
+<pre>
+&gt;&gt;&gt; import urllib
+&gt;&gt;&gt; opener = urllib.FancyURLopener({})
+&gt;&gt;&gt; f = opener.open("http://www.python.org/")
+&gt;&gt;&gt; f.read()
+</pre>
+</div>
+</div></body></html>

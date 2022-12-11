@@ -1,0 +1,193 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>filecmp</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-filecmp.html'>original</a> :::
+<a href='filecmp.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>filecmp&#8212;File and Directory Comparisons</h1>
+
+<div class="toc"><dl><dt>On this page:</dt><dd><a href="#the-dircmp-class">The dircmp class</a></dd></dl></div><p>The <code>filecmp</code> module
+defines functions to compare files and directories, with various
+optional time/correctness trade-offs.</p>
+
+<p>The <code>filecmp</code> module
+defines the following functions:</p>
+</div>
+<dl><dt class="function" id="cmp"><b>cmp(f1, f2[, shallow[, use_statcache]])</b> <tt class="nav"><a class="nav" href="filecmp.cmp" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Compare the files named <var>f1</var> and <var>f2</var>,
+returning <code>True</code> if they seem
+equal, <code>False</code> otherwise.</p>
+
+<p>Unless <var>shallow</var> is given and is false, files with
+identical <code>os.stat</code>
+signatures are taken to be equal.</p>
+
+<p>Files that were compared using this function will not be
+compared again unless their <code>
+os.stat</code> signature changes.</p>
+
+<p>Note that no external programs are called from this function,
+giving it portability and efficiency.</p>
+
+<blockquote><span class="mark">@since</span> Changed in version
+2.3: use_statcache is obsolete and ignored..<br />
+</blockquote>
+</dd>
+<dt class="function" id="cmpfiles"><b>cmpfiles(dir1, dir2, common[, shallow[,
+use_statcache]])</b> <tt class="nav"><a class="nav" href="filecmp.cmpfiles" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Returns three lists of file names: <var>match</var>, <var>
+mismatch</var>, <var>errors</var>. <var>match</var> contains the
+list of files match in both directories, <var>mismatch</var>
+includes the names of those that don't, and <var>errros</var> lists
+the names of files which could not be compared. Files may be listed
+in <var>errors</var> because the user may lack permission to read
+them or many other reasons, but always that the comparison could
+not be done for some reason.</p>
+
+<p>The <var>common</var> parameter is a list of file names found in
+both directories. The <var>shallow</var> and <var>
+use_statcache</var> parameters have the same meanings and default
+values as for <code>
+filecmp.cmp</code>.</p>
+</dd>
+</dl><div class="text">
+<p>Example:</p>
+
+<pre>
+&gt;&gt;&gt; import filecmp
+&gt;&gt;&gt; filecmp.cmp('libundoc.tex', 'libundoc.tex')
+True
+&gt;&gt;&gt; filecmp.cmp('libundoc.tex', 'lib.tex')
+False
+</pre>
+
+<h2 id="the-dircmp-class">The dircmp class <a class="nav" href="#the-dircmp-class">#</a></h2>
+
+<p><a class="link" href="#dircmp"><code>dircmp</code></a> instances are
+built using this constructor:</p>
+</div>
+<dl><dt class="class" id="dircmp"><b>class dircmp(a, b[, ignore[, hide]])</b> <tt class="nav"><a class="nav" href="filecmp.dircmp" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>Construct a new directory comparison object, to compare the
+directories <var>a</var> and <var>b</var>. <var>ignore</var> is a
+list of names to ignore, and defaults to <code>['RCS', 'CVS',
+'tags']</code>. <var>hide</var> is a list of names to hide, and
+defaults to <code>[os.curdir, os.pardir]</code>.</p>
+</dd>
+</dl><div class="text">
+<p>The <a class="link" href="#dircmp"><code>dircmp</code></a> class provides
+the following methods:</p>
+</div>
+<dl><dt class="method" id="dircmp.report"><b>report()</b> <tt class="nav"><a class="nav" href="filecmp.dircmp.report" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Print (to <code>sys.stdout</code>) a comparison between <var>
+a</var> and <var>b</var>.</p>
+</dd>
+<dt class="method" id="dircmp.report_partial_closure"><b>report_partial_closure()</b> <tt class="nav"><a class="nav" href="filecmp.dircmp.report_partial_closure" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Print a comparison between <var>a</var> and <var>b</var> and
+common immediate subdirectories.</p>
+</dd>
+<dt class="method" id="dircmp.report_full_closure"><b>report_full_closure()</b> <tt class="nav"><a class="nav" href="filecmp.dircmp.report_full_closure" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Print a comparison between <var>a</var> and <var>b</var> and
+common subdirectories (recursively).</p>
+</dd>
+</dl><div class="text">
+<p>The <a class="link" href="#dircmp"><code>dircmp</code></a> offers a
+number of interesting attributes that may be used to get various
+bits of information about the directory trees being compared.</p>
+
+<p>Note that via <code>
+__getattr__</code> hooks, all attributes are computed lazily, so there
+is no speed penalty if only those attributes which are lightweight
+to compute are used.</p>
+</div>
+<dl><dt class="attribute" id="dircmp.left_list"><b>left_list</b> <tt class="nav"><a class="nav" href="filecmp.dircmp.left_list" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>Files and subdirectories in <var>a</var>, filtered by <var>
+hide</var> and <var>ignore</var>.</p>
+</dd>
+<dt class="attribute" id="dircmp.right_list"><b>right_list</b> <tt class="nav"><a class="nav" href="filecmp.dircmp.right_list" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>Files and subdirectories in <var>b</var>, filtered by <var>
+hide</var> and <var>ignore</var>.</p>
+</dd>
+<dt class="attribute" id="dircmp.common"><b>common</b> <tt class="nav"><a class="nav" href="filecmp.dircmp.common" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>Files and subdirectories in both <var>a</var> and <var>
+b</var>.</p>
+</dd>
+<dt class="attribute" id="dircmp.left_only"><b>left_only</b> <tt class="nav"><a class="nav" href="filecmp.dircmp.left_only" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>Files and subdirectories only in <var>a</var>.</p>
+</dd>
+<dt class="attribute" id="dircmp.right_only"><b>right_only</b> <tt class="nav"><a class="nav" href="filecmp.dircmp.right_only" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>Files and subdirectories only in <var>b</var>.</p>
+</dd>
+<dt class="attribute" id="dircmp.common_dirs"><b>common_dirs</b> <tt class="nav"><a class="nav" href="filecmp.dircmp.common_dirs" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>Subdirectories in both <var>a</var> and <var>b</var>.</p>
+</dd>
+<dt class="attribute" id="dircmp.common_files"><b>common_files</b> <tt class="nav"><a class="nav" href="filecmp.dircmp.common_files" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>Files in both <var>a</var> and <var>b</var></p>
+</dd>
+<dt class="attribute" id="dircmp.common_funny"><b>common_funny</b> <tt class="nav"><a class="nav" href="filecmp.dircmp.common_funny" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>Names in both <var>a</var> and <var>b</var>, such that the type
+differs between the directories, or names for which <code>os.stat</code> reports an error.</p>
+</dd>
+<dt class="attribute" id="dircmp.same_files"><b>same_files</b> <tt class="nav"><a class="nav" href="filecmp.dircmp.same_files" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>Files which are identical in both <var>a</var> and <var>
+b</var>.</p>
+</dd>
+<dt class="attribute" id="dircmp.diff_files"><b>diff_files</b> <tt class="nav"><a class="nav" href="filecmp.dircmp.diff_files" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>Files which are in both <var>a</var> and <var>b</var>, whose
+contents differ.</p>
+</dd>
+<dt class="attribute" id="dircmp.funny_files"><b>funny_files</b> <tt class="nav"><a class="nav" href="filecmp.dircmp.funny_files" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>Files which are in both <var>a</var> and <var>b</var>, but could
+not be compared.</p>
+</dd>
+<dt class="attribute" id="dircmp.subdirs"><b>subdirs</b> <tt class="nav"><a class="nav" href="filecmp.dircmp.subdirs" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>A dictionary mapping names in <code>common_dirs</code> to <a class="link" href="#dircmp"><code>dircmp</code></a> objects.</p>
+</dd>
+</dl></div></body></html>

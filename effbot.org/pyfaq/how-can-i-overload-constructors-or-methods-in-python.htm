@@ -1,0 +1,17 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>How can I overload constructors (or methods) in&nbsp;Python?</title></head><body data-page-id="767"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><p class="note" style="text-align: center"><strong>
+This is an old copy of the Python FAQ.  The information here may be
+outdated.
+</strong></p><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">How can I overload constructors (or methods) in&nbsp;Python?</h1></div><div class="yui-ge"><div class="yui-u first"><p>This answer actually applies to all methods, but the question usually comes up first in the context of constructors.</p><p>In C++ you&#8217;d write</p><pre><code>class C {
+    C() { cout &lt;&lt; "No arguments\n"; }
+    C(int i) { cout &lt;&lt; "Argument is " &lt;&lt; i &lt;&lt; "\n"; }
+}
+</code></pre><p>in Python you have to write a single constructor that handles all cases,
+using either default arguments or type or capability tests. For example:</p><pre class="python"><span class="pykeyword">class</span> <span class="pyclass">C</span>:
+    <span class="pykeyword">def</span> <span class="pyfunction">__init__</span>(self, i=None):
+        <span class="pykeyword">if</span> i <span class="pykeyword">is</span> None:
+            <span class="pykeyword">print</span> <span class="pystring">"No arguments"</span>
+        <span class="pykeyword">else</span>:
+            <span class="pykeyword">print</span> <span class="pystring">"Argument is"</span>, i</pre><p>This is not entirely equivalent, but close enough in practice.</p><p>You could also try a variable-length argument list, e.g.</p><pre class="python"><span class="pykeyword">def</span> <span class="pyfunction">__init__</span>(self, *args):
+    ....</pre><p>The same approach works for all method definitions.</p><p>CATEGORY: programming</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to pyfaq index page.">::: pyfaq :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

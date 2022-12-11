@@ -1,0 +1,58 @@
+
+@@module statcache
+
+<h1>statcache&#8212;An optimization of os.stat()</h1>
+@@error unexpected div versionnote
+
+<p>The {@link statcache} module provides a simple optimization to {@link
+os.stat}: remembering the values of previous invocations.
+
+<p>The {@link statcache} module defines the following functions:
+
+@@function stat(path)
+
+<p>This is the main module entry-point. Identical for {@link os.stat},
+except for remembering the result for future invocations of the
+function.
+
+@@text 
+
+<p>The rest of the functions are used to clear the cache, or parts of
+it.
+
+@@function reset()
+
+<p>Clear the cache: forget all results of previous {@link stat} calls.
+
+@@function forget(path)
+
+<p>Forget the result of {@code stat(}{@var path}), if any.
+
+@@function forget_prefix(prefix)
+
+<p>Forget all results of {@code stat(}{@var path}) for {@var path}
+starting with {@var prefix}.
+
+@@function forget_dir(prefix)
+
+<p>Forget all results of {@code stat(}{@var path}) for {@var path} a
+file in the directory {@var prefix}, including {@code stat(}{@var
+prefix}).
+
+@@function forget_except_prefix(prefix)
+
+<p>Similar to {@link forget_prefix}, but for all {@var path} values {@em
+not} starting with {@var prefix}.
+
+@@text 
+
+<p>Example:
+
+<pre>
+&gt;&gt;&gt; import os, statcache
+&gt;&gt;&gt; statcache.stat('.')
+(16893, 2049, 772, 18, 1000, 1000, 2048, 929609777, 929609777, 929609777)
+&gt;&gt;&gt; os.stat('.')
+(16893, 2049, 772, 18, 1000, 1000, 2048, 929609777, 929609777, 929609777)
+</pre>
+

@@ -1,0 +1,419 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>xml.dom.minidom</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-xml.dom.minidom.html'>original</a> :::
+<a href='xml.dom.minidom.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>xml.dom.minidom&#8212;Lightweight DOM implementation</h1>
+
+<div class="toc"><dl><dt>On this page:</dt><dd><a href="#dom-objects">DOM Objects</a></dd><dd><a href="#dom-example">DOM Example</a></dd><dd><a href="#minidom-and-the-dom-standard">minidom and the DOM standard</a></dd></dl></div><p>New in version 2.0.</p>
+
+<p><code>xml.dom.minidom</code>
+is a light-weight implementation of the Document Object Model
+interface. It is intended to be simpler than the full DOM and also
+significantly smaller.</p>
+
+<p>DOM applications typically start by parsing some XML into a DOM.
+With <code>
+xml.dom.minidom</code>, this is done through the parse functions:</p>
+
+<pre>
+from xml.dom.minidom import parse, parseString
+
+dom1 = parse('c:\\temp\\mydata.xml') # parse an XML file by name
+
+datasource = open('c:\\temp\\mydata.xml')
+dom2 = parse(datasource)   # parse an open file
+
+dom3 = parseString('&lt;myxml&gt;Some data&lt;empty/&gt; some more data&lt;/myxml&gt;')
+</pre>
+
+<p>The <a class="link" href="#parse"><code>parse</code></a> function can
+take either a filename or an open file object.</p>
+</div>
+<dl><dt class="function" id="parse"><b>parse(filename_or_file, parser)</b> <tt class="nav"><a class="nav" href="xml.dom.minidom.parse" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return a <code>Document</code> from
+the given input. <var>filename_or_file</var> may be either a file
+name, or a file-like object. <var>parser</var>, if given, must be a
+SAX2 parser object. This function will change the document handler
+of the parser and activate namespace support; other parser
+configuration (like setting an entity resolver) must have been done
+in advance.</p>
+</dd>
+</dl><div class="text">
+<p>If you have XML in a string, you can use the <a class="link" href="#parseString"><code>parseString</code></a> function instead:</p>
+</div>
+<dl><dt class="function" id="parseString"><b>parseString(string[, parser])</b> <tt class="nav"><a class="nav" href="xml.dom.minidom.parseString" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return a <code>Document</code> that
+represents the <var>string</var>. This method creates a <code>StringIO</code> object for the
+string and passes that on to <a class="link" href="#parse"><code>
+parse</code></a>.</p>
+</dd>
+</dl><div class="text">
+<p>Both functions return a <code>
+Document</code> object representing the content of the document.</p>
+
+<p>What the <a class="link" href="#parse"><code>parse</code></a> and <a class="link" href="#parseString"><code>parseString</code></a> functions do
+is connect an XML parser with a &#8220;DOM builder&#8221; that can
+accept parse events from any SAX parser and convert them into a DOM
+tree. The name of the functions are perhaps misleading, but are
+easy to grasp when learning the interfaces. The parsing of the
+document will be completed before these functions return; it's
+simply that these functions do not provide a parser implementation
+themselves.</p>
+
+<p>You can also create a <code>
+Document</code> by calling a method on a &#8220;DOM
+Implementation&#8221; object. You can get this object either by
+calling the <code>
+getDOMImplementation</code> function in the <code>xml.dom</code> package or the <code>xml.dom.minidom</code> module. Using the
+implementation from the <code>xml.dom.minidom</code> module will always
+return a <code>Document</code> instance
+from the minidom implementation, while the version from <code>xml.dom</code> may provide an
+alternate implementation (this is likely if you have the <a class="link" href="http://pyxml.sourceforge.net/">PyXML package</a>
+installed). Once you have a <code>
+Document</code>, you can add child nodes to it to populate the
+DOM:</p>
+
+<pre>
+from xml.dom.minidom import getDOMImplementation
+
+impl = getDOMImplementation()
+
+newdoc = impl.createDocument(None, "some_tag", None)
+top_element = newdoc.documentElement
+text = newdoc.createTextNode('Some textual content.')
+top_element.appendChild(text)
+</pre>
+
+<p>Once you have a DOM document object, you can access the parts of
+your XML document through its properties and methods. These
+properties are defined in the DOM specification. The main property
+of the document object is the <code>documentElement</code> property. It gives
+you the main element in the XML document: the one that holds all
+others. Here is an example program:</p>
+
+<pre>
+dom3 = parseString("&lt;myxml&gt;Some data&lt;/myxml&gt;")
+assert dom3.documentElement.tagName == "myxml"
+</pre>
+
+<p>When you are finished with a DOM, you should clean it up. This
+is necessary because some versions of Python do not support garbage
+collection of objects that refer to each other in a cycle. Until
+this restriction is removed from all versions of Python, it is
+safest to write your code as if cycles would not be cleaned up.</p>
+
+<p>The way to clean up a DOM is to call its <code>unlink</code> method:</p>
+
+<pre>
+dom1.unlink()
+dom2.unlink()
+dom3.unlink()
+</pre>
+
+<p><code>unlink</code> is a <code>
+xml.dom.minidom</code>-specific extension to the DOM API. After
+calling <code>unlink</code> on a node,
+the node and its descendants are essentially useless. <span class="mark">@see</span> <a class="link" href="http://www.w3.org/TR/REC-DOM-Level-1/">Document Object Model
+(DOM) Level 1 Specification</a> The W3C recommendation for the DOM
+supported by xml.dom.minidom.</p>
+
+<h2 id="dom-objects">DOM Objects <a class="nav" href="#dom-objects">#</a></h2>
+
+<p>The definition of the DOM API for Python is given as part of the
+<code>xml.dom</code> module
+documentation. This section lists the differences between the API
+and <code>
+xml.dom.minidom</code>.</p>
+</div>
+<dl><dt class="method" id="DOM.unlink"><b>unlink()</b> <tt class="nav"><a class="nav" href="xml.dom.minidom.DOM.unlink" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Break internal references within the DOM so that it will be
+garbage collected on versions of Python without cyclic GC. Even
+when cyclic GC is available, using this can make large amounts of
+memory available sooner, so calling this on DOM objects as soon as
+they are no longer needed is good practice. This only needs to be
+called on the <code>Document</code>
+object, but may be called on child nodes to discard children of
+that node.</p>
+</dd>
+<dt class="method"><b>
+DOM.writexml(writer[,indent=""[,addindent=""[,newl=""]]])</b> <tt class="nav"><a class="nav" href="xml.dom.minidom." title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Write XML to the writer object. The writer should have a <code>write</code> method which matches that
+of the file object interface. The <var>indent</var> parameter is
+the indentation of the current node. The <var>addindent</var>
+parameter is the incremental indentation to use for subnodes of the
+current one. The <var>newl</var> parameter specifies the string to
+use to terminate newlines.</p>
+
+<p>Changed in version 2.3: For the <code>Document</code> node, an additional keyword
+argument <var>encoding</var> can be used to specify the encoding
+field of the XML header.</p>
+
+<blockquote><span class="mark">@since</span> Changed in version
+2.1: The optional keyword parameters indent, addindent, and newl
+were added to support pretty output.<br />
+</blockquote>
+</dd>
+<dt class="method" id="DOM.toxml"><b>toxml([encoding])</b> <tt class="nav"><a class="nav" href="xml.dom.minidom.DOM.toxml" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return the XML that the DOM represents as a string.</p>
+
+<p>With no argument, the XML header does not specify an encoding,
+and the result is Unicode string if the default encoding cannot
+represent all characters in the document. Encoding this string in
+an encoding other than UTF-8 is likely incorrect, since UTF-8 is
+the default encoding of XML.</p>
+
+<p>With an explicit <var>encoding</var> argument, the result is a
+byte string in the specified encoding. It is recommended that this
+argument is always specified. To avoid UnicodeError exceptions in
+case of unrepresentable text data, the encoding argument should be
+specified as "utf-8".</p>
+
+<blockquote><span class="mark">@since</span> Changed in version
+2.3: the encoding argument was introduced.<br />
+</blockquote>
+</dd>
+<dt class="method" id="DOM.toprettyxml"><b>toprettyxml([indent[, newl]])</b> <tt class="nav"><a class="nav" href="xml.dom.minidom.DOM.toprettyxml" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return a pretty-printed version of the document. <var>
+indent</var> specifies the indentation string and defaults to a
+tabulator; <var>newl</var> specifies the string emitted at the end
+of each line and defaults to n.</p>
+
+<p>Changed in version 2.3: the encoding argument; see <code>toxml</code>.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.1.<br />
+</blockquote>
+</dd>
+</dl><div class="text">
+<p>The following standard DOM methods have special considerations
+with <code>
+xml.dom.minidom</code>:</p>
+</div>
+<dl><dt class="method" id="DOM.cloneNode"><b>cloneNode(deep)</b> <tt class="nav"><a class="nav" href="xml.dom.minidom.DOM.cloneNode" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Although this method was present in the version of <code>xml.dom.minidom</code>
+packaged with Python 2.0, it was seriously broken. This has been
+corrected for subsequent releases.</p>
+</dd>
+</dl><div class="text">
+<h2 id="dom-example">DOM Example <a class="nav" href="#dom-example">#</a></h2>
+
+<p>This example program is a fairly realistic example of a simple
+program. In this particular case, we do not take much advantage of
+the flexibility of the DOM.</p>
+
+<pre>
+import xml.dom.minidom
+
+document = """\
+&lt;slideshow&gt;
+&lt;title&gt;Demo slideshow&lt;/title&gt;
+&lt;slide&gt;&lt;title&gt;Slide title&lt;/title&gt;
+&lt;point&gt;This is a demo&lt;/point&gt;
+&lt;point&gt;Of a program for processing slides&lt;/point&gt;
+&lt;/slide&gt;
+
+&lt;slide&gt;&lt;title&gt;Another demo slide&lt;/title&gt;
+&lt;point&gt;It is important&lt;/point&gt;
+&lt;point&gt;To have more than&lt;/point&gt;
+&lt;point&gt;one slide&lt;/point&gt;
+&lt;/slide&gt;
+&lt;/slideshow&gt;
+"""
+
+dom = xml.dom.minidom.parseString(document)
+
+def getText(nodelist):
+    rc = ""
+    for node in nodelist:
+        if node.nodeType == node.TEXT_NODE:
+            rc = rc + node.data
+    return rc
+
+def handleSlideshow(slideshow):
+    print "&lt;html&gt;"
+    handleSlideshowTitle(slideshow.getElementsByTagName("title")[0])
+    slides = slideshow.getElementsByTagName("slide")
+    handleToc(slides)
+    handleSlides(slides)
+    print "&lt;/html&gt;"
+
+def handleSlides(slides):
+    for slide in slides:
+        handleSlide(slide)
+
+def handleSlide(slide):
+    handleSlideTitle(slide.getElementsByTagName("title")[0])
+    handlePoints(slide.getElementsByTagName("point"))
+
+def handleSlideshowTitle(title):
+    print "&lt;title&gt;%s&lt;/title&gt;" % getText(title.childNodes)
+
+def handleSlideTitle(title):
+    print "&lt;h2&gt;%s&lt;/h2&gt;" % getText(title.childNodes)
+
+def handlePoints(points):
+    print "&lt;ul&gt;"
+    for point in points:
+        handlePoint(point)
+    print "&lt;/ul&gt;"
+
+def handlePoint(point):
+    print "&lt;li&gt;%s&lt;/li&gt;" % getText(point.childNodes)
+
+def handleToc(slides):
+    for slide in slides:
+        title = slide.getElementsByTagName("title")[0]
+        print "&lt;p&gt;%s&lt;/p&gt;" % getText(title.childNodes)
+
+handleSlideshow(dom)
+</pre>
+
+<h2 id="minidom-and-the-dom-standard">minidom and the DOM standard <a class="nav" href="#minidom-and-the-dom-standard">#</a></h2>
+
+<p>The <code>
+xml.dom.minidom</code> module is essentially a DOM 1.0-compatible DOM
+with some DOM 2 features (primarily namespace features).</p>
+
+<p>Usage of the DOM interface in Python is straight-forward. The
+following mapping rules apply:</p>
+
+<ul>
+<li>
+<p>Interfaces are accessed through instance objects. Applications
+should not instantiate the classes themselves; they should use the
+creator functions available on the <code>Document</code> object. Derived interfaces
+support all operations (and attributes) from the base interfaces,
+plus any new operations.</p>
+</li>
+
+<li>
+<p>Operations are used as methods. Since the DOM uses only <code>in</code> parameters, the arguments are
+passed in normal order (from left to right). There are no optional
+arguments. <code>void</code> operations
+return <code>None</code>.</p>
+</li>
+
+<li>
+<p>IDL attributes map to instance attributes. For compatibility
+with the OMG IDL language mapping for Python, an attribute <code>
+foo</code> can also be accessed through accessor methods <code>_get_foo</code> and <code>_set_foo</code>. <code>readonly</code> attributes must not be changed;
+this is not enforced at runtime.</p>
+</li>
+
+<li>
+<p>The types <code>short int</code>, <code>unsigned int</code>,
+<code>unsigned long long</code>, and <code>boolean</code> all map
+to Python integer objects.</p>
+</li>
+
+<li>
+<p>The type <code>DOMString</code> maps to Python strings. <code>xml.dom.minidom</code>
+supports either byte or Unicode strings, but will normally produce
+Unicode strings. Values of type <code>DOMString</code> may also be
+<code>None</code> where allowed to have the
+IDL <code>null</code> value by the DOM specification from the
+W3C.</p>
+</li>
+
+<li>
+<p><code>const</code> declarations map to
+variables in their respective scope (e.g. <code>
+xml.dom.minidom.Node.PROCESSING_INSTRUCTION_NODE</code>); they must
+not be changed.</p>
+</li>
+
+<li>
+<p><code>DOMException</code> is currently not supported in <code>xml.dom.minidom</code>.
+Instead, <code>
+xml.dom.minidom</code> uses standard Python exceptions such as <code>
+exceptions.TypeError</code> and <code>
+exceptions.AttributeError</code>.</p>
+</li>
+
+<li>
+<p><code>NodeList</code> objects are
+implemented using Python's built-in list type. Starting with Python
+2.2, these objects provide the interface defined in the DOM
+specification, but with earlier versions of Python they do not
+support the official API. They are, however, much more
+&#8220;Pythonic&#8221; than the interface defined in the W3C
+recommendations.</p>
+</li>
+</ul>
+
+<p>The following interfaces have no implementation in <code>xml.dom.minidom</code>:</p>
+
+<ul>
+<li>
+<p><code>DOMTimeStamp</code></p>
+</li>
+
+<li>
+<p><code>DocumentType</code> (added
+in Python 2.1)</p>
+</li>
+
+<li>
+<p><code>
+DOMImplementation</code> (added in Python 2.1)</p>
+</li>
+
+<li>
+<p><code>CharacterData</code></p>
+</li>
+
+<li>
+<p><code>CDATASection</code></p>
+</li>
+
+<li>
+<p><code>Notation</code></p>
+</li>
+
+<li>
+<p><code>Entity</code></p>
+</li>
+
+<li>
+<p><code>
+EntityReference</code></p>
+</li>
+
+<li>
+<p><code>
+DocumentFragment</code></p>
+</li>
+</ul>
+
+<p>Most of these reflect information in the XML document that is
+not of general utility to most DOM users.</p>
+</div>
+</div></body></html>

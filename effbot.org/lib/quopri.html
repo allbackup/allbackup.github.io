@@ -1,0 +1,77 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>quopri</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-quopri.html'>original</a> :::
+<a href='quopri.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>quopri&#8212;Encode and decode MIME quoted-printable data</h1>
+
+<p>This module performs quoted-printable transport encoding and
+decoding, as defined in <a class="link" href="http://www.faqs.org/rfcs/rfc1521.html">RFC 1521</a>:
+&#8220;MIME (Multipurpose Internet Mail Extensions) Part One:
+Mechanisms for Specifying and Describing the Format of Internet
+Message Bodies&#8221;. The quoted-printable encoding is designed
+for data where there are relatively few nonprintable characters;
+the base64 encoding scheme available via the <code>base64</code> module is more compact if there are
+many such characters, as when sending a graphics file.</p>
+</div>
+<dl><dt class="function" id="decode"><b>decode(input, output[,header])</b> <tt class="nav"><a class="nav" href="quopri.decode" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Decode the contents of the <var>input</var> file and write the
+resulting decoded binary data to the <var>output</var> file. <var>
+input</var> and <var>output</var> must either be file objects or
+objects that mimic the file object interface. <var>input</var> will
+be read until <var>input</var>.readline() returns an empty string.
+If the optional argument <var>header</var> is present and true,
+underscore will be decoded as space. This is used to decode
+&#8220;Q&#8221;-encoded headers as described in <a class="link" href="http://www.faqs.org/rfcs/rfc1522.html">RFC 1522</a>:
+&#8220;MIME (Multipurpose Internet Mail Extensions) Part Two:
+Message Header Extensions for Non-ASCII Text&#8221;.</p>
+</dd>
+<dt class="function" id="encode"><b>encode(input, output, quotetabs)</b> <tt class="nav"><a class="nav" href="quopri.encode" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Encode the contents of the <var>input</var> file and write the
+resulting quoted-printable data to the <var>output</var> file.
+<var>input</var> and <var>output</var> must either be file objects
+or objects that mimic the file object interface. <var>input</var>
+will be read until <var>input</var>.readline() returns an empty
+string. <var>quotetabs</var> is a flag which controls whether to
+encode embedded spaces and tabs; when true it encodes such embedded
+whitespace, and when false it leaves them unencoded. Note that
+spaces and tabs appearing at the end of lines are always encoded,
+as per <a class="link" href="http://www.faqs.org/rfcs/rfc1521.html">RFC 1521</a>.</p>
+</dd>
+<dt class="function" id="decodestring"><b>decodestring(s[,header])</b> <tt class="nav"><a class="nav" href="quopri.decodestring" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Like <a class="link" href="#decode"><code>decode</code></a>, except that
+it accepts a source string and returns the corresponding decoded
+string.</p>
+</dd>
+<dt class="function" id="encodestring"><b>encodestring(s[, quotetabs])</b> <tt class="nav"><a class="nav" href="quopri.encodestring" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Like <a class="link" href="#encode"><code>encode</code></a>, except that
+it accepts a source string and returns the corresponding encoded
+string. <var>quotetabs</var> is optional (defaulting to 0), and is
+passed straight through to <a class="link" href="#encode"><code>
+encode</code></a>.</p>
+</dd>
+</dl><div class="text"><span class="mark">@see</span> <code>Module mimify</code> General utilities for
+processing of MIME messages. <span class="mark">@see</span> <code>Module base64</code> Encode and decode
+MIME base64 data.</div>
+</div></body></html>

@@ -1,0 +1,25 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>The __repr__&nbsp;method</title><script type="text/javascript">effbot_page_id=1873;</script></head><body><div id="doc2" class="yui-t2"><div id="hd"><!-- header --></div><!-- hd --><div id="bd"><!-- body --><p class="note" style="text-align: center"><strong>
+
+We're back after a server migration that caused effbot.org to fall
+over a bit harder than expected.  Expect some glitches.
+
+</strong></p><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">The __repr__&nbsp;method</h1></div><!-- yui-g --><body><p><strong>__repr__</strong>(self)</p>
+
+<p>Called by the <a href="repr.htm"><strong>repr</strong></a> built-in function and by string conversions
+(reverse quotes) to compute the <q>official</q> string representation of
+an object.</p>
+
+<p>If at all possible, this should look like a valid Python
+expression that could be used to recreate an object with the same
+value (given an appropriate environment). If this is not possible, a
+string of the form &#8220;&lt;&#8230;some useful description&#8230;&gt;&#8221; should be
+returned. The return value must be a string object. If a class defines
+<a href="__repr__.htm"><strong>__repr__</strong></a> but not <a href="__str__.htm"><strong>__str__</strong></a>, then
+<a href="__repr__.htm"><strong>__repr__</strong></a> is also used
+when an <q>informal</q> string representation of instances of that class
+is required.</p>
+
+<p>This is typically used for debugging, so it is important that the
+representation is information-rich and unambiguous.</p></body><div class="yui-g"></div><!-- yui-g --></div><!-- content --></div><!-- yui-b --></div><!-- yui-main --><div class="yui-b"><div id='menu'></div><!-- menu --></div><!-- yui-b --></div><!-- bd --><div id="ft"><!-- footer --></div><!-- ft --></div><!-- doc --><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

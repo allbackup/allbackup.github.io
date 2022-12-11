@@ -1,0 +1,20 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>How do you set a global variable in a&nbsp;function?</title></head><body data-page-id="833"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><p class="note" style="text-align: center"><strong>
+This is an old copy of the Python FAQ.  The information here may be
+outdated.
+</strong></p><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">How do you set a global variable in a&nbsp;function?</h1></div><div class="yui-ge"><div class="yui-u first"><p>Q. I&#8217;m trying to change a module variable, but it doesn&#8217;t work.  Can it
+be done?</p><p>A. Did you do something like this?</p><pre class="python">x = 1 <span class="pycomment"># make a global module variable</span>
+
+<span class="pykeyword">def</span> <span class="pyfunction">f</span>():
+      <span class="pykeyword">print</span> x <span class="pycomment"># try to print the global</span>
+      ...
+      <span class="pykeyword">for</span> j <span class="pykeyword">in</span> range(100):
+           <span class="pykeyword">if</span> q &gt; 3:
+              x=4</pre><p>Any variable assigned in a function is local to that function, unless it is specifically declared global. Since a value is bound to <em>x</em> as the last statement of the function body, the compiler assumes that <em>x</em> is local. Consequently the &#8220;print x&#8221; statement attempts to print an uninitialized local variable and will trigger a <a href="/pyref/UnboundLocalError.htm"><strong>UnboundLocalError</strong></a> (or in earlier Python versions, a <a href="/pyref/NameError.htm"><strong>NameError</strong></a>).</p><p>The solution is to insert an explicit <a href="/pyref/global.htm"><strong>global</strong></a> declaration at the start of the function:</p><pre class="python"><span class="pykeyword">def</span> <span class="pyfunction">f</span>():
+      <span class="pykeyword">global</span> x
+      <span class="pykeyword">print</span> x <span class="pycomment"># try to print the global</span>
+      ...
+      <span class="pykeyword">for</span> j <span class="pykeyword">in</span> range(100):
+           <span class="pykeyword">if</span> q &gt; 3:
+              x=4</pre><p>In this case, all references to <em>x</em> are interpreted as references to the <em>x</em> from the module namespace.</p><p>Note that the <a href="/pyref/global.htm"><strong>global</strong></a> declarations must be placed at the beginning of the function, and that it affects all uses of the variable inside the function.</p><p>If you want to create program-wide global variables, see this article:</p><blockquote><p><a href="how-do-i-share-global-variables-across-modules.htm"><strong>how-do-i-share-global-variables-across-modules</strong></a></p></blockquote><p>CATEGORY: programming</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to pyfaq index page.">::: pyfaq :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

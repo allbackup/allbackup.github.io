@@ -1,0 +1,100 @@
+<html>
+<head>
+<title>elementtree ::: www.effbot.org</title>
+<link rel='stylesheet' href='/effbot.css' type='text/css' media='screen' />
+</head>
+<body bgcolor='#ccffcc'>
+<div>[<a href='elementtree.htm'>back</a>]</div>
+<h3>Welcome to the effbot.org user editor!</h3>
+
+
+<p><b>Note: This is not a contact form!  Support questions, spam, and
+other off-topic stuff will be ignored.</b></p>
+
+<p>To suggest changes, edit the HTML fragment in the text box below.
+You can use the 'update preview' button to check your changes (the
+preview is displayed beneath the text box).  When done, fill in the
+name and address fields (optional) and click 'submit patch' to mail
+the patch to me.  (I reserve the right to decide which patches to
+include, of course.)  Thanks! /F</p>
+
+<form method='post' id='useredit'>
+<input type='hidden' name='name' value='elementtree'/>
+<p>
+<input type='submit' name='preview' value='update preview' style='background:#084; color:white; width:200px; font-weight:bold;' >
+&nbsp;&nbsp;&nbsp;
+<input type='submit' name='submit' value='submit patch'  style='background:#084; color:white; width:200px; font-weight:bold;' >
+</p>
+<textarea name='text' rows='30' cols='80'>The ElementTree Module
+
+&lt;p&gt;The Element type is a simple but flexible container object, designed to store hierarchical data structures, such as simplified XML infosets, in memory. The element type can be described as a cross between a Python list and a Python dictionary, which makes it easy to use for anyone who's done a little Python
+programming.&lt;/p&gt;
+
+&lt;p&gt;The core ElementTree modules, including &lt;a href="celementtree.htm"&gt;cElementTree&lt;/a&gt;, will be included in Python 2.5.&lt;/p&gt;
+
+&lt;p&gt;
+[&lt;a href="element-index.htm#downloads"&gt;download&amp;amp;install&lt;/a&gt;]
+[&lt;a href="element-index.htm#usage"&gt;usage&lt;/a&gt;]
+[&lt;a href="element-index.htm#documentation"&gt;documentation&lt;/a&gt;]
+[&lt;a href="pythondoc-elementtree-ElementTree.htm"&gt;api reference&lt;/a&gt;]
+&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;For more information, see
+&lt;a href='element-index.htm'&gt;&lt;cite&gt;ElementTree Overview&lt;/cite&gt;&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;For a small and fast implementation, see
+&lt;a href='celementtree.htm'&gt;&lt;cite&gt;The cElementTree Module&lt;/cite&gt;&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;For an independent implementation based on libxml2 and libxslt, see
+&lt;a href='http://codespeak.net/lxml/'&gt;lxml&lt;/a&gt;.</textarea>
+<table>
+<tr><td><label for='author'>Name:</label></td><td>
+<div><input name='author' value="" size=40></div>
+</td><td>(Optional)</td></tr>
+<tr><td><label for='email'>Mail:</label></td><td>
+<div><input name='email' value="" size=40></div>
+</td><td>(Optional)</td></tr>
+<tr><td><label for='note'>Comment:</label></td><td>
+<div><input name='note' value="" size=40></div>
+</td><td>(Optional)</td></tr>
+<tr><td><label for='password'>Password:</label></td><td>
+<div><input name='password' value="(replace with the sum of 7+4)" size=40></div>
+</td><td>(Required)</td></tr>
+</table>
+<p>
+<input type='submit' name='preview' value='update preview' style='background:#084; color:white; width:200px; font-weight:bold;' >
+&nbsp;&nbsp;&nbsp;
+<input type='submit' name='submit' value='submit patch'  style='background:#084; color:white; width:200px; font-weight:bold;' >
+</p>
+<p>&nbsp;</p>
+</form>
+<div style='background: white; border: 2px solid #084; padding: 0px 20px;'>
+<h2>The ElementTree Module</h2>
+
+<p>The Element type is a simple but flexible container object, designed to store hierarchical data structures, such as simplified XML infosets, in memory. The element type can be described as a cross between a Python list and a Python dictionary, which makes it easy to use for anyone who's done a little Python
+programming.</p>
+
+<p>The core ElementTree modules, including <a href="celementtree.htm">cElementTree</a>, will be included in Python 2.5.</p>
+
+<p>
+[<a href="element-index.htm#downloads">download&amp;install</a>]
+[<a href="element-index.htm#usage">usage</a>]
+[<a href="element-index.htm#documentation">documentation</a>]
+[<a href="pythondoc-elementtree-ElementTree.htm">api reference</a>]
+</p>
+
+<hr />
+
+<p>For more information, see
+<a href='element-index.htm'><cite>ElementTree Overview</cite></a>.</p>
+
+<p>For a small and fast implementation, see
+<a href='celementtree.htm'><cite>The cElementTree Module</cite></a>.</p>
+
+<p>For an independent implementation based on libxml2 and libxslt, see
+<a href='http://codespeak.net/lxml/'>lxml</a>.
+</div>
+</body>
+</html>

@@ -1,0 +1,38 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>The global&nbsp;statement</title><script type="text/javascript">effbot_page_id=1321;</script></head><body><div id="doc2" class="yui-t2"><div id="hd"><!-- header --></div><!-- hd --><div id="bd"><!-- body --><p class="note" style="text-align: center"><strong>
+
+We're back after a server migration that caused effbot.org to fall
+over a bit harder than expected.  Expect some glitches.
+
+</strong></p><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">The global&nbsp;statement</h1></div><!-- yui-g --><body><p>Syntax:</p>
+
+<blockquote>
+  <p><strong>global</strong> <em><a href="syntax-identifier">identifier list</a></em></p>
+</blockquote>
+
+<p>The <strong>global</strong> statement is a declaration which holds for the entire
+current code block. It means that the listed identifiers are to be
+interpreted as globals. It would be impossible to assign to a global
+variable without global, although free variables may refer to globals
+without being declared global.</p>
+
+<p>Names listed in a <strong>global</strong> statement must not be used in the same code
+block textually preceding that global statement.</p>
+
+<p>Names listed in a <strong>global</strong> statement must not be defined as formal
+parameters or in a <a href="for.htm"><strong>for</strong></a> loop control target, class definition,
+function definition, or <a href="import.htm"><strong>import</strong></a> statement.</p>
+
+<p>(The current implementation does not enforce the latter two
+restrictions, but programs should not abuse this freedom, as future
+implementations may enforce them or silently change the meaning of the
+program.)</p>
+
+<p><strong>Programmer&#8217;s note:</strong> The <strong>global</strong> statement is a directive to the
+parser. It applies only to code parsed at the same time as the global
+statement. In particular, a global statement contained in an <a href="exec.htm"><strong>exec</strong></a>
+statement does not affect the code block <em>containing</em> the <a href="exec.htm"><strong>exec</strong></a>
+statement, and code contained in an <a href="exec.htm"><strong>exec</strong></a> statement is unaffected by
+<strong>global</strong> statements in the code containing the <a href="exec.htm"><strong>exec</strong></a> statement.
+The same applies to the <a href="eval.htm"><strong>eval</strong></a>, <a href="execfile.htm"><strong>execfile</strong></a> and <a href="compile.htm"><strong>compile</strong></a> functions.</p></body><div class="yui-g"></div><!-- yui-g --></div><!-- content --></div><!-- yui-b --></div><!-- yui-main --><div class="yui-b"><div id='menu'></div><!-- menu --></div><!-- yui-b --></div><!-- bd --><div id="ft"><!-- footer --></div><!-- ft --></div><!-- doc --><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

@@ -1,0 +1,98 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>whrandom</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-whrandom.html'>original</a> :::
+<a href='whrandom.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>whrandom&#8212;Pseudo-random number generator</h1>
+</div>
+<div class="error">
+<p class="note"><b>Note:</b> This module was an implementation
+detail of the <a class="link" href="#random"><code>random</code></a> module
+in releases of Python prior to 2.1. It is no longer used. Please do
+not use this module directly; use <a class="link" href="#random"><code>random</code></a> instead.</p>
+
+<p>This module implements a Wichmann-Hill pseudo-random number
+generator class that is also named <code>whrandom</code>. Instances of the <code>whrandom</code> class conform to the Random
+Number Generator interface described in the docs for the <a class="link" href="#random"><code>random</code></a> module. They also offer
+the following method, specific to the Wichmann-Hill algorithm:</p>
+</div>
+<dl><dt class="method" id="seed"><b>seed([x, y, z])</b> <tt class="nav"><a class="nav" href="whrandom.seed" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Initializes the random number generator from the integers <var>
+x</var>, <var>y</var> and <var>z</var>. When the module is first
+imported, the random number is initialized using values derived
+from the current time. If <var>x</var>, <var>y</var>, and <var>
+z</var> are either omitted or <code>0</code>, the seed will be
+computed from the current system time. If one or two of the
+parameters are <code>0</code>, but not all three, the zero values
+are replaced by ones. This causes some apparently different seeds
+to be equal, with the corresponding result on the pseudo-random
+series produced by the generator.</p>
+</dd>
+</dl><div class="text">
+<p>Other supported methods include:</p>
+</div>
+<dl><dt class="function" id="choice"><b>choice(seq)</b> <tt class="nav"><a class="nav" href="whrandom.choice" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Chooses a random element from the non-empty sequence <var>
+seq</var> and returns it.</p>
+</dd>
+<dt class="function" id="randint"><b>randint(a, b)</b> <tt class="nav"><a class="nav" href="whrandom.randint" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Returns a random integer <var>N</var> such that <var>
+a</var>&lt;=<var>N</var>&lt;=<var>b</var>.</p>
+</dd>
+<dt class="function" id="random"><b>random()</b> <tt class="nav"><a class="nav" href="whrandom.random" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Returns the next random floating point number in the range [0.0
+... 1.0).</p>
+</dd>
+<dt class="function"><b>seed(x, y, z)</b> <tt class="nav"><a class="nav" href="whrandom.seed" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Initializes the random number generator from the integers <var>
+x</var>, <var>y</var> and <var>z</var>. When the module is first
+imported, the random number is initialized using values derived
+from the current time.</p>
+</dd>
+<dt class="function" id="uniform"><b>uniform(a, b)</b> <tt class="nav"><a class="nav" href="whrandom.uniform" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Returns a random real number <var>N</var> such that <var>
+a</var>&lt;=<var>N</var>&lt;<var>b</var>.</p>
+</dd>
+</dl><div class="text">
+<p>When imported, the <code>
+whrandom</code> module also creates an instance of the <code>whrandom</code> class, and makes the methods of
+that instance available at the module level. Therefore one can
+write either <code>N = whrandom.random()</code> or:</p>
+
+<pre>
+generator = whrandom.whrandom()
+N = generator.random()
+</pre>
+
+<p>Note that using separate instances of the generator leads to
+independent sequences of pseudo-random numbers. <span class="mark">
+@see</span> <a class="link" href="#random"><code>Module random</code></a>
+Generators for various random distributions and documentation for
+the Random Number Generator interface.</p>
+</div>
+</div></body></html>

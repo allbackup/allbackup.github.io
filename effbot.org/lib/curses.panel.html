@@ -1,0 +1,131 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>curses.panel</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-curses.panel.html'>original</a> :::
+<a href='curses.panel.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>curses.panel&#8212;A panel stack extension for curses.</h1>
+
+<div class="toc"><dl><dt>On this page:</dt><dd><a href="#functions">Functions</a></dd><dd><a href="#panel-objects">Panel Objects</a></dd></dl></div><p>Panels are windows with the added feature of depth, so they can
+be stacked on top of each other, and only the visible portions of
+each window will be displayed. Panels can be added, moved up or
+down in the stack, and removed.</p>
+
+<h2 id="functions">Functions <a class="nav" href="#functions">#</a></h2>
+
+<p>The module <code>
+curses.panel</code> defines the following functions:</p>
+</div>
+<dl><dt class="function" id="bottom_panel"><b>bottom_panel()</b> <tt class="nav"><a class="nav" href="curses.panel.bottom_panel" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Returns the bottom panel in the panel stack.</p>
+</dd>
+<dt class="function" id="new_panel"><b>new_panel(win)</b> <tt class="nav"><a class="nav" href="curses.panel.new_panel" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Returns a panel object, associating it with the given window
+<var>win</var>.</p>
+</dd>
+<dt class="function" id="top_panel"><b>top_panel()</b> <tt class="nav"><a class="nav" href="curses.panel.top_panel" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Returns the top panel in the panel stack.</p>
+</dd>
+<dt class="function" id="update_panels"><b>update_panels()</b> <tt class="nav"><a class="nav" href="curses.panel.update_panels" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Updates the virtual screen after changes in the panel stack.
+This does not call <code>
+curses.doupdate</code>, so you'll have to do this yourself.</p>
+</dd>
+</dl><div class="text">
+<h2 id="panel-objects">Panel Objects <a class="nav" href="#panel-objects">#</a></h2>
+
+<p>Panel objects, as returned by <a class="link" href="#new_panel"><code>new_panel</code></a> above, are windows with a
+stacking order. There's always a window associated with a panel
+which determines the content, while the panel methods are
+responsible for the window's depth in the panel stack.</p>
+
+<p>Panel objects have the following methods:</p>
+</div>
+<dl><dt class="method" id="Panel.above"><b>above()</b> <tt class="nav"><a class="nav" href="curses.panel.Panel.above" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Returns the panel above the current panel.</p>
+</dd>
+<dt class="method" id="Panel.below"><b>below()</b> <tt class="nav"><a class="nav" href="curses.panel.Panel.below" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Returns the panel below the current panel.</p>
+</dd>
+<dt class="method" id="Panel.bottom"><b>bottom()</b> <tt class="nav"><a class="nav" href="curses.panel.Panel.bottom" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Push the panel to the bottom of the stack.</p>
+</dd>
+<dt class="method" id="Panel.hidden"><b>hidden()</b> <tt class="nav"><a class="nav" href="curses.panel.Panel.hidden" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Returns true if the panel is hidden (not visible), false
+otherwise.</p>
+</dd>
+<dt class="method" id="Panel.hide"><b>hide()</b> <tt class="nav"><a class="nav" href="curses.panel.Panel.hide" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Hide the panel. This does not delete the object, it just makes
+the window on screen invisible.</p>
+</dd>
+<dt class="method" id="Panel.move"><b>move(y, x)</b> <tt class="nav"><a class="nav" href="curses.panel.Panel.move" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Move the panel to the screen coordinates <code>
+(</code><var>y</var>, <var>x</var>).</p>
+</dd>
+<dt class="method" id="Panel.replace"><b>replace(win)</b> <tt class="nav"><a class="nav" href="curses.panel.Panel.replace" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Change the window associated with the panel to the window <var>
+win</var>.</p>
+</dd>
+<dt class="method" id="Panel.set_userptr"><b>set_userptr(obj)</b> <tt class="nav"><a class="nav" href="curses.panel.Panel.set_userptr" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Set the panel's user pointer to <var>obj</var>. This is used to
+associate an arbitrary piece of data with the panel, and can be any
+Python object.</p>
+</dd>
+<dt class="method" id="Panel.show"><b>show()</b> <tt class="nav"><a class="nav" href="curses.panel.Panel.show" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Display the panel (which might have been hidden).</p>
+</dd>
+<dt class="method" id="Panel.top"><b>top()</b> <tt class="nav"><a class="nav" href="curses.panel.Panel.top" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Push panel to the top of the stack.</p>
+</dd>
+<dt class="method" id="Panel.userptr"><b>userptr()</b> <tt class="nav"><a class="nav" href="curses.panel.Panel.userptr" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Returns the user pointer for the panel. This might be any Python
+object.</p>
+</dd>
+<dt class="method" id="Panel.window"><b>window()</b> <tt class="nav"><a class="nav" href="curses.panel.Panel.window" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Returns the window object associated with the panel.</p>
+</dd>
+</dl></div></body></html>

@@ -1,0 +1,29 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>type-module</title> <script type="text/javascript">effbot_page_id=1721;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <h1 class="maintitle">type-module</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p><strong>Modules</strong></p><p>Modules are imported by the <a href="import.htm"><strong>import</strong></a> statement. A module object has
+a namespace implemented by a dictionary object (this is the dictionary
+referenced by the func_globals attribute of functions defined in the
+module). Attribute references are translated to lookups in this
+dictionary, e.g., <code>m.x</code> is equivalent to <code>m.__dict__["x"]</code>. A
+module object does not contain the code object used to initialize the
+module (since it isn&#8217;t needed once the initialization is done).</p><p>Attribute assignment updates the module&#8217;s namespace dictionary, e.g.,
+&#8220;m.x = 1&#8221; is equivalent to &#8220;m.__dict__[&#8220;x&#8221;] = 1&#8221;.</p><p>Special read-only attribute:</p><ul><li><a href="__dict__.htm"><strong>__dict__</strong></a> is the module&#8217;s namespace as
+a dictionary object.</li></ul><p>Predefined (writable) attributes:</p><ul><li><a href="__name__.htm"><strong>__name__</strong></a> is the module&#8217;s name.</li><li><a href="__doc__.htm"><strong>__doc__</strong></a> is the module&#8217;s documentation string, or <a href="None.htm"><strong>None</strong></a>
+if unavailable.</li><li><a href="__file__.htm"><strong>__file__</strong></a> is the pathname of the file from which the module
+was loaded, if it was loaded from a file.</li></ul><p>The <a href="__file__.htm"><strong>__file__</strong></a> attribute is not present for C modules that are
+statically linked into the interpreter; for extension modules loaded
+dynamically from a shared library, it is the pathname of the shared
+library file.</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><div class='comment'>
+<p><b>Comment:</b></p>
+<p>
+Merge with text from the library reference:
+
+&gt; The only special operation on a module is attribute access: m.name, where m is a module and name accesses a name defined in m's symbol table. Module attributes can be assigned to. (Note that the import statement is not, strictly speaking, an operation on a module object; import foo does not require a module object named foo to exist, rather it requires an (external) definition for a module named foo somewhere.)
+
+&gt; A special member of every module is \_\_dict\_\_. This is the dictionary containing the module's symbol table. Modifying this dictionary will actually change the module's symbol table, but direct assignment to the \_\_dict\_\_ attribute is not possible (you can write m.\_\_dict\_\_['a'] = 1, which defines m.a to be 1, but you can't write m.\_\_dict\_\_ = {}). Modifying  \_\_dict\_\_ directly is not recommended.
+
+&gt; Modules built into the interpreter are written like this: &amp;lt;module 'sys' (built-in)&amp;gt;. If loaded from a file, they are written as &amp;lt;module 'os' from '/usr/local/lib/python2.5/os.pyc'&amp;gt;. </p>
+<p>Posted by <b class='author'><a href='http://pyref.infogami.com/type-module/_comments/55ob'>infogami</a></b></p>
+</div>
+</div> <!-- yui-g --></div> <!-- content --> </div> <!-- yui-b --> </div> <!-- yui-main --> <div class="yui-b"> <div id='menu'> <ul> <li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li> <li><b><a href="." title="Go to pyref index page.">::: pyref :::</a></b></li> </ul> </div> <!-- menu --> </div> <!-- yui-b --> </div> <!-- bd --> <div id="ft"> <!-- footer --> <p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;"></a>
+this page was rendered by a <a href="http://www.djangoproject.com/">django</a> application in 0.01s 2011-06-21 21:00:47.261442.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p> </div> <!-- ft --> </div> <!-- doc --> <script src="/media/js/effbot-min.js" type="text/javascript"> </script> </body> </html>

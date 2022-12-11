@@ -1,0 +1,15 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>More Top-Down Parsing:&nbsp;JSON</title> <script type="text/javascript">effbot_page_id=2025;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> <!--
+<p style='color: #8f8f8f; background: #fff5bf; padding: 5px 10px;'> <b>2008-07-15:</b> Selected articles
+ (including this one) 
+now have experimental "comment" links in the left column and at the bottom.
+You're welcome to use them for commenting and voting on articles.
+For a bit more on this, see <a
+href="http://effbot.slinkset.com/links/Welcome_to_discuss_effbot_org">this
+page</a>. /F
+</p>
+--> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <h1 class="maintitle">More Top-Down Parsing:&nbsp;JSON</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p class="note">
+I&#8217;ll replace this status report with an article about topdown parsing of JSON at a later time.  If you&#8217;re looking for a production-quality JSON library, get <b>simplejson</b>.  If
+performance is critical, try <b>python-cjson</b>.
+</p><p>While the main motivation for my work on <a href="tdop-index.htm">topdown parsing</a> was a number of bigger projects (at least one of them will appear on a site near you in a not too distant future), I&#8217;ve also used some spare time to play with TDOP-based parsing of other formats.</p><p>One example is a <a href="http://www.json.org/">JSON</a> parser, the first version of which took about an hour to write, and which resulted in about 60 lines of JSON-specific code (30 lines for the parser definitions, 30 lines for the tokenizer), and 120 lines in total (including the parser framework, that is).  Even the JSON-specific parts were mostly cut and pasted from the Python expression parser, and then just tweaked a little to fit.</p><p>The code is not quite ready for public consumption (just a leetle more testing is required&#8230;), but I&#8217;ll get there.</p><p>I did find the benchmarks a bit interesting.  Using a 10k JSON record, I get the following timings:</p><ul><li>tdopjson: 12.6 ms</li><li><a href="http://www.undefined.org/python/">simplejson</a>

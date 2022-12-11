@@ -1,0 +1,168 @@
+<html>
+<head>
+<title>wck-index ::: www.effbot.org</title>
+<link rel='stylesheet' href='/effbot.css' type='text/css' media='screen' />
+</head>
+<body bgcolor='#ccffcc'>
+<div>[<a href='wck-index.htm'>back</a>]</div>
+<h3>Welcome to the effbot.org user editor!</h3>
+
+
+<p><b>Note: This is not a contact form!  Support questions, spam, and
+other off-topic stuff will be ignored.</b></p>
+
+<p>To suggest changes, edit the HTML fragment in the text box below.
+You can use the 'update preview' button to check your changes (the
+preview is displayed beneath the text box).  When done, fill in the
+name and address fields (optional) and click 'submit patch' to mail
+the patch to me.  (I reserve the right to decide which patches to
+include, of course.)  Thanks! /F</p>
+
+<form method='post' id='useredit'>
+<input type='hidden' name='name' value='wck-index'/>
+<p>
+<input type='submit' name='preview' value='update preview' style='background:#084; color:white; width:200px; font-weight:bold;' >
+&nbsp;&nbsp;&nbsp;
+<input type='submit' name='submit' value='submit patch'  style='background:#084; color:white; width:200px; font-weight:bold;' >
+</p>
+<textarea name='text' rows='30' cols='80'>The Widget Construction Kit
+
+&lt;blockquote&gt;"&lt;i&gt;
+Most toolkits have long assumed that a fixed library of interactive components
+covered the vast majority of interfaces that were to be built.  As a result,
+they have placed an emphasis on making components from the library easy to
+employ, while generally neglecting the issue of making it easy to create new
+interactive components. For example, creating a new widget in the popular Motif
+toolkit is very difficult. The implicit or explicit assumptions (and in some
+cases simply poor early design choices) made by a system, significantly limit
+the kinds of things that can be (easily) accomplished with it.
+&lt;/i&gt;"
+&lt;p align="right"&gt;-- Brad Myers et al, in &lt;i&gt;Past, Present and Future of User Interface Software Tools.&lt;/i&gt;&lt;/p&gt;&lt;/blockquote&gt;
+
+&lt;div id="effbot_download"&gt;
+
+&lt;div class="source"&gt;
+&lt;p&gt;&lt;b&gt;&lt;a href="/downloads#tkinter3000"&gt;Download Source Code&lt;/a&gt;&lt;/b&gt;&lt;/p&gt;
+
+&lt;/div&gt;
+
+&lt;div class="windows"&gt;
+
+&lt;p&gt;&lt;b&gt;&lt;a href="/downloads#tkinter3000"&gt;Download for Windows&lt;/a&gt;&lt;/b&gt;&lt;/p&gt;
+
+&lt;p&gt;If the installer cannot find your Python interpreter, see &lt;a href="python-register.htm"&gt;this page&lt;/a&gt;.&lt;/p&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;p&gt;The Widget Construction Kit (WCK) is an extension API that allows you
+to implement all sorts of custom widgets, in pure Python.  Creating a new
+widget can be as simple as:&lt;/p&gt;
+
+&lt;pre&gt;
+from WCK import Widget
+
+class HelloWidget(Widget):
+
+    def ui_handle_repair(self, draw, x0, y0, x1, y1):
+        font = self.ui_font("black", "times")
+        draw.text((0, 0), "hello, world!", font)
+&lt;/pre&gt;
+
+&lt;p&gt;The &lt;a href="tkinter3000-wck.htm"&gt;Tkinter 3000 implementation&lt;/a&gt; of
+the WCK is designed to work with the existing Tkinter layer, as well as
+the upcoming Tkinter 3000 interface layer.&lt;/p&gt;
+
+&lt;p&gt;The WCK is based on PythonWare's uiToolkit's extension API, and is
+designed to let you run new widgets under other toolkits as well.
+(for example, the &lt;a href="effnews-exe.htm"&gt;effnews RSS reader for
+Windows&lt;/a&gt; uses a WCK implementation built on top of Windows' native
+API.)&lt;/p&gt;
+
+&lt;p&gt;For more information, see &lt;a href="wck.htm"&gt;this page&lt;/a&gt;.&lt;/p&gt;
+
+&lt;script type="text/javascript" src="/effbot.js" /&gt;
+&lt;script&gt;effbot_download();&lt;/script&gt;</textarea>
+<table>
+<tr><td><label for='author'>Name:</label></td><td>
+<div><input name='author' value="" size=40></div>
+</td><td>(Optional)</td></tr>
+<tr><td><label for='email'>Mail:</label></td><td>
+<div><input name='email' value="" size=40></div>
+</td><td>(Optional)</td></tr>
+<tr><td><label for='note'>Comment:</label></td><td>
+<div><input name='note' value="" size=40></div>
+</td><td>(Optional)</td></tr>
+<tr><td><label for='password'>Password:</label></td><td>
+<div><input name='password' value="(replace with the sum of 7+4)" size=40></div>
+</td><td>(Required)</td></tr>
+</table>
+<p>
+<input type='submit' name='preview' value='update preview' style='background:#084; color:white; width:200px; font-weight:bold;' >
+&nbsp;&nbsp;&nbsp;
+<input type='submit' name='submit' value='submit patch'  style='background:#084; color:white; width:200px; font-weight:bold;' >
+</p>
+<p>&nbsp;</p>
+</form>
+<div style='background: white; border: 2px solid #084; padding: 0px 20px;'>
+<h2>The Widget Construction Kit</h2>
+
+<blockquote>"<i>
+Most toolkits have long assumed that a fixed library of interactive components
+covered the vast majority of interfaces that were to be built.  As a result,
+they have placed an emphasis on making components from the library easy to
+employ, while generally neglecting the issue of making it easy to create new
+interactive components. For example, creating a new widget in the popular Motif
+toolkit is very difficult. The implicit or explicit assumptions (and in some
+cases simply poor early design choices) made by a system, significantly limit
+the kinds of things that can be (easily) accomplished with it.
+</i>"
+<p align="right">-- Brad Myers et al, in <i>Past, Present and Future of User Interface Software Tools.</i></p></blockquote>
+
+<div id="effbot_download">
+
+<div class="source">
+<p><b><a href="/downloads#tkinter3000">Download Source Code</a></b></p>
+
+</div>
+
+<div class="windows">
+
+<p><b><a href="/downloads#tkinter3000">Download for Windows</a></b></p>
+
+<p>If the installer cannot find your Python interpreter, see <a href="python-register.htm">this page</a>.</p>
+
+</div>
+</div>
+
+<p>The Widget Construction Kit (WCK) is an extension API that allows you
+to implement all sorts of custom widgets, in pure Python.  Creating a new
+widget can be as simple as:</p>
+
+<pre>
+from WCK import Widget
+
+class HelloWidget(Widget):
+
+    def ui_handle_repair(self, draw, x0, y0, x1, y1):
+        font = self.ui_font("black", "times")
+        draw.text((0, 0), "hello, world!", font)
+</pre>
+
+<p>The <a href="tkinter3000-wck.htm">Tkinter 3000 implementation</a> of
+the WCK is designed to work with the existing Tkinter layer, as well as
+the upcoming Tkinter 3000 interface layer.</p>
+
+<p>The WCK is based on PythonWare's uiToolkit's extension API, and is
+designed to let you run new widgets under other toolkits as well.
+(for example, the <a href="effnews-exe.htm">effnews RSS reader for
+Windows</a> uses a WCK implementation built on top of Windows' native
+API.)</p>
+
+<p>For more information, see <a href="wck.htm">this page</a>.</p>
+
+<script type="text/javascript" src="/effbot.js" />
+<script>effbot_download();</script>
+</div>
+</body>
+</html>

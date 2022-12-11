@@ -1,0 +1,317 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>Input and&nbsp;Output</title> <script type="text/javascript">effbot_page_id=1916;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> <!--
+<p style='color: #8f8f8f; background: #fff5bf; padding: 5px 10px;'> <b>2008-07-15:</b> Selected articles
+
+now have experimental "comment" links in the left column and at the bottom.
+You're welcome to use them for commenting and voting on articles.
+For a bit more on this, see <a
+href="http://effbot.slinkset.com/links/Welcome_to_discuss_effbot_org">this
+page</a>. /F
+</p>
+--> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <h1 class="maintitle">Input and&nbsp;Output</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p>COMMENT: <a href="http://docs.python.org/tut/node9.html">Original Source</a></p><p>There are several ways to present the output of a program; data can be
+printed in a human-readable form, or written to a file for future
+use. This chapter will discuss some of the possibilities.</p><h2 id="fancier-output-formatting">Fancier Output Formatting&#160;<a class="nav" href="#fancier-output-formatting" title="bookmark!">#</a></h2><p>So far we&#8217;ve encountered two ways of writing values: <em>expression
+statements</em> and the print statement. (A third way is using the <a href="/pyref/file.write.htm"><strong>write</strong></a> method of file objects; the standard output file
+can be referenced as <a href="/pyref/sys.stdout.htm"><strong>sys.stdout</strong></a>. See the Library Reference
+for more information on this.)</p><p>Often you&#8217;ll want more control over the formatting of your output than
+simply printing space-separated values. There are two ways to format
+your output; the first way is to do all the string handling yourself;
+using string slicing and concatenation operations you can create any
+layout you can imagine. The standard module string contains some
+useful operations for padding strings to a given column width; these
+will be discussed shortly. The second way is to use the <code>%</code> operator
+with a string as the left argument. The <code>%</code> operator interprets the
+left argument much like a sprintf()-style format string to be applied
+to the right argument, and returns the string resulting from this
+formatting operation.</p><p>One question remains, of course: how do you convert values to strings?
+Luckily, Python has ways to convert any value to a string: pass it to
+the <a href="/pyref/repr.htm"><strong>repr</strong></a> or <a href="/pyref/str.htm"><strong>str</strong></a> functions.  Reverse quotes (&#8220;)
+are equivalent to <a href="/pyref/repr.htm"><strong>repr</strong></a>, but they can be hard to read, and
+are therefore not used much in modern Python code.</p><p>The <a href="/pyref/str.htm"><strong>str</strong></a> function is meant to return representations of
+values which are fairly human-readable, while <a href="/pyref/repr.htm"><strong>repr</strong></a> is meant
+to generate representations which can be read by the interpreter (or
+will force a <a href="/pyref/SyntaxError.htm"><strong>SyntaxError</strong></a> if there is not equivalent
+syntax). For objects which don&#8217;t have a particular representation for
+human consumption, <a href="/pyref/str.htm"><strong>str</strong></a> will return the same value as <a href="/pyref/repr.htm"><strong>repr</strong></a>.  Many values, such as numbers or structures like lists and
+dictionaries, have the same representation using either function.
+Strings and floating point numbers, in particular, have two distinct
+representations.</p><p>Some examples:</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><pre class="python wide wide">&gt;&gt;&gt; s = <span class="pystring">'Hello, world.'</span>
+&gt;&gt;&gt; str(s)
+<span class="pystring">'Hello, world.'</span>
+&gt;&gt;&gt; repr(s)
+<span class="pystring">"'Hello, world.'"</span>
+&gt;&gt;&gt; str(0.1)
+<span class="pystring">'0.1'</span>
+&gt;&gt;&gt; repr(0.1)
+<span class="pystring">'0.10000000000000001'</span>
+&gt;&gt;&gt; x = 10 * 3.25
+&gt;&gt;&gt; y = 200 * 200
+&gt;&gt;&gt; s = <span class="pystring">'The value of x is '</span> + repr(x) + <span class="pystring">', and y is '</span> + repr(y) + <span class="pystring">'...'</span>
+&gt;&gt;&gt; <span class="pykeyword">print</span> s
+The value of x <span class="pykeyword">is</span> 32.5, <span class="pykeyword">and</span> y <span class="pykeyword">is</span> 40000...
+&gt;&gt;&gt; <span class="pycomment"># The repr() of a string adds string quotes and backslashes:</span>
+... hello = <span class="pystring">'hello, world\n'</span>
+&gt;&gt;&gt; hellos = repr(hello)
+&gt;&gt;&gt; <span class="pykeyword">print</span> hellos
+<span class="pystring">'hello, world\n'</span>
+&gt;&gt;&gt; <span class="pycomment"># The argument to repr() may be any Python object:</span>
+... repr((x, y, (<span class="pystring">'spam'</span>, <span class="pystring">'eggs'</span>)))
+<span class="pystring">"(32.5, 40000, ('spam', 'eggs'))"</span>
+&gt;&gt;&gt; <span class="pycomment"># reverse quotes are convenient in interactive sessions:</span>
+... `x, y, (<span class="pystring">'spam'</span>, <span class="pystring">'eggs'</span>)`
+<span class="pystring">"(32.5, 40000, ('spam', 'eggs'))"</span></pre></div><div class="yui-ge"><div class="yui-u first"><p>Here are two ways to write a table of squares and cubes:</p><pre><code>&gt;&gt;&gt; for x in range(1, 11):
+...     print repr(x).rjust(2), repr(x*x).rjust(3),
+...     # Note trailing comma on previous line
+...     print repr(x*x*x).rjust(4)
+...
+ 1   1    1
+ 2   4    8
+ 3   9   27
+ 4  16   64
+ 5  25  125
+ 6  36  216
+ 7  49  343
+ 8  64  512
+ 9  81  729
+10 100 1000
+&gt;&gt;&gt; for x in range(1,11):
+...     print '%2d %3d %4d' % (x, x*x, x*x*x)
+... 
+ 1   1    1
+ 2   4    8
+ 3   9   27
+ 4  16   64
+ 5  25  125
+ 6  36  216
+ 7  49  343
+ 8  64  512
+ 9  81  729
+10 100 1000
+</code></pre><p>(Note that one space between each column was added by the way <a href="/pyref/print.htm"><strong>print</strong></a> works: it always adds spaces between its arguments.)</p><p>This example demonstrates the <a href="/pyref/str.rjust.htm"><strong>rjust</strong></a> method of
+string objects, which right-justifies a string in a field of a given
+width by padding it with spaces on the left. There are similar methods
+<a href="/pyref/str.ljust.htm"><strong>ljust</strong></a> and <a href="/pyref/str.center.htm"><strong>center</strong></a>.  These
+methods do not write anything, they just return a new string. If the
+input string is too long, they don&#8217;t truncate it, but return it
+unchanged; this will mess up your column lay-out but that&#8217;s usually
+better than the alternative, which would be lying about a value. (If
+you really want truncation you can always add a slice operation, as in
+&#8220;x.ljust(n)[:n]&#8221;.)</p><p>When calling print, a newline will automatically be output unless you
+leave a trailing comma on the line, as shown in the first example
+above.</p><p>There is another method, <a href="/pyref/str.zfill.htm"><strong>zfill</strong></a>, which pads a
+numeric string on the left with zeros.  It understands about plus and
+minus signs:</p><pre class="python">&gt;&gt;&gt; <span class="pystring">'12'</span>.zfill(5)
+<span class="pystring">'00012'</span>
+&gt;&gt;&gt; <span class="pystring">'-3.14'</span>.zfill(7)
+<span class="pystring">'-003.14'</span>
+&gt;&gt;&gt; <span class="pystring">'3.14159265359'</span>.zfill(5)
+<span class="pystring">'3.14159265359'</span></pre><p>Using the <code>%</code> operator looks like this:</p><pre class="python">&gt;&gt;&gt; <span class="pykeyword">import</span> math
+&gt;&gt;&gt; <span class="pykeyword">print</span> <span class="pystring">'The value of PI is approximately %5.3f.'</span> % math.pi
+The value of PI <span class="pykeyword">is</span> approximately 3.142.</pre><p>If there is more than one format in the string, you need to pass a
+tuple as right operand, as in this example:</p><pre><code>&gt;&gt;&gt; table = {'Sjoerd': 4127, 'Jack': 4098, 'Dcab': 7678}
+&gt;&gt;&gt; for name, phone in table.items():
+...     print '%-10s ==&gt; %10d' % (name, phone)
+... 
+Jack       ==&gt;       4098
+Dcab       ==&gt;       7678
+Sjoerd     ==&gt;       4127
+</code></pre><p>Most formats work exactly as in C and require that you pass the proper
+type; however, if you don&#8217;t you get an exception, not a core dump. The
+<code>%s</code> format is more relaxed: if the corresponding argument is not a
+string object, it is converted to string using the <a href="/pyref/str.htm"><strong>str</strong></a>
+built-in function. Using <code>*</code> to pass the width or precision in as a
+separate (integer) argument is supported. The C formats <code>%n</code> and <code>%p</code>
+are not supported.</p><p>If you have a really long format string that you don&#8217;t want to split
+up, it would be nice if you could reference the variables to be
+formatted by name instead of by position. This can be done by using
+form <code>%(name)format</code>, as shown here:</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><pre class="python wide wide">&gt;&gt;&gt; table = {<span class="pystring">'Sjoerd'</span>: 4127, <span class="pystring">'Jack'</span>: 4098, <span class="pystring">'Dcab'</span>: 8637678}
+&gt;&gt;&gt; <span class="pykeyword">print</span> <span class="pystring">'Jack: %(Jack)d; Sjoerd: %(Sjoerd)d; Dcab: %(Dcab)d'</span> % table
+Jack: 4098; Sjoerd: 4127; Dcab: 8637678</pre></div><div class="yui-ge"><div class="yui-u first"><p>This is particularly useful in combination with the new built-in
+<a href="/pyref/vars.htm"><strong>vars</strong></a> function, which returns a dictionary containing all
+local variables.</p><h2 id="reading-and-writing-files">Reading and Writing Files&#160;<a class="nav" href="#reading-and-writing-files" title="bookmark!">#</a></h2><p><a href="/pyref/open.htm"><strong>open</strong></a> returns a file object, and is most commonly used with
+two arguments: &#8220;open(filename, mode)&#8221;.</p><pre class="python">&gt;&gt;&gt; f=open(<span class="pystring">'/tmp/workfile'</span>, <span class="pystring">'w'</span>)
+&gt;&gt;&gt; <span class="pykeyword">print</span> f
+&lt;open file <span class="pystring">'/tmp/workfile'</span>, mode <span class="pystring">'w'</span> at 80a0960&gt;</pre><p>The first argument is a string containing the filename. The second
+argument is another string containing a few characters describing the
+way in which the file will be used. mode can be <code>'r'</code> when the file
+will only be read, <code>'w'</code> for only writing (an existing file with the
+same name will be erased), and <code>'a'</code> opens the file for appending; any
+data written to the file is automatically added to the end. <code>'r+'</code>
+opens the file for both reading and writing. The mode argument is
+optional; <code>'r'</code> will be assumed if it&#8217;s omitted.</p><p>On Windows and the Macintosh, <code>'b'</code> appended to the mode opens the
+file in binary mode, so there are also modes like <code>'rb'</code>, <code>'wb'</code>, and
+<code>'r+b'</code>. Windows makes a distinction between text and binary files;
+the end-of-line characters in text files are automatically altered
+slightly when data is read or written. This behind-the-scenes
+modification to file data is fine for ASCII text files, but it&#8217;ll
+corrupt binary data like that in JPEG or EXE files. Be very careful to
+use binary mode when reading and writing such files.</p><h3 id="methods-of-file-objects">Methods of File Objects&#160;<a class="nav" href="#methods-of-file-objects" title="bookmark!">#</a></h3><p>To read a file&#8217;s contents, call <code>f.read(size)</code>, which reads some
+quantity of data and returns it as a string. size is an optional
+numeric argument.  When size is omitted or negative, the entire
+contents of the file will be read and returned; it&#8217;s your problem if
+the file is twice as large as your machine&#8217;s memory.  Otherwise, at
+most size bytes are read and returned.  If the end of the file has
+been reached, <code>f.read()</code> will return an empty string (<code>""</code>).</p><pre class="python">&gt;&gt;&gt; f = open(<span class="pystring">"short.txt"</span>)
+&gt;&gt;&gt; f.read()
+<span class="pystring">'This is the entire file.\n'</span>
+&gt;&gt;&gt; f.read()
+<span class="pystring">''</span></pre><p><a href="/pyref/file.readline.htm"><strong>f.readline</strong></a> reads a single line from the file;
+a newline character (<code>\n</code>) is left at the end of the string, and is
+only omitted on the last line of the file if the file doesn&#8217;t end in a
+newline. This makes the return value unambiguous; if <code>f.readline()</code>
+returns an empty string, the end of the file has been reached, while a
+blank line is represented by <code>'\n'</code>, a string containing only a single
+newline.</p><pre class="python">&gt;&gt;&gt; f = open(<span class="pystring">"long.txt"</span>)
+&gt;&gt;&gt; f.readline()
+<span class="pystring">'This is the first line of the file.\n'</span>
+&gt;&gt;&gt; f.readline()
+<span class="pystring">'Second line of the file\n'</span>
+&gt;&gt;&gt; f.readline()
+<span class="pystring">''</span></pre><p><a href="/pyref/file.readlines.htm"><strong>f.readlines</strong></a> returns a list containing all the
+lines of data in the file.  If given an optional parameter sizehint,
+it reads that many bytes from the file and enough more to complete a
+line, and returns the lines from that.  This is often used to allow
+efficient reading of a large file by lines, but without having to load
+the entire file in memory.  Only complete lines will be returned.</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><pre class="python wide wide">&gt;&gt;&gt; f = open(<span class="pystring">"long.txt"</span>)
+&gt;&gt;&gt; f.readlines()
+[<span class="pystring">'This is the first line of the file.\n'</span>, <span class="pystring">'Second line of the file\n'</span>]</pre></div><div class="yui-ge"><div class="yui-u first"><p>An alternate approach to reading lines is to loop over the file
+object. This is memory efficient, fast, and leads to simpler code:</p><pre><code>&gt;&gt;&gt; f = open("long.txt")    
+&gt;&gt;&gt; for line in f:
+        print line,
+
+This is the first line of the file.
+Second line of the file
+</code></pre><p>The alternative approach is simpler but does not provide as
+fine-grained control. Since the two approaches manage line buffering
+differently, they should not be mixed.</p><p><a href="/pyref/file.write.htm"><strong>f.write(string)</strong></a> writes the contents of string to
+the file, returning <a href="/pyref/None.htm"><strong>None</strong></a>.</p><pre class="python">&gt;&gt;&gt; f = open(<span class="pystring">"output.txt"</span>, <span class="pystring">"w"</span>)
+&gt;&gt;&gt; f.write(<span class="pystring">'This is a test\n'</span>)</pre><p>To write something other than a string, it needs to be converted to a
+string first:</p><pre class="python">&gt;&gt;&gt; f = open(<span class="pystring">"result.txt"</span>, <span class="pystring">"w"</span>)
+&gt;&gt;&gt; value = (<span class="pystring">'the answer'</span>, 42)
+&gt;&gt;&gt; s = str(value)
+&gt;&gt;&gt; f.write(s)</pre><p><a href="/pyref/file.tell.htm"><strong>f.tell()</strong></a> returns an integer giving the file
+object&#8217;s current position in the file, measured in bytes from the
+beginning of the file.  To change the file object&#8217;s position, use
+&#8220;f.seek(offset, from_what)&#8221;.  The position is computed from adding
+offset to a reference point; the reference point is selected by the
+from<em>what argument.  A from</em>what value of 0 measures from the
+beginning of the file, 1 uses the current file position, and 2 uses
+the end of the file as the reference point.  from_what can be omitted
+and defaults to 0, using the beginning of the file as the reference
+point.</p><pre class="python">&gt;&gt;&gt; f = open(<span class="pystring">'result.txt'</span>, <span class="pystring">'r+'</span>)
+&gt;&gt;&gt; f.write(<span class="pystring">'0123456789abcdef'</span>)
+&gt;&gt;&gt; f.seek(5)     <span class="pycomment"># Go to the 6th byte in the file</span>
+&gt;&gt;&gt; f.read(1)
+<span class="pystring">'5'</span>
+&gt;&gt;&gt; f.seek(-3, 2) <span class="pycomment"># Go to the 3rd byte before the end</span>
+&gt;&gt;&gt; f.read(1)
+<span class="pystring">'d'</span></pre><p>When you&#8217;re done with a file, call <a href="/pyref/file.close.htm"><strong>f.close()</strong></a> to
+close it and free up any system resources taken up by the open file.
+After calling <code>f.close()</code>, attempts to use the file object will fail.</p><pre class="python">&gt;&gt;&gt; f = open(<span class="pystring">"short.txt"</span>, <span class="pystring">"w"</span>)
+&gt;&gt;&gt; f.close()
+&gt;&gt;&gt; f.read()
+Traceback (most recent call last):
+  File <span class="pystring">"&lt;stdin&gt;"</span>, line 1, <span class="pykeyword">in</span> ?
+ValueError: I/O operation on closed file</pre><p>File objects have some additional methods, such as <a href="/pyref/file.isatty.htm"><strong>isatty()</strong></a> and <a href="/pyref/file.truncate.htm"><strong>truncate()</strong></a> which are less
+frequently used; consult the Library Reference for a complete guide to
+file objects.</p><h3 id="the-pickle-module">The pickle Module&#160;<a class="nav" href="#the-pickle-module" title="bookmark!">#</a></h3><p>Strings can easily be written to and read from a file.  Numbers take a
+bit more effort, since the <a href="/pyref/file.read.htm"><strong>read</strong></a> method only
+returns strings, which will have to be passed to a function like
+<a href="/pyref/int.htm"><strong>int</strong></a>, which takes a string like <code>'123'</code> and returns its
+numeric value 123.  However, when you want to save more complex data
+types like lists, dictionaries, or class instances, things get a lot
+more complicated.</p><p>Rather than have users be constantly writing and debugging code to
+save complicated data types, Python provides a standard module called
+<a href="/pyref/pickle.htm"><strong>pickle</strong></a>.  This is a very competent module that can take
+almost any Python object (even some forms of Python code!), and
+convert it to a string representation; this process is called
+<em>pickling</em>.  Reconstructing the object from the string representation
+is called <em>unpickling</em>.  Between pickling and unpickling, the string
+representing the object may have been stored in a file or data, or
+sent over a network connection to some distant machine.</p><p>If you have an object <code>x</code>, and a file object <code>f</code> that&#8217;s been opened
+for writing, the simplest way to pickle the object takes only one line
+of code:</p><pre class="python">pickle.dump(x, f)</pre><p>To unpickle the object again, if <code>f</code> is a file object which has been
+opened for reading:</p><pre class="python">x = pickle.load(f)</pre><p>(There are other variants of this, used when pickling many objects or
+when you don&#8217;t want to write the pickled data to a file; consult the
+complete documentation for
+<a href="http://docs.python.org/lib/module-pickle.html">pickle</a> in the
+<em><a href="http://docs.python.org/lib/lib.html">Python Library Reference</a></em>.)</p><p><a href="/pyref/pickle.htm"><strong>pickle</strong></a> is the standard way to make Python objects which can
+be stored and reused by other programs or by a future invocation of
+the same program; the technical term for this is a <em>persistent</em>
+object. Because <a href="/pyref/pickle.htm"><strong>pickle</strong></a> is so widely used, many authors who
+write Python extensions take care to ensure that new data types such
+as matrices can be properly pickled and unpickled.</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><div class='comment'>
+<p><b>Comment:</b></p>
+<p>
+I just looked for mention of this in the python.org dev documentation and it was on the unlikely titled page "relationship to other python modules".  I think it is worth putting this simple thought in the mind of anyone learning about pickle for the first time.</p>
+<p>Posted by <b class='author'><a href='http://pytut.infogami.com/node9.html/_comments/3zz7/_comments/40nc'>infogami</a></b></p>
+</div>
+
+<div class='comment'>
+<p><b>Comment:</b></p>
+<p>
+Should we mention that it's not safe to unpickle data from unknown/untrusted sources in the tutorial?</p>
+<p>Posted by <b class='author'><a href='http://pytut.infogami.com/node9.html/_comments/3zz7'>infogami</a></b></p>
+</div>
+
+<div class='comment'>
+<p><b>Comment:</b></p>
+<p>
+"I can write it if you like."
+
+Well, I won't stop you ;-)</p>
+<p>Posted by <b class='author'><a href='http://pytut.infogami.com/node9.html/_comments/4dtj/_comments/4eam'>infogami</a></b></p>
+</div>
+
+<div class='comment'>
+<p><b>Comment:</b></p>
+<p>
+' The % operator interprets the left argument much like a sprintf()-style format string to be applied to the right argument, and returns the string resulting from this formatting operation.'  this will only be
+comprehensible to people who already know what sprintf is.  I think that this section should be expanded.
+I can write it if you like.
+</p>
+<p>Posted by <b class='author'><a href='http://pytut.infogami.com/node9.html/_comments/4dtj'>infogami</a></b></p>
+</div>
+
+<div class='comment'>
+<p><b>Comment:</b></p>
+<p>
+Nope.  According to a BDFL pronouncement, "open" is an action, "file" is a type.</p>
+<p>Posted by <b class='author'><a href='http://pytut.infogami.com/node9.html/_comments/4eiv/_comments/4emn'>infogami</a></b></p>
+</div>
+
+<div class='comment'>
+<p><b>Comment:</b></p>
+<p>
+Isn't open supposed to be spelled file these days?</p>
+<p>Posted by <b class='author'><a href='http://pytut.infogami.com/node9.html/_comments/4eiv'>infogami</a></b></p>
+</div>
+
+<div class='comment'>
+<p><b>Comment:</b></p>
+<p>
+The guido pronouncement is here:
+&lt;http://mail.python.org/pipermail/python-dev/2004-July/045967.html&gt; (at the bottom).
+
+Also see the first post in that thread:
+&lt;http://mail.python.org/pipermail/python-dev/2004-July/045921.html&gt;
+
+The recommended use is "open" when you're opening a file (or something similar), and "file" when you want to refer to the actual type (e.g. for type testing).
+
+To indent comments, click "reply" on the comment you're replying to.</p>
+<p>Posted by <b class='author'><a href='http://pytut.infogami.com/node9.html/_comments/4hw7/_comments/4hxr'>infogami</a></b></p>
+</div>
+
+<div class='comment'>
+<p><b>Comment:</b></p>
+<p>
+Can you explain that, or point me at a URL?  I'm confused.  I guess my problem is             that I think of all functions as actions.  Does this mean we should change the text so that when we are creating the file for the first time we call  file('myfile.txt', mode) but
+when we subsequently use it we still refer to it as open?
+
+Also can you explain how I could indent this comment?
+</p>
+<p>Posted by <b class='author'><a href='http://pytut.infogami.com/node9.html/_comments/4hw7'>infogami</a></b></p>
+</div>
+</div> <!-- yui-g --></div> <!-- content --> </div> <!-- yui-b --> </div> <!-- yui-main --> <div class="yui-b"> <div id='menu'> <ul> <li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li> <li><b><a href="." title="Go to pytut index page.">::: pytut :::</a></b></li> </ul> <ul><li><b>::: contents</b></li></ul> <ul><li><ul><li><a href="#fancier-output-formatting">Fancier Output Formatting</a></li><li><a href="#reading-and-writing-files">Reading and Writing Files</a></li><li><ul><li><a href="#methods-of-file-objects">Methods of File Objects</a></li><li><a href="#the-pickle-module">The pickle Module</a></li></ul></li></ul></li></ul> </div> <!-- menu --> </div> <!-- yui-b --> </div> <!-- bd --> <div id="ft"> <!-- footer --> <p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15_grey.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;"></a>
+this page was rendered by a <a href="http://www.djangoproject.com/">django</a> application in 0.07s 2010-02-23 08:50:34.439711.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p> </div> <!-- ft --> </div> <!-- doc --> <script src="/media/js/effbot-min.js" type="text/javascript"> </script> </body> </html>

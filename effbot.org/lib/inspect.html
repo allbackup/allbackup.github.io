@@ -1,0 +1,927 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>inspect</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-inspect.html'>original</a> :::
+<a href='inspect.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>inspect&#8212;Inspect live objects</h1>
+
+<div class="toc"><dl><dt>On this page:</dt><dd><a href="#types-and-members">Types and members</a></dd><dd><a href="#retrieving-source-code">Retrieving source code</a></dd><dd><a href="#classes-and-functions">Classes and functions</a></dd><dd><a href="#the-interpreter-stack">The interpreter stack</a></dd></dl></div><p>New in version 2.1.</p>
+
+<p>The <code>inspect</code> module
+provides several useful functions to help get information about
+live objects such as modules, classes, methods, functions,
+tracebacks, frame objects, and code objects. For example, it can
+help you examine the contents of a class, retrieve the source code
+of a method, extract and format the argument list for a function,
+or get all the information you need to display a detailed
+traceback.</p>
+
+<p>There are four main kinds of services provided by this module:
+type checking, getting source code, inspecting classes and
+functions, and examining the interpreter stack.</p>
+
+<h2 id="types-and-members">Types and members <a class="nav" href="#types-and-members">#</a></h2>
+
+<p>The <a class="link" href="#getmembers"><code>getmembers</code></a>
+function retrieves the members of an object such as a class or
+module. The eleven functions whose names begin with
+&#8220;is&#8221; are mainly provided as convenient choices for the
+second argument to <a class="link" href="#getmembers"><code>
+getmembers</code></a>. They also help you determine when you can expect to
+find the following special attributes:</p>
+
+<table border="1">
+<tr>
+<th>
+<p>Type</p>
+</th>
+<th>
+<p>Attribute</p>
+</th>
+<th>
+<p>Description</p>
+</th>
+<th>
+<p>Notes</p>
+</th>
+</tr>
+
+<tr>
+<td>
+<p>module</p>
+</td>
+<td>
+<p>__doc__</p>
+</td>
+<td>
+<p>documentation string</p>
+</td>
+<td />
+</tr>
+
+<tr>
+<td />
+<td>
+<p>__file__</p>
+</td>
+<td>
+<p>filename (missing for built-in modules)</p>
+</td>
+<td />
+</tr>
+
+<tr>
+<td>
+<p>class</p>
+</td>
+<td>
+<p>__doc__</p>
+</td>
+<td>
+<p>documentation string</p>
+</td>
+<td />
+</tr>
+
+<tr>
+<td />
+<td>
+<p>__module__</p>
+</td>
+<td>
+<p>name of module in which this class was defined</p>
+</td>
+<td />
+</tr>
+
+<tr>
+<td>
+<p>method</p>
+</td>
+<td>
+<p>__doc__</p>
+</td>
+<td>
+<p>documentation string</p>
+</td>
+<td />
+</tr>
+
+<tr>
+<td />
+<td>
+<p>__name__</p>
+</td>
+<td>
+<p>name with which this method was defined</p>
+</td>
+<td />
+</tr>
+
+<tr>
+<td />
+<td>
+<p>im_class</p>
+</td>
+<td>
+<p>class object that asked for this method</p>
+</td>
+<td>
+<p>(1)</p>
+</td>
+</tr>
+
+<tr>
+<td />
+<td>
+<p>im_func</p>
+</td>
+<td>
+<p>function object containing implementation of method</p>
+</td>
+<td />
+</tr>
+
+<tr>
+<td />
+<td>
+<p>im_self</p>
+</td>
+<td>
+<p>instance to which this method is bound, or <code>None</code></p>
+</td>
+<td />
+</tr>
+
+<tr>
+<td>
+<p>function</p>
+</td>
+<td>
+<p>__doc__</p>
+</td>
+<td>
+<p>documentation string</p>
+</td>
+<td />
+</tr>
+
+<tr>
+<td />
+<td>
+<p>__name__</p>
+</td>
+<td>
+<p>name with which this function was defined</p>
+</td>
+<td />
+</tr>
+
+<tr>
+<td />
+<td>
+<p>func_code</p>
+</td>
+<td>
+<p>code object containing compiled function bytecode</p>
+</td>
+<td />
+</tr>
+
+<tr>
+<td />
+<td>
+<p>func_defaults</p>
+</td>
+<td>
+<p>tuple of any default values for arguments</p>
+</td>
+<td />
+</tr>
+
+<tr>
+<td />
+<td>
+<p>func_doc</p>
+</td>
+<td>
+<p>(same as __doc__)</p>
+</td>
+<td />
+</tr>
+
+<tr>
+<td />
+<td>
+<p>func_globals</p>
+</td>
+<td>
+<p>global namespace in which this function was defined</p>
+</td>
+<td />
+</tr>
+
+<tr>
+<td />
+<td>
+<p>func_name</p>
+</td>
+<td>
+<p>(same as __name__)</p>
+</td>
+<td />
+</tr>
+
+<tr>
+<td>
+<p>traceback</p>
+</td>
+<td>
+<p>tb_frame</p>
+</td>
+<td>
+<p>frame object at this level</p>
+</td>
+<td />
+</tr>
+
+<tr>
+<td />
+<td>
+<p>tb_lasti</p>
+</td>
+<td>
+<p>index of last attempted instruction in bytecode</p>
+</td>
+<td />
+</tr>
+
+<tr>
+<td />
+<td>
+<p>tb_lineno</p>
+</td>
+<td>
+<p>current line number in Python source code</p>
+</td>
+<td />
+</tr>
+
+<tr>
+<td />
+<td>
+<p>tb_next</p>
+</td>
+<td>
+<p>next inner traceback object (called by this level)</p>
+</td>
+<td />
+</tr>
+
+<tr>
+<td>
+<p>frame</p>
+</td>
+<td>
+<p>f_back</p>
+</td>
+<td>
+<p>next outer frame object (this frame's caller)</p>
+</td>
+<td />
+</tr>
+
+<tr>
+<td />
+<td>
+<p>f_builtins</p>
+</td>
+<td>
+<p>built-in namespace seen by this frame</p>
+</td>
+<td />
+</tr>
+
+<tr>
+<td />
+<td>
+<p>f_code</p>
+</td>
+<td>
+<p>code object being executed in this frame</p>
+</td>
+<td />
+</tr>
+
+<tr>
+<td />
+<td>
+<p>f_exc_traceback</p>
+</td>
+<td>
+<p>traceback if raised in this frame, or <code>None</code></p>
+</td>
+<td />
+</tr>
+
+<tr>
+<td />
+<td>
+<p>f_exc_type</p>
+</td>
+<td>
+<p>exception type if raised in this frame, or <code>None</code></p>
+</td>
+<td />
+</tr>
+
+<tr>
+<td />
+<td>
+<p>f_exc_value</p>
+</td>
+<td>
+<p>exception value if raised in this frame, or <code>
+None</code></p>
+</td>
+<td />
+</tr>
+
+<tr>
+<td />
+<td>
+<p>f_globals</p>
+</td>
+<td>
+<p>global namespace seen by this frame</p>
+</td>
+<td />
+</tr>
+
+<tr>
+<td />
+<td>
+<p>f_lasti</p>
+</td>
+<td>
+<p>index of last attempted instruction in bytecode</p>
+</td>
+<td />
+</tr>
+
+<tr>
+<td />
+<td>
+<p>f_lineno</p>
+</td>
+<td>
+<p>current line number in Python source code</p>
+</td>
+<td />
+</tr>
+
+<tr>
+<td />
+<td>
+<p>f_locals</p>
+</td>
+<td>
+<p>local namespace seen by this frame</p>
+</td>
+<td />
+</tr>
+
+<tr>
+<td />
+<td>
+<p>f_restricted</p>
+</td>
+<td>
+<p>0 or 1 if frame is in restricted execution mode</p>
+</td>
+<td />
+</tr>
+
+<tr>
+<td />
+<td>
+<p>f_trace</p>
+</td>
+<td>
+<p>tracing function for this frame, or <code>None</code></p>
+</td>
+<td />
+</tr>
+
+<tr>
+<td>
+<p>code</p>
+</td>
+<td>
+<p>co_argcount</p>
+</td>
+<td>
+<p>number of arguments (not including * or ** args)</p>
+</td>
+<td />
+</tr>
+
+<tr>
+<td />
+<td>
+<p>co_code</p>
+</td>
+<td>
+<p>string of raw compiled bytecode</p>
+</td>
+<td />
+</tr>
+
+<tr>
+<td />
+<td>
+<p>co_consts</p>
+</td>
+<td>
+<p>tuple of constants used in the bytecode</p>
+</td>
+<td />
+</tr>
+
+<tr>
+<td />
+<td>
+<p>co_filename</p>
+</td>
+<td>
+<p>name of file in which this code object was created</p>
+</td>
+<td />
+</tr>
+
+<tr>
+<td />
+<td>
+<p>co_firstlineno</p>
+</td>
+<td>
+<p>number of first line in Python source code</p>
+</td>
+<td />
+</tr>
+
+<tr>
+<td />
+<td>
+<p>co_flags</p>
+</td>
+<td>
+<p>bitmap: 1=optimized <code>|</code> 2=newlocals <code>|</code>
+4=*arg <code>|</code> 8=**arg</p>
+</td>
+<td />
+</tr>
+
+<tr>
+<td />
+<td>
+<p>co_lnotab</p>
+</td>
+<td>
+<p>encoded mapping of line numbers to bytecode indices</p>
+</td>
+<td />
+</tr>
+
+<tr>
+<td />
+<td>
+<p>co_name</p>
+</td>
+<td>
+<p>name with which this code object was defined</p>
+</td>
+<td />
+</tr>
+
+<tr>
+<td />
+<td>
+<p>co_names</p>
+</td>
+<td>
+<p>tuple of names of local variables</p>
+</td>
+<td />
+</tr>
+
+<tr>
+<td />
+<td>
+<p>co_nlocals</p>
+</td>
+<td>
+<p>number of local variables</p>
+</td>
+<td />
+</tr>
+
+<tr>
+<td />
+<td>
+<p>co_stacksize</p>
+</td>
+<td>
+<p>virtual machine stack space required</p>
+</td>
+<td />
+</tr>
+
+<tr>
+<td />
+<td>
+<p>co_varnames</p>
+</td>
+<td>
+<p>tuple of names of arguments and local variables</p>
+</td>
+<td />
+</tr>
+
+<tr>
+<td>
+<p>builtin</p>
+</td>
+<td>
+<p>__doc__</p>
+</td>
+<td>
+<p>documentation string</p>
+</td>
+<td />
+</tr>
+
+<tr>
+<td />
+<td>
+<p>__name__</p>
+</td>
+<td>
+<p>original name of this function or method</p>
+</td>
+<td />
+</tr>
+
+<tr>
+<td />
+<td>
+<p>__self__</p>
+</td>
+<td>
+<p>instance to which a method is bound, or <code>None</code></p>
+</td>
+<td />
+</tr>
+</table>
+
+<br />
+<br />
+ 
+
+<p>Note:</p>
+</div>
+<dl><dt class="variable"><b>(1)</b> <tt class="nav"><a class="nav" href="inspect." title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<blockquote><span class="mark">@since</span> Changed in version
+2.2: im_class used to refer to the class that defined the
+method.<br />
+</blockquote>
+</dd>
+<dt class="function" id="getmembers"><b>getmembers(object[, predicate])</b> <tt class="nav"><a class="nav" href="inspect.getmembers" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return all the members of an object in a list of (name, value)
+pairs sorted by name. If the optional <var>predicate</var> argument
+is supplied, only members for which the predicate returns a true
+value are included.</p>
+</dd>
+<dt class="function" id="getmoduleinfo"><b>getmoduleinfo(path)</b> <tt class="nav"><a class="nav" href="inspect.getmoduleinfo" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return a tuple of values that describe how Python will interpret
+the file identified by <var>path</var> if it is a module, or <code>None</code> if it would not be
+identified as a module. The return tuple is <code>
+(</code><var>name</var>, <var>suffix</var>, <var>mode</var>, <var>
+mtype</var>), where <var>name</var> is the name of the module
+without the name of any enclosing package, <var>suffix</var> is the
+trailing part of the file name (which may not be a dot-delimited
+extension), <var>mode</var> is the <code>open</code> mode that would be used (<code>'r'</code>
+or <code>'rb'</code>), and <var>mtype</var> is an integer giving
+the type of the module. <var>mtype</var> will have a value which
+can be compared to the constants defined in the <code>imp</code> module; see the documentation for that
+module for more information on module types.</p>
+</dd>
+<dt class="function" id="getmodulename"><b>getmodulename(path)</b> <tt class="nav"><a class="nav" href="inspect.getmodulename" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return the name of the module named by the file <var>path</var>,
+without including the names of enclosing packages. This uses the
+same algorithm as the interpreter uses when searching for modules.
+If the name cannot be matched according to the interpreter's rules,
+<code>None</code> is returned.</p>
+</dd>
+<dt class="function" id="ismodule"><b>ismodule(object)</b> <tt class="nav"><a class="nav" href="inspect.ismodule" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return true if the object is a module.</p>
+</dd>
+<dt class="function" id="isclass"><b>isclass(object)</b> <tt class="nav"><a class="nav" href="inspect.isclass" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return true if the object is a class.</p>
+</dd>
+<dt class="function" id="ismethod"><b>ismethod(object)</b> <tt class="nav"><a class="nav" href="inspect.ismethod" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return true if the object is a method.</p>
+</dd>
+<dt class="function" id="isfunction"><b>isfunction(object)</b> <tt class="nav"><a class="nav" href="inspect.isfunction" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return true if the object is a Python function or unnamed
+(lambda) function.</p>
+</dd>
+<dt class="function" id="istraceback"><b>istraceback(object)</b> <tt class="nav"><a class="nav" href="inspect.istraceback" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return true if the object is a traceback.</p>
+</dd>
+<dt class="function" id="isframe"><b>isframe(object)</b> <tt class="nav"><a class="nav" href="inspect.isframe" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return true if the object is a frame.</p>
+</dd>
+<dt class="function" id="iscode"><b>iscode(object)</b> <tt class="nav"><a class="nav" href="inspect.iscode" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return true if the object is a code.</p>
+</dd>
+<dt class="function" id="isbuiltin"><b>isbuiltin(object)</b> <tt class="nav"><a class="nav" href="inspect.isbuiltin" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return true if the object is a built-in function.</p>
+</dd>
+<dt class="function" id="isroutine"><b>isroutine(object)</b> <tt class="nav"><a class="nav" href="inspect.isroutine" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return true if the object is a user-defined or built-in function
+or method.</p>
+</dd>
+<dt class="function" id="ismethoddescriptor"><b>ismethoddescriptor(object)</b> <tt class="nav"><a class="nav" href="inspect.ismethoddescriptor" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return true if the object is a method descriptor, but not if
+ismethod() or isclass() or isfunction() are true.</p>
+
+<p>This is new as of Python 2.2, and, for example, is true of
+int.__add__. An object passing this test has a __get__ attribute
+but not a __set__ attribute, but beyond that the set of attributes
+varies. __name__ is usually sensible, and __doc__ often is.</p>
+
+<p>Methods implemented via descriptors that also pass one of the
+other tests return false from the ismethoddescriptor() test, simply
+because the other tests promise more - you can, e.g., count on
+having the im_func attribute (etc) when an object passes
+ismethod().</p>
+</dd>
+<dt class="function" id="isdatadescriptor"><b>isdatadescriptor(object)</b> <tt class="nav"><a class="nav" href="inspect.isdatadescriptor" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return true if the object is a data descriptor.</p>
+
+<p>Data descriptors have both a __get__ and a __set__ attribute.
+Examples are properties (defined in Python) and getsets and members
+(defined in C). Typically, data descriptors will also have __name__
+and __doc__ attributes (properties, getsets, and members have both
+of these attributes), but this is not guaranteed.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.3.<br />
+</blockquote>
+</dd>
+</dl><div class="text">
+<h2 id="retrieving-source-code">Retrieving source code <a class="nav" href="#retrieving-source-code">#</a></h2>
+</div>
+<dl><dt class="function" id="getdoc"><b>getdoc(object)</b> <tt class="nav"><a class="nav" href="inspect.getdoc" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Get the documentation string for an object. All tabs are
+expanded to spaces. To clean up docstrings that are indented to
+line up with blocks of code, any whitespace than can be uniformly
+removed from the second line onwards is removed.</p>
+</dd>
+<dt class="function" id="getcomments"><b>getcomments(object)</b> <tt class="nav"><a class="nav" href="inspect.getcomments" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return in a single string any lines of comments immediately
+preceding the object's source code (for a class, function, or
+method), or at the top of the Python source file (if the object is
+a module).</p>
+</dd>
+<dt class="function" id="getfile"><b>getfile(object)</b> <tt class="nav"><a class="nav" href="inspect.getfile" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return the name of the (text or binary) file in which an object
+was defined. This will fail with a <code>exceptions.TypeError</code> if the
+object is a built-in module, class, or function.</p>
+</dd>
+<dt class="function" id="getmodule"><b>getmodule(object)</b> <tt class="nav"><a class="nav" href="inspect.getmodule" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Try to guess which module an object was defined in.</p>
+</dd>
+<dt class="function" id="getsourcefile"><b>getsourcefile(object)</b> <tt class="nav"><a class="nav" href="inspect.getsourcefile" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return the name of the Python source file in which an object was
+defined. This will fail with a <code>exceptions.TypeError</code> if the
+object is a built-in module, class, or function.</p>
+</dd>
+<dt class="function" id="getsourcelines"><b>getsourcelines(object)</b> <tt class="nav"><a class="nav" href="inspect.getsourcelines" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return a list of source lines and starting line number for an
+object. The argument may be a module, class, method, function,
+traceback, frame, or code object. The source code is returned as a
+list of the lines corresponding to the object and the line number
+indicates where in the original source file the first line of code
+was found. An <code>
+exceptions.IOError</code> is raised if the source code cannot be
+retrieved.</p>
+</dd>
+<dt class="function" id="getsource"><b>getsource(object)</b> <tt class="nav"><a class="nav" href="inspect.getsource" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return the text of the source code for an object. The argument
+may be a module, class, method, function, traceback, frame, or code
+object. The source code is returned as a single string. An <code>exceptions.IOError</code>
+is raised if the source code cannot be retrieved.</p>
+</dd>
+</dl><div class="text">
+<h2 id="classes-and-functions">Classes and functions <a class="nav" href="#classes-and-functions">#</a></h2>
+</div>
+<dl><dt class="function" id="getclasstree"><b>getclasstree(classes[, unique])</b> <tt class="nav"><a class="nav" href="inspect.getclasstree" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Arrange the given list of classes into a hierarchy of nested
+lists. Where a nested list appears, it contains classes derived
+from the class whose entry immediately precedes the list. Each
+entry is a 2-tuple containing a class and a tuple of its base
+classes. If the <var>unique</var> argument is true, exactly one
+entry appears in the returned structure for each class in the given
+list. Otherwise, classes using multiple inheritance and their
+descendants will appear multiple times.</p>
+</dd>
+<dt class="function" id="getargspec"><b>getargspec(func)</b> <tt class="nav"><a class="nav" href="inspect.getargspec" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Get the names and default values of a function's arguments. A
+tuple of four things is returned: <code>(</code><var>args</var>,
+<var>varargs</var>, <var>varkw</var>, <var>defaults</var>). <var>
+args</var> is a list of the argument names (it may contain nested
+lists). <var>varargs</var> and <var>varkw</var> are the names of
+the <code>*</code> and <code>**</code> arguments or <code>
+None</code>. <var>defaults</var> is a tuple of default argument
+values or None if there are no default arguments; if this tuple has
+<var>n</var> elements, they correspond to the last <var>n</var>
+elements listed in <var>args</var>.</p>
+</dd>
+<dt class="function" id="getargvalues"><b>getargvalues(frame)</b> <tt class="nav"><a class="nav" href="inspect.getargvalues" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Get information about arguments passed into a particular frame.
+A tuple of four things is returned: <code>(</code><var>args</var>,
+<var>varargs</var>, <var>varkw</var>, <var>locals</var>). <var>
+args</var> is a list of the argument names (it may contain nested
+lists). <var>varargs</var> and <var>varkw</var> are the names of
+the <code>*</code> and <code>**</code> arguments or <code>
+None</code>. <var>locals</var> is the locals dictionary of the
+given frame.</p>
+</dd>
+<dt class="function" id="formatargspec"><b>formatargspec(args[, varargs, varkw, defaults,
+argformat, varargsformat, varkwformat, defaultformat])</b> <tt class="nav"><a class="nav" href="inspect.formatargspec" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Format a pretty argument spec from the four values returned by
+<a class="link" href="#getargspec"><code>getargspec</code></a>. The other
+four arguments are the corresponding optional formatting functions
+that are called to turn names and values into strings.</p>
+</dd>
+<dt class="function" id="formatargvalues"><b>formatargvalues(args[, varargs, varkw, locals,
+argformat, varargsformat, varkwformat, valueformat])</b> <tt class="nav"><a class="nav" href="inspect.formatargvalues" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Format a pretty argument spec from the four values returned by
+<a class="link" href="#getargvalues"><code>getargvalues</code></a>. The
+other four arguments are the corresponding optional formatting
+functions that are called to turn names and values into
+strings.</p>
+</dd>
+<dt class="function" id="getmro"><b>getmro(cls)</b> <tt class="nav"><a class="nav" href="inspect.getmro" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return a tuple of class cls's base classes, including cls, in
+method resolution order. No class appears more than once in this
+tuple. Note that the method resolution order depends on cls's type.
+Unless a very peculiar user-defined metatype is in use, cls will be
+the first element of the tuple.</p>
+</dd>
+</dl><div class="text">
+<h2 id="the-interpreter-stack">The interpreter stack <a class="nav" href="#the-interpreter-stack">#</a></h2>
+
+<p>When the following functions return &#8220;frame records,&#8221;
+each record is a tuple of six items: the frame object, the
+filename, the line number of the current line, the function name, a
+list of lines of context from the source code, and the index of the
+current line within that list.</p>
+
+<p class="warning"><b>Warning:</b> Keeping references to frame
+objects, as found in the first element of the frame records these
+functions return, can cause your program to create reference
+cycles. Once a reference cycle has been created, the lifespan of
+all objects which can be accessed from the objects which form the
+cycle can become much longer even if Python's optional cycle
+detector is enabled. If such cycles must be created, it is
+important to ensure they are explicitly broken to avoid the delayed
+destruction of objects and increased memory consumption which
+occurs. Though the cycle detector will catch these, destruction of
+the frames (and local variables) can be made deterministic by
+removing the cycle in a <code>
+finally</code> clause. This is also important if the cycle detector
+was disabled when Python was compiled or using <code>gc</code>.disable(). For example: def
+handle_stackframe_without_leak(): frame = inspect.currentframe()
+try: # do something with the frame finally: del frame</p>
+
+<p>The optional <var>context</var> argument supported by most of
+these functions specifies the number of lines of context to return,
+which are centered around the current line.</p>
+</div>
+<dl><dt class="function" id="getframeinfo"><b>getframeinfo(frame[, context])</b> <tt class="nav"><a class="nav" href="inspect.getframeinfo" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Get information about a frame or traceback object. A 5-tuple is
+returned, the last five elements of the frame's frame record.</p>
+</dd>
+<dt class="function" id="getouterframes"><b>getouterframes(frame[, context])</b> <tt class="nav"><a class="nav" href="inspect.getouterframes" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Get a list of frame records for a frame and all outer frames.
+These frames represent the calls that lead to the creation of <var>
+frame</var>. The first entry in the returned list represents <var>
+frame</var>; the last entry represents the outermost call on <var>
+frame</var>'s stack.</p>
+</dd>
+<dt class="function" id="getinnerframes"><b>getinnerframes(traceback[, context])</b> <tt class="nav"><a class="nav" href="inspect.getinnerframes" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Get a list of frame records for a traceback's frame and all
+inner frames. These frames represent calls made as a consequence of
+<var>frame</var>. The first entry in the list represents <var>
+traceback</var>; the last entry represents where the exception was
+raised.</p>
+</dd>
+<dt class="function" id="currentframe"><b>currentframe()</b> <tt class="nav"><a class="nav" href="inspect.currentframe" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return the frame object for the caller's stack frame.</p>
+</dd>
+<dt class="function" id="stack"><b>stack([context])</b> <tt class="nav"><a class="nav" href="inspect.stack" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return a list of frame records for the caller's stack. The first
+entry in the returned list represents the caller; the last entry
+represents the outermost call on the stack.</p>
+</dd>
+<dt class="function" id="trace"><b>trace([context])</b> <tt class="nav"><a class="nav" href="inspect.trace" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return a list of frame records for the stack between the current
+frame and the frame in which an exception currently being handled
+was raised in. The first entry in the list represents the caller;
+the last entry represents where the exception was raised.</p>
+</dd>
+</dl></div></body></html>

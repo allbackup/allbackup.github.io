@@ -1,0 +1,75 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>anydbm</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-anydbm.html'>original</a> :::
+<a href='anydbm.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>anydbm&#8212;Generic access to DBM-style databases</h1>
+
+<p><code>anydbm</code> is a generic
+interface to variants of the DBM database -- <code>dbhash</code> (requires <code>bsddb</code>), <code>
+gdbm</code>, or <code>dbm</code>. If none of
+these modules is installed, the slow-but-simple implementation in
+module <code>dumbdbm</code> will be
+used.</p>
+</div>
+<dl><dt class="function" id="open"><b>open(filename[, flag[, mode]])</b> <tt class="nav"><a class="nav" href="anydbm.open" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Open the database file <var>filename</var> and return a
+corresponding object.</p>
+
+<p>If the database file already exists, the <code>whichdb</code> module is used to determine its
+type and the appropriate module is used; if it does not exist, the
+first module listed above that can be imported is used.</p>
+
+<p>The optional <var>flag</var> argument can be <code>'r'</code> to
+open an existing database for reading only, <code>'w'</code> to
+open an existing database for reading and writing, <code>'c'</code>
+to create the database if it doesn't exist, or <code>'n'</code>,
+which will always create a new empty database. If not specified,
+the default value is <code>'r'</code>.</p>
+
+<p>The optional <var>mode</var> argument is the Unix mode of the
+file, used only when the database has to be created. It defaults to
+octal <code>0666</code> (and will be modified by the prevailing
+umask).</p>
+</dd>
+<dt class="exception" id="error"><b>exception error</b> <tt class="nav"><a class="nav" href="anydbm.error" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="exception">
+<p>A tuple containing the exceptions that can be raised by each of
+the supported modules, with a unique exception <code>anydbm.error</code> as the first item -- the
+latter is used when <code>
+anydbm.error</code> is raised.</p>
+</dd>
+</dl><div class="text">
+<p>The object returned by <a class="link" href="#open"><code>open</code></a>
+supports most of the same functionality as dictionaries; keys and
+their corresponding values can be stored, retrieved, and deleted,
+and the <code>has_key</code> and <code>keys</code> methods are available. Keys
+and values must always be strings. <span class="mark">@see</span>
+<code>Module dbhash</code> BSD db
+database interface. <span class="mark">@see</span> <code>Module dbm</code> Standard Unix database interface.
+<span class="mark">@see</span> <code>
+Module dumbdbm</code> Portable implementation of the dbm interface.
+<span class="mark">@see</span> <code>
+Module gdbm</code> GNU database interface, based on the dbm interface.
+<span class="mark">@see</span> <code>
+Module shelve</code> General object persistence built on top of the
+Python dbm interface. <span class="mark">@see</span> <code>Module whichdb</code> Utility module
+used to determine the type of an existing database.</p>
+</div>
+</div></body></html>

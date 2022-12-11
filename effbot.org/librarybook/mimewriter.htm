@@ -1,0 +1,187 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>The MimeWriter&nbsp;module</title></head><body data-page-id="583"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">The MimeWriter&nbsp;module</h1></div><div class="yui-ge"><div class="yui-u first"><p>This module can be used to write <span>&#8220;multipart&#8221;</span>
+messages, as defined by the MIME mail standard.</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><div class="example wide">
+<b style="example">Example: Using the
+MimeWriter module</b>
+<pre class="wide">
+# File: <a href="mimewriter/mimewriter-example-1.py">mimewriter-example-1.py</a>
+
+import MimeWriter
+
+# data encoders
+import quopri
+import base64
+import StringIO
+
+import sys
+
+TEXT = """
+here comes the image you asked for.  hope
+it's what you expected.
+
+&lt;/F&gt;"""
+
+FILE = "samples/sample.jpg"
+
+file = sys.stdout
+
+#
+# create a mime multipart writer instance
+
+mime = MimeWriter.MimeWriter(file)
+mime.addheader("Mime-Version", "1.0")
+
+mime.startmultipartbody("mixed")
+
+# add a text message
+
+part = mime.nextpart()
+part.addheader("Content-Transfer-Encoding", "quoted-printable")
+part.startbody("text/plain")
+
+quopri.encode(StringIO.StringIO(TEXT), file, 0)
+
+# add an image
+
+part = mime.nextpart()
+part.addheader("Content-Transfer-Encoding", "base64")
+part.startbody("image/jpeg")
+
+base64.encode(open(FILE, "rb"), file)
+
+mime.lastpart()
+</pre></div></div><div class="yui-ge"><div class="yui-u first"><p>The output looks something like:</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><pre class="wide wide">
+Content-Type: multipart/mixed;
+    boundary='host.1.-852461.936831373.130.24813'
+
+--host.1.-852461.936831373.130.24813
+Content-Type: text/plain
+Context-Transfer-Encoding: quoted-printable
+
+here comes the image you asked for.  hope
+it's what you expected.
+
+&lt;/F&gt;
+
+--host.1.-852461.936831373.130.24813
+Content-Type: image/jpeg
+Context-Transfer-Encoding: base64
+
+/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0a
+HBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/2wBDAQkJCQwLDBgNDRgyIRwhMjIyMjIy
+...
+1e5vLrSYbJnEVpEgjCLx5mPU0qsVK0UaxjdNlS+1U6pfzTR8IzEhj2HrVG6m8m18xc8cIKSCAysl
+tCuFyC746j/Cq2pTia4WztfmKjGBXTCmo6IUptn/2Q==
+
+--host.1.-852461.936831373.130.24813--
+</pre></div><div class="yui-ge"><div class="yui-u first"><p>Here&#8217;s a larger example, which uses a helper class that stores
+each subpart in the most suitable way:</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><div class="example wide">
+<b style="example">Example: A helper class for
+the MimeWriter module</b>
+<pre class="wide">
+# File: <a href="mimewriter/mimewriter-example-2.py">mimewriter-example-2.py</a>
+
+import MimeWriter
+import string, StringIO, sys
+import re, quopri, base64
+
+# check if string contains non-ascii characters
+must_quote = re.compile("[\177-\377]").search
+
+
+#
+# encoders
+
+def encode_quoted_printable(infile, outfile):
+    quopri.encode(infile, outfile, 0)
+
+class Writer:
+
+    def __init__(self, file=None, blurb=None):
+        if file is None:
+            file = sys.stdout
+        self.file = file
+        self.mime = MimeWriter.MimeWriter(file)
+        self.mime.addheader("Mime-Version", "1.0")
+
+        file = self.mime.startmultipartbody("mixed")
+        if blurb:
+            file.write(blurb)
+
+    def close(self):
+        "End of message"
+        self.mime.lastpart()
+        self.mime = self.file = None
+
+    def write(self, data, mimetype="text/plain"):
+        "Write data from string or file to message"
+
+        # data is either an opened file or a string
+        if type(data) is type(""):
+            file = StringIO.StringIO(data)
+        else:
+            file = data
+            data = None
+
+        part = self.mime.nextpart()
+
+        typ, subtyp = string.split(mimetype, "/", 1)
+
+        if typ == "text":
+
+            # text data
+            encoding = "quoted-printable"
+            encoder = lambda i, o: quopri.encode(i, o, 0)
+
+            if data and not must_quote(data):
+                # copy, don't encode
+                encoding = "7bit"
+                encoder = None
+
+        else:
+
+            # binary data (image, audio, application, ...)
+            encoding = "base64"
+            encoder = base64.encode
+
+        #
+        # write part headers
+
+        if encoding:
+            part.addheader("Content-Transfer-Encoding", encoding)
+
+        part.startbody(mimetype)
+
+        #
+        # write part body
+
+        if encoder:
+            encoder(file, self.file)
+        elif data:
+            self.file.write(data)
+        else:
+            while 1:
+                data = infile.read(16384)
+                if not data:
+                    break
+                outfile.write(data)
+
+#
+# try it out
+
+BLURB = "if you can read this, your mailer is not MIME-aware\n"
+
+mime = Writer(sys.stdout, BLURB)
+
+# add a text message
+mime.write("""\
+here comes the image you asked for.  hope
+it's what you expected.
+""", "text/plain")
+
+# add an image
+mime.write(open("samples/sample.jpg", "rb"), "image/jpeg")
+
+mime.close()
+</pre></div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to librarybook index page.">::: librarybook :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

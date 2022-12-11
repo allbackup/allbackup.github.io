@@ -1,0 +1,194 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>base64</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-base64.html'>original</a> :::
+<a href='base64.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>base64&#8212;RFC 3548: Base16, Base32, Base64 Data
+Encodings</h1>
+
+<p>This module provides data encoding and decoding as specified in
+<a class="link" href="http://www.faqs.org/rfcs/rfc3548.html">RFC
+3548</a>. This standard defines the Base16, Base32, and Base64
+algorithms for encoding and decoding arbitrary binary strings into
+text strings that can be safely sent by email, used as parts of
+URLs, or included as part of an HTTP POST request. The encoding
+algorithm is not the same as the uuencode program.</p>
+
+<p>There are two interfaces provided by this module. The modern
+interface supports encoding and decoding string objects using all
+three alphabets. The legacy interface provides for encoding and
+decoding to and from file-like objects as well as strings, but only
+using the Base64 standard alphabet.</p>
+
+<p>The modern interface provides:</p>
+</div>
+<dl><dt class="function" id="b64encode"><b>b64encode(s[, altchars])</b> <tt class="nav"><a class="nav" href="base64.b64encode" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Encode a string use Base64.</p>
+
+<p><var>s</var> is the string to encode. Optional <var>
+altchars</var> must be a string of at least length 2 (additional
+characters are ignored) which specifies an alternative alphabet for
+the <code>+</code> and <code>/</code> characters. This allows an
+application to e.g. generate URL or filesystem safe Base64 strings.
+The default is <code>None</code>, for which
+the standard Base64 alphabet is used.</p>
+
+<p>The encoded string is returned.</p>
+</dd>
+<dt class="function" id="b64decode"><b>b64decode(s[, altchars])</b> <tt class="nav"><a class="nav" href="base64.b64decode" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Decode a Base64 encoded string.</p>
+
+<p><var>s</var> is the string to decode. Optional <var>
+altchars</var> must be a string of at least length 2 (additional
+characters are ignored) which specifies the alternative alphabet
+used instead of the <code>+</code> and <code>/</code>
+characters.</p>
+
+<p>The decoded string is returned. A <code>exceptions.TypeError</code> is raised
+if <var>s</var> were incorrectly padded or if there are
+non-alphabet characters present in the string.</p>
+</dd>
+<dt class="function" id="standard_b64encode"><b>standard_b64encode(s)</b> <tt class="nav"><a class="nav" href="base64.standard_b64encode" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Encode string <var>s</var> using the standard Base64
+alphabet.</p>
+</dd>
+<dt class="function" id="standard_b64decode"><b>standard_b64decode(s)</b> <tt class="nav"><a class="nav" href="base64.standard_b64decode" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Decode string <var>s</var> using the standard Base64
+alphabet.</p>
+</dd>
+<dt class="function" id="urlsafe_b64encode"><b>urlsafe_b64encode(s)</b> <tt class="nav"><a class="nav" href="base64.urlsafe_b64encode" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Encode string <var>s</var> using a URL-safe alphabet, which
+substitutes <code>-</code> instead of <code>+</code> and <code>
+_</code> instead of <code>/</code> in the standard Base64
+alphabet.</p>
+</dd>
+<dt class="function" id="urlsafe_b64decode"><b>urlsafe_b64decode(s)</b> <tt class="nav"><a class="nav" href="base64.urlsafe_b64decode" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Decode string <var>s</var> using a URL-safe alphabet, which
+substitutes <code>-</code> instead of <code>+</code> and <code>
+_</code> instead of <code>/</code> in the standard Base64
+alphabet.</p>
+</dd>
+<dt class="function" id="b32encode"><b>b32encode(s)</b> <tt class="nav"><a class="nav" href="base64.b32encode" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Encode a string using Base32. <var>s</var> is the string to
+encode. The encoded string is returned.</p>
+</dd>
+<dt class="function" id="b32decode"><b>b32decode(s[, casefold[, map01]])</b> <tt class="nav"><a class="nav" href="base64.b32decode" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Decode a Base32 encoded string.</p>
+
+<p><var>s</var> is the string to decode. Optional <var>
+casefold</var> is a flag specifying whether a lowercase alphabet is
+acceptable as input. For security purposes, the default is <code>
+False</code>.</p>
+
+<p><a class="link" href="http://www.faqs.org/rfcs/rfc3548.html">RFC
+3548</a> allows for optional mapping of the digit 0 (zero) to the
+letter O (oh), and for optional mapping of the digit 1 (one) to
+either the letter I (eye) or letter L (el). The optional argument
+<var>map01</var> when not <code>
+None</code>, specifies which letter the digit 1 should be mapped to
+(when map01 is not <code>None</code>, the
+digit 0 is always mapped to the letter O). For security purposes
+the default is <code>None</code>, so that 0
+and 1 are not allowed in the input.</p>
+
+<p>The decoded string is returned. A <code>exceptions.TypeError</code> is raised
+if <var>s</var> were incorrectly padded or if there are
+non-alphabet characters present in the string.</p>
+</dd>
+<dt class="function" id="b16encode"><b>b16encode(s)</b> <tt class="nav"><a class="nav" href="base64.b16encode" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Encode a string using Base16.</p>
+
+<p><var>s</var> is the string to encode. The encoded string is
+returned.</p>
+</dd>
+<dt class="function" id="b16decode"><b>b16decode(s[, casefold])</b> <tt class="nav"><a class="nav" href="base64.b16decode" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Decode a Base16 encoded string.</p>
+
+<p><var>s</var> is the string to decode. Optional <var>
+casefold</var> is a flag specifying whether a lowercase alphabet is
+acceptable as input. For security purposes, the default is <code>
+False</code>.</p>
+
+<p>The decoded string is returned. A <code>exceptions.TypeError</code> is raised
+if <var>s</var> were incorrectly padded or if there are
+non-alphabet characters present in the string.</p>
+</dd>
+</dl><div class="text">
+<p>The legacy interface:</p>
+</div>
+<dl><dt class="function" id="decode"><b>decode(input, output)</b> <tt class="nav"><a class="nav" href="base64.decode" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Decode the contents of the <var>input</var> file and write the
+resulting binary data to the <var>output</var> file. <var>
+input</var> and <var>output</var> must either be file objects or
+objects that mimic the file object interface. <var>input</var> will
+be read until <var>input</var>.read() returns an empty string.</p>
+</dd>
+<dt class="function" id="decodestring"><b>decodestring(s)</b> <tt class="nav"><a class="nav" href="base64.decodestring" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Decode the string <var>s</var>, which must contain one or more
+lines of base64 encoded data, and return a string containing the
+resulting binary data.</p>
+</dd>
+<dt class="function" id="encode"><b>encode(input, output)</b> <tt class="nav"><a class="nav" href="base64.encode" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Encode the contents of the <var>input</var> file and write the
+resulting base64 encoded data to the <var>output</var> file. <var>
+input</var> and <var>output</var> must either be file objects or
+objects that mimic the file object interface. <var>input</var> will
+be read until <var>input</var>.read() returns an empty string. <a class="link" href="#encode"><code>encode</code></a> returns the encoded data
+plus a trailing newline character (<code>'\n'</code>).</p>
+</dd>
+<dt class="function" id="encodestring"><b>encodestring(s)</b> <tt class="nav"><a class="nav" href="base64.encodestring" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Encode the string <var>s</var>, which can contain arbitrary
+binary data, and return a string containing one or more lines of
+base64-encoded data. <a class="link" href="#encodestring"><code>
+encodestring</code></a> returns a string containing one or more lines of
+base64-encoded data always including an extra trailing newline
+(<code>'\n'</code>).</p>
+</dd>
+</dl><div class="text"><span class="mark">@see</span> <code>Module binascii</code> Support module containing
+ASCII-to-binary and binary-to-ASCII conversions. <span class="mark">@see</span> <a class="link" href="http://www.faqs.org/rfcs/rfc1521.html">RFC 1521, MIME
+(Multipurpose Internet Mail Extensions) Part One: Mechanisms for
+Specifying and Describing the Format of Internet Message Bodies</a>
+Section 5.2, &#8220;Base64 Content-Transfer-Encoding,&#8221;
+provides the definition of the base64 encoding.</div>
+</div></body></html>

@@ -1,0 +1,273 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>The sgmllib&nbsp;module</title></head><body data-page-id="648"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">The sgmllib&nbsp;module</h1></div><div class="yui-ge"><div class="yui-u first"><p>This module provides an basic SGML parser. It works pretty much
+like the <b><a href="xmllib.htm">xmllib</a></b> parser, but is
+less restrictive (and less complete).</p><p>Like in <b><a href="xmllib.htm">xmllib</a></b>, this parser calls
+methods in itself to deal with things like start tags, data
+sections, end tags, and entities. If you&#8217;re only interested in a
+few tags, you can define special <b>start</b> and <b>end</b>
+methods:</p><div class="example">
+<b style="example">Example: Using the sgmllib
+module to extract the title element</b>
+<pre>
+# File: <a href="sgmllib/sgmllib-example-1.py">sgmllib-example-1.py</a>
+
+import sgmllib
+import string
+
+class FoundTitle(Exception):
+    pass
+
+class ExtractTitle(sgmllib.SGMLParser):
+
+    def __init__(self, verbose=0):
+        sgmllib.SGMLParser.__init__(self, verbose)
+        self.title = self.data = None
+
+    def handle_data(self, data):
+        if self.data is not None:
+            self.data.append(data)
+
+    def start_title(self, attrs):
+        self.data = []
+
+    def end_title(self):
+        self.title = string.join(self.data, "")
+        raise FoundTitle # <i>abort parsing!</i>
+
+def extract(file):
+    # <i>extract title from an HTML/SGML stream</i>
+    p = ExtractTitle()
+    try:
+        while 1:
+            # <i>read small chunks</i>
+            s = file.read(512)
+            if not s:
+                break
+            p.feed(s)
+        p.close()
+    except FoundTitle:
+        return p.title
+    return None
+
+#
+# <i>try it out</i>
+
+print "html", "=&gt;", extract(open("samples/sample.htm"))
+print "sgml", "=&gt;", extract(open("samples/sample.sgm"))
+
+</pre><pre class="computeroutput" moreinfo="NONE">
+html =&gt; A Title.
+sgml =&gt; Quotations
+</pre></div><p>To handle all tags, overload the <b>unknown_starttag</b> and
+<b>unknown_endtag</b> methods instead:</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><div class="example wide">
+<b style="example">Example: Using the sgmllib
+module to format an SGML document</b>
+<pre class="wide">
+# File: <a href="sgmllib/sgmllib-example-2.py">sgmllib-example-2.py</a>
+
+import sgmllib
+import cgi, sys
+
+class PrettyPrinter(sgmllib.SGMLParser):
+    # <o>a simple SGML pretty printer
+
+    def __init__(self):
+        # initialize base class
+        sgmllib.SGMLParser.__init__(self)
+        self.flag = 0
+
+    def newline(self):
+        # <i>force newline, if necessary</i>
+        if self.flag:
+            sys.stdout.write("\n")
+        self.flag = 0
+
+    def unknown_starttag(self, tag, attrs):
+        # <i>called for each start tag</i>
+
+        # <i>the attrs argument is a list of (attr, value)</i>
+        # <i>tuples. convert it to a string.</i>
+        text = ""
+        for attr, value in attrs:
+            text = text + " %s='%s'" % (attr, cgi.escape(value))
+
+        self.newline()
+        sys.stdout.write("&lt;%s%s&gt;\n" % (tag, text))
+
+    def handle_data(self, text):
+        # <i>called for each text section</i>
+        sys.stdout.write(text)
+        self.flag = (text[-1:] != "\n")
+
+    def handle_entityref(self, text):
+        # <i>called for each entity</i>
+        sys.stdout.write("&amp;%s;" % text)
+        
+    def unknown_endtag(self, tag):
+        # <i>called for each end tag</i>
+        self.newline()
+        sys.stdout.write("&lt;%s&gt;" % tag)
+
+#
+# <i>try it out</i>
+
+file = open("samples/sample.sgm")
+
+p = PrettyPrinter()
+p.feed(file.read())
+p.close()
+
+</o></pre><pre class="computeroutput wide" moreinfo="NONE">
+&lt;chapter&gt;
+&lt;title&gt;
+Quotations
+&lt;title&gt;
+&lt;epigraph&gt;
+&lt;attribution&gt;
+eff-bot, June 1997
+&lt;attribution&gt;
+&lt;para&gt;
+&lt;quote&gt;
+Nobody expects the Spanish Inquisition! Amongst
+our weaponry are such diverse elements as fear, surprise,
+ruthless efficiency, and an almost fanatical devotion to
+Guido, and nice red uniforms &amp;mdash; oh, damn!
+&lt;quote&gt;
+&lt;para&gt;
+&lt;epigraph&gt;
+&lt;chapter&gt;
+</pre></div></div><div class="yui-ge"><div class="yui-u first"><p>The following example checks if an SGML document is
+&#8220;well-formed&#8221;, in the XML sense. In a well-formed document, all
+elements are properly nested, and there&#8217;s one end tag for each
+start tag.</p><p>To check this, we simply keep a list of open tags, and check
+that each end tag closes a matching start tag, and that there are
+no open tags when we reach the end of the document.</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><div class="example wide">
+<b style="example">Example: Using the sgmllib
+module to check if an SGML document is well-formed</b>
+<pre class="wide">
+# File: <a href="sgmllib/sgmllib-example-3.py">sgmllib-example-3.py</a>
+
+import sgmllib
+
+class WellFormednessChecker(sgmllib.SGMLParser):
+    # <i>check that an SGML document is 'well formed'</i>
+    # <i>(in the XML sense).</i>
+
+    def __init__(self, file=None):
+        sgmllib.SGMLParser.__init__(self)
+        self.tags = []
+        if file:
+            self.load(file)
+
+    def load(self, file):
+        while 1:
+            s = file.read(8192)
+            if not s:
+                break
+            self.feed(s)
+        self.close()
+
+    def close(self):
+        sgmllib.SGMLParser.close(self)
+        if self.tags:
+            raise SyntaxError, "start tag %s not closed" % self.tags[-1]
+
+    def unknown_starttag(self, start, attrs):
+        self.tags.append(start)
+
+    def unknown_endtag(self, end):
+        start = self.tags.pop()
+        if end != start:
+            raise SyntaxError, "end tag %s does't match start tag %s" %\
+                  (end, start)
+
+try:
+    c = WellFormednessChecker()
+    c.load(open("samples/sample.htm"))
+except SyntaxError:
+    raise # <i>report error</i>
+else:
+    print "document is wellformed"
+
+</pre><pre class="computeroutput wide" moreinfo="NONE">
+Traceback (innermost last):
+...
+SyntaxError: end tag head does't match start tag meta
+</pre></div></div><div class="yui-ge"><div class="yui-u first"><p>Finally, here&#8217;s a class that allows you to filter HTML and SGML
+documents. To use this class, create your own base class, and
+implement the <b>start</b> and <b>end</b> methods.</p><div class="example">
+<b style="example">Example: Using the sgmllib
+module to filter SGML documents</b>
+<pre>
+# File: <a href="sgmllib/sgmllib-example-4.py">sgmllib-example-4.py</a>
+
+import sgmllib
+import cgi, string, sys
+
+class SGMLFilter(sgmllib.SGMLParser):
+    # <i>sgml filter.  override start/end to manipulate</i>
+    # <i>document elements</i>
+
+    def __init__(self, outfile=None, infile=None):
+        sgmllib.SGMLParser.__init__(self)
+        if not outfile:
+            outfile = sys.stdout
+        self.write = outfile.write
+        if infile:
+            self.load(infile)
+
+    def load(self, file):
+        while 1:
+            s = file.read(8192)
+            if not s:
+                break
+            self.feed(s)
+        self.close()
+
+    def handle_entityref(self, name):
+        self.write("&amp;%s;" % name)
+
+    def handle_data(self, data):
+        self.write(cgi.escape(data))
+
+    def unknown_starttag(self, tag, attrs):
+        tag, attrs = self.start(tag, attrs)
+        if tag:
+            if not attrs:
+                self.write("&lt;%s&gt;" % tag)
+            else:
+                self.write("&lt;%s" % tag)
+                for k, v in attrs:
+                    self.write(" %s=%s" % (k, repr(v)))
+                self.write("&gt;")
+
+    def unknown_endtag(self, tag):
+        tag = self.end(tag)
+        if tag:
+            self.write("&lt;/%s&gt;" % tag)
+
+    def start(self, tag, attrs):
+        return tag, attrs # <i>override</i>
+
+    def end(self, tag):
+        return tag # <i>override</i>
+
+class Filter(SGMLFilter):
+
+    def fixtag(self, tag):
+        if tag == "em":
+            tag = "i"
+        if tag == "string":
+            tag = "b"
+        return string.upper(tag)
+
+    def start(self, tag, attrs):
+        return self.fixtag(tag), attrs
+
+    def end(self, tag):
+        return self.fixtag(tag)
+
+c = Filter()
+c.load(open("samples/sample.htm"))
+</pre></div></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to librarybook index page.">::: librarybook :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

@@ -1,0 +1,140 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>How do I tell "incomplete input" from "invalid&nbsp;input"?</title></head><body data-page-id="822"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><p class="note" style="text-align: center"><strong>
+This is an old copy of the Python FAQ.  The information here may be
+outdated.
+</strong></p><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">How do I tell "incomplete input" from "invalid&nbsp;input"?</h1></div><div class="yui-ge"><div class="yui-u first"><p>Sometimes you want to emulate the Python interactive interpreter&#8217;s behavior, where it gives you a continuation prompt when the input is incomplete (e.g. you typed the start of an &#8220;if&#8221; statement or you didn&#8217;t close your parentheses or triple string quotes), but it gives you a syntax error message immediately when the input is invalid.</p><p>In Python you can use the <a href="/pyref/code.htm"><strong>code</strong></a> or <a href="/pyref/codeop.htm"><strong>codeop</strong></a> modules, which approximates the parser&#8217;s behavior sufficiently. IDLE uses this, for example.</p><p>The easiest way to do it in C is to call <strong>PyRun_InteractiveLoop</strong> (perhaps in a separate thread) and let the Python interpreter handle the input for you. You can also set the <strong>PyOS_ReadlineFunctionPointer</strong> to point at your custom input function. See <a href="http://svn.python.org/view/python/trunk/Modules/readline.c"><strong>Modules/readline.c</strong></a> and <a href="http://svn.python.org/view/python/trunk/Parser/myreadline.c"><strong>Parser/myreadline.c</strong></a> for more hints.</p><p>However sometimes you have to run the embedded Python interpreter in the same thread as your rest application and you can&#8217;t allow the  <strong>PyRun_InteractiveLoop</strong> to stop while waiting for user input. The one solution then is to call <strong>PyParser_ParseString</strong> and test for e.error equal to  E_EOF, which means the input is incomplete). Here&#8217;s a sample code fragment, untested, inspired by code from Alex Farber:</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><pre class="wide wide"><code>#include &lt;Python.h&gt;
+#include &lt;node.h&gt;
+#include &lt;errcode.h&gt;
+#include &lt;grammar.h&gt;
+#include &lt;parsetok.h&gt;
+#include &lt;compile.h&gt;
+
+int testcomplete(char *code)
+  /* code should end in \n */
+  /* return -1 for error, 0 for incomplete, 1 for complete */
+{
+  node *n;
+  perrdetail e;
+
+  n = PyParser_ParseString(code, &amp;_PyParser_Grammar,
+                           Py_file_input, &amp;e);
+  if (n == NULL) {
+    if (e.error == E_EOF) 
+      return 0;
+    return -1;
+  }
+
+  PyNode_Free(n);
+  return 1;
+}
+</code></pre></div><div class="yui-ge"><div class="yui-u first"><p>Another solution is trying to compile the received string with  <strong>Py_CompileString</strong>. If it compiles without errors, try to execute the returned code object by calling <strong>PyEval_EvalCode</strong>. Otherwise save the input for later. If the compilation fails, find out if it&#8217;s an error or just more input is required - by extracting the message string from the exception tuple and comparing it to the string &#8220;unexpected EOF while parsing&#8221;. Here is a complete example using the GNU readline library (you may want to ignore SIGINT while calling readline()):</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><pre class="wide wide"><code>#include &lt;stdio.h&gt;
+#include &lt;readline.h&gt;
+
+#include &lt;Python.h&gt;
+#include &lt;object.h&gt;
+#include &lt;compile.h&gt;
+#include &lt;eval.h&gt;
+
+int main (int argc, char* argv[])
+{
+  int i, j, done = 0;                          /* lengths of line, code */
+  char ps1[] = "&gt;&gt;&gt; ";
+  char ps2[] = "... ";
+  char *prompt = ps1;
+  char *msg, *line, *code = NULL;
+  PyObject *src, *glb, *loc;
+  PyObject *exc, *val, *trb, *obj, *dum;
+
+  Py_Initialize ();
+  loc = PyDict_New ();
+  glb = PyDict_New ();
+  PyDict_SetItemString (glb, "\_\_builtins\_\_", PyEval_GetBuiltins ());
+
+  while (!done)
+  {
+    line = readline (prompt);
+
+    if (NULL == line)                          /* CTRL-D pressed */
+    {
+      done = 1;
+    }
+    else
+    {
+      i = strlen (line);
+
+      if (i &gt; 0)
+        add_history (line);                    /* save non-empty lines */
+
+      if (NULL == code)                        /* nothing in code yet */
+        j = 0;
+      else
+        j = strlen (code);
+
+      code = realloc (code, i + j + 2);
+      if (NULL == code)                        /* out of memory */
+        exit (1);
+
+      if (0 == j)                              /* code was empty, so */
+        code[0] = '\0';                        /* keep strncat happy */
+
+      strncat (code, line, i);                 /* append line to code */
+      code[i + j] = '\n';                      /* append '\n' to code */
+      code[i + j + 1] = '\0';
+
+      src = Py_CompileString (code, "&lt;stdin&gt;", Py_single_input);       
+
+      if (NULL != src)                         /* compiled just fine - */
+      {
+        if (ps1  == prompt ||                  /* "&gt;&gt;&gt; " or */
+            '\n' == code[i + j - 1])           /* "... " and double '\n' */
+        {                                               /* so execute it */
+          dum = PyEval_EvalCode ((PyCodeObject *)src, glb, loc);
+          Py_XDECREF (dum);
+          Py_XDECREF (src);
+          free (code);
+          code = NULL;
+          if (PyErr_Occurred ())
+            PyErr_Print ();
+          prompt = ps1;
+        }
+      }                                        /* syntax error or E_EOF? */
+      else if (PyErr_ExceptionMatches (PyExc_SyntaxError))           
+      {
+        PyErr_Fetch (&amp;exc, &amp;val, &amp;trb);        /* clears exception! */
+
+        if (PyArg_ParseTuple (val, "sO", &amp;msg, &amp;obj) &amp;&amp;
+            !strcmp (msg, "unexpected EOF while parsing")) /* E_EOF */
+        {
+          Py_XDECREF (exc);
+          Py_XDECREF (val);
+          Py_XDECREF (trb);
+          prompt = ps2;
+        }
+        else                                   /* some other syntax error */
+        {
+          PyErr_Restore (exc, val, trb);
+          PyErr_Print ();
+          free (code);
+          code = NULL;
+          prompt = ps1;
+        }
+      }
+      else                                     /* some non-syntax error */
+      {
+        PyErr_Print ();
+        free (code);
+        code = NULL;
+        prompt = ps1;
+      }
+
+      free (line);
+    }
+  }
+
+  Py_XDECREF(glb);
+  Py_XDECREF(loc);
+  Py_Finalize();
+  exit(0);
+}
+</code></pre></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to pyfaq index page.">::: pyfaq :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

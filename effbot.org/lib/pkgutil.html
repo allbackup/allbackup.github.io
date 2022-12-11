@@ -1,0 +1,63 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>pkgutil</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-pkgutil.html'>original</a> :::
+<a href='pkgutil.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>pkgutil&#8212;Package extension utility</h1>
+
+<p>New in version 2.3.</p>
+
+<p>This module provides a single function:</p>
+</div>
+<dl><dt class="function" id="extend_path"><b>extend_path(path, name)</b> <tt class="nav"><a class="nav" href="pkgutil.extend_path" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Extend the search path for the modules which comprise a package.
+Intended use is to place the following code in a package's
+__init__.py:</p>
+
+<pre>
+from pkgutil import extend_path
+__path__ = extend_path(__path__, __name__)
+</pre>
+
+<p>This will add to the package's <code>__path__</code> all
+subdirectories of directories on <code>sys.path</code> named after
+the package. This is useful if one wants to distribute different
+parts of a single logical package as multiple directories.</p>
+
+<p>It also looks for *.pkg files beginning where <code>*</code>
+matches the <var>name</var> argument. This feature is similar to
+*.pth files (see the <code>site</code>
+module for more information), except that it doesn't special-case
+lines starting with <code>import</code>. A *.pkg file is trusted at
+face value: apart from checking for duplicates, all entries found
+in a *.pkg file are added to the path, regardless of whether they
+exist the filesystem. (This is a feature.)</p>
+
+<p>If the input path is not a list (as is the case for frozen
+packages) it is returned unchanged. The input path is not modified;
+an extended copy is returned. Items are only appended to the copy
+at the end.</p>
+
+<p>It is assumed that <code>sys.path</code> is a sequence. Items of
+<code>sys.path</code> that are not (Unicode or 8-bit) strings
+referring to existing directories are ignored. Unicode items on
+<code>sys.path</code> that cause errors when used as filenames may
+cause this function to raise an exception (in line with <code>os.path.isdir</code>
+behavior).</p>
+</dd>
+</dl></div></body></html>

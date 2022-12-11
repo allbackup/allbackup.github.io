@@ -1,0 +1,33 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>execfile</title><script type="text/javascript">effbot_page_id=1281;</script></head><body><div id="doc2" class="yui-t2"><div id="hd"><!-- header --></div><!-- hd --><div id="bd"><!-- body --><p class="note" style="text-align: center"><strong>
+
+We're back after a server migration that caused effbot.org to fall
+over a bit harder than expected.  Expect some glitches.
+
+</strong></p><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">execfile</h1></div><!-- yui-g --><body><p><strong>execfile</strong>(filename[, globals[, locals]])</p>
+
+<p>This function is similar to the <a href="exec.htm"><strong>exec</strong></a> statement, but parses a file
+instead of a string. It is different from the <a href="import.htm"><strong>import</strong></a> statement in
+that it does not use the module administration &#8212; it reads the file
+unconditionally and does not create a new module.</p>
+
+<p>The arguments are a file name and two optional dictionaries. The file
+is parsed and evaluated as a sequence of Python statements (similarly
+to a module) using the <em>globals</em> and <em>locals</em> dictionaries as global and
+local namespace.  If provided, <em>locals</em> can be any mapping
+object.</p>
+
+<p>(Changed in version 2.4: formerly <em>locals</em> was required to be a <a href="dict.htm"><strong>dict</strong></a>.)</p>
+
+<p>If the <em>locals</em> dictionary is omitted it defaults to the
+<em>globals</em> dictionary. If both dictionaries are omitted, the expression
+is executed in the environment where <strong>execfile</strong> is called. The return
+value is <a href="None.htm"><strong>None</strong></a>.</p>
+
+<p><strong>Warning:</strong> The default locals act as described for the <a href="locals.htm"><strong>locals</strong></a>
+function: modifications to the default locals dictionary should not be
+attempted. Pass an explicit locals dictionary if you need to see
+effects of the code on locals after function <strong>execfile</strong>
+returns. <strong>execfile</strong> cannot be used reliably to modify a function&#8217;s
+locals.</p></body><div class="yui-g"></div><!-- yui-g --></div><!-- content --></div><!-- yui-b --></div><!-- yui-main --><div class="yui-b"><div id='menu'></div><!-- menu --></div><!-- yui-b --></div><!-- bd --><div id="ft"><!-- footer --></div><!-- ft --></div><!-- doc --><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

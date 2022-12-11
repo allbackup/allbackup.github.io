@@ -1,0 +1,200 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>traceback</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-traceback.html'>original</a> :::
+<a href='traceback.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>traceback&#8212;Print or retrieve a stack traceback</h1>
+
+<div class="toc"><dl><dt>On this page:</dt><dd><a href="#traceback-example">Traceback Example</a></dd></dl></div><p>This module provides a standard interface to extract, format and
+print stack traces of Python programs. It exactly mimics the
+behavior of the Python interpreter when it prints a stack trace.
+This is useful when you want to print stack traces under program
+control, such as in a &#8220;wrapper&#8221; around the
+interpreter.</p>
+
+<p>The module uses traceback objects -- this is the object type
+that is stored in the variables <code>sys.exc_traceback</code>
+(deprecated) and <code>sys.last_traceback</code> and returned as
+the third item from <code>
+sys.exc_info</code>.</p>
+
+<p>The module defines the following functions:</p>
+</div>
+<dl><dt class="function" id="print_tb"><b>print_tb(traceback[, limit[, file]])</b> <tt class="nav"><a class="nav" href="traceback.print_tb" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Print up to <var>limit</var> stack trace entries from <var>
+traceback</var>. If <var>limit</var> is omitted or <code>
+None</code>, all entries are printed. If <var>file</var> is omitted
+or <code>None</code>, the output goes to
+<code>sys.stderr</code>; otherwise it should be an open file or
+file-like object to receive the output.</p>
+</dd>
+<dt class="function" id="print_exception"><b>print_exception(type, value, traceback[, limit[,
+file]])</b> <tt class="nav"><a class="nav" href="traceback.print_exception" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Print exception information and up to <var>limit</var> stack
+trace entries from <var>traceback</var> to <var>file</var>. This
+differs from <a class="link" href="#print_tb"><code>print_tb</code></a> in
+the following ways: (1) if <var>traceback</var> is not <code>None</code>, it prints a header
+"<code>Traceback (most recent call last):</code>"; (2) it prints
+the exception <var>type</var> and <var>value</var> after the stack
+trace; (3) if <var>type</var> is <code>exceptions.SyntaxError</code> and
+<var>value</var> has the appropriate format, it prints the line
+where the syntax error occurred with a caret indicating the
+approximate position of the error.</p>
+</dd>
+<dt class="function" id="print_exc"><b>print_exc([limit[, file]])</b> <tt class="nav"><a class="nav" href="traceback.print_exc" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>This is a shorthand for <code>print_exception(sys.exc_type,
+sys.exc_value, sys.exc_traceback,</code> <var>limit</var>, <var>
+file</var>). (In fact, it uses <code>sys.exc_info</code> to retrieve the same
+information in a thread-safe way instead of using the deprecated
+variables.)</p>
+</dd>
+<dt class="function" id="format_exc"><b>format_exc([limit[, file]])</b> <tt class="nav"><a class="nav" href="traceback.format_exc" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>This is like <code>print_exc(</code><var>limit</var>) but
+returns a string instead of printing to a file.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.4.<br />
+</blockquote>
+</dd>
+<dt class="function" id="print_last"><b>print_last([limit[, file]])</b> <tt class="nav"><a class="nav" href="traceback.print_last" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>This is a shorthand for <code>print_exception(sys.last_type,
+sys.last_value, sys.last_traceback,</code> <var>limit</var>, <var>
+file</var>).</p>
+</dd>
+<dt class="function" id="print_stack"><b>print_stack([f[, limit[, file]]])</b> <tt class="nav"><a class="nav" href="traceback.print_stack" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>This function prints a stack trace from its invocation point.
+The optional <var>f</var> argument can be used to specify an
+alternate stack frame to start. The optional <var>limit</var> and
+<var>file</var> arguments have the same meaning as for <a class="link" href="#print_exception"><code>print_exception</code></a>.</p>
+</dd>
+<dt class="function" id="extract_tb"><b>extract_tb(traceback[, limit])</b> <tt class="nav"><a class="nav" href="traceback.extract_tb" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return a list of up to <var>limit</var>
+&#8220;pre-processed&#8221; stack trace entries extracted from the
+traceback object <var>traceback</var>. It is useful for alternate
+formatting of stack traces. If <var>limit</var> is omitted or <code>None</code>, all entries are extracted.
+A &#8220;pre-processed&#8221; stack trace entry is a quadruple
+(<var>filename</var>, <var>line number</var>, <var>function
+name</var>, <var>text</var>) representing the information that is
+usually printed for a stack trace. The <var>text</var> is a string
+with leading and trailing whitespace stripped; if the source is not
+available it is <code>None</code>.</p>
+</dd>
+<dt class="function" id="extract_stack"><b>extract_stack([f[, limit]])</b> <tt class="nav"><a class="nav" href="traceback.extract_stack" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Extract the raw traceback from the current stack frame. The
+return value has the same format as for <a class="link" href="#extract_tb"><code>extract_tb</code></a>. The optional <var>f</var>
+and <var>limit</var> arguments have the same meaning as for <a class="link" href="#print_stack"><code>print_stack</code></a>.</p>
+</dd>
+<dt class="function" id="format_list"><b>format_list(list)</b> <tt class="nav"><a class="nav" href="traceback.format_list" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Given a list of tuples as returned by <a class="link" href="#extract_tb"><code>extract_tb</code></a> or <a class="link" href="#extract_stack"><code>extract_stack</code></a>, return a list of
+strings ready for printing. Each string in the resulting list
+corresponds to the item with the same index in the argument list.
+Each string ends in a newline; the strings may contain internal
+newlines as well, for those items whose source text line is not <code>None</code>.</p>
+</dd>
+<dt class="function" id="format_exception_only"><b>format_exception_only(type, value)</b> <tt class="nav"><a class="nav" href="traceback.format_exception_only" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Format the exception part of a traceback. The arguments are the
+exception type and value such as given by <code>
+sys.last_type</code> and <code>sys.last_value</code>. The return
+value is a list of strings, each ending in a newline. Normally, the
+list contains a single string; however, for <code>exceptions.SyntaxError</code>
+exceptions, it contains several lines that (when printed) display
+detailed information about where the syntax error occurred. The
+message indicating which exception occurred is the always last
+string in the list.</p>
+</dd>
+<dt class="function" id="format_exception"><b>format_exception(type, value, tb[, limit])</b> <tt class="nav"><a class="nav" href="traceback.format_exception" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Format a stack trace and the exception information. The
+arguments have the same meaning as the corresponding arguments to
+<a class="link" href="#print_exception"><code>print_exception</code></a>.
+The return value is a list of strings, each ending in a newline and
+some containing internal newlines. When these lines are
+concatenated and printed, exactly the same text is printed as does
+<a class="link" href="#print_exception"><code>
+print_exception</code></a>.</p>
+</dd>
+<dt class="function" id="format_tb"><b>format_tb(tb[, limit])</b> <tt class="nav"><a class="nav" href="traceback.format_tb" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>A shorthand for <code>
+format_list(extract_tb(</code><var>tb</var>, <var>
+limit</var>)).</p>
+</dd>
+<dt class="function" id="format_stack"><b>format_stack([f[, limit]])</b> <tt class="nav"><a class="nav" href="traceback.format_stack" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>A shorthand for <code>
+format_list(extract_stack(</code><var>f</var>, <var>
+limit</var>)).</p>
+</dd>
+<dt class="function" id="tb_lineno"><b>tb_lineno(tb)</b> <tt class="nav"><a class="nav" href="traceback.tb_lineno" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>This function returns the current line number set in the
+traceback object. This function was necessary because in versions
+of Python prior to 2.3 when the -O flag was passed to Python the
+<var>tb</var>.tb_lineno was not updated correctly. This function
+has no use in versions past 2.3.</p>
+</dd>
+</dl><div class="text">
+<h2 id="traceback-example">Traceback Example <a class="nav" href="#traceback-example">#</a></h2>
+
+<p>This simple example implements a basic read-eval-print loop,
+similar to (but less useful than) the standard Python interactive
+interpreter loop. For a more complete implementation of the
+interpreter loop, refer to the <code>
+code</code> module.</p>
+
+<pre>
+import sys, traceback
+
+def run_user_code(envdir):
+    source = raw_input("&gt;&gt;&gt; ")
+    try:
+        exec source in envdir
+    except:
+        print "Exception in user code:"
+        print '-'*60
+        traceback.print_exc(file=sys.stdout)
+        print '-'*60
+
+envdir = {}
+while 1:
+    run_user_code(envdir)
+</pre>
+</div>
+</div></body></html>

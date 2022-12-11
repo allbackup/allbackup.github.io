@@ -1,0 +1,260 @@
+<html>
+<head>
+<title>pil-large-images ::: www.effbot.org</title>
+<link rel='stylesheet' href='/effbot.css' type='text/css' media='screen' />
+</head>
+<body bgcolor='#ccffcc'>
+<div>[<a href='pil-large-images.htm'>back</a>]</div>
+<h3>Welcome to the effbot.org user editor!</h3>
+
+
+<p><b>Note: This is not a contact form!  Support questions, spam, and
+other off-topic stuff will be ignored.</b></p>
+
+<p>To suggest changes, edit the HTML fragment in the text box below.
+You can use the 'update preview' button to check your changes (the
+preview is displayed beneath the text box).  When done, fill in the
+name and address fields (optional) and click 'submit patch' to mail
+the patch to me.  (I reserve the right to decide which patches to
+include, of course.)  Thanks! /F</p>
+
+<form method='post' id='useredit'>
+<input type='hidden' name='name' value='pil-large-images'/>
+<p>
+<input type='submit' name='preview' value='update preview' style='background:#084; color:white; width:200px; font-weight:bold;' >
+&nbsp;&nbsp;&nbsp;
+<input type='submit' name='submit' value='submit patch'  style='background:#084; color:white; width:200px; font-weight:bold;' >
+</p>
+<textarea name='text' rows='30' cols='80'>Using PIL On Large Images
+
+&lt;p class='info'&gt;April 21, 1999 | Fredrik Lundh&lt;/p&gt;
+
+&lt;p&gt;&lt;i&gt;Q. Where are the memory bottlenecks likely to be:  in Python itself,
+or in PIL?  I'm finding that you basically need to be able to hold the
+entire image in RAM, plus OS, etc.  It doesn't seem to be effectively
+using the virtual memory on my Win98 or NT test machines, or there's
+an arbitrary memory limit somewhere in the code.&lt;/i&gt;&lt;/p&gt;
+
+&lt;p&gt;PIL is copying all data to an RAM image memory, except
+under a few special circumstances (more on those later).
+It allocates one byte per pixel for "1", "L", and "P" images,
+and four bytes per pixel for all other formats.&lt;/p&gt;
+
+&lt;p&gt;So I suspect the problem is on the operating system side
+(in my experience, most operating systems tend to give up
+when a single process attempts to grow much larger than
+the physical memory -- and to thrash heavily long before
+that...)&lt;/p&gt;
+
+&lt;p&gt;&lt;i&gt;Anyone have suggestions for using Python/PIL with such large images,
+short of parsing the files pixel for pixel (or line by line)?  I'd hate to
+have to start over again in C, because Python is so convenient for this
+type of thing (if not amazingly fast).&lt;/i&gt;&lt;/p&gt;
+
+&lt;p&gt;Well, here's a trick that might work for you.  try this:&lt;/p&gt;
+
+&lt;pre&gt;
+&gt;&gt;&gt; import Image
+&gt;&gt;&gt; i = Image.open(filename)
+&gt;&gt;&gt; i.size
+(512, 512)
+&gt;&gt;&gt; i.tile
+[('raw', (0, 0, 512, 512), 128, ('RGB', 0, 1))]
+&lt;/pre&gt;
+
+&lt;p&gt;The &lt;b&gt;tile&lt;/b&gt; attribute contains a list of "tile descriptors", which
+are used to load the image from file.&lt;/p&gt;
+
+&lt;ul&gt;
+
+&lt;li&gt;The first descriptor item should be "raw" -- if it isn't, the file
+is compressed, and can most likely not be read in pieces.&lt;/li&gt;
+
+&lt;li&gt;The second item is the tile extent (a rectangle)&lt;/li&gt;
+
+&lt;li&gt;The third item is the offset from the start of the file to the
+data for that tile.&lt;/li&gt;
+
+&lt;li&gt;The final item is a list of arguments to the decoder.&lt;/li&gt;
+
+&lt;/ul&gt;
+
+&lt;p&gt;The interesting thing is that you can change these parameters
+just after you've opened the file.  for example, to read only the
+first 128 lines of this file, do as follows:&lt;/p&gt;
+
+&lt;pre&gt;
+&gt;&gt;&gt; i.size = (512, 128)
+&gt;&gt;&gt; i.tile = [('raw', (0, 0, 512, 128), 128, ('RGB', 0, 1))]
+
+&gt;&gt;&gt; i.load()
+&lt;/pre&gt;
+
+&lt;p&gt;(the call to &lt;b&gt;load&lt;/b&gt; explicitly reads the data from disk)&lt;/p&gt;
+
+&lt;p&gt;To read the following 128 lines, you must open the
+file again, and modify also the offset argument.&lt;/p&gt;
+
+&lt;pre&gt;
+&gt;&gt;&gt; i = Image.open(filename)
+&gt;&gt;&gt; i.size = (512, 128)
+&gt;&gt;&gt; i.tile = [('raw', (0, 0, 512, 128), 128 + 128*(3*512), ('RGB', 0, 1))]
+&lt;/pre&gt;
+
+&lt;p&gt;And so on.  writing a small loop to do this shouldn't
+be that difficult.&lt;/p&gt;
+
+&lt;p class='mark' align='center'&gt;:::&lt;/p&gt;
+
+&lt;p&gt;&lt;i&gt;I also wonder if maybe a hack to PIL which used mmap() would be a
+solution which would make it VM-friendly.  If so, it might be easier
+than to recode it in C (and possible would speed up PIL for 'smaller'
+images as well.&lt;/i&gt;&lt;/p&gt;
+
+&lt;p&gt;PIL already contains such a hack, which is enabled under
+these circumstances:&lt;/p&gt;
+
+&lt;ul&gt;
+
+&lt;li&gt;You're on a platform that supports
+&lt;a href="/tag/python.mmap"&gt;the &lt;b&gt;mmap&lt;/b&gt; module.&lt;/a&gt;&lt;/li&gt;
+
+&lt;li&gt;You're opening an image using the "raw" decoder.&lt;/li&gt;
+
+&lt;li&gt;The image has an internal format which is
+compatible with PIL's internal pixel layout for
+that mode.&lt;/li&gt;
+
+&lt;/ul&gt;
+
+&lt;p&gt;(or in other words, the image must be "L", "P", "RGBX",
+"RGBA", or "CMYK", and be stored in an uncompressed format.&lt;/p&gt;</textarea>
+<table>
+<tr><td><label for='author'>Name:</label></td><td>
+<div><input name='author' value="" size=40></div>
+</td><td>(Optional)</td></tr>
+<tr><td><label for='email'>Mail:</label></td><td>
+<div><input name='email' value="" size=40></div>
+</td><td>(Optional)</td></tr>
+<tr><td><label for='note'>Comment:</label></td><td>
+<div><input name='note' value="" size=40></div>
+</td><td>(Optional)</td></tr>
+<tr><td><label for='password'>Password:</label></td><td>
+<div><input name='password' value="(replace with the sum of 7+4)" size=40></div>
+</td><td>(Required)</td></tr>
+</table>
+<p>
+<input type='submit' name='preview' value='update preview' style='background:#084; color:white; width:200px; font-weight:bold;' >
+&nbsp;&nbsp;&nbsp;
+<input type='submit' name='submit' value='submit patch'  style='background:#084; color:white; width:200px; font-weight:bold;' >
+</p>
+<p>&nbsp;</p>
+</form>
+<div style='background: white; border: 2px solid #084; padding: 0px 20px;'>
+<h2>Using PIL On Large Images</h2>
+
+<p class='info'>April 21, 1999 | Fredrik Lundh</p>
+
+<p><i>Q. Where are the memory bottlenecks likely to be:  in Python itself,
+or in PIL?  I'm finding that you basically need to be able to hold the
+entire image in RAM, plus OS, etc.  It doesn't seem to be effectively
+using the virtual memory on my Win98 or NT test machines, or there's
+an arbitrary memory limit somewhere in the code.</i></p>
+
+<p>PIL is copying all data to an RAM image memory, except
+under a few special circumstances (more on those later).
+It allocates one byte per pixel for "1", "L", and "P" images,
+and four bytes per pixel for all other formats.</p>
+
+<p>So I suspect the problem is on the operating system side
+(in my experience, most operating systems tend to give up
+when a single process attempts to grow much larger than
+the physical memory -- and to thrash heavily long before
+that...)</p>
+
+<p><i>Anyone have suggestions for using Python/PIL with such large images,
+short of parsing the files pixel for pixel (or line by line)?  I'd hate to
+have to start over again in C, because Python is so convenient for this
+type of thing (if not amazingly fast).</i></p>
+
+<p>Well, here's a trick that might work for you.  try this:</p>
+
+<pre>
+>>> import Image
+>>> i = Image.open(filename)
+>>> i.size
+(512, 512)
+>>> i.tile
+[('raw', (0, 0, 512, 512), 128, ('RGB', 0, 1))]
+</pre>
+
+<p>The <b>tile</b> attribute contains a list of "tile descriptors", which
+are used to load the image from file.</p>
+
+<ul>
+
+<li>The first descriptor item should be "raw" -- if it isn't, the file
+is compressed, and can most likely not be read in pieces.</li>
+
+<li>The second item is the tile extent (a rectangle)</li>
+
+<li>The third item is the offset from the start of the file to the
+data for that tile.</li>
+
+<li>The final item is a list of arguments to the decoder.</li>
+
+</ul>
+
+<p>The interesting thing is that you can change these parameters
+just after you've opened the file.  for example, to read only the
+first 128 lines of this file, do as follows:</p>
+
+<pre>
+>>> i.size = (512, 128)
+>>> i.tile = [('raw', (0, 0, 512, 128), 128, ('RGB', 0, 1))]
+
+>>> i.load()
+</pre>
+
+<p>(the call to <b>load</b> explicitly reads the data from disk)</p>
+
+<p>To read the following 128 lines, you must open the
+file again, and modify also the offset argument.</p>
+
+<pre>
+>>> i = Image.open(filename)
+>>> i.size = (512, 128)
+>>> i.tile = [('raw', (0, 0, 512, 128), 128 + 128*(3*512), ('RGB', 0, 1))]
+</pre>
+
+<p>And so on.  writing a small loop to do this shouldn't
+be that difficult.</p>
+
+<p class='mark' align='center'>:::</p>
+
+<p><i>I also wonder if maybe a hack to PIL which used mmap() would be a
+solution which would make it VM-friendly.  If so, it might be easier
+than to recode it in C (and possible would speed up PIL for 'smaller'
+images as well.</i></p>
+
+<p>PIL already contains such a hack, which is enabled under
+these circumstances:</p>
+
+<ul>
+
+<li>You're on a platform that supports
+<a href="/tag/python.mmap">the <b>mmap</b> module.</a></li>
+
+<li>You're opening an image using the "raw" decoder.</li>
+
+<li>The image has an internal format which is
+compatible with PIL's internal pixel layout for
+that mode.</li>
+
+</ul>
+
+<p>(or in other words, the image must be "L", "P", "RGBX",
+"RGBA", or "CMYK", and be stored in an uncompressed format.</p>
+</div>
+</body>
+</html>

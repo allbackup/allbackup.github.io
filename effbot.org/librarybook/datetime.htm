@@ -1,0 +1,140 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>The datetime&nbsp;Module</title></head><body data-page-id="508"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">The datetime&nbsp;Module</h1></div><div class="yui-ge"><div class="yui-u first"><p>(New in 2.3) The <b>datetime</b> module provides a number of types
+to deal with dates, times, and time intervals.  This module replaces
+the integer/tuple-based time mechanisms in the <b>time</b> module with
+a more object-oriented interface.</p><p>All types provided by this module are new-style classes, and can be
+subclassed and extended from Python.</p><p>The module contains the following types:</p><ul><li>The <b>datetime</b> type represents a date and a time during that day.
+</li><li>The <b>date</b> type represents just a date, between year 1 and 9999
+(see below for more about the calendar used by the datetime module)
+</li><li>The <b>time</b> type represents a time, independent of the date.
+</li><li>The <b>timedelta</b> type represents the difference between two
+time or date objects.
+</li><li>The <b>tzinfo</b> type is used to implement timezone support for
+time and datetime objects; more about that below.
+</li></ul><h3>the datetime type</h3><p>Objects of the <b>datetime</b> type represent a date and a time in
+some timezone.  Unless otherwise specified, datetime objects use
+&#8220;naive time&#8221;, which means that it&#8217;s up to the application to keep
+track of what time zone they&#8217;re in.  The datetime module provides some
+support for time zones; more on that later.</p><p>To create a datetime object for a given date, call the
+<b>datetime</b> constructor:</p><pre>
+# File: datetime-example-1.py
+
+import datetime
+
+now = datetime.datetime(2003, 8, 4, 12, 30, 45)
+
+print now
+print repr(now)
+print type(now)
+print now.year, now.month, now.day
+print now.hour, now.minute, now.second
+print now.microsecond
+</pre><pre>
+$ python datetime-example-1.py
+2003-08-04 12:30:45
+datetime.datetime(2003, 8, 4, 12, 30, 45)
+&lt;type 'datetime.datetime'&gt;
+2003 8 4
+12 30 45
+0
+</pre><p>Note that the default string representation is an ISO 8601-style
+timestamp.</p><p>You can also create datetime objects by using one of the many
+built-in factory functions (but note that all such functions are
+provided as class methods, not module functions):</p><pre>
+# File: datetime-example-2.py
+
+import datetime
+import time
+
+print datetime.datetime(2003, 8, 4, 21, 41, 43)
+
+print datetime.datetime.today()
+print datetime.datetime.now()
+print datetime.datetime.fromtimestamp(time.time())
+
+print datetime.datetime.utcnow()
+print datetime.datetime.utcfromtimestamp(time.time())
+</pre><pre>
+$ python datetime-example-2.py
+2003-08-04 21:41:43
+2003-08-04 21:41:43.522000
+2003-08-04 21:41:43.522000
+2003-08-04 21:41:43.522000
+2003-08-04 19:41:43.532000
+2003-08-04 19:41:43.532000
+</pre><p>As can be seen from these examples, the default formatting for a
+datetime object is an ISO 8601-style string: &#8220;yyyy-mm-dd hh:mm:ss&#8221;,
+optionally followed by a number of microseconds.</p><p>The datetime type provides other formatting methods as well,
+including the highly general <b>strftime</b> method (for details
+on this method, see the description for the corresponding function
+in the <b>time</b> module):</p><pre>
+# File: python datetime-example-3.py
+
+import datetime
+import time
+
+now = datetime.datetime.now()
+
+print now
+print now.ctime()
+print now.isoformat()
+print now.strftime("%Y%m%dT%H%M%S")
+</pre><pre>
+$ python datetime-example-3.py
+2003-08-05 21:36:11.590000
+Tue Aug  5 21:36:11 2003
+2003-08-05T21:36:11.590000
+20030805T213611
+</pre><h3>the date and time types</h3><p>The <b>date</b> type represents the date portions of a datetime
+object.</p><pre>
+# File: datetime-example-4.py
+
+import datetime
+
+d = datetime.date(2003, 7, 29)
+
+print d
+print d.year, d.month, d.day
+
+print datetime.date.today()
+</pre><pre>
+$ python datetime-example-4.py
+2003-07-29
+2003 7 29
+2003-08-07
+</pre><p>The <b>time</b> type is similar; it represents the time portion,
+with microsecond resolution.</p><pre>
+# File: datetime-example-5.py
+
+import datetime
+
+t = datetime.time(18, 54, 32)
+
+print t
+print t.hour, t.minute, t.second, t.microsecond
+</pre><pre>
+$ python datetime-example-5.py
+18:54:32
+18 54 32 0
+</pre><p>The <b>datetime</b> type provides method to extract <b>date</b> and
+<b>time</b> objects, as well as a class method that combines two objects
+into a single <b>datetime</b> object:</p><pre>
+# File: datetime-example-6.py
+
+import datetime
+
+now = datetime.datetime.now()
+
+d = now.date()
+t = now.time()
+
+print now
+print d, t
+print datetime.datetime.combine(d, t)
+</pre><pre>
+$ python datetime-example-6.py
+2003-08-07 23:19:57.926000
+2003-08-07 23:19:57.926000
+2003-08-07 23:19:57.926000
+</pre></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to librarybook index page.">::: librarybook :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

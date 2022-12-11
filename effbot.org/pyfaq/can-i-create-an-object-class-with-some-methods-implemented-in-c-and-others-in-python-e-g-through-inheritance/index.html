@@ -1,0 +1,12 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>Can I create an object class with some methods implemented in C and others in Python (e.g. through&nbsp;inheritance)?</title> <script type="text/javascript">effbot_page_id=736;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> <!--
+<p style='color: #8f8f8f; background: #fff5bf; padding: 5px 10px;'> <b>2008-07-15:</b> Selected articles
+
+now have experimental "comment" links in the left column and at the bottom.
+You're welcome to use them for commenting and voting on articles.
+For a bit more on this, see <a
+href="http://effbot.slinkset.com/links/Welcome_to_discuss_effbot_org">this
+page</a>. /F
+</p>
+--> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <h1 class="maintitle">Can I create an object class with some methods implemented in C and others in Python (e.g. through&nbsp;inheritance)?</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p>In Python 2.2 and later, you can inherit from builtin classes such as <a href="/pyref/int.htm"><strong>int</strong></a>, <a href="/pyref/list.htm"><strong>list</strong></a>, <a href="/pyref/dict.htm"><strong>dict</strong></a>, as well as C types you create yourself.</p><p>In earlier versions, C objects are created by factory functions, and cannot be directly inherited.  You can get around by using a Python class as a facade, and delegate to an internal C object as necessary.</p><p>The Boost Python Library (BPL, <a href="http://www.boost.org/libs/python/doc/index.h

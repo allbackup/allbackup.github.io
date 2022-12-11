@@ -1,0 +1,55 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>A Cache Status View for&nbsp;Django</title> <script type="text/javascript">effbot_page_id=2005;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> <!--
+<p style='color: #8f8f8f; background: #fff5bf; padding: 5px 10px;'> <b>2008-07-15:</b> Selected articles
+
+now have experimental "comment" links in the left column and at the bottom.
+You're welcome to use them for commenting and voting on articles.
+For a bit more on this, see <a
+href="http://effbot.slinkset.com/links/Welcome_to_discuss_effbot_org">this
+page</a>. /F
+</p>
+--> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <h1 class="maintitle">A Cache Status View for&nbsp;Django</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p class="info">Fredrik Lundh | August 2007</p><p>Since I&#8217;m running <strong>effbot.org</strong> on a shared server with limited memory for long-running processes, I&#8217;m quite interested in keeping track of my Django application&#8217;s resource usage.</p><p>As part of this, I wanted an easy way to see what the <strong>memcached</strong> server I&#8217;m using for caching is up to, and came up with a a simple Django view that grabs the current status from the server.</p><p>Here&#8217;s how to implement this on your own Django site:</p><p>The first step is to add an entry to the URL configuration file that points to the view module; something like:</p><pre class="python">
+urlpatterns = patterns(<span class="pystring">''</span>,
+    ...
+    (<span class="pystring">r'^status/cache/$'</span>, <span class="pystring">'mysite.memcached_status.view'</span>),
+)</pre><p>Next, add the following view to your
+application, in the location you specified in
+the URL file:</p><pre class="python">
+<span class="pycomment"># memcached_status.py</span>
+
+<span class="pykeyword">from</span> django <span class="pykeyword">import</span> http
+<span class="pykeyword">from</span> django.shortcuts <span class="pykeyword">import</span> render_to_response
+<span class="pykeyword">from</span> django.conf <span class="pykeyword">import</span> settings
+
+<span class="pykeyword">import</span> datetime, re
+
+<span class="pykeyword">def</span> <span class="pyfunction">view</span>(request):
+
+    <span class="pykeyword">try</span>:
+        <span class="pykeyword">import</span> memcache
+    <span class="pykeyword">except</span> ImportError:
+        <span class="pykeyword">raise</span> http.Http404
+
+    <span class="pykeyword">if</span> <span class="pykeyword">not</span> (request.user.is_authenticated() <span class="pykeyword">and</span>
+            request.user.is_staff):
+        <span class="pykeyword">raise</span> http.Http404
+
+    <span class="pycomment"># get first memcached URI</span>
+    m = re.match(
+        <span class="pystring">"memcached://([.\w]+:\d+)"</span>, settings.CACHE_BACKEND
+    )
+    <span class="pykeyword">if</span> <span class="pykeyword">not</span> m:
+        <span class="pykeyword">raise</span> http.Http404
+
+    host = memcache._Host(m.group(1))
+    host.connect()
+    host.send_cmd(<span class="pystring">"stats"</span>)
+
+    <span class="pykeyword">class</span> <span class="pyclass">Stats</span>:
+        <span class="pykeyword">pass</span>
+
+    stats = Stats()
+
+    <span class="pykeyword">while</span> 1:
+        line = host.readline().spl

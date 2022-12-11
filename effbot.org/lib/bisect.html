@@ -1,0 +1,119 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>bisect</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-bisect.html'>original</a> :::
+<a href='bisect.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>bisect&#8212;Array bisection algorithm</h1>
+
+<div class="toc"><dl><dt>On this page:</dt><dd><a href="#examples">Examples</a></dd></dl></div><p>This module provides support for maintaining a list in sorted
+order without having to sort the list after each insertion. For
+long lists of items with expensive comparison operations, this can
+be an improvement over the more common approach. The module is
+called <a class="link" href="#bisect"><code>bisect</code></a> because it
+uses a basic bisection algorithm to do its work. The source code
+may be most useful as a working example of the algorithm (the
+boundary conditions are already right!).</p>
+
+<p>The following functions are provided:</p>
+</div>
+<dl><dt class="function" id="bisect_left"><b>bisect_left(list, item[, lo[, hi]])</b> <tt class="nav"><a class="nav" href="bisect.bisect_left" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Locate the proper insertion point for <var>item</var> in <var>
+list</var> to maintain sorted order. The parameters <var>lo</var>
+and <var>hi</var> may be used to specify a subset of the list which
+should be considered; by default the entire list is used. If <var>
+item</var> is already present in <var>list</var>, the insertion
+point will be before (to the left of) any existing entries. The
+return value is suitable for use as the first parameter to <var>
+list</var>.insert(). This assumes that <var>list</var> is already
+sorted.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.1.<br />
+</blockquote>
+</dd>
+<dt class="function" id="bisect_right"><b>bisect_right(list, item[, lo[, hi]])</b> <tt class="nav"><a class="nav" href="bisect.bisect_right" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Similar to <a class="link" href="#bisect_left"><code>
+bisect_left</code></a>, but returns an insertion point which comes after
+(to the right of) any existing entries of <var>item</var> in <var>
+list</var>.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.1.<br />
+</blockquote>
+</dd>
+<dt class="function" id="bisect"><b>bisect(...)</b> <tt class="nav"><a class="nav" href="bisect.bisect" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Alias for <a class="link" href="#bisect_right"><code>
+bisect_right</code></a>.</p>
+</dd>
+<dt class="function" id="insort_left"><b>insort_left(list, item[, lo[, hi]])</b> <tt class="nav"><a class="nav" href="bisect.insort_left" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Insert <var>item</var> in <var>list</var> in sorted order. This
+is equivalent to <var>
+list</var>.insert(bisect.bisect_left(<var>list</var>, <var>
+item</var>, <var>lo</var>, <var>hi</var>), <var>item</var>). This
+assumes that <var>list</var> is already sorted.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.1.<br />
+</blockquote>
+</dd>
+<dt class="function" id="insort_right"><b>insort_right(list, item[, lo[, hi]])</b> <tt class="nav"><a class="nav" href="bisect.insort_right" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Similar to <a class="link" href="#insort_left"><code>
+insort_left</code></a>, but inserting <var>item</var> in <var>list</var>
+after any existing entries of <var>item</var>.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.1.<br />
+</blockquote>
+</dd>
+<dt class="function" id="insort"><b>insort(...)</b> <tt class="nav"><a class="nav" href="bisect.insort" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Alias for <a class="link" href="#insort_right"><code>
+insort_right</code></a>.</p>
+</dd>
+</dl><div class="text">
+<h2 id="examples">Examples <a class="nav" href="#examples">#</a></h2>
+
+<p>The <a class="link" href="#bisect"><code>bisect</code></a> function is
+generally useful for categorizing numeric data. This example uses
+<a class="link" href="#bisect"><code>bisect</code></a> to look up a letter
+grade for an exam total (say) based on a set of ordered numeric
+breakpoints: 85 and up is an `A', 75..84 is a `B', etc.</p>
+
+<pre>
+&gt;&gt;&gt; grades = "FEDCBA"
+&gt;&gt;&gt; breakpoints = [30, 44, 66, 75, 85]
+&gt;&gt;&gt; from bisect import bisect
+&gt;&gt;&gt; def grade(total):
+...           return grades[bisect(breakpoints, total)]
+...
+&gt;&gt;&gt; grade(66)
+'C'
+&gt;&gt;&gt; map(grade, [33, 99, 77, 44, 12, 88])
+['E', 'A', 'B', 'D', 'F', 'A']
+</pre>
+</div>
+</div></body></html>

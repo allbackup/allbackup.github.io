@@ -1,0 +1,286 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>Using the Python&nbsp;Interpreter</title><script type="text/javascript">effbot_page_id=1911;</script></head><body><div id="doc2" class="yui-t2"><div id="hd"><!-- header --></div><!-- hd --><div id="bd"><!-- body --><p class="note" style="text-align: center"><strong>
+
+We're back after a server migration that caused effbot.org to fall
+over a bit harder than expected.  Expect some glitches.
+
+</strong></p><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">Using the Python&nbsp;Interpreter</h1></div><!-- yui-g --><body><p>COMMENT: <a href="http://docs.python.org/tut/node4.html">Original Source</a></p>
+
+<h2 id="do-you-have-python">Do you have Python?</h2>
+
+<p>To check if Python is already installed on your system, try to invoke
+the interpreter as described in the next section. Python comes
+pre-installed on recent Mac OS X systems (10.2 Jaguar and newer) and
+many Linux distributions. If you need to install Python, you can
+download the latest version from <a href="http://www.python.org/download">http://www.python.org/download</a>.</p>
+
+<h2 id="starting-python">Starting Python</h2>
+
+<p>You can run Python in an interactive mode, which lets you type in
+Python code line by line, and have it executed immediately, or you can
+have Python execute saved programs (usually saved to a file with the
+&#8220;.py&#8221; extension).  For this tutorial we start with an interactive
+session, because it&#8217;s such a wonderful feature!</p>
+
+<p>To start Python in interactive mode:</p>
+
+<ul>
+<li><p><strong>UNIX-like system</strong>: Open a terminal window (like gnome-terminal, konsole, or
+xterm) and type &#8216;python&#8217; at the prompt.</p></li>
+<li><p><strong>Windows</strong>: Click on the Start -&gt; All Programs -&gt; Python 2.4 -&gt; Python
+(command line) or Python IDLE.  IDLE is more convenient, the command line
+version looks more like the UNIX version.</p></li>
+<li><p><strong>Mac OS X</strong>: Open a Terminal window, and type &#8216;python&#8217; at the prompt.</p></li>
+</ul>
+
+<p>Once you have done that, you should see something like this:</p>
+
+<pre><code>$ python
+Python 2.4.2 (#2, Sep 30 2005, 21:19:01)
+[GCC 4.0.2 20050808 (prerelease) (Ubuntu 4.0.1-4ubuntu8)] on linux2
+Type "help", "copyright", "credits" or "license" for more information.
+&gt;&gt;&gt;
+</code></pre>
+
+<p>The banner tells you which version of Python you&#8217;re using.  Below
+that, you see the prompt (&#8220;&gt;&gt;&gt; &#8220;) which tells you the interpreter is
+waiting for you to type something.</p>
+
+<p>In the following examples, the &#8220;&gt;&gt;&gt;&#8221; and &#8220;&#8230;&#8221; prompts you see at the
+start of a line are printed by the interpreter - you do not have to
+type those! To repeat the example, type in everything you see after
+the prompt. The &#8220;&#8230;&#8221;  prompt on a line by itself in an example means
+you must type a blank line; this is used to end a multi-line command.</p>
+
+<p>Any line not starting with a prompt is the output of the interpreter.</p>
+
+<p>So, let&#8217;s type something!</p>
+
+<pre class="python"><code>&gt;&gt;&gt; print 'Hello World'
+Hello World
+&gt;&gt;&gt;
+</code></pre>
+
+<p>Let&#8217;s start with some arithmetic first, because Python can do that
+easily too.</p>
+
+<pre class="python"><code>&gt;&gt;&gt; 2+2
+4
+&gt;&gt;&gt; 3*4
+12
+&gt;&gt;&gt; 2+2*3
+8
+&gt;&gt;&gt; (2+2)*3
+12
+</code></pre>
+
+<p>Computers can do division too, but you have to be a little careful
+when using it.  In Python, if you divide two integers, Python will
+round the result down to the nearest integer:</p>
+
+<pre class="python"><code>&gt;&gt;&gt; 3 / 4
+0
+</code></pre>
+
+<p>However, if you add a decimal part to a number, Python treats this as
+a floating point number, and uses floating point division instead:</p>
+
+<pre class="python"><code>&gt;&gt;&gt; 3.0 / 4
+0.75
+&gt;&gt;&gt; 3 / 4.0
+0.75
+&gt;&gt;&gt; 3.0 / 4.0
+0.75
+</code></pre>
+
+<p>The interpreter prints up to seventeen significant digits when it
+prints a floating point number, which can cause surprises when you
+print out decimal values that cannot be exactly represented by the
+internal binary representation.  For example, the decimal value 0.1
+ends up with more decimals than one would expect:</p>
+
+<pre class="python"><code>&gt;&gt;&gt; 1.0 / 10.0
+0.10000000000000001
+</code></pre>
+
+<p>For more on this, see <a href="node16.html">Appendix B</a>, <em>Floating Point
+Arithmetic: Issues and Limitations</em>.</p>
+
+<p>Python works with strings as well:</p>
+
+<pre class="python"><code>&gt;&gt;&gt; 'hello ' + 'world'
+'hello world'
+</code></pre>
+
+<p>We&#8217;ll get back to more things to do at the interactive prompt later in
+this tutorial.</p>
+
+<h3 id="exiting-the-interpreter">Exiting the Interpreter</h3>
+
+<p>Typing an end-of-file character (<strong>Control-D</strong> on Unix and Mac OS X,
+<strong>Control-Z</strong> followed by <strong>Return</strong> on Windows) at the primary prompt
+causes the interpreter to exit with a zero exit status.</p>
+
+<p>In Python 2.5, you can also use <a href="/pyref/exit.htm"><strong>exit()</strong></a> or <a href="/pyref/quit.htm"><strong>quit()</strong></a> to exit the interpreter.</p>
+
+<pre class="python"><code>&gt;&gt;&gt; exit()
+$
+</code></pre>
+
+<p>If none of the above works, you can try typing the following commands:</p>
+
+<pre class="python"><code>import sys; sys.exit()
+</code></pre>
+
+<h2 id="more-about-the-interactive-mode">More About the Interactive Mode</h2>
+
+<p>Using python interactive like this is <strong>very</strong> convenient and
+useful. To get even more done interactively, we&#8217;ll tell more about the
+interactive mode.</p>
+
+<p>In interactive mode mode the interpreter prompts for the next command
+with the <em>primary prompt</em>, usually three greater-than signs (&#8220;&gt;&gt;&gt; &#8220;);
+for continuation lines it prompts with the <em>secondary prompt</em>, by
+default three dots (&#8220;&#8230; &#8220;). Continuation lines are needed when
+entering a multi-line construct. As an example, take a look at this if
+statement:</p>
+
+<pre><code>&gt;&gt;&gt; the_world_is_flat = True
+&gt;&gt;&gt; if the_world_is_flat:
+...     print "Be careful not to fall off!"
+... 
+Be careful not to fall off!
+</code></pre>
+
+<p>The interpreter&#8217;s line-editing features usually aren&#8217;t very
+sophisticated. On Unix, whoever installed the interpreter may have
+enabled support for the GNU readline library, which adds more
+elaborate interactive editing and history features. Perhaps the
+quickest check to see whether command line editing is supported is
+typing <strong><code>Control-P</code></strong>, or the <strong>up-arrow</strong> to the first Python prompt
+you get. If it beeps, you have command line editing; see <a href="node15.html">Appendix
+A</a> for an introduction to the keys. If nothing appears to
+happen, or if <code>P</code> is echoed, command line editing isn&#8217;t available;
+you&#8217;ll only be able to use backspace to remove characters from the
+current line. [ FIXME: Tell more about the up-arrow? ]</p>
+
+<h3 id="error-handling">Error Handling</h3>
+
+<p>When an error occurs, the interpreter prints an error message and a
+stack trace. This tells you which error occured where. In interactive
+mode, it then returns to the primary prompt; when input came from a
+file, it exits with a nonzero exit status after printing the stack
+trace. Some errors are unconditionally fatal and cause an exit with a
+nonzero exit; this applies to internal inconsistencies and some cases
+of running out of memory. Normally this shouldn&#8217;t happen though. [
+QUESTION: Should we even mention these fatal errors here?] All error
+messages are written to the standard error stream; normal output from
+executed commands is written to standard output. [ QUESTION: Should we
+mention stderr and stdout? ]</p>
+
+<p>Typing the system&#8217;s interrupt character (usually Control-C or DEL) to
+the primary or secondary prompt cancels the input and returns to the
+primary prompt.  Typing an interrupt while a command is executing
+raises a KeyboardInterrupt exception, which may be handled by a try
+statement.</p>
+
+<h3 id="running-saved-programs">Running Saved Programs</h3>
+
+<p>You can of course also save your program so you can run it again at
+any time.  To run a Python program from a file, pass the &#8220;.py&#8221; file
+name to the interpreter, for example:</p>
+
+<pre><code>$ python myprogram.py
+</code></pre>
+
+<p>Under windows, you can give the file an extension of &#8220;.py&#8221; or &#8220;.pyw&#8221;
+and then you can just double-click on it.  The .py will open a console
+(a black window) where your output (print commands for example) will
+appear. The &#8220;.pyw&#8221; extension will not show any output, so you have to
+build a user-interface yourself.</p>
+
+<h3 id="executable-python-scripts">Executable Python Scripts</h3>
+
+<p>On most Unix systems, Python scripts can be made directly executable,
+like shell scripts, by putting the line</p>
+
+<pre class="python"><code>#! /usr/bin/env python
+</code></pre>
+
+<p>(assuming that the interpreter is on the user&#8217;s PATH) at the beginning
+of the script and giving the file an executable mode. The &#8220;#!&#8221; must be
+the first two characters of the file. On some platforms, this first
+line must end with a Unix-style line ending (&#8220;\n&#8221;).  Note that the
+hash character, &#8220;#&#8221;, is used to start a comment in Python.</p>
+
+<p>The script can be given a executable mode, or permission, using the
+<strong>chmod</strong> command:</p>
+
+<pre><code>$ more myscript.py
+#! /usr/bin/env python
+print "hello"
+a = 10
+print a
+
+$ chmod +x myscript.py
+
+$ ./myscript.py
+hello
+10
+</code></pre>
+
+<p>When a script file is used, it is sometimes useful to be able to run
+the script and enter interactive mode afterwards. This can be done by
+passing <strong><code>-i</code></strong> before the script. When we run the previous script
+like this we get:</p>
+
+<pre><code> $ python -i ./myscript.py
+ hello
+ 10
+ &gt;&gt;&gt; print a - 2
+ 8
+</code></pre>
+
+<h2 id="source-code-encoding">Source Code Encoding</h2>
+
+<p>It is possible to use encodings different than ASCII in Python source
+files. The best way to do it is to put one more special comment line
+right after the &#8220;#!&#8221; line to define the source file encoding:</p>
+
+<pre><code> # -*- coding: _encoding_ -*-
+</code></pre>
+
+<p>With that declaration, all characters in the source file will be
+treated as having the given encoding, and you can use non-ASCII text
+in Unicode string literals. The list of possible encodings can be
+found in the <em><a href="http://docs.python.org/lib/lib.html">Python Library
+Reference</a></em>, in the section on
+<a href="http://docs.python.org/lib/module-codecs.html">codecs</a>.</p>
+
+<p>For example, to write Unicode literals including the Euro currency
+symbol, the ISO-8859-15 encoding can be used, with the Euro symbol
+having the ordinal value 164. This script will print the value 8364
+(the Unicode codepoint corresponding to the Euro symbol) and then
+exit:</p>
+
+<pre><code> # -*- coding: iso-8859-15 -*-
+
+ currency = u"&#8364;"
+ print ord(currency)
+</code></pre>
+
+<p>If your editor supports saving files as UTF-8 with a <em>byte order mark</em>
+(BOM), you can use that instead of an encoding declaration.  IDLE
+supports this capability if `Options/General/Default Source
+Encoding/UTF-8` is set.  Note that older versions of Python (2.2 and
+earlier) don&#8217;t understand the BOM, and it also doesn&#8217;t work with
+executable scripts that uses the <code>#!</code> mechanism.</p>
+
+<p>By using UTF-8 (either through the signature or an encoding
+declaration), characters of most languages in the world can be used
+simultaneously in string literals and comments. Using non-ASCII
+characters in identifiers is not supported. To display all these
+characters properly, your editor must recognize that the file is
+UTF-8, and it must use a font that supports all the characters in the
+file.</p></body><div class="yui-g"></div><!-- yui-g --></div><!-- content --></div><!-- yui-b --></div><!-- yui-main --><div class="yui-b"><div id='menu'></div><!-- menu --></div><!-- yui-b --></div><!-- bd --><div id="ft"><!-- footer --></div><!-- ft --></div><!-- doc --><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

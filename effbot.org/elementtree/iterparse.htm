@@ -1,0 +1,49 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>Incremental&nbsp;Parsing</title></head><body data-page-id="1998"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">Incremental&nbsp;Parsing</h1></div><div class="yui-ge"><div class="yui-u first"><p>The <strong>iterparse</strong> function builds an element tree with data from a file or a file-like object, but also lets you inspect the tree during the build process.</p><p>This is similar to parsing a file and then iterating over it with <strong>iter</strong> (or <strong>getiterator</strong>, in 1.2 and earlier), but the parsing and the iteration are done in parallel.  This has several advantages; you can for example remove parts of the tree that you don&#8217;t need, stop parsing when you find what you&#8217;re looking for, or just gain a little performance by parsing XML from a remote site as it arrives over the wire.</p><p>For example, here&#8217;s an example that shows how to print all item links from an RSS 2.0 file:</p><pre class="python"><span class="pykeyword">for</span> event, elem <span class="pykeyword">in</span> ET.iterparse(<span class="pystring">"blog.rss"</span>):
+    <span class="pykeyword">if</span> elem.tag == <span class="pystring">"item"</span>:
+        <span class="pykeyword">print</span> repr(elem.findtext(<span class="pystring">"link"</span>))
+        elem.clear() <span class="pycomment"># won't need this again</span></pre><pre class="python"><span class="pykeyword">for</span> event, elem <span class="pykeyword">in</span> ET.iterparse(<span class="pystring">"blog.rss"</span>):
+    <span class="pykeyword">if</span> elem.tag == <span class="pystring">"title"</span>:
+        <span class="pykeyword">print</span> repr(elem.text)
+        <span class="pykeyword">break</span> <span class="pycomment"># we're done</span></pre><p>The <strong>events</strong> option specify what events you want to see
+(available events in this release are &#8220;start&#8221;, &#8220;end&#8221;, &#8220;start-ns&#8221;, and &#8220;end-ns&#8221;, where the &#8220;ns&#8221; events are used to get detailed namespace information).  If the option is omitted, only &#8220;end&#8221; events are returned.</p><p class="note"><strong>Note:</strong> The tree builder and the event generator are not necessarily synchronized; the latter usually lags behind a bit.  This means that when you get a &#8220;start&#8221;event for an element, the builder may already have filled that element with content.  You cannot rely on this, though &#8212; a &#8220;start&#8221; event can only be used to inspect the attributes, not the element content.  For more details, see <a href="http://mail.python.org/pipermail/xml-sig/2005-January/010838.html">this message</a>.</p><p>Note that <strong>iterparse</strong> still builds a tree, just like <strong>parse</strong>, but you can safely rearrange or remove parts of the tree while parsing. For example, to parse large files, you can get rid of elements as soon as you&#8217;ve processed them:</p><pre class="python">
+<span class="pykeyword">for</span> event, elem <span class="pykeyword">in</span> iterparse(source):
+    <span class="pykeyword">if</span> elem.tag == <span class="pystring">"record"</span>:
+        ... process record elements ...
+        elem.clear()</pre><p>The above pattern has one drawback; it does not clear the root
+element, so you will end up with a single element with lots of empty child elements.  If your files are huge, rather than just large, this might be a problem.  To work around this, you need to get your hands on the root element.  The easiest way to do this is to enable <strong>start</strong> events, and save a reference to the first element in a variable:</p><pre class="python">
+<span class="pycomment"># get an iterable</span>
+context = iterparse(source, events=(<span class="pystring">"start"</span>, <span class="pystring">"end"</span>))
+
+<span class="pycomment"># turn it into an iterator</span>
+context = iter(context)
+
+<span class="pycomment"># get the root element</span>
+event, root = context.next()
+
+<span class="pykeyword">for</span> event, elem <span class="pykeyword">in</span> context:
+    <span class="pykeyword">if</span> event == <span class="pystring">"end"</span> <span class="pykeyword">and</span> elem.tag == <span class="pystring">"record"</span>:
+        ... process record elements ...
+    root.clear()</pre><p>(future releases will make it easier to access the root element from within the loop)</p><h3 id="namespace-events">Namespace Events&#160;<a class="nav" href="#namespace-events" title="bookmark!">#</a></h3><p>The namespace events contain information about namespace scopes in the source document.  This can be used to keep track of active namespace prefixes, which are otherwise discarded by the parser. Here&#8217;s how you can emulate the <strong>namespaces</strong> attribute in the old <a href="http://effbot.org/zone/elementsoap-3.htm">FancyTreeBuilder</a> class:</p><pre class="python">
+events = (<span class="pystring">"end"</span>, <span class="pystring">"start-ns"</span>, <span class="pystring">"end-ns"</span>)
+namespaces = []
+<span class="pykeyword">for</span> event, elem <span class="pykeyword">in</span> iterparse(source, events=events):
+    <span class="pykeyword">if</span> event == <span class="pystring">"start-ns"</span>:
+        namespaces.insert(0, elem)
+    <span class="pykeyword">elif</span> event == <span class="pystring">"end-ns"</span>:
+        namespaces.pop(0)
+    <span class="pykeyword">else</span>:
+        ...</pre><p>The <strong>namespaces</strong> variable in this example will contain a stack
+of (prefix, uri) tuples.</p><p>(Note how <strong>iterparse</strong> lets you replace instance variables
+with local variables.  The code is not only easier to write, it is also a lot more efficient.)</p><p>For better performance, you can append and remove items at the
+right end of the list instead, and loop backwards when looking for prefix mappings.</p><pre class="python">
+events = (<span class="pystring">"end"</span>, <span class="pystring">"start-ns"</span>, <span class="pystring">"end-ns"</span>)
+namespaces = []
+<span class="pykeyword">for</span> event, elem <span class="pykeyword">in</span> iterparse(source, events=events):
+    <span class="pykeyword">if</span> event == <span class="pystring">"start-ns"</span>:
+        namespaces.append(elem)
+    <span class="pykeyword">elif</span> event == <span class="pystring">"end-ns"</span>:
+        namespaces.pop(-1)
+    <span class="pykeyword">else</span>:
+        ...</pre></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to elementtree index page.">::: elementtree :::</a></b></li></ul><ul><li><b>::: contents</b></li></ul><ul><li><ul><li><ul><li><a href="#namespace-events">Namespace Events</a></li></ul></li></ul></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

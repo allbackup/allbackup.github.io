@@ -1,0 +1,25 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>operator-mod</title> <script type="text/javascript">effbot_page_id=1499;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> <!--
+<p style='color: #8f8f8f; background: #fff5bf; padding: 5px 10px;'> <b>2008-07-15:</b> Selected articles
+
+now have experimental "comment" links in the left column and at the bottom.
+You're welcome to use them for commenting and voting on articles.
+For a bit more on this, see <a
+href="http://effbot.slinkset.com/links/Welcome_to_discuss_effbot_org">this
+page</a>. /F
+</p>
+--> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <h1 class="maintitle">operator-mod</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p>The <code>%</code> (modulo) operator yields the remainder from the division of
+the first argument by the second. The numeric arguments are first
+converted to a common type. A zero right argument raises the
+ZeroDivisionError exception. The arguments may be floating point
+numbers, e.g., <code>3.14%0.7</code> equals <code>0.34</code> (since <code>3.14</code> equals `4*0.7
++ 0.34`.) The modulo operator always yields a result with the same
+sign as its second operand (or zero); the absolute value of the result
+is strictly smaller than the absolute value of the second
+operand[5.2][5].</p><p><strong>Note:</strong> While <code>abs(x%y) &amp;lt; abs(y)</code> is true mathematically, for
+floats it may not be true numerically due to roundoff. For example,
+and assuming a platform on which a Python float is an IEEE 754
+double-precision number, in order that <code>-1e-100 % 1e100</code> have the same
+sign as <code>1e100</code>, the computed result is <code>-1e-100 + 1e100</code>, which is
+numerically exactly equal 

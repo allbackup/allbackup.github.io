@@ -1,0 +1,39 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>The stat&nbsp;module</title></head><body data-page-id="664"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">The stat&nbsp;module</h1></div><div class="yui-ge"><div class="yui-u first"><p>This module contains a number of constants and test functions
+that can be used with the <b>os.stat</b> function.</p><div class="example">
+<b style="example">Example: Using the stat
+module</b>
+<pre>
+# File: <a href="stat/stat-example-1.py">stat-example-1.py</a>
+
+import stat
+import os, time
+
+st = os.stat("samples/sample.txt")
+
+print "mode", "=&gt;", oct(stat.S_IMODE(st[stat.ST_MODE]))
+
+print "type", "=&gt;",
+if stat.S_ISDIR(st[stat.ST_MODE]):
+    print "DIRECTORY",
+if stat.S_ISREG(st[stat.ST_MODE]):
+    print "REGULAR",
+if stat.S_ISLNK(st[stat.ST_MODE]):
+    print "LINK",
+print
+
+print "size", "=&gt;", st[stat.ST_SIZE]
+
+print "last accessed", "=&gt;", time.ctime(st[stat.ST_ATIME])
+print "last modified", "=&gt;", time.ctime(st[stat.ST_MTIME])
+print "inode changed", "=&gt;", time.ctime(st[stat.ST_CTIME])
+
+</pre><pre class="computeroutput" moreinfo="NONE">
+mode =&gt; 0664
+type =&gt; REGULAR
+size =&gt; 305
+last accessed =&gt; Sun Oct 10 22:12:30 1999
+last modified =&gt; Sun Oct 10 18:39:37 1999
+inode changed =&gt; Sun Oct 10 15:26:38 1999
+</pre></div></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to librarybook index page.">::: librarybook :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

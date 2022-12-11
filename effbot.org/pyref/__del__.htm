@@ -1,0 +1,44 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>The __del__&nbsp;method</title> <script type="text/javascript">effbot_page_id=1812;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <h1 class="maintitle">The __del__&nbsp;method</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p><strong>__del__</strong>(self)</p><p>Called when the instance is about to be destroyed. This is also called
+a destructor. If a base class has a __del__() method, the derived
+class&#8217;s __del__() method, if any, must explicitly call it to
+ensure proper deletion of the base class part of the instance. Note
+that it is possible (though not recommended!) for the __del__()
+method to postpone destruction of the instance by creating a new
+reference to it. It may then be called at a later time when this new
+reference is deleted. It is not guaranteed that __del__() methods
+are called for objects that still exist when the interpreter exits.</p><p><strong>Note:</strong> &#8220;del x&#8221; doesn&#8217;t directly call <code>x.\_\_del\_\_()</code> &#8212; the
+former decrements the reference count for <code>x</code> by one, and the latter
+is only called when <code>x</code>&#8216;s reference count reaches zero. Some common
+situations that may prevent the reference count of an object from
+going to zero include: circular references between objects (e.g., a
+doubly-linked list or a tree data structure with parent and child
+pointers); a reference to the object on the stack frame of a function
+that caught an exception (the traceback stored in <code>sys.exc\_traceback</code>
+keeps the stack frame alive); or a reference to the object on the
+stack frame that raised an unhandled exception in interactive mode
+(the traceback stored in <code>sys.last\_traceback</code> keeps the stack frame
+alive). The first situation can only be remedied by explicitly
+breaking the cycles; the latter two situations can be resolved by
+storing <code>None</code> in <code>sys.exc\_traceback</code> or
+<code>sys.last\_traceback</code>. Circular references which are garbage are
+detected when the option cycle detector is enabled (it&#8217;s on by
+default), but can only be cleaned up if there are no Python-level
+__del__() methods involved. Refer to the documentation for the [
+gc module][1] for more information about how __del__() methods are
+handled by the cycle detector, particularly the description of the
+<code>garbage</code> value.</p><p><strong>Warning:</strong> Due to the precarious circumstances under which
+__del__() methods are invoked, exceptions that occur during their
+execution are ignored, and a warning is printed to <code>sys.stderr</code>
+instead. Also, when __del__() is invoked in response to a module
+being deleted (e.g., when execution of the program is done), other
+globals referenced by the __del__() method may already have been
+deleted. For this reason, __del__() methods should do the absolute
+minimum needed to maintain external invariants. Starting with version
+1.5, Python guarantees that globals whose name begins with a single
+underscore are deleted from their module before other globals are
+deleted; if no other references to such globals exist, this may help
+in assuring that imported modules are still available at the time when
+the __del__() method is called.</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div> <!-- yui-g --></div> <!-- content --> </div> <!-- yui-b --> </div> <!-- yui-main --> <div class="yui-b"> <div id='menu'> <ul> <li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li> <li><b><a href="." title="Go to pyref index page.">::: pyref :::</a></b></li> </ul> </div> <!-- menu --> </div> <!-- yui-b --> </div> <!-- bd --> <div id="ft"> <!-- footer --> <p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p> </div> <!-- ft --> </div> <!-- doc --> <script src="/media/js/effbot-min.js" type="text/javascript"> </script> </body> </html>

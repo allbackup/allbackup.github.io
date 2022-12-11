@@ -1,0 +1,44 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>Serving Multiple Hosts from a Single Django&nbsp;Instance</title> <script type="text/javascript">effbot_page_id=42;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> <!--
+<p style='color: #8f8f8f; background: #fff5bf; padding: 5px 10px;'> <b>2008-07-15:</b> Selected articles
+
+now have experimental "comment" links in the left column and at the bottom.
+You're welcome to use them for commenting and voting on articles.
+For a bit more on this, see <a
+href="http://effbot.slinkset.com/links/Welcome_to_discuss_effbot_org">this
+page</a>. /F
+</p>
+--> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <h1 class="maintitle">Serving Multiple Hosts from a Single Django&nbsp;Instance</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p class="info">Fredrik Lundh | December 2006</p><p>The <a href="django.htm">Django</a> framework has excellent support for
+running multiple sites on a single Django installation, via the
+<a href="http://www.djangoproject.com/documentation/sites/">sites framework</a>.
+This framework is based on a global site identifier setting (SITE_ID),
+which is then used by different components to distinguish between data
+for different sites in the database.</p><p>However, SITE_ID is a global setting, so the site framework requires
+you to run multiple instances of Django; at least one for each site.</p><p>This article describes a more light-weight approach, which lets you
+serve multiple distinct host names from a <i>single</i> instance, by
+switching between different URL configurations on the fly.  This approach
+doesn&#8217;t provide full separation, so it&#8217;s mostly usable for servering
+related material under different URL:s, such as a company site with one
+or more product subsites, etc.</p><h3 id="patch">Patching the Django code base&#160;<a class="nav" href="#patch" title="bookmark!">#</a></h3><p class="note"><b>Update:</b>
+This patch was added to the Django trunk in revision 
+<a href="http://code.djangoproject.com/changeset/4237">4237</a>.</p><p>First, a simple patch.  This allows a middleware component to
+specify a request-specific URL configuration, instead of always having
+to rely on the global ROOT_URLCONF setting:</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><pre class="wide wide">
+Index: django/core/handlers/base.py
+===================================================================
+--- django/core/handlers/base.py	(revision 4234)
++++ django/core/handlers/base.py	(working copy)
+@@ -60,7 +60,10 @@
+             if response:
+                 return response
+ 
+-        resolver = urlresolvers.RegexURLResolver(r'^/', settings.ROOT_URLCONF)
++        # Get urlconf from request object, if available.  Otherwise use default.
++        urlconf = getattr(request, "urlconf", settings.ROOT_URLCONF)
++
++        resolver = urlresolvers.RegexURLResolver(r'^/', urlconf)
+         try:
+             callback, callback_args, callback_kwargs = resolver.resolve(request.path)
+ 
+</pre></div><div class="yui-ge"><div class="yui-u first"><h3 id="middleware">The MultiHost Middleware&#160;<a class="nav" href="#middleware" title="bookmark!">#</a></h3><p>To set a host specific URL configur

@@ -1,0 +1,199 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>The re&nbsp;module</title></head><body data-page-id="632"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">The re&nbsp;module</h1></div><div class="yui-ge"><div class="yui-u first"><blockquote class="epigraph"><p><i>&#8220;Some people, when confronted with a problem, think &#8220;I know,
+I&#8217;ll use regular expressions.&#8221; Now they have two problems&#8221;</i> &#8212;
+<i>Jamie Zawinski, on comp.lang.emacs [<a href="#note">*</a>]</i>
+</p></blockquote><p>This module provides a set of powerful regular expression
+facilities. A regular expression is a string pattern written in a
+compact (and quite cryptic) syntax, and this module allows you to
+quickly check whether a given string <i>matches</i> a given pattern
+(using the <b>match</b> function), or <i>contains</i> such a
+pattern (using the <b>search</b> function).</p><p>The <b>match</b> function attempts to match a pattern against
+the beginning of the given string. If the pattern matches anything
+at all (including an empty string, if the pattern allows that!),
+<b>match</b> returns a <i>match object</i>. The <b>group</b>
+method can be used to find out what matched.</p><div class="example">
+<b style="example">Example: Using the re
+module to match strings</b>
+<pre>
+# File: <a href="re/re-example-1.py">re-example-1.py</a>
+
+import re
+
+text = "The Attila the Hun Show"
+
+# a single character
+m = re.match(".", text)
+if m: print repr("."), "=&gt;", repr(m.group(0))
+
+# any string of characters
+m = re.match(".*", text)
+if m: print repr(".*"), "=&gt;", repr(m.group(0))
+
+# a string of letters (at least one)
+m = re.match("\w+", text)
+if m: print repr("\w+"), "=&gt;", repr(m.group(0))
+
+# a string of digits
+m = re.match("\d+", text)
+if m: print repr("\d+"), "=&gt;", repr(m.group(0))
+
+</pre><pre class="computeroutput" moreinfo="NONE">
+'.' =&gt; 'T'
+'.*' =&gt; 'The Attila the Hun Show'
+'\\w+' =&gt; 'The'
+</pre></div><p>You can use parentheses to mark regions in the pattern. If the
+pattern matched, the <b>group</b> method can be used to extract
+the contents of these regions. <b>group(1)</b> returns the
+contents of the first group, <b>group(2)</b> the contents of the
+second, etc. If you pass several group numbers to the
+<b>group</b> function, it returns a tuple.</p><div class="example">
+<b style="example">Example: Using the re
+module to extract matching substrings</b>
+<pre>
+# File: <a href="re/re-example-2.py">re-example-2.py</a>
+
+import re
+
+text ="10/15/99"
+
+m = re.match("(\d{2})/(\d{2})/(\d{2,4})", text)
+if m:
+    print m.group(1, 2, 3)
+
+</pre><pre class="computeroutput" moreinfo="NONE">
+('10', '15', '99')
+</pre></div><p>The <b>search</b> function searches for the pattern inside the
+string. It basically tries the pattern at every possible characters
+position, starting from the left, and returns a match object as
+soon it has found a match. If the pattern doesn&#8217;t match anywhere,
+it returns <b>None</b>.</p><div class="example">
+<b style="example">Example: Using the re
+module to search for substrings</b>
+<pre>
+# File: <a href="re/re-example-3.py">re-example-3.py</a>
+
+import re
+
+text = "Example 3: There is 1 date 10/25/95 in here!"
+
+m = re.search("(\d{1,2})/(\d{1,2})/(\d{2,4})", text)
+
+print m.group(1), m.group(2), m.group(3)
+
+month, day, year = m.group(1, 2, 3)
+print month, day, year
+
+date = m.group(0)
+print date
+
+</pre><pre class="computeroutput" moreinfo="NONE">
+10 25 95
+10 25 95
+10/25/95
+</pre></div><p>The <b>sub</b> function can be used to replace patterns with
+another string.</p><div class="example">
+<b style="example">Example: Using the re
+module to replace substrings</b>
+<pre>
+# File: <a href="re/re-example-4.py">re-example-4.py</a>
+
+import re
+
+text = "you're no fun anymore..."
+
+# literal replace (string.replace is faster)
+print re.sub("fun", "entertaining", text)
+
+# collapse all non-letter sequences to a single dash
+print re.sub("[^\w]+", "-", text)
+
+# convert all words to beeps
+print re.sub("\S+", "-BEEP-", text)
+
+</pre><pre class="computeroutput" moreinfo="NONE">
+you're no entertaining anymore...
+you-re-no-fun-anymore-
+-BEEP- -BEEP- -BEEP- -BEEP-
+</pre></div><p>You can also use <b>sub</b> to replace patterns via a callback
+function. The following example also shows how to pre-compile
+patterns.</p><div class="example">
+<b style="example">Example: Using the re
+module to replace substrings via a callback</b>
+<pre>
+# File: <a href="re/re-example-5.py">re-example-5.py</a>
+
+import re
+import string
+
+text = "a line of text\\012another line of text\\012etc..."
+
+def octal(match):
+    # replace octal code with corresponding ASCII character
+    return chr(string.atoi(match.group(1), 8))
+
+octal_pattern = re.compile(r"\\(\d\d\d)")
+
+print text
+print octal_pattern.sub(octal, text)
+
+</pre><pre class="computeroutput" moreinfo="NONE">
+a line of text\012another line of text\012etc...
+a line of text
+another line of text
+etc...
+</pre></div><p>If you don&#8217;t compile, the <b>re</b> module caches compiled
+versions for you, so you usually don&#8217;t have to compile regular
+expressions in small scripts. In Python 1.5.2, the cache holds 20
+patterns. In 2.0, the cache size has been increased to 100
+patterns.</p><p>Finally, here&#8217;s an example that shows you how to match a string
+against a list of patterns. The list of patterns are combined into
+a single pattern, and pre-compiled to save time.</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><div class="example wide">
+<b style="example">Example: Using the re
+module to match against one of many patterns</b>
+<pre class="wide">
+# File: <a href="re/re-example-6.py">re-example-6.py</a>
+
+import re, string
+
+def combined_pattern(patterns):
+    p = re.compile(
+        string.join(map(lambda x: "("+x+")", patterns), "|")
+        )
+    def fixup(v, m=p.match, r=range(0,len(patterns))):
+        try:
+            regs = m(v).regs
+        except AttributeError:
+            return None # no match, so m.regs will fail
+        else:
+            for i in r:
+                if regs[i+1] != (-1, -1):
+                    return i
+    return fixup
+
+#
+# try it out!
+
+patterns = [
+    r"\d+",
+    r"abc\d{2,4}",
+    r"p\w+"
+]
+
+p = combined_pattern(patterns)
+
+print p("129391")
+print p("abc800")
+print p("abc1600")
+print p("python")
+print p("perl")
+print p("tcl")
+
+</pre><pre class="computeroutput wide" moreinfo="NONE">
+0
+1
+1
+2
+2
+None
+</pre></div></div><div class="yui-ge"><div class="yui-u first"><hr /><p class="note" id="note"><b>Note</b>: comp.lang.emacs doesn&#8217;t exist, really.  The quote was taken from comp.emacs.xemacs.  I&#8217;m not sure how the erronous attribution ended up in the book, but it&#8217;s interesting to see how it has propagated across the net.</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to librarybook index page.">::: librarybook :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

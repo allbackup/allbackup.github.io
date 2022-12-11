@@ -1,0 +1,405 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>weakref</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-weakref.html'>original</a> :::
+<a href='weakref.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>weakref&#8212;Weak references</h1>
+
+<div class="toc"><dl><dt>On this page:</dt><dd><a href="#weak-reference-objects">Weak Reference Objects</a></dd><dd><a href="#example">Example</a></dd><dd><a href="#weak-references-in-extension-types">Weak References in Extension Types</a></dd></dl></div><p>New in version 2.1.</p>
+
+<p>The <code>weakref</code> module
+allows the Python programmer to create weak references to
+objects.</p>
+
+<p>In the following, the term referent means the object which is
+referred to by a weak reference.</p>
+
+<p>A weak reference to an object is not enough to keep the object
+alive: when the only remaining references to a referent are weak
+references, garbage collection is free to destroy the referent and
+reuse its memory for something else. A primary use for weak
+references is to implement caches or mappings holding large
+objects, where it's desired that a large object not be kept alive
+solely because it appears in a cache or mapping. For example, if
+you have a number of large binary image objects, you may wish to
+associate a name with each. If you used a Python dictionary to map
+names to images, or images to names, the image objects would remain
+alive just because they appeared as values or keys in the
+dictionaries. The <a class="link" href="#WeakKeyDictionary"><code>
+WeakKeyDictionary</code></a> and <a class="link" href="#WeakValueDictionary"><code>WeakValueDictionary</code></a> classes
+supplied by the <code>weakref</code>
+module are an alternative, using weak references to construct
+mappings that don't keep objects alive solely because they appear
+in the mapping objects. If, for example, an image object is a value
+in a <a class="link" href="#WeakValueDictionary"><code>
+WeakValueDictionary</code></a>, then when the last remaining references to
+that image object are the weak references held by weak mappings,
+garbage collection can reclaim the object, and its corresponding
+entries in weak mappings are simply deleted.</p>
+
+<p><a class="link" href="#WeakKeyDictionary"><code>
+WeakKeyDictionary</code></a> and <a class="link" href="#WeakValueDictionary"><code>WeakValueDictionary</code></a> use weak
+references in their implementation, setting up callback functions
+on the weak references that notify the weak dictionaries when a key
+or value has been reclaimed by garbage collection. Most programs
+should find that using one of these weak dictionary types is all
+they need - it's not usually necessary to create your own weak
+references directly. The low-level machinery used by the weak
+dictionary implementations is exposed by the <code>weakref</code> module for the benefit of advanced
+uses.</p>
+
+<p>Not all objects can be weakly referenced; those objects which
+can include class instances, functions written in Python (but not
+in C), methods (both bound and unbound), sets, frozensets, file
+objects, generators, type objects, DBcursor objects from the <code>bsddb</code> module, sockets, arrays,
+deques, and regular expression pattern objects. Changed in version
+2.4: Added support for files, sockets, arrays, and patterns.</p>
+
+<p>Several builtin types such as <code>
+list</code> and <code>dict</code> do not
+directly support weak references but can add support through
+subclassing:</p>
+
+<pre>
+class Dict(dict):
+    pass
+
+obj = Dict(red=1, green=2, blue=3)   # this object is weak referencable
+</pre>
+
+<p>Extension types can easily be made to support weak references;
+see section <code>
+weakref-extension.html#weakref-extension</code>, &#8220;Weak
+References in Extension Types,&#8221; for more information.</p>
+</div>
+<dl><dt class="class" id="ref"><b>class ref(object[, callback])</b> <tt class="nav"><a class="nav" href="weakref.ref" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>Return a weak reference to <var>object</var>. The original
+object can be retrieved by calling the reference object if the
+referent is still alive; if the referent is no longer alive,
+calling the reference object will cause <code>None</code> to be
+returned. If <var>callback</var> is provided and not <code>
+None</code>, it will be called when the object is about to be
+finalized; the weak reference object will be passed as the only
+parameter to the callback; the referent will no longer be
+available.</p>
+
+<p>It is allowable for many weak references to be constructed for
+the same object. Callbacks registered for each weak reference will
+be called from the most recently registered callback to the oldest
+registered callback.</p>
+
+<p>Exceptions raised by the callback will be noted on the standard
+error output, but cannot be propagated; they are handled in exactly
+the same way as exceptions raised from an object's <code>__del__</code> method.</p>
+
+<p>Weak references are hashable if the <var>object</var> is
+hashable. They will maintain their hash value even after the <var>
+object</var> was deleted. If <code>
+hash</code> is called the first time only after the <var>object</var>
+was deleted, the call will raise <code>exceptions.TypeError</code>.</p>
+
+<p>Weak references support tests for equality, but not ordering. If
+the referents are still alive, two references have the same
+equality relationship as their referents (regardless of the <var>
+callback</var>). If either referent has been deleted, the
+references are equal only if the reference objects are the same
+object.</p>
+
+<blockquote><span class="mark">@since</span> Changed in version
+2.4: This is now a subclassable type rather than a factory
+function; it derives from object.<br />
+</blockquote>
+</dd>
+<dt class="function" id="proxy"><b>proxy(object[, callback])</b> <tt class="nav"><a class="nav" href="weakref.proxy" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return a proxy to <var>object</var> which uses a weak reference.
+This supports use of the proxy in most contexts instead of
+requiring the explicit dereferencing used with weak reference
+objects. The returned object will have a type of either <code>
+ProxyType</code> or <code>CallableProxyType</code>, depending on
+whether <var>object</var> is callable. Proxy objects are not
+hashable regardless of the referent; this avoids a number of
+problems related to their fundamentally mutable nature, and prevent
+their use as dictionary keys. <var>callback</var> is the same as
+the parameter of the same name to the <a class="link" href="#ref"><code>ref</code></a> function.</p>
+</dd>
+<dt class="function" id="getweakrefcount"><b>getweakrefcount(object)</b> <tt class="nav"><a class="nav" href="weakref.getweakrefcount" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return the number of weak references and proxies which refer to
+<var>object</var>.</p>
+</dd>
+<dt class="function" id="getweakrefs"><b>getweakrefs(object)</b> <tt class="nav"><a class="nav" href="weakref.getweakrefs" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return a list of all weak reference and proxy objects which
+refer to <var>object</var>.</p>
+</dd>
+<dt class="class" id="WeakKeyDictionary"><b>class WeakKeyDictionary([dict])</b> <tt class="nav"><a class="nav" href="weakref.WeakKeyDictionary" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>Mapping class that references keys weakly. Entries in the
+dictionary will be discarded when there is no longer a strong
+reference to the key. This can be used to associate additional data
+with an object owned by other parts of an application without
+adding attributes to those objects. This can be especially useful
+with objects that override attribute accesses.</p>
+
+<p class="note"><b>Note:</b> Caution: Because a <a class="link" href="#WeakKeyDictionary"><code>WeakKeyDictionary</code></a> is built on top
+of a Python dictionary, it must not change size when iterating over
+it. This can be difficult to ensure for a <a class="link" href="#WeakKeyDictionary"><code>WeakKeyDictionary</code></a> because actions
+performed by the program during iteration may cause items in the
+dictionary to vanish "by magic" (as a side effect of garbage
+collection).</p>
+</dd>
+<dt class="class" id="WeakValueDictionary"><b>class WeakValueDictionary([dict])</b> <tt class="nav"><a class="nav" href="weakref.WeakValueDictionary" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>Mapping class that references values weakly. Entries in the
+dictionary will be discarded when no strong reference to the value
+exists any more.</p>
+
+<p class="note"><b>Note:</b> Caution: Because a <a class="link" href="#WeakValueDictionary"><code>WeakValueDictionary</code></a> is built on
+top of a Python dictionary, it must not change size when iterating
+over it. This can be difficult to ensure for a <a class="link" href="#WeakValueDictionary"><code>WeakValueDictionary</code></a> because
+actions performed by the program during iteration may cause items
+in the dictionary to vanish "by magic" (as a side effect of garbage
+collection).</p>
+</dd>
+<dt class="variable" id="ReferenceType"><b>ReferenceType</b> <tt class="nav"><a class="nav" href="weakref.ReferenceType" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>The type object for weak references objects.</p>
+</dd>
+<dt class="variable" id="ProxyType"><b>ProxyType</b> <tt class="nav"><a class="nav" href="weakref.ProxyType" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>The type object for proxies of objects which are not
+callable.</p>
+</dd>
+<dt class="variable" id="CallableProxyType"><b>CallableProxyType</b> <tt class="nav"><a class="nav" href="weakref.CallableProxyType" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>The type object for proxies of callable objects.</p>
+</dd>
+<dt class="variable" id="ProxyTypes"><b>ProxyTypes</b> <tt class="nav"><a class="nav" href="weakref.ProxyTypes" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Sequence containing all the type objects for proxies. This can
+make it simpler to test if an object is a proxy without being
+dependent on naming both proxy types.</p>
+</dd>
+<dt class="exception" id="ReferenceError"><b>exception ReferenceError</b> <tt class="nav"><a class="nav" href="weakref.ReferenceError" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="exception">
+<p>Exception raised when a proxy object is used but the underlying
+object has been collected. This is the same as the standard <code>
+exceptions.ReferenceError</code> exception.</p>
+</dd>
+</dl><div class="text"><span class="mark">@see</span> <a class="link" href="http://www.python.org/peps/pep-0205.html">PEP 0205, Weak
+References</a> The proposal and rationale for this feature,
+including links to earlier implementations and information about
+similar features in other languages. 
+
+<h2 id="weak-reference-objects">Weak Reference Objects <a class="nav" href="#weak-reference-objects">#</a></h2>
+
+<p>Weak reference objects have no attributes or methods, but do
+allow the referent to be obtained, if it still exists, by calling
+it:</p>
+
+<pre>
+&gt;&gt;&gt; import weakref
+&gt;&gt;&gt; class Object:
+...     pass
+...
+&gt;&gt;&gt; o = Object()
+&gt;&gt;&gt; r = weakref.ref(o)
+&gt;&gt;&gt; o2 = r()
+&gt;&gt;&gt; o is o2
+True
+</pre>
+
+<p>If the referent no longer exists, calling the reference object
+returns <code>None</code>:</p>
+
+<pre>
+&gt;&gt;&gt; del o, o2
+&gt;&gt;&gt; print r()
+None
+</pre>
+
+<p>Testing that a weak reference object is still live should be
+done using the expression <var>ref</var>() is not None. Normally,
+application code that needs to use a reference object should follow
+this pattern:</p>
+
+<pre>
+# r is a weak reference object
+o = r()
+if o is None:
+    # referent has been garbage collected
+    print "Object has been deallocated; can't frobnicate."
+else:
+    print "Object is still live!"
+    o.do_something_useful()
+</pre>
+
+<p>Using a separate test for &#8220;liveness&#8221; creates race
+conditions in threaded applications; another thread can cause a
+weak reference to become invalidated before the weak reference is
+called; the idiom shown above is safe in threaded applications as
+well as single-threaded applications.</p>
+
+<p>Specialized versions of <a class="link" href="#ref"><code>ref</code></a>
+objects can be created through subclassing. This is used in the
+implementation of the <a class="link" href="#WeakValueDictionary"><code>WeakValueDictionary</code></a> to reduce
+the memory overhead for each entry in the mapping. This may be most
+useful to associate additional information with a reference, but
+could also be used to insert additional processing on calls to
+retrieve the referent.</p>
+
+<p>This example shows how a subclass of <a class="link" href="#ref"><code>ref</code></a> can be used to store additional information
+about an object and affect the value that's returned when the
+referent is accessed:</p>
+
+<pre>
+import weakref
+
+class ExtendedRef(weakref.ref):
+    def __init__(self, ob, callback=None, **annotations):
+        super(ExtendedRef, self).__init__(ob, callback)
+        self.__counter = 0
+        for k, v in annotations.iteritems():
+            setattr(self, k, v)
+
+    def __call__(self):
+        """Return a pair containing the referent and the number of
+        times the reference has been called.
+        """
+        ob = super(ExtendedRef, self).__call__()
+        if ob is not None:
+            self.__counter += 1
+            ob = (ob, self.__counter)
+        return ob
+</pre>
+
+<h2 id="example">Example <a class="nav" href="#example">#</a></h2>
+
+<p>This simple example shows how an application can use objects IDs
+to retrieve objects that it has seen before. The IDs of the objects
+can then be used in other data structures without forcing the
+objects to remain alive, but the objects can still be retrieved by
+ID if they do.</p>
+
+<pre>
+import weakref
+
+_id2obj_dict = weakref.WeakValueDictionary()
+
+def remember(obj):
+    oid = id(obj)
+    _id2obj_dict[oid] = obj
+    return oid
+
+def id2obj(oid):
+    return _id2obj_dict[oid]
+</pre>
+
+<h2 id="weak-references-in-extension-types">Weak References in Extension Types <a class="nav" href="#weak-references-in-extension-types">#</a></h2>
+
+<p>One of the goals of the implementation is to allow any type to
+participate in the weak reference mechanism without incurring the
+overhead on those objects which do not benefit by weak referencing
+(such as numbers).</p>
+
+<p>For an object to be weakly referencable, the extension must
+include a <code>c:PyObject*</code>
+field in the instance structure for the use of the weak reference
+mechanism; it must be initialized to <code>NULL</code> by the
+object's constructor. It must also set the <code>tp_weaklistoffset</code> field of the
+corresponding type object to the offset of the field. Also, it
+needs to add <code>Py_TPFLAGS_HAVE_WEAKREFS</code> to the tp_flags
+slot. For example, the instance type is defined with the following
+structure:</p>
+
+<pre>
+typedef struct {
+    PyObject_HEAD
+    PyClassObject *in_class;       /* The class object */
+    PyObject      *in_dict;        /* A dictionary */
+    PyObject      *in_weakreflist; /* List of weak references */
+} PyInstanceObject;
+</pre>
+
+<p>The statically-declared type object for instances is defined
+this way:</p>
+
+<pre>
+PyTypeObject PyInstance_Type = {
+    PyObject_HEAD_INIT(&amp;PyType_Type)
+    0,
+    "module.instance",
+
+    /* Lots of stuff omitted for brevity... */
+
+    Py_TPFLAGS_DEFAULT | Py_TPFLAGS_HAVE_WEAKREFS   /* tp_flags */
+    0,                                          /* tp_doc */
+    0,                                          /* tp_traverse */
+    0,                                          /* tp_clear */
+    0,                                          /* tp_richcompare */
+    offsetof(PyInstanceObject, in_weakreflist), /* tp_weaklistoffset */
+};
+</pre>
+
+<p>The type constructor is responsible for initializing the weak
+reference list to <code>NULL</code>:</p>
+
+<pre>
+static PyObject *
+instance_new() {
+    /* Other initialization stuff omitted for brevity */
+
+    self-&gt;in_weakreflist = NULL;
+
+    return (PyObject *) self;
+}
+</pre>
+
+<p>The only further addition is that the destructor needs to call
+the weak reference manager to clear any weak references. This
+should be done before any other parts of the destruction have
+occurred, but is only required if the weak reference list is
+non-<code>NULL</code>:</p>
+
+<pre>
+static void
+instance_dealloc(PyInstanceObject *inst)
+{
+    /* Allocate temporaries if needed, but do not begin
+       destruction just yet.
+     */
+
+    if (inst-&gt;in_weakreflist != NULL)
+        PyObject_ClearWeakRefs((PyObject *) inst);
+
+    /* Proceed with object destruction normally. */
+}
+</pre>
+</div>
+</div></body></html>

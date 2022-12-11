@@ -1,0 +1,191 @@
+
+@@module warnings
+
+<h1>warnings&#8212;Warning control</h1>
+
+<p>New in version 2.1.
+
+<p>Warning messages are typically issued in situations where it is
+useful to alert the user of some condition in a program, where that
+condition (normally) doesn't warrant raising an exception and
+terminating the program. For example, one might want to issue a warning
+when a program uses an obsolete module.
+
+<p>Python programmers issue warnings by calling the {@link warn}
+function defined in this module. (C programmers use {@link
+c:PyErr_Warn}; see the {@link ../api/exceptionHandling.html Python/C API
+Reference Manual} for details).
+
+<p>Warning messages are normally written to {@code sys.stderr}, but
+their disposition can be changed flexibly, from ignoring all warnings to
+turning them into exceptions. The disposition of warnings can vary based
+on the warning category (see below), the text of the warning message,
+and the source location where it is issued. Repetitions of a particular
+warning for the same source location are typically suppressed.
+
+<p>There are two stages in warning control: first, each time a warning
+is issued, a determination is made whether a message should be issued or
+not; next, if a message is to be issued, it is formatted and printed
+using a user-settable hook.
+
+<p>The determination whether to issue a warning message is controlled by
+the warning filter, which is a sequence of matching rules and actions.
+Rules can be added to the filter by calling {@link filterwarnings} and
+reset to its default state by calling {@link resetwarnings}.
+
+<p>The printing of warning messages is done by calling {@link
+showwarning}, which may be overridden; the default implementation of
+this function formats the message by calling {@link formatwarning},
+which is also available for use by custom implementations.
+
+<h2>Warning Categories</h2>
+
+<p>There are a number of built-in exceptions that represent warning
+categories. This categorization is useful to be able to filter out
+groups of warnings. The following warnings category classes are
+currently defined:
+
+<p><table border=1>
+<tr> <th>
+<p>Class
+<th>
+<p>Description
+<tr> <td>
+<p>{@link exceptions.Warning}
+<td>
+<p>This is the base class of all warning category classes. It is a
+subclass of {@link exceptions.Exception}.
+<tr> <td>
+<p>{@link exceptions.UserWarning}
+<td>
+<p>The default category for {@link warn}.
+<tr> <td>
+<p>{@link exceptions.DeprecationWarning}
+<td>
+<p>Base category for warnings about deprecated features.
+<tr> <td>
+<p>{@link exceptions.SyntaxWarning}
+<td>
+<p>Base category for warnings about dubious syntactic features.
+<tr> <td>
+<p>{@link exceptions.RuntimeWarning}
+<td>
+<p>Base category for warnings about dubious runtime features.
+<tr> <td>
+<p>{@link exceptions.FutureWarning}
+<td>
+<p>Base category for warnings about constructs that will change
+semantically in the future.
+</table></p>
+
+<p>While these are technically built-in exceptions, they are documented
+here, because conceptually they belong to the warnings mechanism.
+
+<p>User code can define additional warning categories by subclassing one
+of the standard warning categories. A warning category must always be a
+subclass of the {@link exceptions.Warning} class.
+
+<h2>The Warnings Filter</h2>
+
+<p>The warnings filter controls whether warnings are ignored, displayed,
+or turned into errors (raising an exception).
+
+<p>Conceptually, the warnings filter maintains an ordered list of filter
+specifications; any specific warning is matched against each filter
+specification in the list in turn until a match is found; the match
+determines the disposition of the match. Each entry is a tuple of the
+form ({@var action}, {@var message}, {@var category}, {@var module},
+{@var lineno}), where:
+<ul>
+<li>
+<p>{@var action} is one of the following strings:
+<li>
+<p>{@var message} is a string containing a regular expression that the
+warning message must match (the match is compiled to always be
+case-insensitive)
+<li>
+<p>{@var category} is a class (a subclass of {@link exceptions.Warning})
+of which the warning category must be a subclass in order to match
+<li>
+<p>{@var module} is a string containing a regular expression that the
+module name must match (the match is compiled to be case-sensitive)
+<li>
+<p>{@var lineno} is an integer that the line number where the warning
+occurred must match, or {@code 0} to match all line numbers
+</ul>
+
+<p>Since the {@link exceptions.Warning} class is derived from the
+built-in {@link exceptions.Exception} class, to turn a warning into an
+error we simply raise {@code category(message)}.
+
+<p>The warnings filter is initialized by -W options passed to the Python
+interpreter command line. The interpreter saves the arguments for all -W
+options without interpretation in {@code sys.warnoptions}; the {@link
+warnings} module parses these when it is first imported (invalid options
+are ignored, after printing a message to {@code sys.stderr}).
+
+<h2>Available Functions</h2>
+
+@@function warn(message[, category[, stacklevel]])
+
+<p>Issue a warning, or maybe ignore it or raise an exception. The {@var
+category} argument, if given, must be a warning category class (see
+above); it defaults to {@link exceptions.UserWarning}. Alternatively
+{@var message} can be a {@link exceptions.Warning} instance, in which
+case {@var category} will be ignored and {@code message.__class__} will
+be used. In this case the message text will be {@code str(message)}.
+This function raises an exception if the particular warning issued is
+changed into an error by the warnings filter see above. The {@var
+stacklevel} argument can be used by wrapper functions written in Python,
+like this:
+
+<pre>
+def deprecation(message):
+    warnings.warn(message, DeprecationWarning, stacklevel=2)
+</pre>
+
+
+<p>This makes the warning refer to {@link deprecation}'s caller, rather
+than to the source of {@link deprecation} itself (since the latter would
+defeat the purpose of the warning message).
+
+@@function warn_explicit(message, category, filename, lineno[, module[, registry]])
+
+<p>This is a low-level interface to the functionality of {@link warn},
+passing in explicitly the message, category, filename and line number,
+and optionally the module name and the registry (which should be the
+{@code __warningregistry__} dictionary of the module). The module name
+defaults to the filename with {@code .py} stripped; if no registry is
+passed, the warning is never suppressed. {@var message} must be a string
+and {@var category} a subclass of {@link exceptions.Warning} or {@var
+message} may be a {@link exceptions.Warning} instance, in which case
+{@var category} will be ignored.
+
+@@function showwarning(message, category, filename, lineno[, file])
+
+<p>Write a warning to a file. The default implementation calls {@code
+formatwarning(}{@var message}, {@var category}, {@var filename}, {@var
+lineno}) and writes the resulting string to {@var file}, which defaults
+to {@code sys.stderr}. You may replace this function with an alternative
+implementation by assigning to {@code warnings.showwarning}.
+
+@@function formatwarning(message, category, filename, lineno)
+
+<p>Format a warning the standard way. This returns a string which may
+contain embedded newlines and ends in a newline.
+
+@@function filterwarnings(action[, message[, category[, module[, lineno[, append]]]]])
+
+<p>Insert an entry into the list of warnings filters. The entry is
+inserted at the front by default; if {@var append} is true, it is
+inserted at the end. This checks the types of the arguments, compiles
+the message and module regular expressions, and inserts them as a tuple
+in front of the warnings filter. Entries inserted later override entries
+inserted earlier, if both match a particular warning. Omitted arguments
+default to a value that matches everything.
+
+@@function resetwarnings()
+
+<p>Reset the warnings filter. This discards the effect of all previous
+calls to {@link filterwarnings}, including that of the -W command line
+options.

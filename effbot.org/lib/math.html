@@ -1,0 +1,265 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>math</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-math.html'>original</a> :::
+<a href='math.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>math&#8212;Mathematical functions</h1>
+
+<p>This module is always available. It provides access to the
+mathematical functions defined by the C standard.</p>
+
+<p>These functions cannot be used with complex numbers; use the
+functions of the same name from the <code>cmath</code> module if you require support for
+complex numbers. The distinction between functions which support
+complex numbers and those which don't is made since most users do
+not want to learn quite as much mathematics as required to
+understand complex numbers. Receiving an exception instead of a
+complex result allows earlier detection of the unexpected complex
+number used as a parameter, so that the programmer can determine
+how and why it was generated in the first place.</p>
+
+<p>The following functions are provided by this module. Except when
+explicitly noted otherwise, all return values are floats.</p>
+
+<p>Number-theoretic and representation functions:</p>
+</div>
+<dl><dt class="function" id="ceil"><b>ceil(x)</b> <tt class="nav"><a class="nav" href="math.ceil" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return the ceiling of <var>x</var> as a float, the smallest
+integer value greater than or equal to <var>x</var>.</p>
+</dd>
+<dt class="function" id="fabs"><b>fabs(x)</b> <tt class="nav"><a class="nav" href="math.fabs" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return the absolute value of <var>x</var>.</p>
+</dd>
+<dt class="function" id="floor"><b>floor(x)</b> <tt class="nav"><a class="nav" href="math.floor" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return the floor of <var>x</var> as a float, the largest integer
+value less than or equal to <var>x</var>.</p>
+</dd>
+<dt class="function" id="fmod"><b>fmod(x, y)</b> <tt class="nav"><a class="nav" href="math.fmod" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return <code>fmod(</code><var>x</var>, <var>y</var>), as defined
+by the platform C library. Note that the Python expression <var>
+x</var> % <var>y</var> may not return the same result. The intent
+of the C standard is that <code>fmod(</code><var>x</var>, <var>
+y</var>) be exactly (mathematically; to infinite precision) equal
+to <var>x</var> - <var>n</var>*<var>y</var> for some integer <var>
+n</var> such that the result has the same sign as <var>x</var> and
+magnitude less than <code>abs(</code><var>y</var>). Python's <var>
+x</var> % <var>y</var> returns a result with the sign of <var>
+y</var> instead, and may not be exactly computable for float
+arguments. For example, <code>fmod(-1e-100, 1e100)</code> is <code>
+-1e-100</code>, but the result of Python's <code>-1e-100 %
+1e100</code> is <code>1e100-1e-100</code>, which cannot be
+represented exactly as a float, and rounds to the surprising <code>
+1e100</code>. For this reason, function <a class="link" href="#fmod"><code>fmod</code></a> is generally preferred when working with
+floats, while Python's <var>x</var> % <var>y</var> is preferred
+when working with integers.</p>
+</dd>
+<dt class="function" id="frexp"><b>frexp(x)</b> <tt class="nav"><a class="nav" href="math.frexp" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return the mantissa and exponent of <var>x</var> as the pair
+<code>(</code><var>m</var>, <var>e</var>). <var>m</var> is a float
+and <var>e</var> is an integer such that <var>x</var> == <var>
+m</var> * 2**<var>e</var> exactly. If <var>x</var> is zero, returns
+<code>(0.0, 0)</code>, otherwise <code>0.5 &lt;=
+abs(</code><var>m</var>) &lt; 1. This is used to "pick apart" the
+internal representation of a float in a portable way.</p>
+</dd>
+<dt class="function" id="ldexp"><b>ldexp(x, i)</b> <tt class="nav"><a class="nav" href="math.ldexp" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return <var>x</var> * (2**<var>i</var>). This is essentially the
+inverse of function <a class="link" href="#frexp"><code>
+frexp</code></a>.</p>
+</dd>
+<dt class="function" id="modf"><b>modf(x)</b> <tt class="nav"><a class="nav" href="math.modf" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return the fractional and integer parts of <var>x</var>. Both
+results carry the sign of <var>x</var>, and both are floats.</p>
+</dd>
+</dl><div class="text">
+<p>Note that <a class="link" href="#frexp"><code>frexp</code></a> and <a class="link" href="#modf"><code>modf</code></a> have a different call/return
+pattern than their C equivalents: they take a single argument and
+return a pair of values, rather than returning their second return
+value through an `output parameter' (there is no such thing in
+Python).</p>
+
+<p>For the <a class="link" href="#ceil"><code>ceil</code></a>, <a class="link" href="#floor"><code>floor</code></a>, and <a class="link" href="#modf"><code>modf</code></a> functions, note that <em>all</em>
+floating-point numbers of sufficiently large magnitude are exact
+integers. Python floats typically carry no more than 53 bits of
+precision (the same as the platform C double type), in which case
+any float <var>x</var> with <code>abs(</code><var>x</var>) &gt;=
+2**52 necessarily has no fractional bits.</p>
+
+<p>Power and logarithmic functions:</p>
+</div>
+<dl><dt class="function" id="exp"><b>exp(x)</b> <tt class="nav"><a class="nav" href="math.exp" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return <code>e**</code><var>x</var>.</p>
+</dd>
+<dt class="function" id="log"><b>log(x[, base])</b> <tt class="nav"><a class="nav" href="math.log" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return the logarithm of <var>x</var> to the given <var>
+base</var>. If the <var>base</var> is not specified, return the
+natural logarithm of <var>x</var> (that is, the logarithm to base
+<em>e</em>).</p>
+
+<blockquote><span class="mark">@since</span> Changed in version
+2.3: base argument added.<br />
+</blockquote>
+</dd>
+<dt class="function" id="log10"><b>log10(x)</b> <tt class="nav"><a class="nav" href="math.log10" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return the base-10 logarithm of <var>x</var>.</p>
+</dd>
+<dt class="function" id="pow"><b>pow(x, y)</b> <tt class="nav"><a class="nav" href="math.pow" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return <var>x</var>**<var>y</var>.</p>
+</dd>
+<dt class="function" id="sqrt"><b>sqrt(x)</b> <tt class="nav"><a class="nav" href="math.sqrt" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return the square root of <var>x</var>.</p>
+</dd>
+</dl><div class="text">
+<p>Trigonometric functions:</p>
+</div>
+<dl><dt class="function" id="acos"><b>acos(x)</b> <tt class="nav"><a class="nav" href="math.acos" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return the arc cosine of <var>x</var>, in radians.</p>
+</dd>
+<dt class="function" id="asin"><b>asin(x)</b> <tt class="nav"><a class="nav" href="math.asin" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return the arc sine of <var>x</var>, in radians.</p>
+</dd>
+<dt class="function" id="atan"><b>atan(x)</b> <tt class="nav"><a class="nav" href="math.atan" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return the arc tangent of <var>x</var>, in radians.</p>
+</dd>
+<dt class="function" id="atan2"><b>atan2(y, x)</b> <tt class="nav"><a class="nav" href="math.atan2" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return <code>atan(</code><var>y</var> / <var>x</var>), in
+radians. The result is between <code>-pi</code> and <code>
+pi</code>. The vector in the plane from the origin to point <code>
+(</code><var>x</var>, <var>y</var>) makes this angle with the
+positive X axis. The point of <a class="link" href="#atan2"><code>
+atan2</code></a> is that the signs of both inputs are known to it, so it
+can compute the correct quadrant for the angle. For example, <code>
+atan(1</code>) and <code>atan2(1, 1)</code> are both <code>
+pi/4</code>, but <code>atan2(-1, -1)</code> is <code>
+-3*pi/4</code>.</p>
+</dd>
+<dt class="function" id="cos"><b>cos(x)</b> <tt class="nav"><a class="nav" href="math.cos" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return the cosine of <var>x</var> radians.</p>
+</dd>
+<dt class="function" id="hypot"><b>hypot(x, y)</b> <tt class="nav"><a class="nav" href="math.hypot" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return the Euclidean norm, <code>
+sqrt(</code><var>x</var>*<var>x</var> + <var>y</var>*<var>y</var>).
+This is the length of the vector from the origin to point <code>
+(</code><var>x</var>, <var>y</var>).</p>
+</dd>
+<dt class="function" id="sin"><b>sin(x)</b> <tt class="nav"><a class="nav" href="math.sin" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return the sine of <var>x</var> radians.</p>
+</dd>
+<dt class="function" id="tan"><b>tan(x)</b> <tt class="nav"><a class="nav" href="math.tan" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return the tangent of <var>x</var> radians.</p>
+</dd>
+</dl><div class="text">
+<p>Angular conversion:</p>
+</div>
+<dl><dt class="function" id="degrees"><b>degrees(x)</b> <tt class="nav"><a class="nav" href="math.degrees" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Converts angle <var>x</var> from radians to degrees.</p>
+</dd>
+<dt class="function" id="radians"><b>radians(x)</b> <tt class="nav"><a class="nav" href="math.radians" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Converts angle <var>x</var> from degrees to radians.</p>
+</dd>
+</dl><div class="text">
+<p>Hyperbolic functions:</p>
+</div>
+<dl><dt class="function" id="cosh"><b>cosh(x)</b> <tt class="nav"><a class="nav" href="math.cosh" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return the hyperbolic cosine of <var>x</var>.</p>
+</dd>
+<dt class="function" id="sinh"><b>sinh(x)</b> <tt class="nav"><a class="nav" href="math.sinh" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return the hyperbolic sine of <var>x</var>.</p>
+</dd>
+<dt class="function" id="tanh"><b>tanh(x)</b> <tt class="nav"><a class="nav" href="math.tanh" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return the hyperbolic tangent of <var>x</var>.</p>
+</dd>
+</dl><div class="text">
+<p>The module also defines two mathematical constants:</p>
+</div>
+<dl><dt class="variable" id="pi"><b>pi</b> <tt class="nav"><a class="nav" href="math.pi" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>The mathematical constant <em>pi</em>.</p>
+</dd>
+<dt class="variable" id="e"><b>e</b> <tt class="nav"><a class="nav" href="math.e" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>The mathematical constant <em>e</em>.</p>
+</dd>
+</dl><div class="text">
+<p class="note"><b>Note:</b> The <code>
+math</code> module consists mostly of thin wrappers around the
+platform C math library functions. Behavior in exceptional cases is
+loosely specified by the C standards, and Python inherits much of
+its math-function error-reporting behavior from the platform C
+implementation. As a result, the specific exceptions raised in
+error cases (and even whether some arguments are considered to be
+exceptional at all) are not defined in any useful cross-platform or
+cross-release way. For example, whether <code>math.log(0)</code>
+returns <code>-Inf</code> or raises <code>exceptions.ValueError</code> or <code>
+exceptions.OverflowError</code> isn't defined, and in cases where
+<code>math.log(0)</code> raises <code>exceptions.OverflowError</code>,
+<code>math.log(0L)</code> may raise <code>exceptions.ValueError</code>
+instead. <span class="mark">@see</span> <code>Module cmath</code> Complex number versions of many
+of these functions.</p>
+</div>
+</div></body></html>

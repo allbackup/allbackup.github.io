@@ -1,0 +1,807 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>FL</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-FL.html'>original</a> :::
+<a href='FL.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>fl&#8212;FORMS library for graphical user interfaces</h1>
+
+<div class="toc"><dl><dt>On this page:</dt><dd><a href="#functions-defined-in-module-fl">Functions Defined in Module fl</a></dd><dd><a href="#form-objects">Form Objects</a></dd><dd><a href="#forms-objects">FORMS Objects</a></dd></dl></div><p>Availability: IRIX.</p>
+
+<p>This module provides an interface to the FORMS Library by Mark
+Overmars. The source for the library can be retrieved by anonymous
+ftp from host "<code>ftp.cs.ruu.nl</code>", directory SGI/FORMS. It
+was last tested with version 2.0b.</p>
+
+<p>Most functions are literal translations of their C equivalents,
+dropping the initial "<code>fl_</code>" from their name. Constants
+used by the library are defined in module <code>FL</code> described below.</p>
+
+<p>The creation of objects is a little different in Python than in
+C: instead of the `current form' maintained by the library to which
+new FORMS objects are added, all functions that add a FORMS object
+to a form are methods of the Python object representing the form.
+Consequently, there are no Python equivalents for the C functions
+<code>c:fl_addto_form</code> and
+<code>c:fl_end_form</code>, and
+the equivalent of <code>
+c:fl_bgn_form</code> is called <code>fl.make_form</code>.</p>
+
+<p>Watch out for the somewhat confusing terminology: FORMS uses the
+word object for the buttons, sliders etc. that you can place in a
+form. In Python, `object' means any value. The Python interface to
+FORMS introduces two new Python object types: form objects
+(representing an entire form) and FORMS objects (representing one
+button, slider etc.). Hopefully this isn't too confusing.</p>
+
+<p>There are no `free objects' in the Python interface to FORMS,
+nor is there an easy way to add object classes written in Python.
+The FORMS interface to GL event handling is available, though, so
+you can mix FORMS with pure GL windows.</p>
+
+<p>Please note: importing <code>fl</code>
+implies a call to the GL function <code>c:foreground</code> and to the FORMS routine
+<code>c:fl_init</code>.</p>
+
+<h2 id="functions-defined-in-module-fl">Functions Defined in Module fl <a class="nav" href="#functions-defined-in-module-fl">#</a></h2>
+
+<p>Module <code>fl</code> defines the
+following functions. For more information about what they do, see
+the description of the equivalent C function in the FORMS
+documentation:</p>
+</div>
+<dl><dt class="function" id="make_form"><b>make_form(type, width, height)</b> <tt class="nav"><a class="nav" href="fl.make_form" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Create a form with given type, width and height. This returns a
+form object, whose methods are described below.</p>
+</dd>
+<dt class="function" id="do_forms"><b>do_forms()</b> <tt class="nav"><a class="nav" href="fl.do_forms" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>The standard FORMS main loop. Returns a Python object
+representing the FORMS object needing interaction, or the special
+value <code>FL.EVENT</code>.</p>
+</dd>
+<dt class="function" id="check_forms"><b>check_forms()</b> <tt class="nav"><a class="nav" href="fl.check_forms" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Check for FORMS events. Returns what <a class="link" href="#do_forms"><code>do_forms</code></a> above returns, or <code>None</code> if there is no event that immediately
+needs interaction.</p>
+</dd>
+<dt class="function" id="set_event_call_back"><b>set_event_call_back(function)</b> <tt class="nav"><a class="nav" href="fl.set_event_call_back" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Set the event callback function.</p>
+</dd>
+<dt class="function" id="set_graphics_mode"><b>set_graphics_mode(rgbmode, doublebuffering)</b> <tt class="nav"><a class="nav" href="fl.set_graphics_mode" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Set the graphics modes.</p>
+</dd>
+<dt class="function" id="get_rgbmode"><b>get_rgbmode()</b> <tt class="nav"><a class="nav" href="fl.get_rgbmode" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return the current rgb mode. This is the value of the C global
+variable fl_rgbmode.</p>
+</dd>
+<dt class="function" id="show_message"><b>show_message(str1, str2, str3)</b> <tt class="nav"><a class="nav" href="fl.show_message" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Show a dialog box with a three-line message and an OK
+button.</p>
+</dd>
+<dt class="function" id="show_question"><b>show_question(str1, str2, str3)</b> <tt class="nav"><a class="nav" href="fl.show_question" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Show a dialog box with a three-line message and YES and NO
+buttons. It returns <code>1</code> if the user pressed YES, <code>
+0</code> if NO.</p>
+</dd>
+<dt class="function" id="show_choice"><b>show_choice(str1, str2, str3, but1[, but2[,
+but3]])</b> <tt class="nav"><a class="nav" href="fl.show_choice" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Show a dialog box with a three-line message and up to three
+buttons. It returns the number of the button clicked by the user
+(<code>1</code>, <code>2</code> or <code>3</code>).</p>
+</dd>
+<dt class="function" id="show_input"><b>show_input(prompt, default)</b> <tt class="nav"><a class="nav" href="fl.show_input" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Show a dialog box with a one-line prompt message and text field
+in which the user can enter a string. The second argument is the
+default input string. It returns the string value as edited by the
+user.</p>
+</dd>
+<dt class="function" id="show_file_selector"><b>show_file_selector(message, directory, pattern,
+default)</b> <tt class="nav"><a class="nav" href="fl.show_file_selector" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Show a dialog box in which the user can select a file. It
+returns the absolute filename selected by the user, or <code>
+None</code> if the user presses Cancel.</p>
+</dd>
+<dt class="function" id="get_filename"><b>get_filename()</b> <tt class="nav"><a class="nav" href="fl.get_filename" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>These functions return the directory, pattern and filename (the
+tail part only) selected by the user in the last <a class="link" href="#show_file_selector"><code>show_file_selector</code></a> call.</p>
+</dd>
+<dt class="function" id="tie"><b>tie(button, valuator1, valuator2)</b> <tt class="nav"><a class="nav" href="fl.tie" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>These functions are the FORMS interfaces to the corresponding GL
+functions. Use these if you want to handle some GL events yourself
+when using <code>
+fl.do_events</code>. When a GL event is detected that FORMS cannot
+handle, <code>fl.do_forms</code>
+returns the special value <code>FL.EVENT</code> and you should call
+<code>fl.qread</code> to read the event
+from the queue. Don't use the equivalent GL functions!</p>
+</dd>
+<dt class="function" id="getmcolor"><b>getmcolor()</b> <tt class="nav"><a class="nav" href="fl.getmcolor" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>See the description in the FORMS documentation of <code>c:fl_color</code>, <code>c:fl_mapcolor</code> and <code>c:fl_getmcolor</code>.</p>
+</dd>
+</dl><div class="text">
+<h2 id="form-objects">Form Objects <a class="nav" href="#form-objects">#</a></h2>
+
+<p>Form objects (returned by <a class="link" href="#make_form"><code>
+make_form</code></a> above) have the following methods. Each method
+corresponds to a C function whose name is prefixed with
+"<code>fl_</code>"; and whose first argument is a form pointer;
+please refer to the official FORMS documentation for
+descriptions.</p>
+
+<p>All the <code>add_*</code> methods
+return a Python object representing the FORMS object. Methods of
+FORMS objects are described below. Most kinds of FORMS object also
+have some methods specific to that kind; these methods are listed
+here.</p>
+</div>
+<dl><dt class="method" id="Form.show_form"><b>show_form(placement, bordertype, name)</b> <tt class="nav"><a class="nav" href="fl.Form.show_form" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Show the form.</p>
+</dd>
+<dt class="method" id="Form.hide_form"><b>hide_form()</b> <tt class="nav"><a class="nav" href="fl.Form.hide_form" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Hide the form.</p>
+</dd>
+<dt class="method" id="Form.redraw_form"><b>redraw_form()</b> <tt class="nav"><a class="nav" href="fl.Form.redraw_form" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Redraw the form.</p>
+</dd>
+<dt class="method" id="Form.set_form_position"><b>set_form_position(x, y)</b> <tt class="nav"><a class="nav" href="fl.Form.set_form_position" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Set the form's position.</p>
+</dd>
+<dt class="method" id="Form.freeze_form"><b>freeze_form()</b> <tt class="nav"><a class="nav" href="fl.Form.freeze_form" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Freeze the form.</p>
+</dd>
+<dt class="method" id="Form.unfreeze_form"><b>unfreeze_form()</b> <tt class="nav"><a class="nav" href="fl.Form.unfreeze_form" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Unfreeze the form.</p>
+</dd>
+<dt class="method" id="Form.activate_form"><b>activate_form()</b> <tt class="nav"><a class="nav" href="fl.Form.activate_form" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Activate the form.</p>
+</dd>
+<dt class="method" id="Form.deactivate_form"><b>deactivate_form()</b> <tt class="nav"><a class="nav" href="fl.Form.deactivate_form" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Deactivate the form.</p>
+</dd>
+<dt class="method" id="Form.bgn_group"><b>bgn_group()</b> <tt class="nav"><a class="nav" href="fl.Form.bgn_group" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Begin a new group of objects; return a group object.</p>
+</dd>
+<dt class="method" id="Form.end_group"><b>end_group()</b> <tt class="nav"><a class="nav" href="fl.Form.end_group" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>End the current group of objects.</p>
+</dd>
+<dt class="method" id="Form.find_first"><b>find_first()</b> <tt class="nav"><a class="nav" href="fl.Form.find_first" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Find the first object in the form.</p>
+</dd>
+<dt class="method" id="Form.find_last"><b>find_last()</b> <tt class="nav"><a class="nav" href="fl.Form.find_last" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Find the last object in the form.</p>
+</dd>
+<dt class="method" id="Form.add_box"><b>add_box(type, x, y, w, h, name)</b> <tt class="nav"><a class="nav" href="fl.Form.add_box" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Add a box object to the form. No extra methods.</p>
+</dd>
+<dt class="method" id="Form.add_text"><b>add_text(type, x, y, w, h, name)</b> <tt class="nav"><a class="nav" href="fl.Form.add_text" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Add a text object to the form. No extra methods.</p>
+</dd>
+<dt class="method" id="Form.add_clock"><b>add_clock(type, x, y, w, h, name)</b> <tt class="nav"><a class="nav" href="fl.Form.add_clock" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Add a clock object to the form. Method: <code>get_clock</code>.</p>
+</dd>
+<dt class="method" id="Form.add_button"><b>add_button(type, x, y, w, h, name)</b> <tt class="nav"><a class="nav" href="fl.Form.add_button" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Add a button object to the form. Methods: <code>get_button</code>, <code>set_button</code>.</p>
+</dd>
+<dt class="method" id="Form.add_lightbutton"><b>add_lightbutton(type, x, y, w, h, name)</b> <tt class="nav"><a class="nav" href="fl.Form.add_lightbutton" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Add a lightbutton object to the form. Methods: <code>get_button</code>, <code>set_button</code>.</p>
+</dd>
+<dt class="method" id="Form.add_roundbutton"><b>add_roundbutton(type, x, y, w, h, name)</b> <tt class="nav"><a class="nav" href="fl.Form.add_roundbutton" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Add a roundbutton object to the form. Methods: <code>get_button</code>, <code>set_button</code>.</p>
+</dd>
+<dt class="method" id="Form.add_slider"><b>add_slider(type, x, y, w, h, name)</b> <tt class="nav"><a class="nav" href="fl.Form.add_slider" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Add a slider object to the form. Methods: <code>set_slider_value</code>, <code>get_slider_value</code>, <code>set_slider_bounds</code>, <code>get_slider_bounds</code>,
+<code>
+set_slider_return</code>, <code>
+set_slider_size</code>, <code>set_slider_precision</code>, <code>set_slider_step</code>.</p>
+</dd>
+<dt class="method" id="Form.add_valslider"><b>add_valslider(type, x, y, w, h, name)</b> <tt class="nav"><a class="nav" href="fl.Form.add_valslider" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Add a valslider object to the form. Methods: <code>set_slider_value</code>, <code>get_slider_value</code>, <code>set_slider_bounds</code>, <code>get_slider_bounds</code>,
+<code>
+set_slider_return</code>, <code>
+set_slider_size</code>, <code>set_slider_precision</code>, <code>set_slider_step</code>.</p>
+</dd>
+<dt class="method" id="Form.add_dial"><b>add_dial(type, x, y, w, h, name)</b> <tt class="nav"><a class="nav" href="fl.Form.add_dial" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Add a dial object to the form. Methods: <code>set_dial_value</code>, <code>get_dial_value</code>, <code>set_dial_bounds</code>, <code>get_dial_bounds</code>.</p>
+</dd>
+<dt class="method" id="Form.add_positioner"><b>add_positioner(type, x, y, w, h, name)</b> <tt class="nav"><a class="nav" href="fl.Form.add_positioner" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Add a positioner object to the form. Methods: <code>set_positioner_xvalue</code>, <code>
+set_positioner_yvalue</code>, <code>set_positioner_xbounds</code>, <code>
+set_positioner_ybounds</code>, <code>get_positioner_xvalue</code>, <code>
+get_positioner_yvalue</code>, <code>get_positioner_xbounds</code>, <code>
+get_positioner_ybounds</code>.</p>
+</dd>
+<dt class="method" id="Form.add_counter"><b>add_counter(type, x, y, w, h, name)</b> <tt class="nav"><a class="nav" href="fl.Form.add_counter" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Add a counter object to the form. Methods: <code>set_counter_value</code>, <code>get_counter_value</code>,
+<code>
+set_counter_bounds</code>, <code>set_counter_step</code>, <code>set_counter_precision</code>, <code>
+set_counter_return</code>.</p>
+</dd>
+<dt class="method" id="Form.add_input"><b>add_input(type, x, y, w, h, name)</b> <tt class="nav"><a class="nav" href="fl.Form.add_input" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Add a input object to the form. Methods: <code>set_input</code>, <code>get_input</code>, <code>set_input_color</code>, <code>set_input_return</code>.</p>
+</dd>
+<dt class="method" id="Form.add_menu"><b>add_menu(type, x, y, w, h, name)</b> <tt class="nav"><a class="nav" href="fl.Form.add_menu" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Add a menu object to the form. Methods: <code>set_menu</code>, <code>get_menu</code>, <code>addto_menu</code>.</p>
+</dd>
+<dt class="method" id="Form.add_choice"><b>add_choice(type, x, y, w, h, name)</b> <tt class="nav"><a class="nav" href="fl.Form.add_choice" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Add a choice object to the form. Methods: <code>set_choice</code>, <code>get_choice</code>, <code>clear_choice</code>, <code>addto_choice</code>, <code>replace_choice</code>, <code>delete_choice</code>, <code>get_choice_text</code>, <code>set_choice_fontsize</code>, <code>
+set_choice_fontstyle</code>.</p>
+</dd>
+<dt class="method" id="Form.add_browser"><b>add_browser(type, x, y, w, h, name)</b> <tt class="nav"><a class="nav" href="fl.Form.add_browser" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Add a browser object to the form. Methods: <code>set_browser_topline</code>, <code>clear_browser</code>, <code>add_browser_line</code>, <code>addto_browser</code>, <code>
+insert_browser_line</code>, <code>delete_browser_line</code>, <code>
+replace_browser_line</code>, <code>get_browser_line</code>, <code>load_browser</code>, <code>get_browser_maxline</code>, <code>
+select_browser_line</code>, <code>deselect_browser_line</code>, <code>deselect_browser</code>, <code>
+isselected_browser_line</code>, <code>get_browser</code>, <code>set_browser_fontsize</code>, <code>
+set_browser_fontstyle</code>, <code>set_browser_specialkey</code>.</p>
+</dd>
+<dt class="method" id="Form.add_timer"><b>add_timer(type, x, y, w, h, name)</b> <tt class="nav"><a class="nav" href="fl.Form.add_timer" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Add a timer object to the form. Methods: <code>set_timer</code>, <code>get_timer</code>.</p>
+</dd>
+</dl><div class="text">
+<p>Form objects have the following data attributes; see the FORMS
+documentation:</p>
+
+<table border="1">
+<tr>
+<th>
+<p>Name</p>
+</th>
+<th>
+<p>C Type</p>
+</th>
+<th>
+<p>Meaning</p>
+</th>
+</tr>
+
+<tr>
+<td>
+<p><code>window</code></p>
+</td>
+<td>
+<p>int (read-only)</p>
+</td>
+<td>
+<p>GL window id</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>w</code></p>
+</td>
+<td>
+<p>float</p>
+</td>
+<td>
+<p>form width</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>h</code></p>
+</td>
+<td>
+<p>float</p>
+</td>
+<td>
+<p>form height</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>x</code></p>
+</td>
+<td>
+<p>float</p>
+</td>
+<td>
+<p>form x origin</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>y</code></p>
+</td>
+<td>
+<p>float</p>
+</td>
+<td>
+<p>form y origin</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>deactivated</code></p>
+</td>
+<td>
+<p>int</p>
+</td>
+<td>
+<p>nonzero if form is deactivated</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>visible</code></p>
+</td>
+<td>
+<p>int</p>
+</td>
+<td>
+<p>nonzero if form is visible</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>frozen</code></p>
+</td>
+<td>
+<p>int</p>
+</td>
+<td>
+<p>nonzero if form is frozen</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>doublebuf</code></p>
+</td>
+<td>
+<p>int</p>
+</td>
+<td>
+<p>nonzero if double buffering on</p>
+</td>
+</tr>
+</table>
+
+<br />
+<br />
+ 
+
+<h2 id="forms-objects">FORMS Objects <a class="nav" href="#forms-objects">#</a></h2>
+
+<p>Besides methods specific to particular kinds of FORMS objects,
+all FORMS objects also have the following methods:</p>
+</div>
+<dl><dt class="method" id="FORMS.set_call_back"><b>set_call_back(function, argument)</b> <tt class="nav"><a class="nav" href="fl.FORMS.set_call_back" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Set the object's callback function and argument. When the object
+needs interaction, the callback function will be called with two
+arguments: the object, and the callback argument. (FORMS objects
+without a callback function are returned by <code>fl.do_forms</code> or <code>fl.check_forms</code> when they need
+interaction.) Call this method without arguments to remove the
+callback function.</p>
+</dd>
+<dt class="method" id="FORMS.delete_object"><b>delete_object()</b> <tt class="nav"><a class="nav" href="fl.FORMS.delete_object" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Delete the object.</p>
+</dd>
+<dt class="method" id="FORMS.show_object"><b>show_object()</b> <tt class="nav"><a class="nav" href="fl.FORMS.show_object" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Show the object.</p>
+</dd>
+<dt class="method" id="FORMS.hide_object"><b>hide_object()</b> <tt class="nav"><a class="nav" href="fl.FORMS.hide_object" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Hide the object.</p>
+</dd>
+<dt class="method" id="FORMS.redraw_object"><b>redraw_object()</b> <tt class="nav"><a class="nav" href="fl.FORMS.redraw_object" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Redraw the object.</p>
+</dd>
+<dt class="method" id="FORMS.freeze_object"><b>freeze_object()</b> <tt class="nav"><a class="nav" href="fl.FORMS.freeze_object" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Freeze the object.</p>
+</dd>
+<dt class="method" id="FORMS.unfreeze_object"><b>unfreeze_object()</b> <tt class="nav"><a class="nav" href="fl.FORMS.unfreeze_object" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Unfreeze the object.</p>
+</dd>
+</dl><div class="text">
+<p>FORMS objects have these data attributes; see the FORMS
+documentation:</p>
+
+<table border="1">
+<tr>
+<th>
+<p>Name</p>
+</th>
+<th>
+<p>C Type</p>
+</th>
+<th>
+<p>Meaning</p>
+</th>
+</tr>
+
+<tr>
+<td>
+<p><code>objclass</code></p>
+</td>
+<td>
+<p>int (read-only)</p>
+</td>
+<td>
+<p>object class</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>type</code></p>
+</td>
+<td>
+<p>int (read-only)</p>
+</td>
+<td>
+<p>object type</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>boxtype</code></p>
+</td>
+<td>
+<p>int</p>
+</td>
+<td>
+<p>box type</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>x</code></p>
+</td>
+<td>
+<p>float</p>
+</td>
+<td>
+<p>x origin</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>y</code></p>
+</td>
+<td>
+<p>float</p>
+</td>
+<td>
+<p>y origin</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>w</code></p>
+</td>
+<td>
+<p>float</p>
+</td>
+<td>
+<p>width</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>h</code></p>
+</td>
+<td>
+<p>float</p>
+</td>
+<td>
+<p>height</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>col1</code></p>
+</td>
+<td>
+<p>int</p>
+</td>
+<td>
+<p>primary color</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>col2</code></p>
+</td>
+<td>
+<p>int</p>
+</td>
+<td>
+<p>secondary color</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>align</code></p>
+</td>
+<td>
+<p>int</p>
+</td>
+<td>
+<p>alignment</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>lcol</code></p>
+</td>
+<td>
+<p>int</p>
+</td>
+<td>
+<p>label color</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>lsize</code></p>
+</td>
+<td>
+<p>float</p>
+</td>
+<td>
+<p>label font size</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>label</code></p>
+</td>
+<td>
+<p>string</p>
+</td>
+<td>
+<p>label string</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>lstyle</code></p>
+</td>
+<td>
+<p>int</p>
+</td>
+<td>
+<p>label style</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>pushed</code></p>
+</td>
+<td>
+<p>int (read-only)</p>
+</td>
+<td>
+<p>(see FORMS docs)</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>focus</code></p>
+</td>
+<td>
+<p>int (read-only)</p>
+</td>
+<td>
+<p>(see FORMS docs)</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>belowmouse</code></p>
+</td>
+<td>
+<p>int (read-only)</p>
+</td>
+<td>
+<p>(see FORMS docs)</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>frozen</code></p>
+</td>
+<td>
+<p>int (read-only)</p>
+</td>
+<td>
+<p>(see FORMS docs)</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>active</code></p>
+</td>
+<td>
+<p>int (read-only)</p>
+</td>
+<td>
+<p>(see FORMS docs)</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>input</code></p>
+</td>
+<td>
+<p>int (read-only)</p>
+</td>
+<td>
+<p>(see FORMS docs)</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>visible</code></p>
+</td>
+<td>
+<p>int (read-only)</p>
+</td>
+<td>
+<p>(see FORMS docs)</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>radio</code></p>
+</td>
+<td>
+<p>int (read-only)</p>
+</td>
+<td>
+<p>(see FORMS docs)</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>automatic</code></p>
+</td>
+<td>
+<p>int (read-only)</p>
+</td>
+<td>
+<p>(see FORMS docs)</p>
+</td>
+</tr>
+</table>
+
+<br />
+<br />
+</div>
+</div></body></html>

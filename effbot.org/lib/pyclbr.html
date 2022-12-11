@@ -1,0 +1,126 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>pyclbr</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-pyclbr.html'>original</a> :::
+<a href='pyclbr.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>pyclbr&#8212;Python class browser support</h1>
+
+<div class="toc"><dl><dt>On this page:</dt><dd><a href="#class-descriptor-objects">Class Descriptor Objects</a></dd><dd><a href="#function-descriptor-objects">Function Descriptor Objects</a></dd></dl></div><p>The <code>pyclbr</code> can be used to
+determine some limited information about the classes, methods and
+top-level functions defined in a module. The information provided
+is sufficient to implement a traditional three-pane class browser.
+The information is extracted from the source code rather than by
+importing the module, so this module is safe to use with untrusted
+source code. This restriction makes it impossible to use this
+module with modules not implemented in Python, including many
+standard and optional extension modules.</p>
+</div>
+<dl><dt class="function" id="readmodule"><b>readmodule(module[, path])</b> <tt class="nav"><a class="nav" href="pyclbr.readmodule" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Read a module and return a dictionary mapping class names to
+class descriptor objects. The parameter <var>module</var> should be
+the name of a module as a string; it may be the name of a module
+within a package. The <var>path</var> parameter should be a
+sequence, and is used to augment the value of <code>
+sys.path</code>, which is used to locate module source code.</p>
+</dd>
+<dt class="function" id="readmodule_ex"><b>readmodule_ex(module[, path])</b> <tt class="nav"><a class="nav" href="pyclbr.readmodule_ex" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Like <a class="link" href="#readmodule"><code>readmodule</code></a>, but
+the returned dictionary, in addition to mapping class names to
+class descriptor objects, also maps top-level function names to
+function descriptor objects. Moreover, if the module being read is
+a package, the key <code>'__path__'</code> in the returned
+dictionary has as its value a list which contains the package
+search path.</p>
+</dd>
+</dl><div class="text">
+<h2 id="class-descriptor-objects">Class Descriptor Objects <a class="nav" href="#class-descriptor-objects">#</a></h2>
+
+<p>The class descriptor objects used as values in the dictionary
+returned by <a class="link" href="#readmodule"><code>readmodule</code></a>
+and <a class="link" href="#readmodule_ex"><code>readmodule_ex</code></a>
+provide the following data members:</p>
+</div>
+<dl><dt class="attribute" id="module"><b>module</b> <tt class="nav"><a class="nav" href="pyclbr.module" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>The name of the module defining the class described by the class
+descriptor.</p>
+</dd>
+<dt class="attribute" id="name"><b>name</b> <tt class="nav"><a class="nav" href="pyclbr.name" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>The name of the class.</p>
+</dd>
+<dt class="attribute" id="super"><b>super</b> <tt class="nav"><a class="nav" href="pyclbr.super" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>A list of class descriptors which describe the immediate base
+classes of the class being described. Classes which are named as
+superclasses but which are not discoverable by <a class="link" href="#readmodule"><code>readmodule</code></a> are listed as a string with
+the class name instead of class descriptors.</p>
+</dd>
+<dt class="attribute" id="methods"><b>methods</b> <tt class="nav"><a class="nav" href="pyclbr.methods" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>A dictionary mapping method names to line numbers.</p>
+</dd>
+<dt class="attribute" id="file"><b>file</b> <tt class="nav"><a class="nav" href="pyclbr.file" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>Name of the file containing the <code>class</code> statement
+defining the class.</p>
+</dd>
+<dt class="attribute" id="lineno"><b>lineno</b> <tt class="nav"><a class="nav" href="pyclbr.lineno" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>The line number of the <code>class</code> statement within the
+file named by <a class="link" href="#file"><code>file</code></a>.</p>
+</dd>
+</dl><div class="text">
+<h2 id="function-descriptor-objects">Function Descriptor Objects <a class="nav" href="#function-descriptor-objects">#</a></h2>
+
+<p>The function descriptor objects used as values in the dictionary
+returned by <a class="link" href="#readmodule_ex"><code>
+readmodule_ex</code></a> provide the following data members:</p>
+</div>
+<dl><dt class="attribute"><b>module</b> <tt class="nav"><a class="nav" href="pyclbr.module" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>The name of the module defining the function described by the
+function descriptor.</p>
+</dd>
+<dt class="attribute"><b>name</b> <tt class="nav"><a class="nav" href="pyclbr.name" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>The name of the function.</p>
+</dd>
+<dt class="attribute"><b>file</b> <tt class="nav"><a class="nav" href="pyclbr.file" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>Name of the file containing the <code>def</code> statement
+defining the function.</p>
+</dd>
+<dt class="attribute"><b>lineno</b> <tt class="nav"><a class="nav" href="pyclbr.lineno" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>The line number of the <code>def</code> statement within the
+file named by <a class="link" href="#file"><code>file</code></a>.</p>
+</dd>
+</dl></div></body></html>

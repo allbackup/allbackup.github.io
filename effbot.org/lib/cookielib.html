@@ -1,0 +1,134 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>cookielib</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-cookielib.html'>original</a> :::
+<a href='cookielib.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>cookielib&#8212;Cookie handling for HTTP clients</h1>
+
+<p>The <code>cookielib</code> module
+defines classes for automatic handling of HTTP cookies. It is
+useful for accessing web sites that require small pieces of data -
+cookies - to be set on the client machine by an HTTP response from
+a web server, and then returned to the server in later HTTP
+requests.</p>
+
+<p class="note"><b>Note:</b> Both the regular Netscape cookie
+protocol and the protocol defined by The various named parameters
+found in Set-Cookie: and Set-Cookie2: headers (eg. <code>
+domain</code> and <code>expires</code>) are conventionally referred
+to as attributes. To distinguish them from Python attributes, the
+documentation for this module uses the term cookie-attribute
+instead</p>
+
+<p>The module defines the following exception:</p>
+</div>
+<dl><dt class="exception" id="LoadError"><b>exception LoadError</b> <tt class="nav"><a class="nav" href="cookielib.LoadError" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="exception">
+<p>Instances of <a class="link" href="#FileCookieJar"><code>
+FileCookieJar</code></a> raise this exception on failure to load cookies
+from a file.</p>
+</dd>
+</dl><div class="text">
+<p>The following classes are provided:</p>
+</div>
+<dl><dt class="class" id="CookieJar"><b>class CookieJar(policy=None)</b> <tt class="nav"><a class="nav" href="cookielib.CookieJar" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p><var>policy</var> is an object implementing the <a class="link" href="#CookiePolicy"><code>CookiePolicy</code></a> interface.</p>
+
+<p>The <a class="link" href="#CookieJar"><code>CookieJar</code></a> class
+stores HTTP cookies. It extracts cookies from HTTP requests, and
+returns them in HTTP responses. <a class="link" href="#CookieJar"><code>CookieJar</code></a> instances automatically expire
+contained cookies when necessary. Subclasses are also responsible
+for storing and retrieving cookies from a file or database.</p>
+</dd>
+<dt class="class" id="FileCookieJar"><b>class FileCookieJar(filename, delayload=None,
+policy=None)</b> <tt class="nav"><a class="nav" href="cookielib.FileCookieJar" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p><var>policy</var> is an object implementing the <a class="link" href="#CookiePolicy"><code>CookiePolicy</code></a> interface. For the other
+arguments, see the documentation for the corresponding
+attributes.</p>
+
+<p>A <a class="link" href="#CookieJar"><code>CookieJar</code></a> which can
+load cookies from, and perhaps save cookies to, a file on disk.
+Cookies are NOT loaded from the named file until either the <code>load</code> or <code>revert</code> method is called. Subclasses of this
+class are documented in section <code>
+file-cookie-jar-classes.html#file-cookie-jar-classes</code>.</p>
+</dd>
+<dt class="class" id="CookiePolicy"><b>class CookiePolicy()</b> <tt class="nav"><a class="nav" href="cookielib.CookiePolicy" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>This class is responsible for deciding whether each cookie
+should be accepted from / returned to the server.</p>
+</dd>
+<dt class="class" id="DefaultCookiePolicy"><b>class DefaultCookiePolicy(blocked_domains=None,
+allowed_domains=None, netscape=True, rfc2965=False,
+hide_cookie2=False, strict_domain=False,
+strict_rfc2965_unverifiable=True, strict_ns_unverifiable=False,
+strict_ns_domain=DefaultCookiePolicy.DomainLiberal,
+strict_ns_set_initial_dollar=False, strict_ns_set_path=False
+)</b> <tt class="nav"><a class="nav" href="cookielib.DefaultCookiePolicy" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>Constructor arguments should be passed as keyword arguments
+only. <var>blocked_domains</var> is a sequence of domain names that
+we never accept cookies from, nor return cookies to. <var>
+allowed_domains</var> if not <code>None</code>, this is a sequence
+of the only domains for which we accept and return cookies. For all
+other arguments, see the documentation for <a class="link" href="#CookiePolicy"><code>CookiePolicy</code></a> and <a class="link" href="#DefaultCookiePolicy"><code>DefaultCookiePolicy</code></a>
+objects.</p>
+
+<p><a class="link" href="#DefaultCookiePolicy"><code>
+DefaultCookiePolicy</code></a> implements the standard accept / reject
+rules for Netscape and RFC 2965 cookies. RFC 2109 cookies (ie.
+cookies received in a Set-Cookie: header with a version
+cookie-attribute of 1) are treated according to the RFC 2965 rules.
+<a class="link" href="#DefaultCookiePolicy"><code>
+DefaultCookiePolicy</code></a> also provides some parameters to allow some
+fine-tuning of policy.</p>
+</dd>
+<dt class="class" id="Cookie"><b>class Cookie()</b> <tt class="nav"><a class="nav" href="cookielib.Cookie" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>This class represents Netscape, RFC 2109 and RFC 2965 cookies.
+It is not expected that users of <code>cookielib</code> construct their own <a class="link" href="#Cookie"><code>Cookie</code></a> instances. Instead, if
+necessary, call <code>
+make_cookies</code> on a <a class="link" href="#CookieJar"><code>
+CookieJar</code></a> instance.</p>
+</dd>
+</dl><div class="text"><span class="mark">@see</span> <code>Module urllib2</code> URL opening with automatic
+cookie handling. <span class="mark">@see</span> <a class="link" href="#Cookie"><code>Module Cookie</code></a> HTTP cookie classes,
+principally useful for server-side code. The cookielib and Cookie
+modules do not depend on each other. <span class="mark">@see</span>
+<a class="link" href="http://wwwsearch.sf.net/ClientCookie/">
+http://wwwsearch.sf.net/ClientCookie/</a> Extensions to this
+module, including a class for reading Microsoft Internet Explorer
+cookies on Windows. <span class="mark">@see</span> <a class="link" href="http://www.netscape.com/newsref/std/cookie_spec.html">
+http://www.netscape.com/newsref/std/cookie_spec.html</a> The
+specification of the original Netscape cookie protocol. Though this
+is still the dominant protocol, the 'Netscape cookie protocol'
+implemented by all the major browsers (and cookielib) only bears a
+passing resemblance to the one sketched out in cookie_spec.html.
+<span class="mark">@see</span> <a class="link" href="http://www.faqs.org/rfcs/rfc2109.html">RFC 2109, HTTP State
+Management Mechanism</a> Obsoleted by RFC 2965. Uses Set-Cookie:
+with version=1. <span class="mark">@see</span> <a class="link" href="http://www.faqs.org/rfcs/rfc2965.html">RFC 2965, HTTP State
+Management Mechanism</a> The Netscape protocol with the bugs fixed.
+Uses Set-Cookie2: in place of Set-Cookie:. Not widely used. <span class="mark">@see</span> <a class="link" href="http://kristol.org/cookie/errata.html">
+http://kristol.org/cookie/errata.html</a> Unfinished errata to RFC
+2965.</div>
+</div></body></html>

@@ -1,0 +1,69 @@
+
+@@module MimeWriter
+
+<h1>MimeWriter&#8212;Generic MIME file writer</h1>
+@@error unexpected div versionnote
+
+<p>This module defines the class {@link MimeWriter}. The {@link
+MimeWriter} class implements a basic formatter for creating MIME
+multi-part files. It doesn't seek around the output file nor does it use
+large amounts of buffer space. You must write the parts out in the order
+that they should occur in the final file. {@link MimeWriter} does buffer
+the headers you add, allowing you to rearrange their order.
+
+@@class MimeWriter(fp)
+
+<p>Return a new instance of the {@link MimeWriter} class. The only
+argument passed, {@var fp}, is a file object to be used for writing.
+Note that a {@link StringIO} object could also be used.
+
+@@text 
+
+<h2>MimeWriter Objects</h2>
+
+<p>{@link MimeWriter} instances have the following methods:
+
+@@method MimeWriter.addheader(key, value[, prefix])
+
+<p>Add a header line to the MIME message. The {@var key} is the name of
+the header, where the {@var value} obviously provides the value of the
+header. The optional argument {@var prefix} determines where the header
+is inserted; "{@code 0}" means append at the end, "{@code 1}" is insert
+at the start. The default is to append.
+
+@@method MimeWriter.flushheaders()
+
+<p>Causes all headers accumulated so far to be written out (and
+forgotten). This is useful if you don't need a body part at all, e.g.
+for a subpart of type message/rfc822 that's (mis)used to store some
+header-like information.
+
+@@method MimeWriter.startbody(ctype[, plist[, prefix]])
+
+<p>Returns a file-like object which can be used to write to the body of
+the message. The content-type is set to the provided {@var ctype}, and
+the optional parameter {@var plist} provides additional parameters for
+the content-type declaration. {@var prefix} functions as in {@link
+addheader} except that the default is to insert at the start.
+
+@@method MimeWriter.startmultipartbody(subtype[, boundary[, plist[, prefix]]])
+
+<p>Returns a file-like object which can be used to write to the body of
+the message. Additionally, this method initializes the multi-part code,
+where {@var subtype} provides the multipart subtype, {@var boundary} may
+provide a user-defined boundary specification, and {@var plist} provides
+optional parameters for the subtype. {@var prefix} functions as in
+{@link startbody}. Subparts should be created using {@link nextpart}.
+
+@@method MimeWriter.nextpart()
+
+<p>Returns a new instance of {@link MimeWriter} which represents an
+individual part in a multipart message. This may be used to write the
+part as well as used for creating recursively complex multipart
+messages. The message must first be initialized with {@link
+startmultipartbody} before using {@link nextpart}.
+
+@@method MimeWriter.lastpart()
+
+<p>This is used to designate the last part of a multipart message, and
+should {@em always} be used when writing multipart messages.

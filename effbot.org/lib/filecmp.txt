@@ -1,0 +1,148 @@
+
+@@module filecmp
+
+<h1>filecmp&#8212;File and Directory Comparisons</h1>
+
+<p>The {@link filecmp} module defines functions to compare files and
+directories, with various optional time/correctness trade-offs.
+
+<p>The {@link filecmp} module defines the following functions:
+
+@@function cmp(f1, f2[, shallow[, use_statcache]])
+
+<p>Compare the files named {@var f1} and {@var f2}, returning {@link
+True} if they seem equal, {@link False} otherwise.
+
+<p>Unless {@var shallow} is given and is false, files with identical
+{@link os.stat} signatures are taken to be equal.
+
+<p>Files that were compared using this function will not be compared
+again unless their {@link os.stat} signature changes.
+
+<p>Note that no external programs are called from this function, giving
+it portability and efficiency.
+<blockquote>
+@since Changed in version 2.3:
+use_statcache is obsolete and ignored.. <br />
+</blockquote>
+
+@@function cmpfiles(dir1, dir2, common[, shallow[, use_statcache]])
+
+<p>Returns three lists of file names: {@var match}, {@var mismatch},
+{@var errors}. {@var match} contains the list of files match in both
+directories, {@var mismatch} includes the names of those that don't, and
+{@var errros} lists the names of files which could not be compared.
+Files may be listed in {@var errors} because the user may lack
+permission to read them or many other reasons, but always that the
+comparison could not be done for some reason.
+
+<p>The {@var common} parameter is a list of file names found in both
+directories. The {@var shallow} and {@var use_statcache} parameters have
+the same meanings and default values as for {@link filecmp.cmp}.
+
+@@text 
+
+<p>Example:
+
+<pre>
+&gt;&gt;&gt; import filecmp
+&gt;&gt;&gt; filecmp.cmp('libundoc.tex', 'libundoc.tex')
+True
+&gt;&gt;&gt; filecmp.cmp('libundoc.tex', 'lib.tex')
+False
+</pre>
+
+
+<h2>The dircmp class</h2>
+
+<p>{@link dircmp} instances are built using this constructor:
+
+@@class dircmp(a, b[, ignore[, hide]])
+
+<p>Construct a new directory comparison object, to compare the
+directories {@var a} and {@var b}. {@var ignore} is a list of names to
+ignore, and defaults to {@code ['RCS', 'CVS', 'tags']}. {@var hide} is a
+list of names to hide, and defaults to {@code [os.curdir, os.pardir]}.
+
+@@text 
+
+<p>The {@link dircmp} class provides the following methods:
+
+@@method dircmp.report()
+
+<p>Print (to {@code sys.stdout}) a comparison between {@var a} and {@var
+b}.
+
+@@method dircmp.report_partial_closure()
+
+<p>Print a comparison between {@var a} and {@var b} and common immediate
+subdirectories.
+
+@@method dircmp.report_full_closure()
+
+<p>Print a comparison between {@var a} and {@var b} and common
+subdirectories (recursively).
+
+@@text 
+
+<p>The {@link dircmp} offers a number of interesting attributes that may
+be used to get various bits of information about the directory trees
+being compared.
+
+<p>Note that via {@link __getattr__} hooks, all attributes are computed
+lazily, so there is no speed penalty if only those attributes which are
+lightweight to compute are used.
+
+@@attribute dircmp.left_list
+
+<p>Files and subdirectories in {@var a}, filtered by {@var hide} and
+{@var ignore}.
+
+@@attribute dircmp.right_list
+
+<p>Files and subdirectories in {@var b}, filtered by {@var hide} and
+{@var ignore}.
+
+@@attribute dircmp.common
+
+<p>Files and subdirectories in both {@var a} and {@var b}.
+
+@@attribute dircmp.left_only
+
+<p>Files and subdirectories only in {@var a}.
+
+@@attribute dircmp.right_only
+
+<p>Files and subdirectories only in {@var b}.
+
+@@attribute dircmp.common_dirs
+
+<p>Subdirectories in both {@var a} and {@var b}.
+
+@@attribute dircmp.common_files
+
+<p>Files in both {@var a} and {@var b}
+
+@@attribute dircmp.common_funny
+
+<p>Names in both {@var a} and {@var b}, such that the type differs
+between the directories, or names for which {@link os.stat} reports an
+error.
+
+@@attribute dircmp.same_files
+
+<p>Files which are identical in both {@var a} and {@var b}.
+
+@@attribute dircmp.diff_files
+
+<p>Files which are in both {@var a} and {@var b}, whose contents differ.
+
+@@attribute dircmp.funny_files
+
+<p>Files which are in both {@var a} and {@var b}, but could not be
+compared.
+
+@@attribute dircmp.subdirs
+
+<p>A dictionary mapping names in {@link common_dirs} to {@link dircmp}
+objects.

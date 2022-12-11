@@ -1,0 +1,197 @@
+
+@@module tempfile
+
+<h1>tempfile&#8212;Generate temporary files and directories</h1>
+
+<p>This module generates temporary files and directories. It works on
+all supported platforms.
+
+<p>In version 2.3 of Python, this module was overhauled for enhanced
+security. It now provides three new functions, {@link
+NamedTemporaryFile}, {@link mkstemp}, and {@link mkdtemp}, which should
+eliminate all remaining need to use the insecure {@link mktemp}
+function. Temporary file names created by this module no longer contain
+the process ID; instead a string of six random characters is used.
+
+<p>Also, all the user-callable functions now take additional arguments
+which allow direct control over the location and name of temporary
+files. It is no longer necessary to use the global {@var tempdir} and
+{@var template} variables. To maintain backward compatibility, the
+argument order is somewhat odd; it is recommended to use keyword
+arguments for clarity.
+
+<p>The module defines the following user-callable functions:
+
+@@function TemporaryFile([mode='w+b'[, bufsize=-1[, suffix[, prefix[, dir]]]]])
+
+<p>Return a file (or file-like) object that can be used as a temporary
+storage area. The file is created using {@link mkstemp}. It will be
+destroyed as soon as it is closed (including an implicit close when the
+object is garbage collected). Under Unix, the directory entry for the
+file is removed immediately after the file is created. Other platforms
+do not support this; your code should not rely on a temporary file
+created using this function having or not having a visible name in the
+file system.
+
+<p>The {@var mode} parameter defaults to {@code 'w+b'} so that the file
+created can be read and written without being closed. Binary mode is
+used so that it behaves consistently on all platforms without regard for
+the data that is stored. {@var bufsize} defaults to {@code -1}, meaning
+that the operating system default is used.
+
+<p>The {@var dir}, {@var prefix} and {@var suffix} parameters are passed
+to {@link mkstemp}.
+
+@@function NamedTemporaryFile([mode='w+b'[, bufsize=-1[, suffix[, prefix[, dir]]]]])
+
+<p>This function operates exactly as {@link TemporaryFile} does, except
+that the file is guaranteed to have a visible name in the file system
+(on Unix, the directory entry is not unlinked). That name can be
+retrieved from the {@link name} member of the file object. Whether the
+name can be used to open the file a second time, while the named
+temporary file is still open, varies across platforms (it can be so used
+on Unix; it cannot on Windows NT or later).
+<blockquote>
+@since New in
+version 2.3. <br />
+</blockquote>
+
+@@function mkstemp([suffix[, prefix[, dir[, text]]]])
+
+<p>Creates a temporary file in the most secure manner possible. There
+are no race conditions in the file's creation, assuming that the
+platform properly implements the {@code O_EXCL} flag for {@link
+os.open}. The file is readable and writable only by the creating user
+ID. If the platform uses permission bits to indicate whether a file is
+executable, the file is executable by no one. The file descriptor is not
+inherited by child processes.
+
+<p>Unlike {@link TemporaryFile}, the user of {@link mkstemp} is
+responsible for deleting the temporary file when done with it.
+
+<p>If {@var suffix} is specified, the file name will end with that
+suffix, otherwise there will be no suffix. {@link mkstemp} does not put
+a dot between the file name and the suffix; if you need one, put it at
+the beginning of {@var suffix}.
+
+<p>If {@var prefix} is specified, the file name will begin with that
+prefix; otherwise, a default prefix is used.
+
+<p>If {@var dir} is specified, the file will be created in that
+directory; otherwise, a default directory is used.
+
+<p>If {@var text} is specified, it indicates whether to open the file in
+binary mode (the default) or text mode. On some platforms, this makes no
+difference.
+
+<p>{@link mkstemp} returns a tuple containing an OS-level handle to an
+open file (as would be returned by {@link os.open}) and the absolute
+pathname of that file, in that order.
+<blockquote>
+@since New in version
+2.3. <br />
+</blockquote>
+
+@@function mkdtemp([suffix[, prefix[, dir]]])
+
+<p>Creates a temporary directory in the most secure manner possible.
+There are no race conditions in the directory's creation. The directory
+is readable, writable, and searchable only by the creating user ID.
+
+<p>The user of {@link mkdtemp} is responsible for deleting the temporary
+directory and its contents when done with it.
+
+<p>The {@var prefix}, {@var suffix}, and {@var dir} arguments are the
+same as for {@link mkstemp}.
+
+<p>{@link mkdtemp} returns the absolute pathname of the new directory.
+<blockquote>
+@since New in
+version 2.3. <br />
+</blockquote>
+
+@@function mktemp([suffix[, prefix[, dir]]])
+
+
+<p>Deprecated since release 2.3. Use {@link mkstemp} instead.
+
+<p>Return an absolute pathname of a file that did not exist at the time
+the call is made. The {@var prefix}, {@var suffix}, and {@var dir}
+arguments are the same as for {@link mkstemp}.
+
+<p class='warning'><b>Warning:</b> Use of this function may introduce a
+security hole in your program. By the time you get around to doing
+anything with the file name it returns, someone else may have beaten you
+to the punch.
+
+@@text 
+
+<p>The module uses two global variables that tell it how to construct a
+temporary name. They are initialized at the first call to any of the
+functions above. The caller may change them, but this is discouraged;
+use the appropriate function arguments, instead.
+
+@@variable tempdir
+
+<p>When set to a value other than {@link None}, this variable defines
+the default value for the {@var dir} argument to all the functions
+defined in this module.
+
+<p>If {@code tempdir} is unset or {@link None} at any call to any of the
+above functions, Python searches a standard list of directories and sets
+{@var tempdir} to the first one which the calling user can create files
+in. The list is:
+<ol>
+<li>
+<p>The directory named by the TMPDIR environment variable.
+<li>
+<p>The directory named by the TEMP environment variable.
+<li>
+<p>The directory named by the TMP environment variable.
+<li>
+<p>A platform-specific location:
+<ul>
+<li>
+<p>On RiscOS, the directory named by the Wimp$ScrapDir environment
+variable.
+<li>
+<p>On Windows, the directories C:TEMP, C:TMP, TEMP, and TMP, in that
+order.
+<li>
+<p>On all other platforms, the directories /tmp, /var/tmp, and /usr/tmp,
+in that order.
+</ul>
+<li>
+<p>As a last resort, the current working directory.
+</ol>
+
+@@function gettempdir()
+
+<p>Return the directory currently selected to create temporary files in.
+If {@code tempdir} is not {@link None}, this simply returns its
+contents; otherwise, the search described above is performed, and the
+result returned.
+
+@@variable template
+
+
+<p>Deprecated since release 2.0. Use {@link gettempprefix} instead.
+
+<p>When set to a value other than {@link None}, this variable defines
+the prefix of the final component of the filenames returned by {@link
+mktemp}. A string of six random letters and digits is appended to the
+prefix to make the filename unique. On Windows, the default prefix is
+~T; on all other systems it is tmp.
+
+<p>Older versions of this module used to require that {@code template}
+be set to {@link None} after a call to {@link os.fork}; this has not
+been necessary since version 1.5.2.
+
+@@function gettempprefix()
+
+<p>Return the filename prefix used to create temporary files. This does
+not contain the directory component. Using this function is preferred
+over reading the {@var template} variable directly.
+<blockquote>
+@since New in version 1.5.2. <br />
+</blockquote>

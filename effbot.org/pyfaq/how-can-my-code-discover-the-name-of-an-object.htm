@@ -1,0 +1,17 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>How can my code discover the name of an&nbsp;object?</title></head><body data-page-id="770"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><p class="note" style="text-align: center"><strong>
+This is an old copy of the Python FAQ.  The information here may be
+outdated.
+</strong></p><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">How can my code discover the name of an&nbsp;object?</h1></div><div class="yui-ge"><div class="yui-u first"><p>Generally speaking, it can&#8217;t, because objects don&#8217;t really have names. Essentially, assignment always binds a name to a value; the actual name is only known by the namespace it&#8217;s in, and a single value can be referenced from many different namespaces (as well as containers).</p><p>The same is true of <a href="/pyref/def.htm"><strong>def</strong></a> and <a href="/pyref/class.htm"><strong>class</strong></a> statements, but in that case the value is a callable.  Consider the following code:</p><pre><code>class A:
+    pass
+
+B = A
+
+a = B()
+b = a
+print b
+&lt;__main__.A instance at 016D07CC&gt;
+print a
+&lt;__main__.A instance at 016D07CC&gt;
+</code></pre><p>Arguably the class has a name: even though it is bound to two names and invoked through the name B the created instance is still reported as an instance of class A. However, it is impossible to say whether the instance&#8217;s name is &#8220;a&#8221; or &#8220;b&#8221;, since both names are bound to the same value.</p><p>Generally speaking it should not be necessary for your code to <q>know the names</q> of particular values. Unless you are deliberately writing introspective tools, this is usually an indication that a change of approach might be beneficial.</p><p>In comp.lang.python, Fredrik Lundh once gave an excellent analogy in answer to this question:</p><blockquote><p>The same way as you get the name of that cat you found on your porch: the cat (object) itself cannot tell you its name, and it doesn&#8217;t really care &#8212; so the only way to find out what it&#8217;s called is to ask all your neighbours (namespaces) if it&#8217;s their cat (object)&#8230;</p><p>&#8230;.and don&#8217;t be surprised if you&#8217;ll find that it&#8217;s known by many names, or no name at all!</p></blockquote><p>CATEGORY: programming</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to pyfaq index page.">::: pyfaq :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

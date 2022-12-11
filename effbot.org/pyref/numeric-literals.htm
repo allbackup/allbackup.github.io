@@ -1,0 +1,44 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>Numeric&nbsp;literals</title> <script type="text/javascript">effbot_page_id=1485;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <h1 class="maintitle">Numeric&nbsp;literals</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p>There are four types of numeric literals: plain integers, long
+integers, floating point numbers, and imaginary numbers.</p><p>There are no complex literals; complex numbers can be formed by
+adding a real number and an imaginary number.</p><p>Note that numeric literals do not include a sign; a phrase like <code>-1</code>
+is actually an expression composed of the unary operator <code>-</code> and the
+literal <code>1</code>.</p><h2 id="integer-literals">Integer literals&#160;<a class="nav" href="#integer-literals" title="bookmark!">#</a></h2><p>Integer and long integer literals are described by the following
+lexical definitions:</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><pre class="wide wide"><code>longinteger ::= [ integer][1] ("l" | "L")
+integer ::= [decimalinteger][2] | [ octinteger][3] | [hexinteger][4]
+decimalinteger ::= [ nonzerodigit][5] [digit][6]\* | "0"
+octinteger ::= "0" [ octdigit][7]+
+hexinteger ::= "0" ("x" | "X") [hexdigit][8]+
+nonzerodigit ::= "1"..."9"
+octdigit ::= "0"..."7"
+hexdigit ::= [ digit][6] | "a"..."f" | "A"..."F"
+</code></pre></div><div class="yui-ge"><div class="yui-u first"><p>Although both lower case &#8220;l&#8221; and upper case &#8220;L&#8221; are allowed as suffix
+for long integers, it is strongly recommended to always use &#8220;L&#8221;, since
+the letter &#8220;l&#8221; looks too much like the digit &#8220;1&#8221;.</p><p>Plain integer literals that are above the largest representable plain
+integer (e.g., 2147483647 when using 32-bit arithmetic) are accepted
+as if they were long integers instead.  There is no limit for long
+integer literals apart from what can be stored in available
+memory.</p><p>Some examples of plain integer literals (first row) and long integer
+literals (second and third rows):</p><pre><code>7     2147483647                        0177
+3L    79228162514264337593543950336L    0377L   0x100000000L
+      79228162514264337593543950336             0xdeadbeef
+</code></pre><p>In versions of Python prior to 2.4, octal and hexadecimal literals in
+the range just above the largest representable plain integer but below
+the largest unsigned 32-bit number (on a machine using 32-bit
+arithmetic), 4294967296, were taken as the negative plain integer
+obtained by subtracting 4294967296 from their unsigned value.</p><h2 id="floating-point-literals">Floating-point literals&#160;<a class="nav" href="#floating-point-literals" title="bookmark!">#</a></h2><p>Floating point literals are described by the following lexical
+definitions:</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><pre class="wide wide"><code>floatnumber ::= [ pointfloat][1] | [exponentfloat][2]
+pointfloat ::= [[intpart][3]] [fraction][4] | [ intpart][3] "."
+exponentfloat ::= ([intpart][3] | [ pointfloat][1]) [exponent][5]
+intpart ::= [ digit][6]+
+fraction ::= "." [ digit][6]+
+exponent ::= ("e" | "E") ["+" | "-"] [digit][6]+
+</code></pre></div><div class="yui-ge"><div class="yui-u first"><p>Note that the integer and exponent parts of floating point numbers can look like octal integers, but are interpreted using radix 10. For example, &#8220;077e010&#8221; is legal, and denotes the same number as &#8220;77e10&#8221;. The allowed range of floating point literals is implementation-dependent. Some examples of floating point literals:</p><pre><code>3.14    10.    .001    1e100    3.14e-10    0e0
+</code></pre><p>Note that numeric literals do not include a sign; a phrase like <code>-1</code> is actually an expression composed of the operator <code>-</code> and the literal <code>1</code>.</p><h2 id="imaginary-literals">Imaginary literals&#160;<a class="nav" href="#imaginary-literals" title="bookmark!">#</a></h2><p>Imaginary literals are described by the following lexical definitions:</p><p>imagnumber ::= ([floatnumber][1] | [intpart][2]) (&#8220;j&#8221; | &#8220;J&#8221;)</p><p>An imaginary literal yields a complex number with a real part of
+0.0. Complex numbers are represented as a pair of floating point
+numbers and have the same restrictions on their range. To create a
+complex number with a nonzero real part, add a floating point number
+to it, e.g., <code>(3+4j)</code>. Some examples of imaginary literals:</p><pre><code>3.14j   10.j    10j     .001j   1e100j  3.14e-10j
+</code></pre></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div> <!-- yui-g --></div> <!-- content --> </div> <!-- yui-b --> </div> <!-- yui-main --> <div class="yui-b"> <div id='menu'> <ul> <li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li> <li><b><a href="." title="Go to pyref index page.">::: pyref :::</a></b></li> </ul> <ul><li><b>::: contents</b></li></ul> <ul><li><ul><li><a href="#integer-literals">Integer literals</a></li><li><a href="#floating-point-literals">Floating-point literals</a></li><li><a href="#imaginary-literals">Imaginary literals</a></li></ul></li></ul> </div> <!-- menu --> </div> <!-- yui-b --> </div> <!-- bd --> <div id="ft"> <!-- footer --> <p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;"></a>
+this page was rendered by a <a href="http://www.djangoproject.com/">django</a> application in 0.02s 2011-06-21 21:18:15.914892.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p> </div> <!-- ft --> </div> <!-- doc --> <script src="/media/js/effbot-min.js" type="text/javascript"> </script> </body> </html>

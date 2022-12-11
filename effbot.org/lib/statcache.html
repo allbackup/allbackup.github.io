@@ -1,0 +1,81 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>statcache</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-statcache.html'>original</a> :::
+<a href='statcache.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>statcache&#8212;An optimization of os.stat()</h1>
+</div>
+<div class="error">
+<p>The <code>statcache</code> module
+provides a simple optimization to <code>os.stat</code>: remembering the values of previous
+invocations.</p>
+
+<p>The <code>statcache</code> module
+defines the following functions:</p>
+</div>
+<dl><dt class="function" id="stat"><b>stat(path)</b> <tt class="nav"><a class="nav" href="statcache.stat" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>This is the main module entry-point. Identical for <code>os.stat</code>, except for
+remembering the result for future invocations of the function.</p>
+</dd>
+</dl><div class="text">
+<p>The rest of the functions are used to clear the cache, or parts
+of it.</p>
+</div>
+<dl><dt class="function" id="reset"><b>reset()</b> <tt class="nav"><a class="nav" href="statcache.reset" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Clear the cache: forget all results of previous <a class="link" href="#stat"><code>stat</code></a> calls.</p>
+</dd>
+<dt class="function" id="forget"><b>forget(path)</b> <tt class="nav"><a class="nav" href="statcache.forget" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Forget the result of <code>stat(</code><var>path</var>), if
+any.</p>
+</dd>
+<dt class="function" id="forget_prefix"><b>forget_prefix(prefix)</b> <tt class="nav"><a class="nav" href="statcache.forget_prefix" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Forget all results of <code>stat(</code><var>path</var>) for
+<var>path</var> starting with <var>prefix</var>.</p>
+</dd>
+<dt class="function" id="forget_dir"><b>forget_dir(prefix)</b> <tt class="nav"><a class="nav" href="statcache.forget_dir" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Forget all results of <code>stat(</code><var>path</var>) for
+<var>path</var> a file in the directory <var>prefix</var>,
+including <code>stat(</code><var>prefix</var>).</p>
+</dd>
+<dt class="function" id="forget_except_prefix"><b>forget_except_prefix(prefix)</b> <tt class="nav"><a class="nav" href="statcache.forget_except_prefix" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Similar to <a class="link" href="#forget_prefix"><code>
+forget_prefix</code></a>, but for all <var>path</var> values <em>not</em>
+starting with <var>prefix</var>.</p>
+</dd>
+</dl><div class="text">
+<p>Example:</p>
+
+<pre>
+&gt;&gt;&gt; import os, statcache
+&gt;&gt;&gt; statcache.stat('.')
+(16893, 2049, 772, 18, 1000, 1000, 2048, 929609777, 929609777, 929609777)
+&gt;&gt;&gt; os.stat('.')
+(16893, 2049, 772, 18, 1000, 1000, 2048, 929609777, 929609777, 929609777)
+</pre>
+</div>
+</div></body></html>

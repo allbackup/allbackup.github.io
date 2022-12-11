@@ -1,0 +1,424 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>Data&nbsp;Structures</title> <script type="text/javascript">effbot_page_id=1914;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> <!--
+<p style='color: #8f8f8f; background: #fff5bf; padding: 5px 10px;'> <b>2008-07-15:</b> Selected articles
+
+now have experimental "comment" links in the left column and at the bottom.
+You're welcome to use them for commenting and voting on articles.
+For a bit more on this, see <a
+href="http://effbot.slinkset.com/links/Welcome_to_discuss_effbot_org">this
+page</a>. /F
+</p>
+--> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <h1 class="maintitle">Data&nbsp;Structures</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p>COMMENT: <a href="http://docs.python.org/tut/node7.html">Original Source</a></p><p>In this chapter you will learn more about lists, and will be introduced to some new data types: tuples, dictionaries and sets. You will also learn how to perform common operations on these data types.</p><h2 id="more-on-lists">More on Lists&#160;<a class="nav" href="#more-on-lists" title="bookmark!">#</a></h2><p>The list data type has some more methods. Here are all of the methods of list objects:</p><ul><li><p><a href="/pyref/list.append.htm"><strong>append(x)</strong></a>
+ Add an item to the end of the list; equivalent to <code>a[len(a):] = [x]</code>.</p></li><li><p><a href="/pyref/list.extend.htm"><strong>extend(L)</strong></a>
+ Extend the list by appending all the items in the given list; equivalent to <code>a[len(a):] = L</code>.</p></li><li><p><a href="/pyref/list.insert.htm"><strong>insert(i, x)</strong></a>
+ Insert an item at a given position. The first argument is the index of the item before which to insert, so <code>a.insert(0, x)</code> inserts at the front of the list, and <code>a.insert(len(a), x)</code> is equivalent to <code>a.append(x)</code>.</p></li><li><p><a href="/pyref/list.remove.htm"><strong>remove(x)</strong></a>
+ Remove the first item from the list whose value is x. It is an error if there is no such item.</p></li><li><p><a href="/pyref/list.pop.htm"><strong>pop(i)</strong></a>
+ Remove the item at the given position in the list, and return it. If no index is specified, <code>a.pop()</code> removes and returns the last item in the list. The item is also removed from the list. (The square brackets around the i in the method signature denote that the parameter is optional, not that you should type square brackets at that position. You will see this notation frequently in the <em><a href="http://docs.python.org/lib/lib.html">Python Library Reference</a></em>.)</p></li><li><p><a href="/pyref/list.index.htm"><strong>index(x)</strong></a>
+ Return the index in the list of the first item whose value is x. It is an error if there is no such item.</p></li><li><p><a href="/pyref/list.count.htm"><strong>count(x)</strong></a>
+ Return the number of times x appears in the list.</p></li><li><p><a href="/pyref/list.sort.htm"><strong>sort()</strong></a>
+ Sort the items of the list, in place.</p></li><li><p><a href="/pyref/list.reverse.htm"><strong>reverse()</strong></a>
+ Reverse the order of the items of the list, in place.</p></li></ul><p>An example that uses most of the list methods:</p><pre class="python">&gt;&gt;&gt; a = [66.25, 333, 333, 1, 1234.5]
+&gt;&gt;&gt; <span class="pykeyword">print</span> a.count(333), a.count(66.25), a.count(<span class="pystring">'x'</span>)
+2 1 0
+&gt;&gt;&gt; a.insert(2, -1)
+&gt;&gt;&gt; a.append(333)
+&gt;&gt;&gt; a
+[66.25, 333, -1, 333, 1, 1234.5, 333]
+&gt;&gt;&gt; a.index(333)
+1
+&gt;&gt;&gt; a.remove(333)
+&gt;&gt;&gt; a
+[66.25, -1, 333, 1, 1234.5, 333]
+&gt;&gt;&gt; a.reverse()
+&gt;&gt;&gt; a
+[333, 1234.5, 1, 333, -1, 66.25]
+&gt;&gt;&gt; a.sort()
+&gt;&gt;&gt; a
+[-1, 1, 66.25, 333, 333, 1234.5]
+&gt;&gt;&gt; b = [5,6,7]
+&gt;&gt;&gt; a.extend(b)
+&gt;&gt;&gt; a
+[-1, 1, 66.25, 333, 333, 1234.5, 5, 6, 7]</pre><p>Note that the <a href="/pyref/list.sort.htm"><strong>sort</strong></a> and <a href="/pyref/list.reverse.htm"><strong>reverse</strong></a> methods don&#8217;t return anything.  If you want to get a sorted
+copy of a list, without modifying the original, you can use the
+<a href="/pyref/sorted.htm"><strong>sorted</strong></a> function instead:</p><pre class="python">&gt;&gt;&gt; a = [5, 8, 3]
+&gt;&gt;&gt; sorted(a)
+[3, 5, 8]
+&gt;&gt;&gt; a
+[5, 8, 3]</pre><h3 id="using-lists-as-stacks">Using Lists as Stacks&#160;<a class="nav" href="#using-lists-as-stacks" title="bookmark!">#</a></h3><p>The list methods make it very easy to use a list as a stack, where the
+last item added is the first item retrieved (<q>last-in,
+first-out</q>).  To add an item to the top of the stack, use <a href="/pyref/list.append.htm"><strong>append</strong></a>. To retrieve an item from the top of the stack,
+use <a href="/pyref/list.pop.htm"><strong>pop</strong></a> without an explicit index.  For example:</p><pre class="python">&gt;&gt;&gt; stack = [3, 4, 5]
+&gt;&gt;&gt; stack.append(6)
+&gt;&gt;&gt; stack.append(7)
+&gt;&gt;&gt; stack
+[3, 4, 5, 6, 7]
+&gt;&gt;&gt; stack.pop()
+7
+&gt;&gt;&gt; stack
+[3, 4, 5, 6]
+&gt;&gt;&gt; stack.pop()
+6
+&gt;&gt;&gt; stack.pop()
+5
+&gt;&gt;&gt; stack
+[3, 4]</pre><h3 id="using-lists-as-queues">Using Lists as Queues&#160;<a class="nav" href="#using-lists-as-queues" title="bookmark!">#</a></h3><p>You can also use a list conveniently as a queue, where the first item
+added is the first item retrieved (<q>first-in, first-out</q>).  To
+add an item to the back of the queue, use <a href="/pyref/list.appendappend.htm"><strong>list.appendappend</strong></a>.
+To retrieve an item from the front of the queue, use <a href="/pyref/list.pop.htm"><strong>pop(0)</strong></a>:</p><pre class="python">&gt;&gt;&gt; queue = [<span class="pystring">"Eric"</span>, <span class="pystring">"John"</span>, <span class="pystring">"Michael"</span>]
+&gt;&gt;&gt; queue.append(<span class="pystring">"Terry"</span>)           <span class="pycomment"># Terry arrives</span>
+&gt;&gt;&gt; queue.append(<span class="pystring">"Graham"</span>)          <span class="pycomment"># Graham arrives</span>
+&gt;&gt;&gt; queue.pop(0)
+<span class="pystring">'Eric'</span>
+&gt;&gt;&gt; queue.pop(0)
+<span class="pystring">'John'</span>
+&gt;&gt;&gt; queue
+[<span class="pystring">'Michael'</span>, <span class="pystring">'Terry'</span>, <span class="pystring">'Graham'</span>]</pre><h2 id="the-del-statement">The del statement&#160;<a class="nav" href="#the-del-statement" title="bookmark!">#</a></h2><p>There is a way to remove an item from a list given its index instead
+of its value: the <a href="/pyref/del.htm"><strong>del</strong></a> statement.  Unlike the <a href="/pyref/list.pop.htm"><strong>pop</strong></a> method which returns a value, the <a href="/pyref/del.htm"><strong>del</strong></a> keyword
+is a statement and can also be used to remove slices from a list
+(which we did earlier by assignment of an empty list to the slice).
+For example:</p><pre class="python">&gt;&gt;&gt; a = [-1, 1, 66.25, 333, 333, 1234.5]
+&gt;&gt;&gt; <span class="pykeyword">del</span> a[0]
+&gt;&gt;&gt; a
+[1, 66.25, 333, 333, 1234.5]
+&gt;&gt;&gt; <span class="pykeyword">del</span> a[2:4]
+&gt;&gt;&gt; a
+[1, 66.25, 1234.5]
+&gt;&gt;&gt; <span class="pykeyword">del</span> a[:]
+&gt;&gt;&gt; a
+[]</pre><p><a href="/pyref/del.htm"><strong>del</strong></a> can also be used to delete entire variables:</p><pre class="python">&gt;&gt;&gt; <span class="pykeyword">del</span> a</pre><p>Referencing the name <code>a</code> hereafter is an error (at least until another
+value is assigned to it). We&#8217;ll find other uses for <a href="/pyref/del.htm"><strong>del</strong></a>
+later.</p><h2 id="tuples-and-sequences">Tuples and Sequences&#160;<a class="nav" href="#tuples-and-sequences" title="bookmark!">#</a></h2><p>We saw that lists and strings have many common properties, such as
+indexing and slicing operations. They are two examples of <a href="http://docs.python.org/lib/typesseq.html"><em>sequence</em>
+data types</a>. Since Python is
+an evolving language, other sequence data types may be added.  There
+is also another standard sequence data type: the <em>tuple</em>.</p><p>A tuple consists of a number of values separated by commas, for
+instance:</p><pre class="python">&gt;&gt;&gt; t = 12345, 54321, <span class="pystring">'hello!'</span>
+&gt;&gt;&gt; t[0]
+12345
+&gt;&gt;&gt; t
+(12345, 54321, <span class="pystring">'hello!'</span>)
+&gt;&gt;&gt; <span class="pycomment"># Tuples may be nested:</span>
+... u = t, (1, 2, 3, 4, 5)
+&gt;&gt;&gt; u
+((12345, 54321, <span class="pystring">'hello!'</span>), (1, 2, 3, 4, 5))</pre><p>As you see, on output tuples are always enclosed in parentheses, so
+that nested tuples are interpreted correctly; they may be input with
+or without surrounding parentheses, although often parentheses are
+necessary anyway (if the tuple is part of a larger expression).</p><p>Tuples have many uses. For example: (x, y) coordinate pairs, employee
+records from a database, etc.  Tuples, like strings, are immutable: it
+is not possible to assign to the individual items of a tuple (you can
+simulate much of the same effect with slicing and concatenation,
+though). It is also possible to create tuples which contain mutable
+objects, such as lists.</p><p>A special problem is the construction of tuples containing 0 or 1
+items: the syntax has some extra quirks to accommodate these. Empty
+tuples are constructed by an empty pair of parentheses; a tuple with
+one item is constructed by following a value with a comma (it is not
+sufficient to enclose a single value in parentheses).  Somewhat ugly,
+but effective. For example:</p><pre class="python">&gt;&gt;&gt; empty = ()
+&gt;&gt;&gt; singleton = <span class="pystring">'hello'</span>,    <span class="pycomment"># &lt;-- note trailing comma</span>
+&gt;&gt;&gt; len(empty)
+0
+&gt;&gt;&gt; len(singleton)
+1
+&gt;&gt;&gt; singleton
+(<span class="pystring">'hello'</span>,)</pre><p>The statement <code>t = 12345, 54321, 'hello!'</code> is an example of <em>tuple
+packing</em>: the values <code>12345</code>, <code>54321</code> and <code>'hello!'</code> are packed
+together in a tuple. The reverse operation is also possible:</p><pre class="python">&gt;&gt;&gt; x, y, z = t</pre><p>This is called, appropriately enough, <em>sequence unpacking</em>. Sequence
+unpacking requires the list of variables on the left to have the same
+number of items as the length of the sequence. Note that multiple
+assignment is really just a combination of tuple packing and sequence
+unpacking!</p><p>There is a small bit of asymmetry here: packing multiple values always
+creates a tuple, and unpacking works for any sequence.</p><h2 id="operating-on-sequences">Operating on Sequences&#160;<a class="nav" href="#operating-on-sequences" title="bookmark!">#</a></h2><p>Python allows you to specify operations on all the items in a
+sequence, in very convenient ways.</p><h3 id="functional-programming-tools">Functional Programming Tools&#160;<a class="nav" href="#functional-programming-tools" title="bookmark!">#</a></h3><p>There are three built-in functions that are very useful with
+sequences: <a href="/pyref/filter.htm"><strong>filter</strong></a>, <a href="/pyref/map.htm"><strong>map</strong></a>, and <a href="/pyref/reduce.htm"><strong>reduce</strong></a>.</p><p><strong><code>filter(function, sequence)</code></strong> Returns a sequence consisting of
+those items from the sequence for which <code>function(item)</code> is true. If
+sequence is a string or tuple, the result will be of the same type;
+otherwise, it is always a list. For example, to compute some primes:</p><pre class="python">&gt;&gt;&gt; <span class="pykeyword">def</span> <span class="pyfunction">f</span>(x): <span class="pykeyword">return</span> x % 2 != 0 <span class="pykeyword">and</span> x % 3 != 0
+...
+&gt;&gt;&gt; filter(f, range(2, 25))
+[5, 7, 11, 13, 17, 19, 23]</pre><p>Remember that all functions are first class objects in Python and can
+be passed around just like other objects.</p><p><strong><code>map(function, sequence)</code></strong> calls <code>function(item)</code> for each of the
+sequence&#8217;s items and returns a list of the return values. For example,
+to compute some cubes:</p><pre class="python">&gt;&gt;&gt; <span class="pykeyword">def</span> <span class="pyfunction">cube</span>(x): <span class="pykeyword">return</span> x*x*x
+...
+&gt;&gt;&gt; map(cube, range(1, 11))
+[1, 8, 27, 64, 125, 216, 343, 512, 729, 1000]</pre><p>More than one sequence may be passed; the function must then have as
+many arguments as there are sequences and is called with the
+corresponding item from each sequence (or <code>None</code> if some sequence is
+shorter than another). For example:</p><pre class="python">&gt;&gt;&gt; seq = range(8)
+&gt;&gt;&gt; <span class="pykeyword">def</span> <span class="pyfunction">add</span>(x, y): <span class="pykeyword">return</span> x+y
+...
+&gt;&gt;&gt; map(add, seq, seq)
+[0, 2, 4, 6, 8, 10, 12, 14]</pre><p><strong><code>reduce(function, sequence)</code></strong> returns a single value constructed by
+calling the binary function function on the first two items of the
+sequence, then on the result and the next item, and so on. For
+example, to compute the sum of the numbers 1 through 10:</p><pre class="python">&gt;&gt;&gt; <span class="pykeyword">def</span> <span class="pyfunction">add</span>(x,y): <span class="pykeyword">return</span> x+y
+...
+&gt;&gt;&gt; reduce(add, range(1, 11))
+55</pre><p>If there&#8217;s only one item in the sequence, its value is returned; if
+the sequence is empty, an exception is raised.</p><p>A third argument can be passed to indicate the starting value. In this
+case the starting value is returned for an empty sequence, and the
+function is first applied to the starting value and the first sequence
+item, then to the result and the next item, and so on. For example:</p><pre><code>&gt;&gt;&gt; def product(seq):
+...     def multiply(x,y): return x*y
+...     return reduce(multiply, seq, 1)
+... 
+&gt;&gt;&gt; product(range(1,5))
+24
+</code></pre><h3 id="max-min-and-sum">max(), min() and sum()&#160;<a class="nav" href="#max-min-and-sum" title="bookmark!">#</a></h3><p>These are three functions that operate on sequences and are fairly
+self-explanatory.</p><p><strong><code>max(sequence)</code></strong> returns the greatest element from the
+sequence. Elements are compared using the same logic used by the
+comparison operators (<code>&lt;</code>, &#8216;&gt;&#8217;, &#8216;=&#8217; etc.).</p><pre class="python">&gt;&gt;&gt; max([1,2,3])
+3</pre><p><strong><code>min(sequence)</code></strong> returns the smallest element from the sequence.</p><pre class="python">&gt;&gt;&gt; min([1,2,3])
+1</pre><p><strong><code>sum(sequence, [start])</code></strong> returns the sum of all elements in the sequence and <code>start</code>. The default value for <code>start</code> is 0. For numbers this is the numerical sum:</p><pre class="python">&gt;&gt;&gt; sum([1,2,3])
+6</pre><h3 id="list-comprehensions">List Comprehensions&#160;<a class="nav" href="#list-comprehensions" title="bookmark!">#</a></h3><p>List comprehensions provide a concise way to create lists without
+resorting to use of <a href="/pyref/map.htm"><strong>map</strong></a>, <a href="/pyref/filter.htm"><strong>filter</strong></a> and/or <a href="/pyref/lambda.htm"><strong>lambda</strong></a>.  The resulting list definition tends often to be clearer
+than lists built using those constructs.  Each list comprehension
+consists of an expression followed by a <a href="/pyref/for.htm"><strong>for</strong></a> clause, then
+zero or more <a href="/pyref/for.htm"><strong>for</strong></a> or <a href="/pyref/if.htm"><strong>if</strong></a> clauses.  The result will
+be a list resulting from evaluating the expression in the context of
+the <a href="/pyref/for.htm"><strong>for</strong></a> and <a href="/pyref/if.htm"><strong>if</strong></a> clauses which follow it.  If the
+expression would evaluate to a tuple, it must be parenthesized.</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><pre class="wide wide"><code>&gt;&gt;&gt; freshfruit = ['  banana', '  loganberry ', 'passion fruit ']
+&gt;&gt;&gt; [fruit.strip() for fruit in freshfruit]   # strip() removes leading and trailing whitespace from strings
+['banana', 'loganberry', 'passion fruit']
+&gt;&gt;&gt; vec = [2, 4, 6]
+&gt;&gt;&gt; [3*x for x in vec]
+[6, 12, 18]
+&gt;&gt;&gt; [3*x for x in vec if x &gt; 3]
+[12, 18]
+&gt;&gt;&gt; [3*x for x in vec if x &lt; 2]
+[]
+&gt;&gt;&gt; [[x,x**2] for x in vec]
+\[[2, 4], [4, 16], [6, 36\]]
+&gt;&gt;&gt; [x, x**2 for x in vec]     # error - parens required for tuples
+
+  File "&lt;stdin&gt;", line 1, in ?
+    [x, x**2 for x in vec]
+               ^
+SyntaxError: invalid syntax
+&gt;&gt;&gt; [(x, x**2) for x in vec]
+[(2, 4), (4, 16), (6, 36)]
+&gt;&gt;&gt; vec1 = [2, 4, 6]
+&gt;&gt;&gt; vec2 = [4, 3, -9]
+&gt;&gt;&gt; [x*y for x in vec1 for y in vec2]
+[8, 6, -18, 16, 12, -36, 24, 18, -54]
+&gt;&gt;&gt; [x+y for x in vec1 for y in vec2]
+[6, 5, -7, 8, 7, -5, 10, 9, -3]
+&gt;&gt;&gt; [vec1[i]*vec2[i] for i in range(len(vec1))]
+[8, 12, -54]
+</code></pre></div><div class="yui-ge"><div class="yui-u first"><p>List comprehensions are much more flexible than <a href="/pyref/map.htm"><strong>map</strong></a> and can
+be applied to complex expressions and nested functions:</p><pre class="python">&gt;&gt;&gt; [str(round(355/113.0, i)) <span class="pykeyword">for</span> i <span class="pykeyword">in</span> range(1,6)]
+[<span class="pystring">'3.1'</span>, <span class="pystring">'3.14'</span>, <span class="pystring">'3.142'</span>, <span class="pystring">'3.1416'</span>, <span class="pystring">'3.14159'</span>]</pre><h2 id="dictionaries">Dictionaries&#160;<a class="nav" href="#dictionaries" title="bookmark!">#</a></h2><p>An extremely useful data type built into Python is the
+<a href="http://docs.python.org/lib/typesmapping.html"><em>dictionary</em></a>. Dictionaries
+are sometimes referred to in other languages as <q>associative
+arrays</q>, <q>hash tables</q>, or <q>mappings</q>.  Unlike sequences,
+which are indexed by a range of numbers, dictionaries are indexed by
+<em>keys</em>, which can be any immutable type; strings and numbers can
+always be keys.  Tuples can be used as keys if they contain only
+strings, numbers, or tuples; if a tuple contains any mutable object
+either directly or indirectly, it cannot be used as a key.  You can&#8217;t
+use lists as keys, since lists can be modified in place using methods
+like <a href="/pyref/list.append.htm"><strong>append</strong></a> and <a href="/pyref/list.extend.htm"><strong>extend</strong></a> or
+modified with slice and indexed assignments.</p><p>It is best to think of a dictionary as an unordered set of <em>key:
+value</em> pairs, with the requirement that the keys are unique (within
+one dictionary).  A pair of braces creates an empty dictionary:
+<code>{}</code>. Placing a comma-separated list of key:value pairs within the
+braces adds initial key:value pairs to the dictionary; this is also
+the way dictionaries are written on output.</p><p>The main operations on a dictionary are storing a value with some key
+and extracting the value given the key.  It is also possible to delete
+a key:value pair with <a href="/pyref/del.htm"><strong>del</strong></a>.  If you store using a key that is
+already in use, the old value associated with that key is forgotten.
+It is an error to extract a value using a non-existent key.</p><p>The <a href="/pyref/dict.keys.htm"><strong>keys</strong></a> method of a dictionary object returns a
+list of all the keys used in the dictionary, in arbitrary order (if
+you want it sorted, just apply the <a href="/pyref/list.sort.htm"><strong>sort</strong></a> method to
+the list of keys). To check whether a single key is in the dictionary,
+either use the dictionary&#8217;s <a href="/pyref/dict.has_key.htm"><strong>has_key</strong></a> method or
+the <a href="/pyref/in.htm"><strong>in</strong></a> keyword.</p><p>Here is a small example using a dictionary:</p><pre class="python">&gt;&gt;&gt; tel = {<span class="pystring">'jack'</span>: 4098, <span class="pystring">'sape'</span>: 4139}
+&gt;&gt;&gt; tel[<span class="pystring">'guido'</span>] = 4127
+&gt;&gt;&gt; tel
+{<span class="pystring">'sape'</span>: 4139, <span class="pystring">'guido'</span>: 4127, <span class="pystring">'jack'</span>: 4098}
+&gt;&gt;&gt; tel[<span class="pystring">'jack'</span>]
+4098
+&gt;&gt;&gt; <span class="pykeyword">del</span> tel[<span class="pystring">'sape'</span>]
+&gt;&gt;&gt; tel[<span class="pystring">'irv'</span>] = 4127
+&gt;&gt;&gt; tel
+{<span class="pystring">'guido'</span>: 4127, <span class="pystring">'irv'</span>: 4127, <span class="pystring">'jack'</span>: 4098}
+&gt;&gt;&gt; tel.keys()
+[<span class="pystring">'guido'</span>, <span class="pystring">'irv'</span>, <span class="pystring">'jack'</span>]
+&gt;&gt;&gt; tel.has_key(<span class="pystring">'guido'</span>)
+True
+&gt;&gt;&gt; <span class="pystring">'guido'</span> <span class="pykeyword">in</span> tel
+True</pre><p>The <a href="/pyref/dict.htm"><strong>dict</strong></a> constructor builds dictionaries directly from lists
+of key-value pairs stored as tuples. When the pairs form a pattern,
+list comprehensions can compactly specify the key-value list.</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><pre class="python wide wide">&gt;&gt;&gt; dict([(<span class="pystring">'sape'</span>, 4139), (<span class="pystring">'guido'</span>, 4127), (<span class="pystring">'jack'</span>, 4098)])
+{<span class="pystring">'sape'</span>: 4139, <span class="pystring">'jack'</span>: 4098, <span class="pystring">'guido'</span>: 4127}
+&gt;&gt;&gt; dict([(x, x**2) <span class="pykeyword">for</span> x <span class="pykeyword">in</span> (2, 4, 6)])     <span class="pycomment"># use a list comprehension</span>
+{2: 4, 4: 16, 6: 36}</pre></div><div class="yui-ge"><div class="yui-u first"><p>Later in the tutorial, we will learn about <q>generator
+expressions</q> which are even better suited for the task of supplying
+key-values pairs to the <a href="/pyref/dict.htm"><strong>dict</strong></a> constructor.</p><p>When the keys are simple strings, it is sometimes easier to specify
+pairs using keyword arguments:</p><pre class="python">&gt;&gt;&gt; dict(sape=4139, guido=4127, jack=4098)
+{<span class="pystring">'sape'</span>: 4139, <span class="pystring">'jack'</span>: 4098, <span class="pystring">'guido'</span>: 4127}</pre><h2 id="sets">Sets&#160;<a class="nav" href="#sets" title="bookmark!">#</a></h2><p>Python also includes a data type for <em>sets</em>.  A set is an unordered
+collection with no duplicate elements. Basic uses include membership
+testing and eliminating duplicate entries.  Set objects also support
+mathematical operations like union, intersection, difference, and
+symmetric difference.</p><p>Here is a brief demonstration:</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><pre class="python wide wide">&gt;&gt;&gt; basket = [<span class="pystring">'apple'</span>, <span class="pystring">'orange'</span>, <span class="pystring">'apple'</span>, <span class="pystring">'pear'</span>, <span class="pystring">'orange'</span>, <span class="pystring">'banana'</span>]
+&gt;&gt;&gt; fruit = set(basket)               <span class="pycomment"># create a set without duplicates</span>
+&gt;&gt;&gt; fruit
+set([<span class="pystring">'orange'</span>, <span class="pystring">'pear'</span>, <span class="pystring">'apple'</span>, <span class="pystring">'banana'</span>])
+&gt;&gt;&gt; <span class="pystring">'orange'</span> <span class="pykeyword">in</span> fruit                 <span class="pycomment"># fast membership testing</span>
+True
+&gt;&gt;&gt; <span class="pystring">'crabgrass'</span> <span class="pykeyword">in</span> fruit
+False
+
+&gt;&gt;&gt; <span class="pycomment"># Demonstrate set operations on unique letters from two words</span>
+...
+&gt;&gt;&gt; a = set(<span class="pystring">'abracadabra'</span>)
+&gt;&gt;&gt; b = set(<span class="pystring">'alacazam'</span>)
+&gt;&gt;&gt; a                                  <span class="pycomment"># unique letters in a</span>
+set([<span class="pystring">'a'</span>, <span class="pystring">'r'</span>, <span class="pystring">'b'</span>, <span class="pystring">'c'</span>, <span class="pystring">'d'</span>])
+&gt;&gt;&gt; a - b                              <span class="pycomment"># letters in a but not in b</span>
+set([<span class="pystring">'r'</span>, <span class="pystring">'d'</span>, <span class="pystring">'b'</span>])
+&gt;&gt;&gt; a | b                              <span class="pycomment"># letters in either a or b</span>
+set([<span class="pystring">'a'</span>, <span class="pystring">'c'</span>, <span class="pystring">'r'</span>, <span class="pystring">'d'</span>, <span class="pystring">'b'</span>, <span class="pystring">'m'</span>, <span class="pystring">'z'</span>, <span class="pystring">'l'</span>])
+&gt;&gt;&gt; a &amp; b                              <span class="pycomment"># letters in both a and b</span>
+set([<span class="pystring">'a'</span>, <span class="pystring">'c'</span>])
+&gt;&gt;&gt; a ^ b                              <span class="pycomment"># letters in a or b but not both</span>
+set([<span class="pystring">'r'</span>, <span class="pystring">'d'</span>, <span class="pystring">'b'</span>, <span class="pystring">'m'</span>, <span class="pystring">'z'</span>, <span class="pystring">'l'</span>])</pre></div><div class="yui-ge"><div class="yui-u first"><h2 id="looping-techniques">Looping Techniques&#160;<a class="nav" href="#looping-techniques" title="bookmark!">#</a></h2><p>When looping through dictionaries, the key and corresponding value can
+be retrieved at the same time using the <a href="/pyref/dict.iteritems.htm"><strong>iteritems</strong></a> method.</p><pre><code>&gt;&gt;&gt; knights = {'gallahad': 'the pure', 'robin': 'the brave'}
+&gt;&gt;&gt; for k, v in knights.iteritems():
+...     print k, v
+...
+gallahad the pure
+robin the brave
+</code></pre><p>Without the <a href="/pyref/dict.iteritems.htm"><strong>iteritems</strong></a> method call, you really
+loop over the <em>keys</em> of the dictionary:</p><pre><code>&gt;&gt;&gt; for k in knights:
+...     print k
+... 
+gallahad
+robin
+</code></pre><p>You can also loop over only the <em>values</em> of a dictionary using the
+<a href="/pyref/dict.values.htm"><strong>values</strong></a> method.</p><p>When looping through a sequence, the position index and corresponding
+value can be retrieved at the same time using the <a href="/pyref/enumerate.htm"><strong>enumerate</strong></a>
+function.</p><pre><code>&gt;&gt;&gt; for i, v in enumerate(['tic', 'tac', 'toe']):
+...     print i, v
+...
+0 tic
+1 tac
+2 toe
+</code></pre><p>To loop over two or more sequences at the same time, the entries can
+be paired with the <a href="/pyref/zip.htm"><strong>zip</strong></a> function.</p><pre><code>&gt;&gt;&gt; questions = ['name', 'quest', 'favorite color']
+&gt;&gt;&gt; answers = ['lancelot', 'the holy grail', 'blue']
+&gt;&gt;&gt; for q, a in zip(questions, answers):
+...     print 'What is your %s?  It is %s.' % (q, a)
+... 
+What is your name?  It is lancelot.
+What is your quest?  It is the holy grail.
+What is your favorite color?  It is blue.
+</code></pre><p>To loop over a sequence in reverse, first specify the sequence in a
+forward direction and then call the <a href="/pyref/reversed.htm"><strong>reversed</strong></a> function.</p><pre><code>&gt;&gt;&gt; for i in reversed(xrange(1,10,2)):
+...     print i
+...
+9
+7
+5
+3
+1
+</code></pre><p>To loop over a sequence in sorted order, use the <a href="/pyref/sorted.htm"><strong>sorted</strong></a> function
+which returns a new sorted list while leaving the source unaltered.</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><pre class="wide wide"><code>&gt;&gt;&gt; basket = ['apple', 'orange', 'apple', 'pear', 'orange', 'banana']
+&gt;&gt;&gt; for f in sorted(set(basket)):
+...     print f
+...     
+apple
+banana
+orange
+pear
+</code></pre></div><div class="yui-ge"><div class="yui-u first"><h2 id="more-on-conditions">More on Conditions&#160;<a class="nav" href="#more-on-conditions" title="bookmark!">#</a></h2><p>The conditions used in <a href="/pyref/while.htm"><strong>while</strong></a> and <a href="/pyref/if.htm"><strong>if</strong></a> statements can
+contain any operators, not just comparisons.</p><p>The comparison operators <a href="/pyref/in.htm"><strong>in</strong></a> and <a href="/pyref/not-in.htm"><strong>not in</strong></a>
+check whether a value occurs (does not occur) in a sequence. The
+operators <a href="/pyref/is.htm"><strong>is</strong></a> and <a href="/pyref/is-not.htm"><strong>is not</strong></a> compare whether two
+objects are really the same object; this only matters for mutable
+objects like lists.  All comparison operators have the same priority,
+which is lower than that of all numerical operators.</p><p>Comparisons can be chained. For example, <code>a &lt; b == c</code> tests whether
+<code>a</code> is less than <code>b</code> and moreover <code>b</code> equals <code>c</code>.</p><p>Comparisons may be combined using the Boolean operators <a href="/pyref/and.htm"><strong>and</strong></a>
+and <a href="/pyref/or.htm"><strong>or</strong></a>, and the outcome of a comparison (or of any other
+Boolean expression) may be negated with <a href="/pyref/not.htm"><strong>not</strong></a>.  These have
+lower priorities than comparison operators; between them, <a href="/pyref/not.htm"><strong>not</strong></a> has the highest priority and <a href="/pyref/or.htm"><strong>or</strong></a> the lowest, so that `A
+and not B or C<code>is equivalent to</code>(A and (not B)) or C`.  As always,
+parentheses can be used to express the desired composition.</p><p>The Boolean operators <a href="/pyref/and.htm"><strong>and</strong></a> and <a href="/pyref/or.htm"><strong>or</strong></a> are so-called
+<em>short-circuit</em> operators: their arguments are evaluated from left to
+right, and evaluation stops as soon as the outcome is determined. For
+example, if <code>A</code> and <code>C</code> are true but <code>B</code> is false, <code>A and B and C</code>
+does not evaluate the expression <code>C</code>. When used as a general value and
+not as a Boolean, the return value of a short-circuit operator is the
+last evaluated argument.</p><p>It is possible to assign the result of a comparison or other Boolean
+expression to a variable. For example,</p><pre class="python">&gt;&gt;&gt; string1, string2, string3 = <span class="pystring">''</span>, <span class="pystring">'Trondheim'</span>, <span class="pystring">'Hammer Dance'</span>
+&gt;&gt;&gt; non_null = string1 <span class="pykeyword">or</span> string2 <span class="pykeyword">or</span> string3
+&gt;&gt;&gt; non_null
+<span class="pystring">'Trondheim'</span></pre><p>Note that in Python, unlike C, assignment cannot occur inside
+expressions.  C programmers may grumble about this, but it avoids a
+common class of problems encountered in C programs: typing <code>=</code> in an
+expression when <code>==</code> was intended.</p><h2 id="comparing-sequences-and-other-types">Comparing Sequences and Other Types&#160;<a class="nav" href="#comparing-sequences-and-other-types" title="bookmark!">#</a></h2><p>Sequence objects may be compared to other objects with the same
+sequence type. The comparison uses <em>lexicographical</em> ordering: first
+the first two items are compared, and if they differ this determines
+the outcome of the comparison; if they are equal, the next two items
+are compared, and so on, until either sequence is exhausted. If two
+items to be compared are themselves sequences of the same type, the
+lexicographical comparison is carried out recursively. If all items of
+two sequences compare equal, the sequences are considered equal. If
+one sequence is an initial sub-sequence of the other, the shorter
+sequence is the smaller (lesser) one. Lexicographical ordering for
+strings uses the ASCII ordering for individual characters. Some
+examples of comparisons between sequences of the same type:</p><pre class="python">(1, 2, 3)              &lt; (1, 2, 4)
+[1, 2, 3]              &lt; [1, 2, 4]
+<span class="pystring">'ABC'</span> &lt; <span class="pystring">'C'</span> &lt; <span class="pystring">'Pascal'</span> &lt; <span class="pystring">'Python'</span>
+(1, 2, 3, 4)           &lt; (1, 2, 4)
+(1, 2)                 &lt; (1, 2, -1)
+(1, 2, 3)             == (1.0, 2.0, 3.0)
+(1, 2, (<span class="pystring">'aa'</span>, <span class="pystring">'ab'</span>))   &lt; (1, 2, (<span class="pystring">'abc'</span>, <span class="pystring">'a'</span>), 4)</pre><p>Note that comparing objects of different types is legal.  The outcome
+is deterministic but arbitrary: the types are ordered by their name.
+Thus, a list is always smaller than a string, a string is always
+smaller than a tuple, etc. <a href="#foot736">5.1</a> Mixed numeric types are compared
+according to their numeric value, so 0 equals 0.0, etc.</p><hr /><h4>Footnotes</h4><p>&#8230; etc.<a href="node7.html#tex2html3">5.1</a>
+     The rules for comparing objects of different types should not be relied upon; they may change in a future version of the language.</p><hr /></div><div class="yui-u">&#160;</div></div><div class="yui-g"><div class='comment'>
+<p><b>Comment:</b></p>
+<p>
+"Note that comparing objects of different types is legal"
+
+That's not entirely correct.  For example, if you compare a unicode string to an 8-bit string with non-ASCII data, you get a UnicodeDecodeError exception.</p>
+<p>Posted by <b class='author'><a href='http://pytut.infogami.com/node7.html/_comments/3oqg'>infogami</a></b></p>
+</div>
+
+<div class='comment'>
+<p><b>Comment:</b></p>
+<p>
+I've heard LISP folk talk about associative arrays. '((a 5) (b 7) (c 4)</p>
+<p>Posted by <b class='author'><a href='http://pytut.infogami.com/node7.html/_comments/3srd/_comments/42fg'>infogami</a></b></p>
+</div>
+
+<div class='comment'>
+<p><b>Comment:</b></p>
+<p>
+The dictionary section says "Dictionaries are sometimes found in other languages as associative memories or associative arrays".  I've never seen the "associative memory" variant; does anyone know the source?  Is it relevant?  Isn't things like "hashes" or "mappings" a lot more common ?</p>
+<p>Posted by <b class='author'><a href='http://pytut.infogami.com/node7.html/_comments/3srd'>infogami</a></b></p>
+</div>
+
+<div class='comment'>
+<p><b>Comment:</b></p>
+<p>
+Added an use of the extend() method to the big example at the beginning.
+
+Jay P.</p>
+<p>Posted by <b class='author'><a href='http://pytut.infogami.com/node7.html/_comments/3wsf'>infogami</a></b></p>
+</div>
+
+<div class='comment'>
+<p><b>Comment:</b></p>
+<p>
+I restructured sections of this page. Basically I grouped together List comprehensions and Functional Programming Tools into 'Operating on Sequences'. Also added max(), min(), sum(). There are related because they all let you operate on the sequence without creating a for loop, and associated temporary variables.
+
+I also added some content about looping over dictionary keys and values.
+</p>
+<p>Posted by <b class='author'><a href='http://pytut.infogami.com/node7.html/_comments/44hj'>infogami</a></b></p>
+</div>
+</div> <!-- yui-g --></div> <!-- content --> </div> <!-- yui-b --> </div> <!-- yui-main --> <div class="yui-b"> <div id='menu'> <ul> <li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li> <li><b><a href="." title="Go to pytut index page.">::: pytut :::</a></b></li> </ul> <ul><li><b>::: contents</b></li></ul> <ul><li><ul><li><a href="#more-on-lists">More on Lists</a></li><li><ul><li><a href="#using-lists-as-stacks">Using Lists as Stacks</a></li><li><a href="#using-lists-as-queues">Using Lists as Queues</a></li></ul></li><li><a href="#the-del-statement">The del statement</a></li><li><a href="#tuples-and-sequences">Tuples and Sequences</a></li><li><a href="#operating-on-sequences">Operating on Sequences</a></li><li><ul><li><a href="#functional-programming-tools">Functional Programming Tools</a></li><li><a href="#max-min-and-sum">max(), min() and sum()</a></li><li><a href="#list-comprehensions">List Comprehensions</a></li></ul></li><li><a href="#dictionaries">Dictionaries</a></li><li><a href="#sets">Sets</a></li><li><a href="#looping-techniques">Looping Techniques</a></li><li><a href="#more-on-conditions">More on Conditions</a></li><li><a href="#comparing-sequences-and-other-types">Comparing Sequences and Other Types</a></li></ul></li></ul> </div> <!-- menu --> </div> <!-- yui-b --> </div> <!-- bd --> <div id="ft"> <!-- footer --> <p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15_grey.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;"></a>
+this page was rendered by a <a href="http://www.djangoproject.com/">django</a> application in 0.21s 2009-06-06 00:11:39.974041.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p> </div> <!-- ft --> </div> <!-- doc --> <script src="/media/js/effbot-min.js" type="text/javascript"> </script> </body> </html>

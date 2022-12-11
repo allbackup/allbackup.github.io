@@ -1,0 +1,20 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>Where do nested functions&nbsp;live?</title></head><body data-page-id="921"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><p class="note" style="text-align: center"><strong>
+This is an old copy of the Python FAQ.  The information here may be
+outdated.
+</strong></p><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">Where do nested functions&nbsp;live?</h1></div><div class="yui-ge"><div class="yui-u first"><p>Q: I defined a nested function:</p><pre class="python"><span class="pykeyword">def</span> <span class="pyfunction">foo</span>():
+    <span class="pykeyword">def</span> <span class="pyfunction">bar</span>():
+        <span class="pykeyword">return</span> <span class="pystring">"bar"</span>
+    <span class="pykeyword">return</span> <span class="pystring">"foo "</span> + bar()</pre><p>which works.  Knowing how Python loves namespaces, I thought I could
+do <code>foo.bar()</code>, but that doesn&#8217;t work as expected.</p><p>A: The reason for this is that local functions, just like local
+variables, only exist in the local scope of an executing function.
+This is no different from ordinary local variables:</p><pre class="python"><span class="pykeyword">def</span> <span class="pyfunction">foo</span>():
+    bar = <span class="pystring">"who am I? where do I live?"</span></pre><p>This also means that an inner function is <em>created</em> every time you
+execute the outer function (but it&#8217;s created from prefabricated parts,
+so that&#8217;s not a very expensive process).</p><p>If you want something that can be called <em>and</em> define its attributes,
+you want something more complex than the default function type. Define
+a class that has a <a href="/pyref/__call__.htm"><strong>__call__</strong></a> attribute, make an instance
+of that, and you&#8217;ll be able to access attributes and call it like a
+function.</p><p>(Based on python-list postings by Steven D&#8217;Aprano, Ben Finney, and
+Fredrik Lundh).</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to pyfaq index page.">::: pyfaq :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

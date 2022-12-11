@@ -1,0 +1,97 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>site</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-site.html'>original</a> :::
+<a href='site.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>site&#8212;Site-specific configuration hook</h1>
+
+<p>This module is automatically imported during initialization. The
+automatic import can be suppressed using the interpreter's -S
+option.</p>
+
+<p>Importing this module will append site-specific paths to the
+module search path.</p>
+
+<p>It starts by constructing up to four directories from a head and
+a tail part. For the head part, it uses <code>sys.prefix</code> and
+<code>sys.exec_prefix</code>; empty heads are skipped. For the tail
+part, it uses the empty string (on Windows) or
+lib/python2.4/site-packages (on Unix and Macintosh) and then
+lib/site-python. For each of the distinct head-tail combinations,
+it sees if it refers to an existing directory, and if so, adds it
+to <code>sys.path</code> and also inspects the newly added path for
+configuration files.</p>
+
+<p>A path configuration file is a file whose name has the form
+<var>package</var>.pth and exists in one of the four directories
+mentioned above; its contents are additional items (one per line)
+to be added to <code>sys.path</code>. Non-existing items are never
+added to <code>sys.path</code>, but no check is made that the item
+refers to a directory (rather than a file). No item is added to
+<code>sys.path</code> more than once. Blank lines and lines
+beginning with <code>#</code> are skipped. Lines starting with
+<code>import</code> are executed.</p>
+
+<p>For example, suppose <code>sys.prefix</code> and <code>
+sys.exec_prefix</code> are set to /usr/local. The Python 2.4.2
+library is then installed in /usr/local/lib/python2.4 (where only
+the first three characters of <code>sys.version</code> are used to
+form the installation path name). Suppose this has a subdirectory
+/usr/local/lib/python2.4/site-packages with three
+subsubdirectories, foo, bar and spam, and two path configuration
+files, foo.pth and bar.pth. Assume foo.pth contains the
+following:</p>
+
+<pre>
+# foo package configuration
+
+foo
+bar
+bletch
+</pre>
+
+<p>and bar.pth contains:</p>
+
+<pre>
+# bar package configuration
+
+bar
+</pre>
+
+<p>Then the following directories are added to <code>
+sys.path</code>, in this order:</p>
+
+<pre>
+/usr/local/lib/python2.3/site-packages/bar
+/usr/local/lib/python2.3/site-packages/foo
+</pre>
+
+<p>Note that bletch is omitted because it doesn't exist; the bar
+directory precedes the foo directory because bar.pth comes
+alphabetically before foo.pth; and spam is omitted because it is
+not mentioned in either path configuration file.</p>
+
+<p>After these path manipulations, an attempt is made to import a
+module named <code>
+sitecustomize</code>, which can perform arbitrary site-specific
+customizations. If this import fails with an <code>exceptions.ImportError</code>
+exception, it is silently ignored.</p>
+
+<p>Note that for some non-Unix systems, <code>sys.prefix</code> and
+<code>sys.exec_prefix</code> are empty, and the path manipulations
+are skipped; however the import of <code>sitecustomize</code> is still attempted.</p>
+</div>
+</div></body></html>

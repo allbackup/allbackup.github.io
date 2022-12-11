@@ -1,0 +1,57 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>Using the ElementTree Module to Generate SOAP Messages, Part 4: Automatically Decoding&nbsp;Responses</title> <script type="text/javascript">effbot_page_id=104;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> <!--
+<p style='color: #8f8f8f; background: #fff5bf; padding: 5px 10px;'> <b>2008-07-15:</b> Selected articles
+
+now have experimental "comment" links in the left column and at the bottom.
+You're welcome to use them for commenting and voting on articles.
+For a bit more on this, see <a
+href="http://effbot.slinkset.com/links/Welcome_to_discuss_effbot_org">this
+page</a>. /F
+</p>
+--> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <p><a href="elementsoap-3.htm">back</a> <a href="elementsoap-5.htm">next</a></p> <h1 class="maintitle">Using the ElementTree Module to Generate SOAP Messages, Part 4: Automatically Decoding&nbsp;Responses</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p class="info">November 23, 2003 | Fredrik Lundh</p><p class="note"><b>Note:</b>
+A distribution kit containing the source code for this article is
+available from <a href="http://effbot.org/downloads#elementsoap">the
+effbot.org downloads site</a> (look for ElementSOAP 0.3 or later).</p><h2 id="automatically-decoding-responses">Automatically Decoding Responses&#160;<a class="nav" href="#automatically-decoding-responses" title="bookmark!">#</a></h2><p>The method wrappers we&#8217;ve used this far either returns the response
+element as is, or explicitly converts the response to a Python object.
+For example, the <i>Delayed Stock Quote</i> example used <b>float</b> to
+convert the return value to a Python float, and the <b>doGetCachedpage</b>
+method in the Google wrapper used the <b>base64</b> module to decode
+the response string.</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><p class="wide">However, if you look at the XML structures returned by the servers,
+you&#8217;ll notice that they contain type annotations that can be used by the
+SOAP layer.  For example, here&#8217;s a typical <b>doSpellingSuggestion</b>
+response envelope (somewhat simplified, namespace declarations not shown):
+
+<pre class="xml wide">
+&lt;<span class="pyfunction">soap:Envelope</span>&gt;
+  &lt;<span class="pyfunction">soap:Body</span>&gt;
+    &lt;<span class="pyfunction">google:doSpellingSuggestionResponse</span> soap:encodingStyle="..."&gt;
+      &lt;<span class="pyfunction">return</span> xsi:type="xsd:string"&gt;python&lt;/<span class="pyfunction">return</span>&gt;
+    &lt;/<span class="pyfunction">google:doSpellingSuggestionResponse</span>&gt;
+  &lt;/<span class="pyfunction">soap:Body</span>&gt;
+&lt;/<span class="pyfunction">soap:Envelope</span>&gt;</pre></p></div><div class="yui-ge"><div class="yui-u first"><p>And here&#8217;s a <b>doGetCachedPage</b> response:</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><pre class="xml wide wide">
+&lt;<span class="pyfunction">soap:Envelope</span>&gt;
+  &lt;<span class="pyfunction">soap:Body</span>&gt;
+    &lt;<span class="pyfunction">google:doGetCachedPageResponse</span> soap:encodingStyle="..."&gt;
+      &lt;<span class="pyfunction">return</span> xsi:type="soap-encoding:base64"&gt;PG1l....Cg==&lt;/<span class="pyfunction">return</span>&gt;
+    &lt;/<span class="pyfunction">google:doGetCachedPageResponse</span>&gt;
+  &lt;/<span class="pyfunction">soap:Body</span>&gt;
+&lt;/<span class="pyfunction">soap:Envelope</span>&gt;</pre></div><div class="yui-ge"><div class="yui-u first"><p>In both cases, the <b>return</b> element contains an <b>xsi:type</b>
+attribute, which tells you how the server expects you to handle the data.
+The <b>xsd:string</b> type is a plain string, while <b>soap-encoding:base64</b> indicates that the response contains BASE64-encoded binary data.</p><p>You can use these annotations to automatically decode the return
+structures, without having to write method-specific code in the
+wrapper class.  First, you have to do something about
+<a href="#element-qnames">the QName issue</a>;
+the contents of the <b>xsi:type</b> attribute has to be converted from
+the prefix/name encoding to a true universal name.  In this case, xsd:string
+should actually be &#8220;<b>{http://www.w3.org/1999/XMLSchema}string</b>&#8220;, and
+soap-encoding:base64 should be &#8220;<b>{http://schemas.xmlsoap.org/soap/encoding/}base64</b>&#8220;.</p><p>You can do this conversion in the decoder, but it&#8217;s probably easier to do
+it once and for all in the <b>SoapService</b> wrapper.  Here&#8217;s a version of
+that class that processes all <b>xsi:type</b> attributes:
+
+<pre class="python">
+<span class="pykeyword">class</span> <span class="pyclass">SoapService</span>:
+    <span class="pykeyword">def</span> <span class="pyfunction">__init__</span>(self, url=None):
+        self.__client = HTTPClient(url <span class="pykeyword">or</span> self.url)
+    <span class="pykeyword">def</span> <span class="pyfunction">call</span>(self, action, request):
+        <span class="pycomment"># 

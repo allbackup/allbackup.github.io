@@ -1,0 +1,555 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>ossaudiodev</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-ossaudiodev.html'>original</a> :::
+<a href='ossaudiodev.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>ossaudiodev&#8212;Access to OSS-compatible audio devices</h1>
+
+<div class="toc"><dl><dt>On this page:</dt><dd><a href="#audio-device-objects">Audio Device Objects</a></dd><dd><a href="#mixer-device-objects">Mixer Device Objects</a></dd></dl></div><p>Availability: Linux, FreeBSD.</p>
+
+<p>New in version 2.3.</p>
+
+<p>This module allows you to access the OSS (Open Sound System)
+audio interface. OSS is available for a wide range of open-source
+and commercial Unices, and is the standard audio interface for
+Linux and recent versions of FreeBSD. <span class="mark">
+@see</span> <a class="link" href="http://www.opensound.com/pguide/oss.pdf">Open Sound System
+Programmer's Guide</a> the official documentation for the OSS C
+API</p>
+
+<p><code>ossaudiodev</code> defines
+the following variables and functions:</p>
+</div>
+<dl><dt class="exception" id="OSSAudioError"><b>exception OSSAudioError</b> <tt class="nav"><a class="nav" href="ossaudiodev.OSSAudioError" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="exception">
+<p>This exception is raised on certain errors. The argument is a
+string describing what went wrong.</p>
+
+<p>(If <code>ossaudiodev</code>
+receives an error from a system call such as <code>c:open</code>, <code>
+c:write</code>, or <code>c:ioctl</code>, it
+raises <code>
+exceptions.IOError</code>. Errors detected directly by <code>ossaudiodev</code> result in <a class="link" href="#OSSAudioError"><code>OSSAudioError</code></a>.)</p>
+
+<p>(For backwards compatibility, the exception class is also
+available as <code>ossaudiodev.error</code>.)</p>
+</dd>
+<dt class="function" id="open"><b>open([device, ]mode)</b> <tt class="nav"><a class="nav" href="ossaudiodev.open" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Open an audio device and return an OSS audio device object. This
+object supports many file-like methods, such as <a class="link" href="#read"><code>read</code></a>, <a class="link" href="#write"><code>
+write</code></a>, and <a class="link" href="#fileno"><code>fileno</code></a>
+(although there are subtle differences between conventional Unix
+read/write semantics and those of OSS audio devices). It also
+supports a number of audio-specific methods; see below for the
+complete list of methods.</p>
+
+<p><var>device</var> is the audio device filename to use. If it is
+not specified, this module first looks in the environment variable
+AUDIODEV for a device to use. If not found, it falls back to
+/dev/dsp.</p>
+
+<p><var>mode</var> is one of <code>'r'</code> for read-only
+(record) access, <code>'w'</code> for write-only (playback) access
+and <code>'rw'</code> for both. Since many sound cards only allow
+one process to have the recorder or player open at a time, it is a
+good idea to open the device only for the activity needed. Further,
+some sound cards are half-duplex: they can be opened for reading or
+writing, but not both at once.</p>
+
+<p>Note the unusual calling syntax: the <em>first</em> argument is
+optional, and the second is required. This is a historical artifact
+for compatibility with the older <code>linuxaudiodev</code> module which <code>ossaudiodev</code>
+supersedes.</p>
+</dd>
+<dt class="function" id="openmixer"><b>openmixer([device])</b> <tt class="nav"><a class="nav" href="ossaudiodev.openmixer" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Open a mixer device and return an OSS mixer device object. <var>
+device</var> is the mixer device filename to use. If it is not
+specified, this module first looks in the environment variable
+MIXERDEV for a device to use. If not found, it falls back to
+/dev/mixer.</p>
+</dd>
+</dl><div class="text">
+<h2 id="audio-device-objects">Audio Device Objects <a class="nav" href="#audio-device-objects">#</a></h2>
+
+<p>Before you can write to or read from an audio device, you must
+call three methods in the correct order:</p>
+
+<ol>
+<li>
+<p><a class="link" href="#setfmt"><code>setfmt</code></a> to set the output
+format</p>
+</li>
+
+<li>
+<p><a class="link" href="#channels"><code>channels</code></a> to set the
+number of channels</p>
+</li>
+
+<li>
+<p><a class="link" href="#speed"><code>speed</code></a> to set the sample
+rate</p>
+</li>
+</ol>
+
+<p>Alternately, you can use the <a class="link" href="#setparameters"><code>setparameters</code></a> method to set all three
+audio parameters at once. This is more convenient, but may not be
+as flexible in all cases.</p>
+
+<p>The audio device objects returned by <a class="link" href="#open"><code>open</code></a> define the following methods:</p>
+</div>
+<dl><dt class="method" id="close"><b>close()</b> <tt class="nav"><a class="nav" href="ossaudiodev.close" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Explicitly close the audio device. When you are done writing to
+or reading from an audio device, you should explicitly close it. A
+closed device cannot be used again.</p>
+</dd>
+<dt class="method" id="fileno"><b>fileno()</b> <tt class="nav"><a class="nav" href="ossaudiodev.fileno" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return the file descriptor associated with the device.</p>
+</dd>
+<dt class="method" id="read"><b>read(size)</b> <tt class="nav"><a class="nav" href="ossaudiodev.read" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Read <var>size</var> bytes from the audio input and return them
+as a Python string. Unlike most Unix device drivers, OSS audio
+devices in blocking mode (the default) will block <a class="link" href="#read"><code>read</code></a> until the entire requested amount of data
+is available.</p>
+</dd>
+<dt class="method" id="write"><b>write(data)</b> <tt class="nav"><a class="nav" href="ossaudiodev.write" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Write the Python string <var>data</var> to the audio device and
+return the number of bytes written. If the audio device is in
+blocking mode (the default), the entire string is always written
+(again, this is different from usual Unix device semantics). If the
+device is in non-blocking mode, some data may not be written--see
+<a class="link" href="#writeall"><code>writeall</code></a>.</p>
+</dd>
+<dt class="method" id="writeall"><b>writeall(data)</b> <tt class="nav"><a class="nav" href="ossaudiodev.writeall" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Write the entire Python string <var>data</var> to the audio
+device: waits until the audio device is able to accept data, writes
+as much data as it will accept, and repeats until <var>data</var>
+has been completely written. If the device is in blocking mode (the
+default), this has the same effect as <a class="link" href="#write"><code>write</code></a>; <a class="link" href="#writeall"><code>
+writeall</code></a> is only useful in non-blocking mode. Has no return
+value, since the amount of data written is always equal to the
+amount of data supplied.</p>
+</dd>
+</dl><div class="text">
+<p>The following methods each map to exactly one <code>ioctl</code> system call. The correspondence is
+obvious: for example, <a class="link" href="#setfmt"><code>setfmt</code></a>
+corresponds to the <code>SNDCTL_DSP_SETFMT</code> ioctl, and <a class="link" href="#sync"><code>sync</code></a> to <code>
+SNDCTL_DSP_SYNC</code> (this can be useful when consulting the OSS
+documentation). If the underlying <code>ioctl</code> fails, they all raise <code>exceptions.IOError</code>.</p>
+</div>
+<dl><dt class="method" id="nonblock"><b>nonblock()</b> <tt class="nav"><a class="nav" href="ossaudiodev.nonblock" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Put the device into non-blocking mode. Once in non-blocking
+mode, there is no way to return it to blocking mode.</p>
+</dd>
+<dt class="method" id="getfmts"><b>getfmts()</b> <tt class="nav"><a class="nav" href="ossaudiodev.getfmts" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return a bitmask of the audio output formats supported by the
+soundcard. Some of the formats supported by OSS are:</p>
+
+<table border="1">
+<tr>
+<th>
+<p>Format</p>
+</th>
+<th>
+<p>Description</p>
+</th>
+</tr>
+
+<tr>
+<td>
+<p>AFMT_MU_LAW</p>
+</td>
+<td>
+<p>a logarithmic encoding (used by Sun <code>.au</code> files and
+/dev/audio)</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>AFMT_A_LAW</p>
+</td>
+<td>
+<p>a logarithmic encoding</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>AFMT_IMA_ADPCM</p>
+</td>
+<td>
+<p>a 4:1 compressed format defined by the Interactive Multimedia
+Association</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>AFMT_U8</p>
+</td>
+<td>
+<p>Unsigned, 8-bit audio</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>AFMT_S16_LE</p>
+</td>
+<td>
+<p>Signed, 16-bit audio, little-endian byte order (as used by Intel
+processors)</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>AFMT_S16_BE</p>
+</td>
+<td>
+<p>Signed, 16-bit audio, big-endian byte order (as used by 68k,
+PowerPC, Sparc)</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>AFMT_S8</p>
+</td>
+<td>
+<p>Signed, 8 bit audio</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>AFMT_U16_LE</p>
+</td>
+<td>
+<p>Unsigned, 16-bit little-endian audio</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>AFMT_U16_BE</p>
+</td>
+<td>
+<p>Unsigned, 16-bit big-endian audio</p>
+</td>
+</tr>
+</table>
+
+<br />
+<br />
+ 
+
+<p>Consult the OSS documentation for a full list of audio formats,
+and note that most devices support only a subset of these formats.
+Some older devices only support <code>AFMT_U8</code>; the most
+common format used today is <code>AFMT_S16_LE</code>.</p>
+</dd>
+<dt class="method" id="setfmt"><b>setfmt(format)</b> <tt class="nav"><a class="nav" href="ossaudiodev.setfmt" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Try to set the current audio format to <var>format</var>--see <a class="link" href="#getfmts"><code>getfmts</code></a> for a list. Returns
+the audio format that the device was set to, which may not be the
+requested format. May also be used to return the current audio
+format--do this by passing an &#8220;audio format&#8221; of <code>
+AFMT_QUERY</code>.</p>
+</dd>
+<dt class="method" id="channels"><b>channels(nchannels)</b> <tt class="nav"><a class="nav" href="ossaudiodev.channels" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Set the number of output channels to <var>nchannels</var>. A
+value of 1 indicates monophonic sound, 2 stereophonic. Some devices
+may have more than 2 channels, and some high-end devices may not
+support mono. Returns the number of channels the device was set
+to.</p>
+</dd>
+<dt class="method" id="speed"><b>speed(samplerate)</b> <tt class="nav"><a class="nav" href="ossaudiodev.speed" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Try to set the audio sampling rate to <var>samplerate</var>
+samples per second. Returns the rate actually set. Most sound
+devices don't support arbitrary sampling rates. Common rates
+are:</p>
+
+<table border="1">
+<tr>
+<th>
+<p>Rate</p>
+</th>
+<th>
+<p>Description</p>
+</th>
+</tr>
+
+<tr>
+<td>
+<p>8000</p>
+</td>
+<td>
+<p>default rate for /dev/audio</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>11025</p>
+</td>
+<td>
+<p>speech recording</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>22050</p>
+</td>
+<td />
+</tr>
+
+<tr>
+<td>
+<p>44100</p>
+</td>
+<td>
+<p>CD quality audio (at 16 bits/sample and 2 channels)</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>96000</p>
+</td>
+<td>
+<p>DVD quality audio (at 24 bits/sample)</p>
+</td>
+</tr>
+</table>
+
+<br />
+<br />
+</dd>
+<dt class="method" id="sync"><b>sync()</b> <tt class="nav"><a class="nav" href="ossaudiodev.sync" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Wait until the sound device has played every byte in its buffer.
+(This happens implicitly when the device is closed.) The OSS
+documentation recommends closing and re-opening the device rather
+than using <a class="link" href="#sync"><code>sync</code></a>.</p>
+</dd>
+<dt class="method" id="reset"><b>reset()</b> <tt class="nav"><a class="nav" href="ossaudiodev.reset" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Immediately stop playing or recording and return the device to a
+state where it can accept commands. The OSS documentation
+recommends closing and re-opening the device after calling <a class="link" href="#reset"><code>reset</code></a>.</p>
+</dd>
+<dt class="method" id="post"><b>post()</b> <tt class="nav"><a class="nav" href="ossaudiodev.post" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Tell the driver that there is likely to be a pause in the
+output, making it possible for the device to handle the pause more
+intelligently. You might use this after playing a spot sound
+effect, before waiting for user input, or before doing disk
+I/O.</p>
+</dd>
+</dl><div class="text">
+<p>The following convenience methods combine several ioctls, or one
+ioctl and some simple calculations.</p>
+</div>
+<dl><dt class="method" id="setparameters"><b>setparameters(format, nchannels, samplerate [,
+strict=False])</b> <tt class="nav"><a class="nav" href="ossaudiodev.setparameters" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Set the key audio sampling parameters--sample format, number of
+channels, and sampling rate--in one method call. <var>format</var>,
+<var>nchannels</var>, and <var>samplerate</var> should be as
+specified in the <a class="link" href="#setfmt"><code>setfmt</code></a>, <a class="link" href="#channels"><code>channels</code></a>, and <a class="link" href="#speed"><code>speed</code></a> methods. If <var>strict</var> is true,
+<a class="link" href="#setparameters"><code>setparameters</code></a> checks
+to see if each parameter was actually set to the requested value,
+and raises <a class="link" href="#OSSAudioError"><code>
+OSSAudioError</code></a> if not. Returns a tuple (<var>format</var>, <var>
+nchannels</var>, <var>samplerate</var>) indicating the parameter
+values that were actually set by the device driver (i.e., the same
+as the return values of <a class="link" href="#setfmt"><code>
+setfmt</code></a>, <a class="link" href="#channels"><code>channels</code></a>, and
+<a class="link" href="#speed"><code>speed</code></a>).</p>
+
+<p>For example,</p>
+
+<pre>
+  (fmt, channels, rate) = dsp.setparameters(fmt, channels, rate)
+</pre>
+
+<p>is equivalent to</p>
+
+<pre>
+  fmt = dsp.setfmt(fmt)
+  channels = dsp.channels(channels)
+  rate = dsp.rate(channels)
+</pre>
+</dd>
+<dt class="method" id="bufsize"><b>bufsize()</b> <tt class="nav"><a class="nav" href="ossaudiodev.bufsize" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Returns the size of the hardware buffer, in samples.</p>
+</dd>
+<dt class="method" id="obufcount"><b>obufcount()</b> <tt class="nav"><a class="nav" href="ossaudiodev.obufcount" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Returns the number of samples that are in the hardware buffer
+yet to be played.</p>
+</dd>
+<dt class="method" id="obuffree"><b>obuffree()</b> <tt class="nav"><a class="nav" href="ossaudiodev.obuffree" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Returns the number of samples that could be queued into the
+hardware buffer to be played without blocking.</p>
+</dd>
+</dl><div class="text">
+<h2 id="mixer-device-objects">Mixer Device Objects <a class="nav" href="#mixer-device-objects">#</a></h2>
+
+<p>The mixer object provides two file-like methods:</p>
+</div>
+<dl><dt class="method"><b>close()</b> <tt class="nav"><a class="nav" href="ossaudiodev.close" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>This method closes the open mixer device file. Any further
+attempts to use the mixer after this file is closed will raise an
+IOError.</p>
+</dd>
+<dt class="method"><b>fileno()</b> <tt class="nav"><a class="nav" href="ossaudiodev.fileno" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Returns the file handle number of the open mixer device
+file.</p>
+</dd>
+</dl><div class="text">
+<p>The remaining methods are specific to audio mixing:</p>
+</div>
+<dl><dt class="method" id="controls"><b>controls()</b> <tt class="nav"><a class="nav" href="ossaudiodev.controls" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>This method returns a bitmask specifying the available mixer
+controls (&#8220;Control&#8221; being a specific mixable
+&#8220;channel&#8221;, such as <code>SOUND_MIXER_PCM</code> or
+<code>SOUND_MIXER_SYNTH</code>). This bitmask indicates a subset of
+all available mixer controls--the <code>SOUND_MIXER_*</code>
+constants defined at module level. To determine if, for example,
+the current mixer object supports a PCM mixer, use the following
+Python code:</p>
+
+<pre>
+mixer=ossaudiodev.openmixer()
+if mixer.controls() &amp; (1 &lt;&lt; ossaudiodev.SOUND_MIXER_PCM):
+    # PCM is supported
+    ... code ...
+</pre>
+
+<p>For most purposes, the <code>SOUND_MIXER_VOLUME</code> (master
+volume) and <code>SOUND_MIXER_PCM</code> controls should
+suffice--but code that uses the mixer should be flexible when it
+comes to choosing mixer controls. On the Gravis Ultrasound, for
+example, <code>SOUND_MIXER_VOLUME</code> does not exist.</p>
+</dd>
+<dt class="method" id="stereocontrols"><b>stereocontrols()</b> <tt class="nav"><a class="nav" href="ossaudiodev.stereocontrols" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Returns a bitmask indicating stereo mixer controls. If a bit is
+set, the corresponding control is stereo; if it is unset, the
+control is either monophonic or not supported by the mixer (use in
+combination with <a class="link" href="#controls"><code>controls</code></a>
+to determine which).</p>
+
+<p>See the code example for the <a class="link" href="#controls"><code>controls</code></a> function for an example of
+getting data from a bitmask.</p>
+</dd>
+<dt class="method" id="reccontrols"><b>reccontrols()</b> <tt class="nav"><a class="nav" href="ossaudiodev.reccontrols" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Returns a bitmask specifying the mixer controls that may be used
+to record. See the code example for <a class="link" href="#controls"><code>controls</code></a> for an example of reading from a
+bitmask.</p>
+</dd>
+<dt class="method" id="get"><b>get(control)</b> <tt class="nav"><a class="nav" href="ossaudiodev.get" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Returns the volume of a given mixer control. The returned volume
+is a 2-tuple <code>(left_volume,right_volume)</code>. Volumes are
+specified as numbers from 0 (silent) to 100 (full volume). If the
+control is monophonic, a 2-tuple is still returned, but both
+volumes are the same.</p>
+
+<p>Raises <a class="link" href="#OSSAudioError"><code>
+OSSAudioError</code></a> if an invalid control was is specified, or <code>exceptions.IOError</code>
+if an unsupported control is specified.</p>
+</dd>
+<dt class="method" id="set"><b>set(control, (left, right))</b> <tt class="nav"><a class="nav" href="ossaudiodev.set" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Sets the volume for a given mixer control to <code>
+(left,right)</code>. <code>left</code> and <code>right</code> must
+be ints and between 0 (silent) and 100 (full volume). On success,
+the new volume is returned as a 2-tuple. Note that this may not be
+exactly the same as the volume specified, because of the limited
+resolution of some soundcard's mixers.</p>
+
+<p>Raises <a class="link" href="#OSSAudioError"><code>
+OSSAudioError</code></a> if an invalid mixer control was specified, or if
+the specified volumes were out-of-range.</p>
+</dd>
+<dt class="method" id="get_recsrc"><b>get_recsrc()</b> <tt class="nav"><a class="nav" href="ossaudiodev.get_recsrc" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>This method returns a bitmask indicating which control(s) are
+currently being used as a recording source.</p>
+</dd>
+<dt class="method" id="set_recsrc"><b>set_recsrc(bitmask)</b> <tt class="nav"><a class="nav" href="ossaudiodev.set_recsrc" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Call this function to specify a recording source. Returns a
+bitmask indicating the new recording source (or sources) if
+successful; raises <code>
+exceptions.IOError</code> if an invalid source was specified. To set
+the current recording source to the microphone input:</p>
+
+<pre>
+mixer.setrecsrc (1 &lt;&lt; ossaudiodev.SOUND_MIXER_MIC)
+</pre>
+</dd>
+</dl></div></body></html>

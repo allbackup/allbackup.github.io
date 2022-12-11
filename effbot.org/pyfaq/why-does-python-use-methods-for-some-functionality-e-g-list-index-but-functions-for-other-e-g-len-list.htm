@@ -1,0 +1,41 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>Why does Python use methods for some functionality (e.g. list.index()) but functions for other (e.g.&nbsp;len(list))?</title></head><body data-page-id="939"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><p class="note" style="text-align: center"><strong>
+This is an old copy of the Python FAQ.  The information here may be
+outdated.
+</strong></p><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">Why does Python use methods for some functionality (e.g. list.index()) but functions for other (e.g.&nbsp;len(list))?</h1></div><div class="yui-ge"><div class="yui-u first"><p>Guido explains:</p><blockquote><p>There are two bits of &#8220;Python rationale&#8221; that I&#8217;d like to explain
+  first.</p><p>First of all, I chose len(x) over x.len() for <a href="http://en.wikipedia.org/wiki/Human-Computer_Interaction">HCI</a> reasons (def
+  __len__() came much later). There are two intertwined reasons
+  actually, both HCI:</p><p>(a) For some operations, prefix notation just reads better than
+  postfix &#8212; prefix (and infix!) operations have a long tradition in
+  mathematics which likes notations where the visuals help the
+  mathematician thinking about a problem.  Compare the easy with which
+  we rewrite a formula like <em>x*(a+b)</em> into <em>x*a + x*b</em> to the
+  clumsiness of doing the same thing using a raw OO notation.</p><p>(b) When I read code that says len(x) I <em>know</em> that it is asking for
+  the length of something.  This tells me two things: the result is an
+  integer, and the argument is some kind of container.  To the
+  contrary, when I read x.len(), I have to already know that <em>x</em> is
+  some kind of container implementing an interface or inheriting from
+  a class that has a standard len().  Witness the confusion we
+  occasionally have when a class that is not implementing a mapping
+  has a get() or keys() method, or something that isn&#8217;t a file has a
+  write() method.</p><p>Saying the same thing in another way, I see &#8216;<a href="/pyref/len.htm"><strong>len</strong></a>&#8216; as a
+  built-in <em>operation</em>. I&#8217;d hate to lose that. /&#8230;/</p><p>The second bit of Python rationale I promised to explain is the
+  reason why I chose special methods to look __special__ and not
+  merely special.  I was anticipating lots of operations that classes
+  might want to override, some standard (e.g. __add__ or
+  __getitem__), some not so standard (e.g. <a href="/pyref/pickle.htm"><strong>pickle</strong></a>&#8216;s
+  __reduce__ for a long time had no support in C code at all).  I
+  didn&#8217;t want these special operations to use ordinary method names,
+  because then pre-existing classes, or classes written by users
+  without an encyclopedic memory for all the special methods, would be
+  liable to accidentally define operations they didn&#8217;t mean to
+  implement, with possibly disastrous consequences.</p></blockquote><p>Also note that many functions are defined in terms of informal interfaces;
+for example, <a href="/pyref/reversed.htm"><strong>reversed</strong></a> works on anything that supports random
+access to items and has a known length.  In practice, implementing things
+like <a href="/pyref/max.htm"><strong>max</strong></a>, <a href="/pyref/sum.htm"><strong>sum</strong></a>, <a href="/pyref/map.htm"><strong>map</strong></a>, <a href="/pyref/any.htm"><strong>any</strong></a>,
+<a href="/pyref/in.htm"><strong>in</strong></a> and others, as built-in functions and operators is
+actually less code than implementing them as methods for each and
+every type that needs to support them.</p><p>It&#8217;s also convenient to have a function that can readily be applied to
+an amorphous collection of objects when you use list comprehensions
+and the functional features of Python.</p><p>CATEGORY: general</p><p>CATEGORY: design</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to pyfaq index page.">::: pyfaq :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

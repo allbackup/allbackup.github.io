@@ -1,0 +1,102 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>MimeWriter</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-MimeWriter.html'>original</a> :::
+<a href='MimeWriter.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>MimeWriter&#8212;Generic MIME file writer</h1>
+<div class="toc"><dl><dt>On this page:</dt><dd><a href="#mimewriter-objects">MimeWriter Objects</a></dd></dl></div></div>
+<div class="error">
+<p>This module defines the class <a class="link" href="#MimeWriter"><code>MimeWriter</code></a>. The <a class="link" href="#MimeWriter"><code>MimeWriter</code></a> class implements a basic
+formatter for creating MIME multi-part files. It doesn't seek
+around the output file nor does it use large amounts of buffer
+space. You must write the parts out in the order that they should
+occur in the final file. <a class="link" href="#MimeWriter"><code>
+MimeWriter</code></a> does buffer the headers you add, allowing you to
+rearrange their order.</p>
+</div>
+<dl><dt class="class" id="MimeWriter"><b>class MimeWriter(fp)</b> <tt class="nav"><a class="nav" href="MimeWriter.MimeWriter" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>Return a new instance of the <a class="link" href="#MimeWriter"><code>MimeWriter</code></a> class. The only argument
+passed, <var>fp</var>, is a file object to be used for writing.
+Note that a <code>StringIO</code>
+object could also be used.</p>
+</dd>
+</dl><div class="text">
+<h2 id="mimewriter-objects">MimeWriter Objects <a class="nav" href="#mimewriter-objects">#</a></h2>
+
+<p><a class="link" href="#MimeWriter"><code>MimeWriter</code></a> instances
+have the following methods:</p>
+</div>
+<dl><dt class="method" id="MimeWriter.addheader"><b>addheader(key, value[, prefix])</b> <tt class="nav"><a class="nav" href="MimeWriter.MimeWriter.addheader" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Add a header line to the MIME message. The <var>key</var> is the
+name of the header, where the <var>value</var> obviously provides
+the value of the header. The optional argument <var>prefix</var>
+determines where the header is inserted; "<code>0</code>" means
+append at the end, "<code>1</code>" is insert at the start. The
+default is to append.</p>
+</dd>
+<dt class="method" id="MimeWriter.flushheaders"><b>flushheaders()</b> <tt class="nav"><a class="nav" href="MimeWriter.MimeWriter.flushheaders" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Causes all headers accumulated so far to be written out (and
+forgotten). This is useful if you don't need a body part at all,
+e.g. for a subpart of type message/rfc822 that's (mis)used to store
+some header-like information.</p>
+</dd>
+<dt class="method" id="MimeWriter.startbody"><b>startbody(ctype[, plist[,
+prefix]])</b> <tt class="nav"><a class="nav" href="MimeWriter.MimeWriter.startbody" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Returns a file-like object which can be used to write to the
+body of the message. The content-type is set to the provided <var>
+ctype</var>, and the optional parameter <var>plist</var> provides
+additional parameters for the content-type declaration. <var>
+prefix</var> functions as in <code>
+addheader</code> except that the default is to insert at the
+start.</p>
+</dd>
+<dt class="method" id="MimeWriter.startmultipartbody"><b>startmultipartbody(subtype[, boundary[,
+plist[, prefix]]])</b> <tt class="nav"><a class="nav" href="MimeWriter.MimeWriter.startmultipartbody" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Returns a file-like object which can be used to write to the
+body of the message. Additionally, this method initializes the
+multi-part code, where <var>subtype</var> provides the multipart
+subtype, <var>boundary</var> may provide a user-defined boundary
+specification, and <var>plist</var> provides optional parameters
+for the subtype. <var>prefix</var> functions as in <code>startbody</code>. Subparts should be created
+using <code>nextpart</code>.</p>
+</dd>
+<dt class="method" id="MimeWriter.nextpart"><b>nextpart()</b> <tt class="nav"><a class="nav" href="MimeWriter.MimeWriter.nextpart" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Returns a new instance of <a class="link" href="#MimeWriter"><code>MimeWriter</code></a> which represents an
+individual part in a multipart message. This may be used to write
+the part as well as used for creating recursively complex multipart
+messages. The message must first be initialized with <code>startmultipartbody</code>
+before using <code>nextpart</code>.</p>
+</dd>
+<dt class="method" id="MimeWriter.lastpart"><b>lastpart()</b> <tt class="nav"><a class="nav" href="MimeWriter.MimeWriter.lastpart" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>This is used to designate the last part of a multipart message,
+and should <em>always</em> be used when writing multipart
+messages.</p>
+</dd>
+</dl></div></body></html>

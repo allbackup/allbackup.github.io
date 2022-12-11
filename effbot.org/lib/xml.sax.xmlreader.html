@@ -1,0 +1,415 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>xml.sax.xmlreader</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-xml.sax.xmlreader.html'>original</a> :::
+<a href='xml.sax.xmlreader.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>xml.sax.xmlreader&#8212;Interface for XML parsers</h1>
+
+<div class="toc"><dl><dt>On this page:</dt><dd><a href="#xmlreader-objects">XMLReader Objects</a></dd><dd><a href="#incrementalparser-objects">IncrementalParser Objects</a></dd><dd><a href="#locator-objects">Locator Objects</a></dd><dd><a href="#inputsource-objects">InputSource Objects</a></dd><dd><a href="#the-attributes-interface">The Attributes Interface</a></dd><dd><a href="#the-attributesns-interface">The AttributesNS Interface</a></dd></dl></div><p>New in version 2.0.</p>
+
+<p>SAX parsers implement the <a class="link" href="#XMLReader"><code>
+XMLReader</code></a> interface. They are implemented in a Python module,
+which must provide a function <code>create_parser</code>. This function is
+invoked by <code>
+xml.sax.make_parser</code> with no arguments to create a new parser
+object.</p>
+</div>
+<dl><dt class="class" id="XMLReader"><b>class XMLReader()</b> <tt class="nav"><a class="nav" href="xml.sax.xmlreader.XMLReader" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>Base class which can be inherited by SAX parsers.</p>
+</dd>
+<dt class="class" id="IncrementalParser"><b>class IncrementalParser()</b> <tt class="nav"><a class="nav" href="xml.sax.xmlreader.IncrementalParser" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>In some cases, it is desirable not to parse an input source at
+once, but to feed chunks of the document as they get available.
+Note that the reader will normally not read the entire file, but
+read it in chunks as well; still <code>
+parse</code> won't return until the entire document is processed. So
+these interfaces should be used if the blocking behaviour of <code>parse</code> is not desirable.</p>
+
+<p>When the parser is instantiated it is ready to begin accepting
+data from the feed method immediately. After parsing has been
+finished with a call to close the reset method must be called to
+make the parser ready to accept new data, either from feed or using
+the parse method.</p>
+
+<p>Note that these methods must <em>not</em> be called during
+parsing, that is, after parse has been called and before it
+returns.</p>
+
+<p>By default, the class also implements the parse method of the
+XMLReader interface using the feed, close and reset methods of the
+IncrementalParser interface as a convenience to SAX 2.0 driver
+writers.</p>
+</dd>
+<dt class="class" id="Locator"><b>class Locator()</b> <tt class="nav"><a class="nav" href="xml.sax.xmlreader.Locator" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>Interface for associating a SAX event with a document location.
+A locator object will return valid results only during calls to
+DocumentHandler methods; at any other time, the results are
+unpredictable. If information is not available, methods may return
+<code>None</code>.</p>
+</dd>
+<dt class="class" id="InputSource"><b>class InputSource([systemId])</b> <tt class="nav"><a class="nav" href="xml.sax.xmlreader.InputSource" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>Encapsulation of the information needed by the <a class="link" href="#XMLReader"><code>XMLReader</code></a> to read entities.</p>
+
+<p>This class may include information about the public identifier,
+system identifier, byte stream (possibly with character encoding
+information) and/or the character stream of an entity.</p>
+
+<p>Applications will create objects of this class for use in the <a class="link" href="#XMLReader.parse"><code>XMLReader.parse</code></a> method
+and for returning from EntityResolver.resolveEntity.</p>
+
+<p>An <a class="link" href="#InputSource"><code>InputSource</code></a>
+belongs to the application, the <a class="link" href="#XMLReader"><code>XMLReader</code></a> is not allowed to modify <a class="link" href="#InputSource"><code>InputSource</code></a> objects passed
+to it from the application, although it may make copies and modify
+those.</p>
+</dd>
+<dt class="class" id="AttributesImpl"><b>class AttributesImpl(attrs)</b> <tt class="nav"><a class="nav" href="xml.sax.xmlreader.AttributesImpl" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>This is an implementation of the <code>Attributes interface</code> (see
+section <code>
+attributes-objects.html#attributes-objects</code>). This is a
+dictionary-like object which represents the element attributes in a
+<code>startElement</code> call. In
+addition to the most useful dictionary operations, it supports a
+number of other methods as described by the interface. Objects of
+this class should be instantiated by readers; <var>attrs</var> must
+be a dictionary-like object containing a mapping from attribute
+names to attribute values.</p>
+</dd>
+<dt class="class" id="AttributesNSImpl"><b>class AttributesNSImpl(attrs, qnames)</b> <tt class="nav"><a class="nav" href="xml.sax.xmlreader.AttributesNSImpl" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>Namespace-aware variant of <a class="link" href="#AttributesImpl"><code>AttributesImpl</code></a>, which will be passed
+to <code>startElementNS</code>.
+It is derived from <a class="link" href="#AttributesImpl"><code>
+AttributesImpl</code></a>, but understands attribute names as two-tuples
+of <var>namespaceURI</var> and <var>localname</var>. In addition,
+it provides a number of methods expecting qualified names as they
+appear in the original document. This class implements the <code>AttributesNS
+interface</code> (see section <code>
+attributes-ns-objects.html#attributes-ns-objects</code>).</p>
+</dd>
+</dl><div class="text">
+<h2 id="xmlreader-objects">XMLReader Objects <a class="nav" href="#xmlreader-objects">#</a></h2>
+
+<p>The <a class="link" href="#XMLReader"><code>XMLReader</code></a>
+interface supports the following methods:</p>
+</div>
+<dl><dt class="method" id="XMLReader.parse"><b>parse(source)</b> <tt class="nav"><a class="nav" href="xml.sax.xmlreader.XMLReader.parse" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Process an input source, producing SAX events. The <var>
+source</var> object can be a system identifier (a string
+identifying the input source - typically a file name or an URL), a
+file-like object, or an <a class="link" href="#InputSource"><code>
+InputSource</code></a> object. When <code>
+parse</code> returns, the input is completely processed, and the
+parser object can be discarded or reset. As a limitation, the
+current implementation only accepts byte streams; processing of
+character streams is for further study.</p>
+</dd>
+<dt class="method" id="XMLReader.getContentHandler"><b>getContentHandler()</b> <tt class="nav"><a class="nav" href="xml.sax.xmlreader.XMLReader.getContentHandler" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return the current <code>
+ContentHandler</code>.</p>
+</dd>
+<dt class="method" id="XMLReader.setContentHandler"><b>setContentHandler(handler)</b> <tt class="nav"><a class="nav" href="xml.sax.xmlreader.XMLReader.setContentHandler" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Set the current <code>
+ContentHandler</code>. If no <code>ContentHandler</code> is set, content
+events will be discarded.</p>
+</dd>
+<dt class="method" id="XMLReader.getDTDHandler"><b>getDTDHandler()</b> <tt class="nav"><a class="nav" href="xml.sax.xmlreader.XMLReader.getDTDHandler" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return the current <code>
+DTDHandler</code>.</p>
+</dd>
+<dt class="method" id="XMLReader.setDTDHandler"><b>setDTDHandler(handler)</b> <tt class="nav"><a class="nav" href="xml.sax.xmlreader.XMLReader.setDTDHandler" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Set the current <code>
+DTDHandler</code>. If no <code>
+DTDHandler</code> is set, DTD events will be discarded.</p>
+</dd>
+<dt class="method" id="XMLReader.getEntityResolver"><b>getEntityResolver()</b> <tt class="nav"><a class="nav" href="xml.sax.xmlreader.XMLReader.getEntityResolver" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return the current <code>
+EntityResolver</code>.</p>
+</dd>
+<dt class="method" id="XMLReader.setEntityResolver"><b>setEntityResolver(handler)</b> <tt class="nav"><a class="nav" href="xml.sax.xmlreader.XMLReader.setEntityResolver" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Set the current <code>
+EntityResolver</code>. If no <code>EntityResolver</code> is set, attempts to
+resolve an external entity will result in opening the system
+identifier for the entity, and fail if it is not available.</p>
+</dd>
+<dt class="method" id="XMLReader.getErrorHandler"><b>getErrorHandler()</b> <tt class="nav"><a class="nav" href="xml.sax.xmlreader.XMLReader.getErrorHandler" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return the current <code>
+ErrorHandler</code>.</p>
+</dd>
+<dt class="method" id="XMLReader.setErrorHandler"><b>setErrorHandler(handler)</b> <tt class="nav"><a class="nav" href="xml.sax.xmlreader.XMLReader.setErrorHandler" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Set the current error handler. If no <code>ErrorHandler</code> is set, errors will be
+raised as exceptions, and warnings will be printed.</p>
+</dd>
+<dt class="method" id="XMLReader.setLocale"><b>setLocale(locale)</b> <tt class="nav"><a class="nav" href="xml.sax.xmlreader.XMLReader.setLocale" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Allow an application to set the locale for errors and
+warnings.</p>
+
+<p>SAX parsers are not required to provide localization for errors
+and warnings; if they cannot support the requested locale, however,
+they must throw a SAX exception. Applications may request a locale
+change in the middle of a parse.</p>
+</dd>
+<dt class="method" id="XMLReader.getFeature"><b>getFeature(featurename)</b> <tt class="nav"><a class="nav" href="xml.sax.xmlreader.XMLReader.getFeature" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return the current setting for feature <var>featurename</var>.
+If the feature is not recognized, <code>SAXNotRecognizedException</code>
+is raised. The well-known featurenames are listed in the module <code>xml.sax.handler</code>.</p>
+</dd>
+<dt class="method" id="XMLReader.setFeature"><b>setFeature(featurename, value)</b> <tt class="nav"><a class="nav" href="xml.sax.xmlreader.XMLReader.setFeature" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Set the <var>featurename</var> to <var>value</var>. If the
+feature is not recognized, <code>SAXNotRecognizedException</code>
+is raised. If the feature or its setting is not supported by the
+parser, <var>SAXNotSupportedException</var> is raised.</p>
+</dd>
+<dt class="method" id="XMLReader.getProperty"><b>getProperty(propertyname)</b> <tt class="nav"><a class="nav" href="xml.sax.xmlreader.XMLReader.getProperty" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return the current setting for property <var>propertyname</var>.
+If the property is not recognized, a <code>SAXNotRecognizedException</code>
+is raised. The well-known propertynames are listed in the module <code>xml.sax.handler</code>.</p>
+</dd>
+<dt class="method" id="XMLReader.setProperty"><b>setProperty(propertyname, value)</b> <tt class="nav"><a class="nav" href="xml.sax.xmlreader.XMLReader.setProperty" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Set the <var>propertyname</var> to <var>value</var>. If the
+property is not recognized, <code>SAXNotRecognizedException</code>
+is raised. If the property or its setting is not supported by the
+parser, <var>SAXNotSupportedException</var> is raised.</p>
+</dd>
+</dl><div class="text">
+<h2 id="incrementalparser-objects">IncrementalParser Objects <a class="nav" href="#incrementalparser-objects">#</a></h2>
+
+<p>Instances of <a class="link" href="#IncrementalParser"><code>
+IncrementalParser</code></a> offer the following additional methods:</p>
+</div>
+<dl><dt class="method" id="IncrementalParser.feed"><b>feed(data)</b> <tt class="nav"><a class="nav" href="xml.sax.xmlreader.IncrementalParser.feed" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Process a chunk of <var>data</var>.</p>
+</dd>
+<dt class="method" id="IncrementalParser.close"><b>close()</b> <tt class="nav"><a class="nav" href="xml.sax.xmlreader.IncrementalParser.close" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Assume the end of the document. That will check well-formedness
+conditions that can be checked only at the end, invoke handlers,
+and may clean up resources allocated during parsing.</p>
+</dd>
+<dt class="method" id="IncrementalParser.reset"><b>reset()</b> <tt class="nav"><a class="nav" href="xml.sax.xmlreader.IncrementalParser.reset" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>This method is called after close has been called to reset the
+parser so that it is ready to parse new documents. The results of
+calling parse or feed after close without calling reset are
+undefined.</p>
+</dd>
+</dl><div class="text">
+<h2 id="locator-objects">Locator Objects <a class="nav" href="#locator-objects">#</a></h2>
+
+<p>Instances of <a class="link" href="#Locator"><code>Locator</code></a>
+provide these methods:</p>
+</div>
+<dl><dt class="method" id="Locator.getColumnNumber"><b>getColumnNumber()</b> <tt class="nav"><a class="nav" href="xml.sax.xmlreader.Locator.getColumnNumber" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return the column number where the current event ends.</p>
+</dd>
+<dt class="method" id="Locator.getLineNumber"><b>getLineNumber()</b> <tt class="nav"><a class="nav" href="xml.sax.xmlreader.Locator.getLineNumber" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return the line number where the current event ends.</p>
+</dd>
+<dt class="method" id="Locator.getPublicId"><b>getPublicId()</b> <tt class="nav"><a class="nav" href="xml.sax.xmlreader.Locator.getPublicId" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return the public identifier for the current event.</p>
+</dd>
+<dt class="method" id="Locator.getSystemId"><b>getSystemId()</b> <tt class="nav"><a class="nav" href="xml.sax.xmlreader.Locator.getSystemId" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return the system identifier for the current event.</p>
+</dd>
+</dl><div class="text">
+<h2 id="inputsource-objects">InputSource Objects <a class="nav" href="#inputsource-objects">#</a></h2>
+</div>
+<dl><dt class="method" id="InputSource.setPublicId"><b>setPublicId(id)</b> <tt class="nav"><a class="nav" href="xml.sax.xmlreader.InputSource.setPublicId" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Sets the public identifier of this <a class="link" href="#InputSource"><code>InputSource</code></a>.</p>
+</dd>
+<dt class="method" id="InputSource.getPublicId"><b>getPublicId()</b> <tt class="nav"><a class="nav" href="xml.sax.xmlreader.InputSource.getPublicId" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Returns the public identifier of this <a class="link" href="#InputSource"><code>InputSource</code></a>.</p>
+</dd>
+<dt class="method" id="InputSource.setSystemId"><b>setSystemId(id)</b> <tt class="nav"><a class="nav" href="xml.sax.xmlreader.InputSource.setSystemId" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Sets the system identifier of this <a class="link" href="#InputSource"><code>InputSource</code></a>.</p>
+</dd>
+<dt class="method" id="InputSource.getSystemId"><b>getSystemId()</b> <tt class="nav"><a class="nav" href="xml.sax.xmlreader.InputSource.getSystemId" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Returns the system identifier of this <a class="link" href="#InputSource"><code>InputSource</code></a>.</p>
+</dd>
+<dt class="method" id="InputSource.setEncoding"><b>setEncoding(encoding)</b> <tt class="nav"><a class="nav" href="xml.sax.xmlreader.InputSource.setEncoding" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Sets the character encoding of this <a class="link" href="#InputSource"><code>InputSource</code></a>.</p>
+
+<p>The encoding must be a string acceptable for an XML encoding
+declaration (see section 4.3.3 of the XML recommendation).</p>
+
+<p>The encoding attribute of the <a class="link" href="#InputSource"><code>InputSource</code></a> is ignored if the <a class="link" href="#InputSource"><code>InputSource</code></a> also contains
+a character stream.</p>
+</dd>
+<dt class="method" id="InputSource.getEncoding"><b>getEncoding()</b> <tt class="nav"><a class="nav" href="xml.sax.xmlreader.InputSource.getEncoding" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Get the character encoding of this InputSource.</p>
+</dd>
+<dt class="method" id="InputSource.setByteStream"><b>setByteStream(bytefile)</b> <tt class="nav"><a class="nav" href="xml.sax.xmlreader.InputSource.setByteStream" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Set the byte stream (a Python file-like object which does not
+perform byte-to-character conversion) for this input source.</p>
+
+<p>The SAX parser will ignore this if there is also a character
+stream specified, but it will use a byte stream in preference to
+opening a URI connection itself.</p>
+
+<p>If the application knows the character encoding of the byte
+stream, it should set it with the setEncoding method.</p>
+</dd>
+<dt class="method" id="InputSource.getByteStream"><b>getByteStream()</b> <tt class="nav"><a class="nav" href="xml.sax.xmlreader.InputSource.getByteStream" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Get the byte stream for this input source.</p>
+
+<p>The getEncoding method will return the character encoding for
+this byte stream, or None if unknown.</p>
+</dd>
+<dt class="method" id="InputSource.setCharacterStream"><b>setCharacterStream(charfile)</b> <tt class="nav"><a class="nav" href="xml.sax.xmlreader.InputSource.setCharacterStream" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Set the character stream for this input source. (The stream must
+be a Python 1.6 Unicode-wrapped file-like that performs conversion
+to Unicode strings.)</p>
+
+<p>If there is a character stream specified, the SAX parser will
+ignore any byte stream and will not attempt to open a URI
+connection to the system identifier.</p>
+</dd>
+<dt class="method" id="InputSource.getCharacterStream"><b>getCharacterStream()</b> <tt class="nav"><a class="nav" href="xml.sax.xmlreader.InputSource.getCharacterStream" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Get the character stream for this input source.</p>
+</dd>
+</dl><div class="text">
+<h2 id="the-attributes-interface">The Attributes Interface <a class="nav" href="#the-attributes-interface">#</a></h2>
+
+<p><code>Attributes</code> objects
+implement a portion of the mapping protocol, including the methods
+<code>copy</code>, <code>get</code>, <code>
+has_key</code>, <code>items</code>, <code>keys</code>, and <code>values</code>. The following methods are also
+provided:</p>
+</div>
+<dl><dt class="method" id="Attributes.getLength"><b>getLength()</b> <tt class="nav"><a class="nav" href="xml.sax.xmlreader.Attributes.getLength" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return the number of attributes.</p>
+</dd>
+<dt class="method" id="Attributes.getNames"><b>getNames()</b> <tt class="nav"><a class="nav" href="xml.sax.xmlreader.Attributes.getNames" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return the names of the attributes.</p>
+</dd>
+<dt class="method" id="Attributes.getType"><b>getType(name)</b> <tt class="nav"><a class="nav" href="xml.sax.xmlreader.Attributes.getType" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Returns the type of the attribute <var>name</var>, which is
+normally <code>'CDATA'</code>.</p>
+</dd>
+<dt class="method" id="Attributes.getValue"><b>getValue(name)</b> <tt class="nav"><a class="nav" href="xml.sax.xmlreader.Attributes.getValue" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return the value of attribute <var>name</var>.</p>
+</dd>
+</dl><div class="text">
+<h2 id="the-attributesns-interface">The AttributesNS Interface <a class="nav" href="#the-attributesns-interface">#</a></h2>
+
+<p>This interface is a subtype of the <code>Attributes interface</code> (see
+section <code>
+attributes-objects.html#attributes-objects</code>). All methods
+supported by that interface are also available on <code>AttributesNS</code> objects.</p>
+
+<p>The following methods are also available:</p>
+</div>
+<dl><dt class="method" id="AttributesNS.getValueByQName"><b>getValueByQName(name)</b> <tt class="nav"><a class="nav" href="xml.sax.xmlreader.AttributesNS.getValueByQName" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return the value for a qualified name.</p>
+</dd>
+<dt class="method" id="AttributesNS.getNameByQName"><b>getNameByQName(name)</b> <tt class="nav"><a class="nav" href="xml.sax.xmlreader.AttributesNS.getNameByQName" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return the <code>(</code><var>namespace</var>, <var>
+localname</var>) pair for a qualified <var>name</var>.</p>
+</dd>
+<dt class="method" id="AttributesNS.getQNameByName"><b>getQNameByName(name)</b> <tt class="nav"><a class="nav" href="xml.sax.xmlreader.AttributesNS.getQNameByName" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return the qualified name for a <code>
+(</code><var>namespace</var>, <var>localname</var>) pair.</p>
+</dd>
+<dt class="method" id="AttributesNS.getQNames"><b>getQNames()</b> <tt class="nav"><a class="nav" href="xml.sax.xmlreader.AttributesNS.getQNames" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return the qualified names of all attributes.</p>
+</dd>
+</dl></div></body></html>

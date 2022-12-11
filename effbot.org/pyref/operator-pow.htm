@@ -1,0 +1,19 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>operator-pow</title> <script type="text/javascript">effbot_page_id=1504;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <h1 class="maintitle">operator-pow</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p>The power operator binds more tightly than unary operators on its left; it binds less tightly than unary operators on its right. The syntax is:</p><p>power ::= [ primary][1] [&#8220;**&#8221; [u_expr][2]]</p><p>Thus, in an unparenthesized sequence of power and unary operators, the
+operators are evaluated from right to left (this does not constrain
+the evaluation order for the operands).</p><p>The power operator has the same semantics as the built-in <a href="pow.htm"><strong>pow</strong></a>
+function, when called with two arguments: it yields its left argument
+raised to the power of its right argument. The numeric arguments are
+first converted to a common type. The result type is that of the
+arguments after coercion.</p><p>With mixed operand types, the coercion rules for binary arithmetic
+operators apply. For integer and long operands, the result has the
+same type as the operands (after coercion) unless the second argument
+is negative; in that case, all arguments are converted to float and a
+float result is delivered. For example, <code>10\*\*2</code> returns <code>100</code>, but `
+10**-2<code>returns</code>0.01`. (This last feature was added in Python
+2.2. In Python 2.1 and before, if both arguments were of integer types
+and the second argument was negative, an exception was raised).</p><p>Raising <code>0.0</code> to a negative power results in a
+<a href="ZeroDivisionError.htm"><strong>ZeroDivisionError</strong></a>. Raising a negative number to a fractional power
+results in a <a href="ValueError.htm"><strong>ValueError</strong></a>.</p><p>To support this operator in your own classes, implement the <a href="method-pow">__pow__</a> method.</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div> <!-- yui-g --></div> <!-- content --> </div> <!-- yui-b --> </div> <!-- yui-main --> <div class="yui-b"> <div id='menu'> <ul> <li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li> <li><b><a href="." title="Go to pyref index page.">::: pyref :::</a></b></li> </ul> </div> <!-- menu --> </div> <!-- yui-b --> </div> <!-- bd --> <div id="ft"> <!-- footer --> <p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;"></a>
+this page was rendered by a <a href="http://www.djangoproject.com/">django</a> application in 0.01s 2011-06-21 22:25:24.170452.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p> </div> <!-- ft --> </div> <!-- doc --> <script src="/media/js/effbot-min.js" type="text/javascript"> </script> </body> </html>

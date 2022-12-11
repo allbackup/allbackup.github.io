@@ -1,0 +1,592 @@
+
+@@module operator
+
+<h1>operator&#8212;Standard operators as functions.</h1>
+
+<p>The {@link operator} module exports a set of functions implemented in
+C corresponding to the intrinsic operators of Python. For example,
+{@code operator.add(x, y)} is equivalent to the expression {@code x+y}.
+The function names are those used for special class methods; variants
+without leading and trailing "{@code __}" are also provided for
+convenience.
+
+<p>The functions fall into categories that perform object comparisons,
+logical operations, mathematical operations, sequence operations, and
+abstract type tests.
+
+<p>The object comparison functions are useful for all objects, and are
+named after the rich comparison operators they support:
+
+@@function lt(a, b)
+@@function le(a, b)
+@@function eq(a, b)
+@@function ne(a, b)
+@@function ge(a, b)
+@@function gt(a, b)
+@@function __lt__(a, b)
+@@function __le__(a, b)
+@@function __eq__(a, b)
+@@function __ne__(a, b)
+@@function __ge__(a, b)
+@@function __gt__(a, b)
+
+<p>Perform &#8220;rich comparisons&#8221; between {@var a} and {@var b}.
+Specifically, {@code lt(}{@var a}, {@var b}) is equivalent to {@var a}
+&lt {@var b}, {@code le(}{@var a}, {@var b}) is equivalent to {@code
+}{@var a} &lt= {@var b}, {@code eq(}{@var a}, {@var b}) is equivalent to
+{@var a} == {@var b}, {@code ne(}{@var a}, {@var b}) is equivalent to
+{@var a} != {@var b}, {@code gt(}{@var a}, {@var b}) is equivalent to
+{@var a} > {@var b} and {@code ge(}{@var a}, {@var b}) is equivalent to
+{@var a} >= {@var b}. Note that unlike the built-in {@link cmp}, these
+functions can return any value, which may or may not be interpretable as
+a Boolean value. See the {@link ../ref/ref.html Python Reference Manual}
+for more information about rich comparisons.
+<blockquote>
+@since New in version 2.2. <br />
+</blockquote>
+
+@@text 
+
+<p>The logical operations are also generally applicable to all objects,
+and support truth tests, identity tests, and boolean operations:
+
+@@function not_(o)
+@@function __not__(o)
+
+<p>Return the outcome of {@link not} {@var o}. (Note that there is no
+{@link __not__} method for object instances; only the interpreter core
+defines this operation. The result is affected by the {@link
+__nonzero__} and {@link __len__} methods.)
+
+@@function truth(o)
+
+<p>Return {@code True} if {@var o} is true, and {@code False} otherwise.
+This is equivalent to using the {@link bool} constructor.
+
+@@function is_(a, b)
+
+<p>Return {@var a} is {@var b}. Tests object identity.
+<blockquote>
+@since New in version 2.3. <br />
+</blockquote>
+
+@@function is_not(a, b)
+
+<p>Return {@var a} is not {@var b}. Tests object identity.
+<blockquote>
+@since New in version
+2.3. <br />
+</blockquote>
+
+@@text 
+
+<p>The mathematical and bitwise operations are the most numerous:
+
+@@function abs(o)
+@@function __abs__(o)
+
+<p>Return the absolute value of {@var o}.
+
+@@function add(a, b)
+@@function __add__(a, b)
+
+<p>Return {@var a} {@code +} {@var b}, for {@var a} and {@var b}
+numbers.
+
+@@function and_(a, b)
+@@function __and__(a, b)
+
+<p>Return the bitwise and of {@var a} and {@var b}.
+
+@@function div(a, b)
+@@function __div__(a, b)
+
+<p>Return {@var a} {@code /} {@var b} when {@code __future__.division}
+is not in effect. This is also known as &#8220;classic&#8221; division.
+
+@@function floordiv(a, b)
+@@function __floordiv__(a, b)
+
+<p>Return {@var a} {@code //} {@var b}.
+<blockquote>
+@since New in version 2.2. <br />
+</blockquote>
+
+@@function inv(o)
+@@function invert(o)
+@@function __inv__(o)
+@@function __invert__(o)
+
+<p>Return the bitwise inverse of the number {@var o}. This is equivalent
+to {@code ~}{@var o}. The names {@link invert} and {@link __invert__}
+were added in Python 2.0.
+
+@@function lshift(a, b)
+@@function __lshift__(a, b)
+
+<p>Return {@var a} shifted left by {@var b}.
+
+@@function mod(a, b)
+@@function __mod__(a, b)
+
+<p>Return {@var a} {@code %} {@var b}.
+
+@@function mul(a, b)
+@@function __mul__(a, b)
+
+<p>Return {@var a} {@code *} {@var b}, for {@var a} and {@var b}
+numbers.
+
+@@function neg(o)
+@@function __neg__(o)
+
+<p>Return {@var o} negated.
+
+@@function or_(a, b)
+@@function __or__(a, b)
+
+<p>Return the bitwise or of {@var a} and {@var b}.
+
+@@function pos(o)
+@@function __pos__(o)
+
+<p>Return {@var o} positive.
+
+@@function pow(a, b)
+@@function __pow__(a, b)
+
+<p>Return {@var a} {@code **} {@var b}, for {@var a} and {@var b}
+numbers.
+<blockquote>
+@since New in
+version 2.3. <br />
+</blockquote>
+
+@@function rshift(a, b)
+@@function __rshift__(a, b)
+
+<p>Return {@var a} shifted right by {@var b}.
+
+@@function sub(a, b)
+@@function __sub__(a, b)
+
+<p>Return {@var a} {@code -} {@var b}.
+
+@@function truediv(a, b)
+@@function __truediv__(a, b)
+
+<p>Return {@var a} {@code /} {@var b} when {@code __future__.division}
+is in effect. This is also known as division.
+<blockquote>
+@since New in version 2.2. <br />
+</blockquote>
+
+@@function xor(a, b)
+@@function __xor__(a, b)
+
+<p>Return the bitwise exclusive or of {@var a} and {@var b}.
+
+@@text 
+
+<p>Operations which work with sequences include:
+
+@@function concat(a, b)
+@@function __concat__(a, b)
+
+<p>Return {@var a} {@code +} {@var b} for {@var a} and {@var b}
+sequences.
+
+@@function contains(a, b)
+@@function __contains__(a, b)
+
+<p>Return the outcome of the test {@var b} {@code in} {@var a}. Note the
+reversed operands. The name {@link __contains__} was added in Python
+2.0.
+
+@@function countOf(a, b)
+
+<p>Return the number of occurrences of {@var b} in {@var a}.
+
+@@function delitem(a, b)
+@@function __delitem__(a, b)
+
+<p>Remove the value of {@var a} at index {@var b}.
+
+@@function delslice(a, b, c)
+@@function __delslice__(a, b, c)
+
+<p>Delete the slice of {@var a} from index {@var b} to index {@var
+c}{@code -1}.
+
+@@function getitem(a, b)
+@@function __getitem__(a, b)
+
+<p>Return the value of {@var a} at index {@var b}.
+
+@@function getslice(a, b, c)
+@@function __getslice__(a, b, c)
+
+<p>Return the slice of {@var a} from index {@var b} to index {@var
+c}{@code -1}.
+
+@@function indexOf(a, b)
+
+<p>Return the index of the first of occurrence of {@var b} in {@var a}.
+
+@@function repeat(a, b)
+@@function __repeat__(a, b)
+
+<p>Return {@var a} {@code *} {@var b} where {@var a} is a sequence and
+{@var b} is an integer.
+
+@@function sequenceIncludes(...)
+
+
+<p>Deprecated since release 2.0. Use {@link contains} instead.
+
+<p>Alias for {@link contains}.
+
+@@function setitem(a, b, c)
+@@function __setitem__(a, b, c)
+
+<p>Set the value of {@var a} at index {@var b} to {@var c}.
+
+@@function setslice(a, b, c, v)
+@@function __setslice__(a, b, c, v)
+
+<p>Set the slice of {@var a} from index {@var b} to index {@var c}{@code
+-1} to the sequence {@var v}.
+
+@@text 
+
+
+<p class='note'><b>Note:</b> The Be careful not to misinterpret the
+results of these functions; only {@link isCallable} has any measure of
+reliability with instance objects. For example:
+
+<pre>
+&gt;&gt;&gt; class C:
+...     pass
+... 
+&gt;&gt;&gt; import operator
+&gt;&gt;&gt; o = C()
+&gt;&gt;&gt; operator.isMappingType(o)
+True
+</pre>
+
+
+@@function isCallable(o)
+
+
+<p>Deprecated since release 2.0. Use the {@link callable} built-in
+function instead.
+
+<p>Returns true if the object {@var o} can be called like a function,
+otherwise it returns false. True is returned for functions, bound and
+unbound methods, class objects, and instance objects which support the
+{@link __call__} method.
+
+@@function isMappingType(o)
+
+<p>Returns true if the object {@var o} supports the mapping interface.
+This is true for dictionaries and all instance objects defining {@link
+__getitem__}. Warning: There is no reliable way to test if an instance
+supports the complete mapping protocol since the interface itself is
+ill-defined. This makes this test less useful than it otherwise might
+be.
+
+@@function isNumberType(o)
+
+<p>Returns true if the object {@var o} represents a number. This is true
+for all numeric types implemented in C. Warning: There is no reliable
+way to test if an instance supports the complete numeric interface since
+the interface itself is ill-defined. This makes this test less useful
+than it otherwise might be.
+
+@@function isSequenceType(o)
+
+<p>Returns true if the object {@var o} supports the sequence protocol.
+This returns true for all objects which define sequence methods in C,
+and for all instance objects defining {@link __getitem__}. Warning:
+There is no reliable way to test if an instance supports the complete
+sequence interface since the interface itself is ill-defined. This makes
+this test less useful than it otherwise might be.
+
+@@text 
+
+<p>Example: Build a dictionary that maps the ordinals from {@code 0} to
+{@code 255} to their character equivalents.
+
+<pre>
+&gt;&gt;&gt; import operator
+&gt;&gt;&gt; d = {}
+&gt;&gt;&gt; keys = range(256)
+&gt;&gt;&gt; vals = map(chr, keys)
+&gt;&gt;&gt; map(operator.setitem, [d]*len(keys), keys, vals)
+</pre>
+
+
+<p>The {@link operator} module also defines tools for generalized
+attribute and item lookups. These are useful for making fast field
+extractors as arguments for {@link map}, {@link sorted}, {@link
+itertools.groupby}, or other functions that expect a function argument.
+
+@@function attrgetter(attr)
+
+<p>Return a callable object that fetches {@var attr} from its operand.
+After, "{@code f=attrgetter('name')}", the call "{@code f(b)}" returns
+"{@code b.name}".
+<blockquote>
+@since New in version
+2.4. <br />
+</blockquote>
+
+@@function itemgetter(item)
+
+<p>Return a callable object that fetches {@var item} from its operand.
+After, "{@code f=itemgetter(2)}", the call "{@code f(b)}" returns
+"{@code b[2]}".
+<blockquote>
+@since New in version 2.4. <br />
+</blockquote>
+
+@@text 
+
+<p>Examples:
+
+<pre>
+&gt;&gt;&gt; from operator import *
+&gt;&gt;&gt; inventory = [('apple', 3), ('banana', 2), ('pear', 5), ('orange', 1)]
+&gt;&gt;&gt; getcount = itemgetter(1)
+&gt;&gt;&gt; map(getcount, inventory)
+[3, 2, 5, 1]
+&gt;&gt;&gt; sorted(inventory, key=getcount)
+[('orange', 1), ('banana', 2), ('apple', 3), ('pear', 5)]
+</pre>
+
+
+<h2>Mapping Operators to Functions</h2>
+
+<p>This table shows how abstract operations correspond to operator
+symbols in the Python syntax and the functions in the {@link operator}
+module.
+
+<p><table border=1>
+<tr> <th>
+<p>Operation
+<th>
+<p>Syntax
+<th>
+<p>Function
+<tr> <td>
+<p>Addition
+<td>
+<p>{@var a} + {@var b}
+<td>
+<p>{@code add(}{@var a}, {@var b})
+<tr> <td>
+<p>Concatenation
+<td>
+<p>{@var seq1} + {@var seq2}
+<td>
+<p>{@code concat(}{@var seq1}, {@var seq2})
+<tr> <td>
+<p>Containment Test
+<td>
+<p>{@var o} in {@var seq}
+<td>
+<p>{@code contains(}{@var seq}, {@var o})
+<tr> <td>
+<p>Division
+<td>
+<p>{@var a} / {@var b}
+<td>
+<p>{@code div(}{@var a}, {@var b}) # without {@code __future__.division}
+<tr> <td>
+<p>Division
+<td>
+<p>{@var a} / {@var b}
+<td>
+<p>{@code truediv(}{@var a}, {@var b}) # with {@code
+__future__.division}
+<tr> <td>
+<p>Division
+<td>
+<p>{@var a} // {@var b}
+<td>
+<p>{@code floordiv(}{@var a}, {@var b})
+<tr> <td>
+<p>Bitwise And
+<td>
+<p>{@var a} &amp; {@var b}
+<td>
+<p>{@code and_(}{@var a}, {@var b})
+<tr> <td>
+<p>Bitwise Exclusive Or
+<td>
+<p>{@var a} ^ {@var b}
+<td>
+<p>{@code xor(}{@var a}, {@var b})
+<tr> <td>
+<p>Bitwise Inversion
+<td>
+<p>{@code ~ }{@var a}
+<td>
+<p>{@code invert(}{@var a})
+<tr> <td>
+<p>Bitwise Or
+<td>
+<p>{@var a} | {@var b}
+<td>
+<p>{@code or_(}{@var a}, {@var b})
+<tr> <td>
+<p>Exponentiation
+<td>
+<p>{@var a} ** {@var b}
+<td>
+<p>{@code pow(}{@var a}, {@var b})
+<tr> <td>
+<p>Identity
+<td>
+<p>{@var a} is {@var b}
+<td>
+<p>{@code is_(}{@var a}, {@var b})
+<tr> <td>
+<p>Identity
+<td>
+<p>{@var a} is not {@var b}
+<td>
+<p>{@code is_not(}{@var a}, {@var b})
+<tr> <td>
+<p>Indexed Assignment
+<td>
+<p>{@var o}[{@var k}] = {@var v}
+<td>
+<p>{@code setitem(}{@var o}, {@var k}, {@var v})
+<tr> <td>
+<p>Indexed Deletion
+<td>
+<p>{@code del }{@var o}[{@var k}]
+<td>
+<p>{@code delitem(}{@var o}, {@var k})
+<tr> <td>
+<p>Indexing
+<td>
+<p>{@var o}[{@var k}]
+<td>
+<p>{@code getitem(}{@var o}, {@var k})
+<tr> <td>
+<p>Left Shift
+<td>
+<p>{@var a} &lt&lt {@var b}
+<td>
+<p>{@code lshift(}{@var a}, {@var b})
+<tr> <td>
+<p>Modulo
+<td>
+<p>{@var a} % {@var b}
+<td>
+<p>{@code mod(}{@var a}, {@var b})
+<tr> <td>
+<p>Multiplication
+<td>
+<p>{@var a} * {@var b}
+<td>
+<p>{@code mul(}{@var a}, {@var b})
+<tr> <td>
+<p>Negation (Arithmetic)
+<td>
+<p>{@code - }{@var a}
+<td>
+<p>{@code neg(}{@var a})
+<tr> <td>
+<p>Negation (Logical)
+<td>
+<p>{@code not }{@var a}
+<td>
+<p>{@code not_(}{@var a})
+<tr> <td>
+<p>Right Shift
+<td>
+<p>{@var a} >> {@var b}
+<td>
+<p>{@code rshift(}{@var a}, {@var b})
+<tr> <td>
+<p>Sequence Repitition
+<td>
+<p>{@var seq} * {@var i}
+<td>
+<p>{@code repeat(}{@var seq}, {@var i})
+<tr> <td>
+<p>Slice Assignment
+<td>
+<p>{@var seq}[{@var i}:{@var j}] = {@var values}
+<td>
+<p>{@code setslice(}{@var seq}, {@var i}, {@var j}, {@var values})
+<tr> <td>
+<p>Slice Deletion
+<td>
+<p>{@code del }{@var seq}[{@var i}:{@var j}]
+<td>
+<p>{@code delslice(}{@var seq}, {@var i}, {@var j})
+<tr> <td>
+<p>Slicing
+<td>
+<p>{@var seq}[{@var i}:{@var j}]
+<td>
+<p>{@code getslice(}{@var seq}, {@var i}, {@var j})
+<tr> <td>
+<p>String Formatting
+<td>
+<p>{@var s} % {@var o}
+<td>
+<p>{@code mod(}{@var s}, {@var o})
+<tr> <td>
+<p>Subtraction
+<td>
+<p>{@var a} - {@var b}
+<td>
+<p>{@code sub(}{@var a}, {@var b})
+<tr> <td>
+<p>Truth Test
+<td>
+<p>{@var o}
+<td>
+<p>{@code truth(}{@var o})
+<tr> <td>
+<p>Ordering
+<td>
+<p>{@var a} &lt {@var b}
+<td>
+<p>{@code lt(}{@var a}, {@var b})
+<tr> <td>
+<p>Ordering
+<td>
+<p>{@var a} &lt= {@var b}
+<td>
+<p>{@code le(}{@var a}, {@var b})
+<tr> <td>
+<p>Equality
+<td>
+<p>{@var a} == {@var b}
+<td>
+<p>{@code eq(}{@var a}, {@var b})
+<tr> <td>
+<p>Difference
+<td>
+<p>{@var a} != {@var b}
+<td>
+<p>{@code ne(}{@var a}, {@var b})
+<tr> <td>
+<p>Ordering
+<td>
+<p>{@var a} >= {@var b}
+<td>
+<p>{@code ge(}{@var a}, {@var b})
+<tr> <td>
+<p>Ordering
+<td>
+<p>{@var a} > {@var b}
+<td>
+<p>{@code gt(}{@var a}, {@var b})
+</table></p>

@@ -1,0 +1,18 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>The __hash__&nbsp;method</title> <script type="text/javascript">effbot_page_id=1830;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <h1 class="maintitle">The __hash__&nbsp;method</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p><strong>__hash__</strong>(self)</p><p>Called for the key object for dictionary operations, and by the
+built-in function <a href="hash.htm"><strong>hash</strong></a>.  Should return a 32-bit integer usable as
+a hash value for dictionary operations.  The only required property is
+that objects which compare equal have the same hash value; it is
+advised to somehow mix together (e.g., using exclusive or) the hash
+values for the components of the object that also play a part in
+comparison of objects.</p><p>If a class does not define a <a href="__cmp__.htm"><strong>__cmp__</strong></a> method it
+should not define a <a href="__hash__.htm"><strong>__hash__</strong></a> operation either; if
+it defines <a href="__cmp__.htm"><strong>__cmp__</strong></a> or <a href="__eq__.htm"><strong>__eq__</strong></a> but
+not <a href="__hash__.htm"><strong>__hash__</strong></a>, its instances will not be usable as
+dictionary keys. If a class defines mutable objects and implements a
+<a href="__cmp__.htm"><strong>__cmp__</strong></a> or <a href="__eq__.htm"><strong>__eq__</strong></a> method, it should
+not implement <a href="__hash__.htm"><strong>__hash__</strong></a>, since the dictionary
+implementation requires that a key&#8217;s hash value is immutable (if the
+object&#8217;s hash value changes, it will be in the wrong hash bucket).</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div> <!-- yui-g --></div> <!-- content --> </div> <!-- yui-b --> </div> <!-- yui-main --> <div class="yui-b"> <div id='menu'> <ul> <li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li> <li><b><a href="." title="Go to pyref index page.">::: pyref :::</a></b></li> </ul> </div> <!-- menu --> </div> <!-- yui-b --> </div> <!-- bd --> <div id="ft"> <!-- footer --> <p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;"></a>
+this page was rendered by a <a href="http://www.djangoproject.com/">django</a> application in 0.00s 2012-07-16 23:57:45.807607.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p> </div> <!-- ft --> </div> <!-- doc --> <script src="/media/js/effbot-min.js" type="text/javascript"> </script> </body> </html>

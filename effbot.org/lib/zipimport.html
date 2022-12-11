@@ -1,0 +1,158 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>zipimport</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-zipimport.html'>original</a> :::
+<a href='zipimport.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>zipimport&#8212;Import modules from Zip archives</h1>
+
+<div class="toc"><dl><dt>On this page:</dt><dd><a href="#zipimporter-objects">zipimporter Objects</a></dd><dd><a href="#examples">Examples</a></dd></dl></div><p>New in version 2.3.</p>
+
+<p>This module adds the ability to import Python modules (*.py,
+*.py[co]) and packages from ZIP-format archives. It is usually not
+needed to use the <code>
+zipimport</code> module explicitly; it is automatically used by the
+builtin <code>import</code> mechanism for
+<code>sys.path</code> items that are paths to ZIP archives.</p>
+
+<p>Typically, <code>sys.path</code> is a list of directory names as
+strings. This module also allows an item of <code>sys.path</code>
+to be a string naming a ZIP file archive. The ZIP archive can
+contain a subdirectory structure to support package imports, and a
+path within the archive can be specified to only import from a
+subdirectory. For example, the path /tmp/example.zip/lib/ would
+only import from the lib/ subdirectory within the archive.</p>
+
+<p>Any files may be present in the ZIP archive, but only files .py
+and .py[co] are available for import. ZIP import of dynamic modules
+(.pyd, .so) is disallowed. Note that if an archive only contains
+.py files, Python will not attempt to modify the archive by adding
+the corresponding .pyc or .pyo file, meaning that if a ZIP archive
+doesn't contain .pyc files, importing may be rather slow.</p>
+
+<p>Using the built-in <code>reload</code>
+function will fail if called on a module loaded from a ZIP archive;
+it is unlikely that <code>reload</code>
+would be needed, since this would imply that the ZIP has been
+altered during runtime.</p>
+
+<p>The available attributes of this module are:</p>
+</div>
+<dl><dt class="exception" id="ZipImporterError"><b>exception ZipImporterError</b> <tt class="nav"><a class="nav" href="zipimport.ZipImporterError" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="exception">
+<p>Exception raised by zipimporter objects. It's a subclass of <code>
+exceptions.ImportError</code>, so it can be caught as <code>exceptions.ImportError</code>,
+too.</p>
+</dd>
+<dt class="class" id="zipimporter"><b>class zipimporter</b> <tt class="nav"><a class="nav" href="zipimport.zipimporter" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>The class for importing ZIP files. See &#8220;<em>zipimporter
+Objects</em>&#8221; (section <code>
+zipimporter-objects.html#zipimporter-objects</code>) for constructor
+details.</p>
+</dd>
+</dl><div class="text"><span class="mark">@see</span> <a class="link" href="http://www.pkware.com/appnote.html">PKZIP Application
+Note</a> Documentation on the ZIP file format by Phil Katz, the
+creator of the format and algorithms used. <span class="mark">
+@see</span> <a class="link" href="http://www.python.org/peps/pep-0273.html">PEP 0273, Import
+Modules from Zip Archives</a> Written by James C. Ahlstrom, who
+also provided an implementation. Python 2.3 follows the
+specification in PEP 273, but uses an implementation written by
+Just van Rossum that uses the import hooks described in PEP 302.
+<span class="mark">@see</span> <a class="link" href="http://www.python.org/peps/pep-0302.html">PEP 0302, New
+Import Hooks</a> The PEP to add the import hooks that help this
+module work. 
+
+<h2 id="zipimporter-objects">zipimporter Objects <a class="nav" href="#zipimporter-objects">#</a></h2>
+</div>
+<dl><dt class="class"><b>class zipimporter(archivepath)</b> <tt class="nav"><a class="nav" href="zipimport.zipimporter" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>Create a new zipimporter instance. <var>archivepath</var> must
+be a path to a zipfile. <code>
+ZipImportError</code> is raised if <var>archivepath</var> doesn't
+point to a valid ZIP archive.</p>
+</dd>
+<dt class="method" id="zipimporter.find_module"><b>find_module(fullname[, path])</b> <tt class="nav"><a class="nav" href="zipimport.zipimporter.find_module" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Search for a module specified by <var>fullname</var>. <var>
+fullname</var> must be the fully qualified (dotted) module name. It
+returns the zipimporter instance itself if the module was found, or
+<code>None</code> if it wasn't. The optional <var>path</var>
+argument is ignored--it's there for compatibility with the importer
+protocol.</p>
+</dd>
+<dt class="method" id="zipimporter.get_code"><b>get_code(fullname)</b> <tt class="nav"><a class="nav" href="zipimport.zipimporter.get_code" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return the code object for the specified module. Raise <code>ZipImportError</code> if the
+module couldn't be found.</p>
+</dd>
+<dt class="method" id="zipimporter.get_data"><b>get_data(pathname)</b> <tt class="nav"><a class="nav" href="zipimport.zipimporter.get_data" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return the data associated with <var>pathname</var>. Raise <code>exceptions.IOError</code>
+if the file wasn't found.</p>
+</dd>
+<dt class="method" id="zipimporter.get_source"><b>get_source(fullname)</b> <tt class="nav"><a class="nav" href="zipimport.zipimporter.get_source" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return the source code for the specified module. Raise <code>ZipImportError</code> if the
+module couldn't be found, return <code>None</code> if the archive
+does contain the module, but has no source for it.</p>
+</dd>
+<dt class="method" id="zipimporter.is_package"><b>is_package(fullname)</b> <tt class="nav"><a class="nav" href="zipimport.zipimporter.is_package" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return True if the module specified by <var>fullname</var> is a
+package. Raise <code>
+ZipImportError</code> if the module couldn't be found.</p>
+</dd>
+<dt class="method" id="zipimporter.load_module"><b>load_module(fullname)</b> <tt class="nav"><a class="nav" href="zipimport.zipimporter.load_module" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Load the module specified by <var>fullname</var>. <var>
+fullname</var> must be the fully qualified (dotted) module name. It
+returns the imported module, or raises <code>ZipImportError</code> if it wasn't
+found.</p>
+</dd>
+</dl><div class="text">
+<h2 id="examples">Examples <a class="nav" href="#examples">#</a></h2>
+
+<p>Here is an example that imports a module from a ZIP archive -
+note that the <code>zipimport</code>
+module is not explicitly used.</p>
+
+<pre>
+$ unzip -l /tmp/example.zip
+Archive:  /tmp/example.zip
+  Length     Date   Time    Name
+ --------    ----   ----    ----
+     8467  11-26-02 22:30   jwzthreading.py
+ --------                   -------
+     8467                   1 file
+$ ./python
+Python 2.3 (#1, Aug 1 2003, 19:54:32) 
+&gt;&gt;&gt; import sys
+&gt;&gt;&gt; sys.path.insert(0, '/tmp/example.zip')  # Add .zip file to front of path
+&gt;&gt;&gt; import jwzthreading
+&gt;&gt;&gt; jwzthreading.__file__
+'/tmp/example.zip/jwzthreading.py'
+</pre>
+</div>
+</div></body></html>

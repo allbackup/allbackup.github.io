@@ -1,0 +1,33 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>What does 'UnicodeError: ASCII decoding error: ordinal not in range(128)' and 'UnicodeError: ASCII encoding error: ordinal not in range(128)'&nbsp;mean?</title></head><body data-page-id="898"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><p class="note" style="text-align: center"><strong>
+This is an old copy of the Python FAQ.  The information here may be
+outdated.
+</strong></p><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">What does 'UnicodeError: ASCII decoding error: ordinal not in range(128)' and 'UnicodeError: ASCII encoding error: ordinal not in range(128)'&nbsp;mean?</h1></div><div class="yui-ge"><div class="yui-u first"><p>These messages usually means that you&#8217;re trying to either mix Unicode
+strings with 8-bit strings, or is trying to write Unicode strings to
+an output file or device that only handles ASCII.</p><p>When you do this, Python will usually assume that the 8-bit string
+contains ASCII data only, and will raise an error if this is not the
+case.</p><p>The best way to avoid this on input is to convert all incoming strings
+to Unicode, do the processing in Unicode, and then convert back to
+encoded byte strings on the way out.</p><p>For this to work, you need to know what encoding to use.  In most
+cases, you can get this information from the environment the
+application runs in.  For example, a program that handles email or web
+input will typically find character set encoding information in
+Content-Type headers.  This can then be used to properly convert input
+data to Unicode.  Assuming the string referred to by value is encoded
+as UTF-8:</p><pre class="python">value = unicode(value, <span class="pystring">"utf-8"</span>)</pre><p>will return a Unicode object. If the data is not correctly encoded as
+UTF-8, the above call will raise a <a href="/pyref/UnicodeError.htm"><strong>UnicodeError</strong></a> exception.</p><p>On Windows, there is an encoding known as &#8220;mbcs&#8221;, which uses an
+encoding specific to your current locale.  In many cases, and
+particularly when working with COM, this may be an appropriate
+encoding to use.</p><p>If you only want strings converted to Unicode which have non-ASCII
+data, you can try converting them first assuming an ASCII encoding,
+and then generate Unicode objects if that fails:</p><pre class="python"><span class="pykeyword">try</span>:
+    unicode(value, <span class="pystring">"ascii"</span>)
+<span class="pykeyword">except</span> UnicodeError:
+    value = unicode(value, <span class="pystring">"utf-8"</span>)
+<span class="pykeyword">else</span>:
+    <span class="pycomment"># value was valid ASCII data</span>
+    <span class="pykeyword">pass</span></pre><p>It&#8217;s possible to change the default ASCII encoding in a file called
+<b>sitecustomize.py</b> that&#8217;s part of the Python library.  However,
+this isn&#8217;t recommended because changing the Python-wide default
+encoding may cause third-party extension modules to fail.</p><p>CATEGORY: programming</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to pyfaq index page.">::: pyfaq :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

@@ -1,0 +1,75 @@
+
+@@module dumbdbm
+
+<h1>dumbdbm&#8212;Portable DBM implementation</h1>
+
+
+<p class='note'><b>Note:</b> The {@link dumbdbm} module is intended as a
+last resort fallback for the {@link anydbm} module when no more robust
+module is available. The {@link dumbdbm} module is not written for speed
+and is not nearly as heavily used as the other database modules.
+
+<p>The {@link dumbdbm} module provides a persistent dictionary-like
+interface which is written entirely in Python. Unlike other modules such
+as {@link gdbm} and {@link bsddb}, no external library is required. As
+with other persistent mappings, the keys and values must always be
+strings.
+
+<p>The module defines the following:
+
+@@exception error
+
+<p>Raised on dumbdbm-specific errors, such as I/O errors. {@link
+exceptions.KeyError} is raised for general mapping errors like
+specifying an incorrect key.
+
+@@function open(filename[, flag[, mode]])
+
+<p>Open a dumbdbm database and return a dumbdbm object. The {@var
+filename} argument is the basename of the database file (without any
+specific extensions). When a dumbdbm database is created, files with
+.dat and .dir extensions are created.
+
+<p>The optional {@var flag} argument is currently ignored; the database
+is always opened for update, and will be created if it does not exist.
+
+<p>The optional {@var mode} argument is the Unix mode of the file, used
+only when the database has to be created. It defaults to octal {@code
+0666} (and will be modified by the prevailing umask).
+<blockquote>
+@since Changed in version 2.2: The mode argument was ignored in
+earlier versions. <br />
+</blockquote>
+
+@@text 
+
+@see 
+{@link anydbm Module anydbm}
+
+Generic interface to dbm-style databases.
+@see 
+{@link dbm Module dbm}
+
+Similar interface to the DBM/NDBM library.
+@see 
+{@link gdbm Module gdbm}
+
+Similar interface to the GNU GDBM library.
+@see 
+{@link shelve Module shelve}
+
+Persistence module which stores non-string data.
+@see 
+{@link whichdb Module whichdb}
+
+Utility module used to determine the type of an existing database.
+
+<h2>Dumbdbm Objects</h2>
+
+<p>In addition to the methods provided by the {@link UserDict.DictMixin}
+class, {@link dumbdbm} objects provide the following methods.
+
+@@method Dumbdbm.sync()
+
+<p>Synchronize the on-disk directory and data files. This method is
+called by the {@link sync} method of {@link Shelve} objects.

@@ -1,0 +1,84 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>The operator&nbsp;module</title></head><body data-page-id="600"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">The operator&nbsp;module</h1></div><div class="yui-ge"><div class="yui-u first"><p>This module provides a <span>&#8220;functional&#8221;</span> interface to
+the standard operators in Python. The functions in this module can
+be used instead of some <b>lambda</b> constructs, when processing
+data with functions like <b>map</b> and <b>filter</b>.</p><p>They are also quite popular among people who like to write
+obscure code, for obvious reasons.</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><div class="example wide">
+<b style="example">Example: Using the operator module</b>
+<pre class="wide">
+# File: <a href="operator/operator-example-1.py">operator-example-1.py</a>
+
+import operator
+
+sequence = 1, 2, 4
+
+print "add", "=&gt;", reduce(operator.add, sequence)
+print "sub", "=&gt;", reduce(operator.sub, sequence)
+print "mul", "=&gt;", reduce(operator.mul, sequence)
+print "concat", "=&gt;", operator.concat("spam", "egg")
+print "repeat", "=&gt;", operator.repeat("spam", 5)
+print "getitem", "=&gt;", operator.getitem(sequence, 2)
+print "indexOf", "=&gt;", operator.indexOf(sequence, 2)
+print "sequenceIncludes", "=&gt;", operator.sequenceIncludes(sequence, 3)
+
+</pre><pre class="computeroutput wide" moreinfo="NONE">
+add =&gt; 7
+sub =&gt; -5
+mul =&gt; 8
+concat =&gt; spamegg
+repeat =&gt; spamspamspamspamspam
+getitem =&gt; 4
+indexOf =&gt; 1
+sequenceIncludes =&gt; 0
+</pre></div></div><div class="yui-ge"><div class="yui-u first"><p>The module also contains a few functions which can be used to
+check object types:</p><div class="example">
+<b style="example">Example: Using the operator module for type checking</b>
+<pre>
+# File: <a href="operator/operator-example-2.py">operator-example-2.py</a>
+
+import operator
+import UserList
+
+def dump(data):
+    print type(data), "=&gt;",
+    if operator.isCallable(data):
+        print "CALLABLE",
+    if operator.isMappingType(data):
+        print "MAPPING",
+    if operator.isNumberType(data):
+        print "NUMBER",
+    if operator.isSequenceType(data):
+        print "SEQUENCE",
+    print
+        
+dump(0)
+dump("string")
+dump("string"[0])
+dump([1, 2, 3])
+dump((1, 2, 3))
+dump({"a": 1})
+dump(len) # function
+dump(UserList) # module
+dump(UserList.UserList) # class
+dump(UserList.UserList()) # instance
+
+</pre><pre class="computeroutput" moreinfo="NONE">
+&lt;type 'int'&gt; =&gt; NUMBER
+&lt;type 'string'&gt; =&gt; SEQUENCE
+&lt;type 'string'&gt; =&gt; SEQUENCE
+&lt;type 'list'&gt; =&gt; SEQUENCE
+&lt;type 'tuple'&gt; =&gt; SEQUENCE
+&lt;type 'dictionary'&gt; =&gt; MAPPING
+&lt;type 'builtin_function_or_method'&gt; =&gt; CALLABLE
+&lt;type 'module'&gt; =&gt;
+&lt;type 'class'&gt; =&gt; CALLABLE
+&lt;type 'instance'&gt; =&gt; MAPPING NUMBER SEQUENCE
+</pre></div><p>Note that the operator module doesn&#8217;t handle object instances in
+a sane fashion. In other words, be careful when you use the
+<b>isNumberType</b>, <b>isMappingType</b>, and
+<b>isSequenceType</b> functions. It&#8217;s easy to make your code less
+flexible than it has to be.</p><p>Also note that a string sequence member (a character) is also a
+sequence. If you&#8217;re writing a recursive function that uses
+<b>isSequenceType</b> to traverse an object tree, you better not
+pass it an ordinary string (or anything containing one).</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to librarybook index page.">::: librarybook :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

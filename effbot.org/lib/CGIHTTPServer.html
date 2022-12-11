@@ -1,0 +1,88 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>CGIHTTPServer</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-CGIHTTPServer.html'>original</a> :::
+<a href='CGIHTTPServer.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>CGIHTTPServer&#8212;CGI-capable HTTP request handler</h1>
+
+<p>The <code>CGIHTTPServer</code>
+module defines a request-handler class, interface compatible with
+<code>
+BaseHTTPServer.BaseHTTPRequestHandler</code> and inherits behavior
+from <code>
+SimpleHTTPServer.SimpleHTTPRequestHandler</code> but can also run CGI
+scripts.</p>
+
+<p class="note"><b>Note:</b> This module can run CGI scripts on
+Unix and Windows systems; on Mac OS it will only be able to run
+Python scripts within the same process as itself.</p>
+
+<p>The <code>CGIHTTPServer</code>
+module defines the following class:</p>
+</div>
+<dl><dt class="class" id="CGIHTTPRequestHandler"><b>class CGIHTTPRequestHandler(request, client_address,
+server)</b> <tt class="nav"><a class="nav" href="CGIHTTPServer.CGIHTTPRequestHandler" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>This class is used to serve either files or output of CGI
+scripts from the current directory and below. Note that mapping
+HTTP hierarchic structure to local directory structure is exactly
+as in <code>
+SimpleHTTPServer.SimpleHTTPRequestHandler</code>.</p>
+
+<p>The class will however, run the CGI script, instead of serving
+it as a file, if it guesses it to be a CGI script. Only
+directory-based CGI are used -- the other common server
+configuration is to treat special extensions as denoting CGI
+scripts.</p>
+
+<p>The <code>do_GET</code> and <code>do_HEAD</code> functions are modified
+to run CGI scripts and serve the output, instead of serving files,
+if the request leads to somewhere below the <code>
+cgi_directories</code> path.</p>
+</dd>
+</dl><div class="text">
+<p>The <a class="link" href="#CGIHTTPRequestHandler"><code>
+CGIHTTPRequestHandler</code></a> defines the following data member:</p>
+</div>
+<dl><dt class="attribute" id="CGIHTTPRequestHandler.cgi_directories"><b>cgi_directories</b> <tt class="nav"><a class="nav" href="CGIHTTPServer.CGIHTTPRequestHandler.cgi_directories" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>This defaults to <code>['/cgi-bin', '/htbin']</code> and
+describes directories to treat as containing CGI scripts.</p>
+</dd>
+</dl><div class="text">
+<p>The <a class="link" href="#CGIHTTPRequestHandler"><code>
+CGIHTTPRequestHandler</code></a> defines the following methods:</p>
+</div>
+<dl><dt class="method" id="CGIHTTPRequestHandler.do_POST"><b>do_POST()</b> <tt class="nav"><a class="nav" href="CGIHTTPServer.CGIHTTPRequestHandler.do_POST" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>This method serves the <code>'POST'</code> request type, only
+allowed for CGI scripts. Error 501, "Can only POST to CGI scripts",
+is output when trying to POST to a non-CGI url.</p>
+</dd>
+</dl><div class="text">
+<p>Note that CGI scripts will be run with UID of user nobody, for
+security reasons. Problems with the CGI script will be translated
+to error 403.</p>
+
+<p>For example usage, see the implementation of the <code>test</code> function. <span class="mark">@see</span>
+<code>Module
+BaseHTTPServer</code> Base class implementation for Web server and
+request handler.</p>
+</div>
+</div></body></html>

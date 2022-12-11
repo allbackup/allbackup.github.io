@@ -1,0 +1,1961 @@
+
+@@module doctest
+
+<h1>doctest&#8212;Test interactive Python examples</h1>
+
+<p>The {@link doctest} module searches for pieces of text that look like
+interactive Python sessions, and then executes those sessions to verify
+that they work exactly as shown. There are several common ways to use
+doctest:
+<ul>
+<li>
+<p>To check that a module's docstrings are up-to-date by verifying that
+all interactive examples still work as documented.
+<li>
+<p>To perform regression testing by verifying that interactive examples
+from a test file or a test object work as expected.
+<li>
+<p>To write tutorial documentation for a package, liberally illustrated
+with input-output examples. Depending on whether the examples or the
+expository text are emphasized, this has the flavor of "literate
+testing" or "executable documentation".
+</ul>
+
+<p>Here's a complete but small example module:
+
+<pre>
+"""
+This is the "example" module.
+
+The example module supplies one function, factorial().  For example,
+
+&gt;&gt;&gt; factorial(5)
+120
+"""
+
+def factorial(n):
+    """Return the factorial of n, an exact integer &gt;= 0.
+
+    If the result is small enough to fit in an int, return an int.
+    Else return a long.
+
+    &gt;&gt;&gt; [factorial(n) for n in range(6)]
+    [1, 1, 2, 6, 24, 120]
+    &gt;&gt;&gt; [factorial(long(n)) for n in range(6)]
+    [1, 1, 2, 6, 24, 120]
+    &gt;&gt;&gt; factorial(30)
+    265252859812191058636308480000000L
+    &gt;&gt;&gt; factorial(30L)
+    265252859812191058636308480000000L
+    &gt;&gt;&gt; factorial(-1)
+    Traceback (most recent call last):
+        ...
+    ValueError: n must be &gt;= 0
+
+    Factorials of floats are OK, but the float must be an exact integer:
+    &gt;&gt;&gt; factorial(30.1)
+    Traceback (most recent call last):
+        ...
+    ValueError: n must be exact integer
+    &gt;&gt;&gt; factorial(30.0)
+    265252859812191058636308480000000L
+
+    It must also not be ridiculously large:
+    &gt;&gt;&gt; factorial(1e100)
+    Traceback (most recent call last):
+        ...
+    OverflowError: n too large
+    """
+</pre>
+
+
+<pre>
+    import math
+    if not n &gt;= 0:
+        raise ValueError("n must be &gt;= 0")
+    if math.floor(n) != n:
+        raise ValueError("n must be exact integer")
+    if n+1 == n:  # catch a value like 1e300
+        raise OverflowError("n too large")
+    result = 1
+    factor = 2
+    while factor &lt;= n:
+        result *= factor
+        factor += 1
+    return result
+
+def _test():
+    import doctest
+    doctest.testmod()
+
+if __name__ == "__main__":
+    _test()
+</pre>
+
+
+<p>If you run example.py directly from the command line, {@link doctest}
+works its magic:
+
+<pre>
+$ python example.py
+$
+</pre>
+
+
+<p>There's no output! That's normal, and it means all the examples
+worked. Pass -v to the script, and {@link doctest} prints a detailed log
+of what it's trying, and prints a summary at the end:
+
+<pre>
+$ python example.py -v
+Trying:
+    factorial(5)
+Expecting:
+    120
+ok
+Trying:
+    [factorial(n) for n in range(6)]
+Expecting:
+    [1, 1, 2, 6, 24, 120]
+ok
+Trying:
+    [factorial(long(n)) for n in range(6)]
+Expecting:
+    [1, 1, 2, 6, 24, 120]
+ok
+</pre>
+
+
+<p>And so on, eventually ending with:
+
+<pre>
+Trying:
+    factorial(1e100)
+Expecting:
+    Traceback (most recent call last):
+        ...
+    OverflowError: n too large
+ok
+1 items had no tests:
+    __main__._test
+2 items passed all tests:
+   1 tests in __main__
+   8 tests in __main__.factorial
+9 tests in 3 items.
+9 passed and 0 failed.
+Test passed.
+$
+</pre>
+
+
+<p>That's all you need to know to start making productive use of {@link
+doctest}! Jump in. The following sections provide full details. Note
+that there are many examples of doctests in the standard Python test
+suite and libraries. Especially useful examples can be found in the
+standard test file Lib/test/test_doctest.py.
+
+<h2>Simple Usage: Checking Examples in Docstrings</h2>
+
+<p>The simplest way to start using doctest (but not necessarily the way
+you'll continue to do it) is to end each module {@link M} with:
+
+<pre>
+def _test():
+    import doctest
+    doctest.testmod()
+
+if __name__ == "__main__":
+    _test()
+</pre>
+
+
+<p>{@link doctest} then examines docstrings in module {@link M}.
+
+<p>Running the module as a script causes the examples in the docstrings
+to get executed and verified:
+
+<pre>
+python M.py
+</pre>
+
+
+<p>This won't display anything unless an example fails, in which case
+the failing example(s) and the cause(s) of the failure(s) are printed to
+stdout, and the final line of output is "{@code ***Test Failed*** }{@var
+N} failures.", where {@var N} is the number of examples that failed.
+
+<p>Run it with the -v switch instead:
+
+<pre>
+python M.py -v
+</pre>
+
+
+<p>and a detailed report of all examples tried is printed to standard
+output, along with assorted summaries at the end.
+
+<p>You can force verbose mode by passing {@code verbose=True} to {@link
+testmod}, or prohibit it by passing {@code verbose=False}. In either of
+those cases, {@code sys.argv} is not examined by {@link testmod} (so
+passing -v or not has no effect).
+
+<p>For more information on {@link testmod}, see section {@link
+doctest-basic-api.html#doctest-basic-api}.
+
+<h2>Simple Usage: Checking Examples in a Text File</h2>
+
+<p>Another simple application of doctest is testing interactive examples
+in a text file. This can be done with the {@link testfile} function:
+
+<pre>
+import doctest
+doctest.testfile("example.txt")
+</pre>
+
+
+<p>That short script executes and verifies any interactive Python
+examples contained in the file example.txt. The file content is treated
+as if it were a single giant docstring; the file doesn't need to contain
+a Python program! For example, perhaps example.txt contains this:
+
+<pre>
+The ``example`` module
+======================
+
+Using ``factorial``
+-------------------
+
+This is an example text file in reStructuredText format.  First import
+``factorial`` from the ``example`` module:
+
+    &gt;&gt;&gt; from example import factorial
+
+Now use it:
+
+    &gt;&gt;&gt; factorial(6)
+    120
+</pre>
+
+
+<p>Running {@code doctest.testfile("example.txt")} then finds the error
+in this documentation:
+
+<pre>
+File "./example.txt", line 14, in example.txt
+Failed example:
+    factorial(6)
+Expected:
+    120
+Got:
+    720
+</pre>
+
+
+<p>As with {@link testmod}, {@link testfile} won't display anything
+unless an example fails. If an example does fail, then the failing
+example(s) and the cause(s) of the failure(s) are printed to stdout,
+using the same format as {@link testmod}.
+
+<p>By default, {@link testfile} looks for files in the calling module's
+directory. See section {@link doctest-basic-api.html#doctest-basic-api}
+for a description of the optional arguments that can be used to tell it
+to look for files in other locations.
+
+<p>Like {@link testmod}, {@link testfile}'s verbosity can be set with
+the -v command-line switch or with the optional keyword argument {@var
+verbose}.
+
+<p>For more information on {@link testfile}, see section {@link
+doctest-basic-api.html#doctest-basic-api}.
+
+<h2>How It Works</h2>
+
+<p>This section examines in detail how doctest works: which docstrings
+it looks at, how it finds interactive examples, what execution context
+it uses, how it handles exceptions, and how option flags can be used to
+control its behavior. This is the information that you need to know to
+write doctest examples; for information about actually running doctest
+on these examples, see the following sections.
+@@error unexpected div online-navigation
+
+<h3>Which Docstrings Are Examined?</h3>
+
+<p>The module docstring, and all function, class and method docstrings
+are searched. Objects imported into the module are not searched.
+
+<p>In addition, if {@code M.__test__} exists and "is true", it must be a
+dict, and each entry maps a (string) name to a function object, class
+object, or string. Function and class object docstrings found from
+{@code M.__test__} are searched, and strings are treated as if they were
+docstrings. In output, a key {@code K} in {@code M.__test__} appears
+with name
+
+<pre>
+&lt;name of M&gt;.__test__.K
+</pre>
+
+
+<p>Any classes found are recursively searched similarly, to test
+docstrings in their contained methods and nested classes.
+
+<p>Changed in version 2.4: A "private name" concept is deprecated and no
+longer documented.
+
+<h3>How are Docstring Examples Recognized?</h3>
+
+<p>In most cases a copy-and-paste of an interactive console session
+works fine, but doctest isn't trying to do an exact emulation of any
+specific Python shell. All hard tab characters are expanded to spaces,
+using 8-column tab stops. If you don't believe tabs should mean that,
+too bad: don't use hard tabs, or write your own {@link DocTestParser}
+class.
+
+<p>Changed in version 2.4: Expanding tabs to spaces is new; previous
+versions tried to preserve hard tabs, with confusing results.
+
+<pre>
+&gt;&gt;&gt; # comments are ignored
+&gt;&gt;&gt; x = 12
+&gt;&gt;&gt; x
+12
+&gt;&gt;&gt; if x == 13:
+...     print "yes"
+... else:
+...     print "no"
+...     print "NO"
+...     print "NO!!!"
+...
+no
+NO
+NO!!!
+&gt;&gt;&gt;
+</pre>
+
+
+<p>Any expected output must immediately follow the final {@code '>}>> '
+or {@code '... '} line containing the code, and the expected output (if
+any) extends to the next {@code '>}>> ' or all-whitespace line.
+
+<p>The fine print:
+<ul>
+<li>
+<p>Expected output cannot contain an all-whitespace line, since such a
+line is taken to signal the end of expected output. If expected output
+does contain a blank line, put {@code &ltBLANKLINE>} in your doctest
+example each place a blank line is expected. Changed in version 2.4:
+{@code &ltBLANKLINE>} was added; there was no way to use expected output
+containing empty lines in previous versions.
+<li>
+<p>Output to stdout is captured, but not output to stderr (exception
+tracebacks are captured via a different means).
+<li>
+<p>If you continue a line via backslashing in an interactive session, or
+for any other reason use a backslash, you should use a raw docstring,
+which will preserve your backslashes exactly as you type them:
+
+<pre>
+&gt;&gt;&gt; def f(x):
+...     r'''Backslashes in a raw docstring: m\n'''
+&gt;&gt;&gt; print f.__doc__
+Backslashes in a raw docstring: m\n
+</pre>
+
+
+<p>Otherwise, the backslash will be interpreted as part of the string.
+For example, the "\" above would be interpreted as a newline character.
+Alternatively, you can double each backslash in the doctest version (and
+not use a raw string):
+
+<pre>
+&gt;&gt;&gt; def f(x):
+...     '''Backslashes in a raw docstring: m\\n'''
+&gt;&gt;&gt; print f.__doc__
+Backslashes in a raw docstring: m\n
+</pre>
+
+<li>
+<p>The starting column doesn't matter:
+
+<pre>
+  &gt;&gt;&gt; assert "Easy!"
+        &gt;&gt;&gt; import math
+            &gt;&gt;&gt; math.floor(1.9)
+            1.0
+</pre>
+
+
+<p>and as many leading whitespace characters are stripped from the
+expected output as appeared in the initial {@code '>}>> ' line that
+started the example.
+</ul>
+
+<h3>What's the Execution Context?</h3>
+
+<p>By default, each time {@link doctest} finds a docstring to test, it
+uses a {@em shallow copy} of {@link M}'s globals, so that running tests
+doesn't change the module's real globals, and so that one test in {@link
+M} can't leave behind crumbs that accidentally allow another test to
+work. This means examples can freely use any names defined at top-level
+in {@link M}, and names defined earlier in the docstring being run.
+Examples cannot see names defined in other docstrings.
+
+<p>You can force use of your own dict as the execution context by
+passing {@code globs=your_dict} to {@link testmod} or {@link testfile}
+instead.
+
+<h3>What About Exceptions?</h3>
+
+<p>No problem, provided that the traceback is the only output produced
+by the example: just paste in the traceback. Since tracebacks contain
+details that are likely to change rapidly (for example, exact file paths
+and line numbers), this is one case where doctest works hard to be
+flexible in what it accepts.
+
+<p>Simple example:
+
+<pre>
+&gt;&gt;&gt; [1, 2, 3].remove(42)
+Traceback (most recent call last):
+  File "&lt;stdin&gt;", line 1, in ?
+ValueError: list.remove(x): x not in list
+</pre>
+
+
+<p>That doctest succeeds if {@link exceptions.ValueError} is raised,
+with the "{@code list.remove(x): x not in list}" detail as shown.
+
+<p>The expected output for an exception must start with a traceback
+header, which may be either of the following two lines, indented the
+same as the first line of the example:
+
+<pre>
+Traceback (most recent call last):
+Traceback (innermost last):
+</pre>
+
+
+<p>The traceback header is followed by an optional traceback stack,
+whose contents are ignored by doctest. The traceback stack is typically
+omitted, or copied verbatim from an interactive session.
+
+<p>The traceback stack is followed by the most interesting part: the
+line(s) containing the exception type and detail. This is usually the
+last line of a traceback, but can extend across multiple lines if the
+exception has a multi-line detail:
+
+<pre>
+&gt;&gt;&gt; raise ValueError('multi\n    line\ndetail')
+Traceback (most recent call last):
+  File "&lt;stdin&gt;", line 1, in ?
+ValueError: multi
+    line
+detail
+</pre>
+
+
+<p>The last three lines (starting with {@link exceptions.ValueError})
+are compared against the exception's type and detail, and the rest are
+ignored.
+
+<p>Best practice is to omit the traceback stack, unless it adds
+significant documentation value to the example. So the last example is
+probably better as:
+
+<pre>
+&gt;&gt;&gt; raise ValueError('multi\n    line\ndetail')
+Traceback (most recent call last):
+    ...
+ValueError: multi
+    line
+detail
+</pre>
+
+
+<p>Note that tracebacks are treated very specially. In particular, in
+the rewritten example, the use of "{@code ...}" is independent of
+doctest's {@code ELLIPSIS} option. The ellipsis in that example could be
+left out, or could just as well be three (or three hundred) commas or
+digits, or an indented transcript of a Monty Python skit.
+
+<p>Some details you should read once, but won't need to remember:
+<ul>
+<li>
+<p>Doctest can't guess whether your expected output came from an
+exception traceback or from ordinary printing. So, e.g., an example that
+expects "{@code ValueError: 42 is prime}" will pass whether {@link
+exceptions.ValueError} is actually raised or if the example merely
+prints that traceback text. In practice, ordinary output rarely begins
+with a traceback header line, so this doesn't create real problems.
+<li>
+<p>Each line of the traceback stack (if present) must be indented
+further than the first line of the example, {@em or} start with a
+non-alphanumeric character. The first line following the traceback
+header indented the same and starting with an alphanumeric is taken to
+be the start of the exception detail. Of course this does the right
+thing for genuine tracebacks.
+<li>
+<p>When the {@code IGNORE_EXCEPTION_DETAIL} doctest option is is
+specified, everything following the leftmost colon is ignored.
+<li>
+<p>The interactive shell omits the traceback header line for some {@link
+exceptions.SyntaxError}s. But doctest uses the traceback header line to
+distinguish exceptions from non-exceptions. So in the rare case where
+you need to test a {@link exceptions.SyntaxError} that omits the
+traceback header, you will need to manually add the traceback header
+line to your test example.
+<li>
+<p>For some {@link exceptions.SyntaxError}s, Python displays the
+character position of the syntax error, using a {@code ^} marker:
+
+<pre>
+&gt;&gt;&gt; 1 1
+  File "&lt;stdin&gt;", line 1
+    1 1
+      ^
+SyntaxError: invalid syntax
+</pre>
+
+
+<p>Since the lines showing the position of the error come before the
+exception type and detail, they are not checked by doctest. For example,
+the following test would pass, even though it puts the {@code ^} marker
+in the wrong location:
+
+<pre>
+&gt;&gt;&gt; 1 1
+Traceback (most recent call last):
+  File "&lt;stdin&gt;", line 1
+    1 1
+    ^
+SyntaxError: invalid syntax
+</pre>
+
+</ul>
+
+<p>Changed in version 2.4: The ability to handle a multi-line exception
+detail, and the {@code IGNORE_EXCEPTION_DETAIL} doctest option, were
+added.
+
+<h3>Option Flags and Directives</h3>
+
+<p>A number of option flags control various aspects of doctest's
+behavior. Symbolic names for the flags are supplied as module constants,
+which can be or'ed together and passed to various functions. The names
+can also be used in doctest directives (see below).
+
+<p>The first group of options define test semantics, controlling aspects
+of how doctest decides whether actual output matches an example's
+expected output:
+
+@@variable DONT_ACCEPT_TRUE_FOR_1
+
+<p>By default, if an expected output block contains just {@code 1}, an
+actual output block containing just {@code 1} or just {@link True} is
+considered to be a match, and similarly for {@code 0} versus {@link
+False}. When {@code DONT_ACCEPT_TRUE_FOR_1} is specified, neither
+substitution is allowed. The default behavior caters to that Python
+changed the return type of many functions from integer to boolean;
+doctests expecting "little integer" output still work in these cases.
+This option will probably go away, but not for several years.
+
+@@variable DONT_ACCEPT_BLANKLINE
+
+<p>By default, if an expected output block contains a line containing
+only the string {@code &ltBLANKLINE>}, then that line will match a blank
+line in the actual output. Because a genuinely blank line delimits the
+expected output, this is the only way to communicate that a blank line
+is expected. When {@code DONT_ACCEPT_BLANKLINE} is specified, this
+substitution is not allowed.
+
+@@variable NORMALIZE_WHITESPACE
+
+<p>When specified, all sequences of whitespace (blanks and newlines) are
+treated as equal. Any sequence of whitespace within the expected output
+will match any sequence of whitespace within the actual output. By
+default, whitespace must match exactly. {@code NORMALIZE_WHITESPACE} is
+especially useful when a line of expected output is very long, and you
+want to wrap it across multiple lines in your source.
+
+@@variable ELLIPSIS
+
+<p>When specified, an ellipsis marker ({@code ...}) in the expected
+output can match any substring in the actual output. This includes
+substrings that span line boundaries, and empty substrings, so it's best
+to keep usage of this simple. Complicated uses can lead to the same
+kinds of "oops, it matched too much!" surprises that {@code .*} is prone
+to in regular expressions.
+
+@@variable IGNORE_EXCEPTION_DETAIL
+
+<p>When specified, an example that expects an exception passes if an
+exception of the expected type is raised, even if the exception detail
+does not match. For example, an example expecting "{@code ValueError:
+42}" will pass if the actual exception raised is "{@code ValueError:
+3*14}", but will fail, e.g., if {@link exceptions.TypeError} is raised.
+
+<p>Note that a similar effect can be obtained using {@code ELLIPSIS},
+and {@code IGNORE_EXCEPTION_DETAIL} may go away when Python releases
+prior to 2.4 become uninteresting. Until then, {@code
+IGNORE_EXCEPTION_DETAIL} is the only clear way to write a doctest that
+doesn't care about the exception detail yet continues to pass under
+Python releases prior to 2.4 (doctest directives appear to be comments
+to them). For example,
+
+<pre>
+&gt;&gt;&gt; (1, 2)[3] = 'moo' #doctest: +IGNORE_EXCEPTION_DETAIL
+Traceback (most recent call last):
+  File "&lt;stdin&gt;", line 1, in ?
+TypeError: object doesn't support item assignment
+</pre>
+
+
+<p>passes under Python 2.4 and Python 2.3. The detail changed in 2.4, to
+say "does not" instead of "doesn't".
+
+@@variable COMPARISON_FLAGS
+
+<p>A bitmask or'ing together all the comparison flags above.
+
+@@text 
+
+<p>The second group of options controls how test failures are reported:
+
+@@variable REPORT_UDIFF
+
+<p>When specified, failures that involve multi-line expected and actual
+outputs are displayed using a unified diff.
+
+@@variable REPORT_CDIFF
+
+<p>When specified, failures that involve multi-line expected and actual
+outputs will be displayed using a context diff.
+
+@@variable REPORT_NDIFF
+
+<p>When specified, differences are computed by {@code difflib.Differ},
+using the same algorithm as the popular ndiff.py utility. This is the
+only method that marks differences within lines as well as across lines.
+For example, if a line of expected output contains digit {@code 1} where
+actual output contains letter {@code l}, a line is inserted with a caret
+marking the mismatching column positions.
+
+@@variable REPORT_ONLY_FIRST_FAILURE
+
+<p>When specified, display the first failing example in each doctest,
+but suppress output for all remaining examples. This will prevent
+doctest from reporting correct examples that break because of earlier
+failures; but it might also hide incorrect examples that fail
+independently of the first failure. When {@code
+REPORT_ONLY_FIRST_FAILURE} is specified, the remaining examples are
+still run, and still count towards the total number of failures
+reported; only the output is suppressed.
+
+@@variable REPORTING_FLAGS
+
+<p>A bitmask or'ing together all the reporting flags above.
+
+@@text 
+
+<p>"Doctest directives" may be used to modify the option flags for
+individual examples. Doctest directives are expressed as a special
+Python comment following an example's source code:
+
+@@unknown directive ::= "#" "doctest:" directive_options directive_options ::= directive_option ("," directive_option)* directive_option ::= on_or_off directive_option_name on_or_off ::= "+" | "-" directive_option_name ::= "DONT_ACCEPT_BLANKLINE" | "NORMALIZE_WHITESPACE" | ... Download entire grammar as text.
+
+@@text 
+
+<p>Whitespace is not allowed between the {@code +} or {@code -} and the
+directive option name. The directive option name can be any of the
+option flag names explained above.
+
+<p>An example's doctest directives modify doctest's behavior for that
+single example. Use {@code +} to enable the named behavior, or {@code -}
+to disable it.
+
+<p>For example, this test passes:
+
+<pre>
+&gt;&gt;&gt; print range(20) #doctest: +NORMALIZE_WHITESPACE
+[0,   1,  2,  3,  4,  5,  6,  7,  8,  9,
+10,  11, 12, 13, 14, 15, 16, 17, 18, 19]
+</pre>
+
+
+<p>Without the directive it would fail, both because the actual output
+doesn't have two blanks before the single-digit list elements, and
+because the actual output is on a single line. This test also passes,
+and also requires a directive to do so:
+
+<pre>
+&gt;&gt;&gt; print range(20) # doctest:+ELLIPSIS
+[0, 1, ..., 18, 19]
+</pre>
+
+
+<p>Multiple directives can be used on a single physical line, separated
+by commas:
+
+<pre>
+&gt;&gt;&gt; print range(20) # doctest: +ELLIPSIS, +NORMALIZE_WHITESPACE
+[0,    1, ...,   18,    19]
+</pre>
+
+
+<p>If multiple directive comments are used for a single example, then
+they are combined:
+
+<pre>
+&gt;&gt;&gt; print range(20) # doctest: +ELLIPSIS
+...                 # doctest: +NORMALIZE_WHITESPACE
+[0,    1, ...,   18,    19]
+</pre>
+
+
+<p>As the previous example shows, you can add "{@code ...}" lines to
+your example containing only directives. This can be useful when an
+example is too long for a directive to comfortably fit on the same line:
+
+<pre>
+&gt;&gt;&gt; print range(5) + range(10,20) + range(30,40) + range(50,60)
+... # doctest: +ELLIPSIS
+[0, ..., 4, 10, ..., 19, 30, ..., 39, 50, ..., 59]
+</pre>
+
+
+<p>Note that since all options are disabled by default, and directives
+apply only to the example they appear in, enabling options (via {@code
++} in a directive) is usually the only meaningful choice. However,
+option flags can also be passed to functions that run doctests,
+establishing different defaults. In such cases, disabling an option via
+{@code -} in a directive can be useful.
+
+<p>Changed in version 2.4: Constants {@code DONT_ACCEPT_BLANKLINE},
+{@code NORMALIZE_WHITESPACE}, {@code ELLIPSIS}, {@code
+IGNORE_EXCEPTION_DETAIL}, {@code REPORT_UDIFF}, {@code REPORT_CDIFF},
+{@code REPORT_NDIFF}, {@code REPORT_ONLY_FIRST_FAILURE}, {@code
+COMPARISON_FLAGS} and {@code REPORTING_FLAGS} were added; by default
+{@code &ltBLANKLINE>} in expected output matches an empty line in actual
+output; and doctest directives were added.
+
+<p>There's also a way to register new option flag names, although this
+isn't useful unless you intend to extend {@link doctest} internals via
+subclassing:
+
+@@function register_optionflag(name)
+
+<p>Create a new option flag with a given name, and return the new flag's
+integer value. {@link register_optionflag} can be used when subclassing
+{@link OutputChecker} or {@link DocTestRunner} to create new options
+that are supported by your subclasses. {@link register_optionflag}
+should always be called using the following idiom:
+
+<pre>
+  MY_FLAG = register_optionflag('MY_FLAG')
+</pre>
+
+<blockquote>
+@since New in version 2.4. <br />
+</blockquote>
+
+@@text 
+
+<h3>Warnings</h3>
+
+<p>{@link doctest} is serious about requiring exact matches in expected
+output. If even a single character doesn't match, the test fails. This
+will probably surprise you a few times, as you learn exactly what Python
+does and doesn't guarantee about output. For example, when printing a
+dict, Python doesn't guarantee that the key-value pairs will be printed
+in any particular order, so a test like
+
+<pre>
+&gt;&gt;&gt; foo()
+{"Hermione": "hippogryph", "Harry": "broomstick"}
+</pre>
+
+
+<p>is vulnerable! One workaround is to do
+
+<pre>
+&gt;&gt;&gt; foo() == {"Hermione": "hippogryph", "Harry": "broomstick"}
+True
+</pre>
+
+
+<p>instead. Another is to do
+
+<pre>
+&gt;&gt;&gt; d = foo().items()
+&gt;&gt;&gt; d.sort()
+&gt;&gt;&gt; d
+[('Harry', 'broomstick'), ('Hermione', 'hippogryph')]
+</pre>
+
+
+<p>There are others, but you get the idea.
+
+<p>Another bad idea is to print things that embed an object address,
+like
+
+<pre>
+&gt;&gt;&gt; id(1.0) # certain to fail some of the time
+7948648
+&gt;&gt;&gt; class C: pass
+&gt;&gt;&gt; C()   # the default repr() for instances embeds an address
+&lt;__main__.C instance at 0x00AC18F0&gt;
+</pre>
+
+
+<p>The {@code ELLIPSIS} directive gives a nice approach for the last
+example:
+
+<pre>
+&gt;&gt;&gt; C() #doctest: +ELLIPSIS
+&lt;__main__.C instance at 0x...&gt;
+</pre>
+
+
+<p>Floating-point numbers are also subject to small output variations
+across platforms, because Python defers to the platform C library for
+float formatting, and C libraries vary widely in quality here.
+
+<pre>
+&gt;&gt;&gt; 1./7  # risky
+0.14285714285714285
+&gt;&gt;&gt; print 1./7 # safer
+0.142857142857
+&gt;&gt;&gt; print round(1./7, 6) # much safer
+0.142857
+</pre>
+
+
+<p>Numbers of the form {@code I/2.**J} are safe across all platforms,
+and I often contrive doctest examples to produce numbers of that form:
+
+<pre>
+&gt;&gt;&gt; 3./4  # utterly safe
+0.75
+</pre>
+
+
+<p>Simple fractions are also easier for people to understand, and that
+makes for better documentation.
+
+<h2>Basic API</h2>
+
+<p>The functions {@link testmod} and {@link testfile} provide a simple
+interface to doctest that should be sufficient for most basic uses. For
+a less formal introduction to these two functions, see sections {@link
+doctest-simple-testmod.html#doctest-simple-testmod} and {@link
+doctest-simple-testfile.html#doctest-simple-testfile}.
+
+@@function testfile(filename[, module_relative][, name][, package][, globs][, verbose][, report][, optionflags][, extraglobs][, raise_on_error][, parser])
+
+<p>All arguments except {@var filename} are optional, and should be
+specified in keyword form.
+
+<p>Test examples in the file named {@var filename}. Return "{@code
+(}{@var failure_count}, {@var test_count})".
+
+<p>Optional argument {@var module_relative} specifies how the filename
+should be interpreted:
+<ul>
+<li>
+<p>If {@var module_relative} is {@link True} (the default), then {@var
+filename} specifies an OS-independent module-relative path. By default,
+this path is relative to the calling module's directory; but if the
+{@var package} argument is specified, then it is relative to that
+package. To ensure OS-independence, {@var filename} should use {@code /}
+characters to separate path segments, and may not be an absolute path
+(i.e., it may not begin with {@code /}).
+<li>
+<p>If {@var module_relative} is {@link False}, then {@var filename}
+specifies an OS-specific path. The path may be absolute or relative;
+relative paths are resolved with respect to the current working
+directory.
+</ul>
+
+<p>Optional argument {@var name} gives the name of the test; by default,
+or if {@link None}, {@code os.path.basename(}{@var filename}) is used.
+
+<p>Optional argument {@var package} is a Python package or the name of a
+Python package whose directory should be used as the base directory for
+a module-relative filename. If no package is specified, then the calling
+module's directory is used as the base directory for module-relative
+filenames. It is an error to specify {@var package} if {@var
+module_relative} is {@code False}.
+
+<p>Optional argument {@var globs} gives a dict to be used as the globals
+when executing examples. A new shallow copy of this dict is created for
+the doctest, so its examples start with a clean slate. By default, or if
+{@link None}, a new empty dict is used.
+
+<p>Optional argument {@var extraglobs} gives a dict merged into the
+globals used to execute examples. This works like {@link dict.update}:
+if {@var globs} and {@var extraglobs} have a common key, the associated
+value in {@var extraglobs} appears in the combined dict. By default, or
+if {@link None}, no extra globals are used. This is an advanced feature
+that allows parameterization of doctests. For example, a doctest can be
+written for a base class, using a generic name for the class, then
+reused to test any number of subclasses by passing an {@var extraglobs}
+dict mapping the generic name to the subclass to be tested.
+
+<p>Optional argument {@var verbose} prints lots of stuff if true, and
+prints only failures if false; by default, or if {@code None}, it's true
+if and only if {@code '-v'} is in {@code sys.argv}.
+
+<p>Optional argument {@var report} prints a summary at the end when
+true, else prints nothing at the end. In verbose mode, the summary is
+detailed, else the summary is very brief (in fact, empty if all tests
+passed).
+
+<p>Optional argument {@var optionflags} or's together option flags. See
+section {@link doctest-options.html#doctest-options}.
+
+<p>Optional argument {@var raise_on_error} defaults to false. If true,
+an exception is raised upon the first failure or unexpected exception in
+an example. This allows failures to be post-mortem debugged. Default
+behavior is to continue running examples.
+
+<p>Optional argument {@var parser} specifies a {@link DocTestParser} (or
+subclass) that should be used to extract tests from the files. It
+defaults to a normal parser (i.e., {@link DocTestParser}()).
+<blockquote>
+@since New in version 2.4. <br />
+</blockquote>
+
+@@function testmod([m][, name][, globs][, verbose][, isprivate][, report][, optionflags][, extraglobs][, raise_on_error][, exclude_empty])
+
+<p>All arguments are optional, and all except for {@var m} should be
+specified in keyword form.
+
+<p>Test examples in docstrings in functions and classes reachable from
+module {@var m} (or module {@link __main__} if {@var m} is not supplied
+or is {@code None}), starting with {@var m}.__doc__.
+
+<p>Also test examples reachable from dict {@var m}.__test__, if it
+exists and is not {@link None}. {@var m}.__test__ maps names (strings)
+to functions, classes and strings; function and class docstrings are
+searched for examples; strings are searched directly, as if they were
+docstrings.
+
+<p>Only docstrings attached to objects belonging to module {@var m} are
+searched.
+
+<p>Return "{@code (}{@var failure_count}, {@var test_count})".
+
+<p>Optional argument {@var name} gives the name of the module; by
+default, or if {@link None}, {@var m}.__name__ is used.
+
+<p>Optional argument {@var exclude_empty} defaults to false. If true,
+objects for which no doctests are found are excluded from consideration.
+The default is a backward compatibility hack, so that code still using
+{@link doctest.master.summarize} in conjunction with {@link testmod}
+continues to get output for objects with no tests. The {@var
+exclude_empty} argument to the newer {@link DocTestFinder} constructor
+defaults to true.
+
+<p>Optional arguments {@var extraglobs}, {@var verbose}, {@var report},
+{@var optionflags}, {@var raise_on_error}, and {@var globs} are the same
+as for function {@link testfile} above, except that {@var globs}
+defaults to {@var m}.__dict__.
+
+<p>Optional argument {@var isprivate} specifies a function used to
+determine whether a name is private. The default function treats all
+names as public. {@var isprivate} can be set to {@code
+doctest.is_private} to skip over names that are private according to
+Python's underscore naming convention.
+
+
+<p>Deprecated since release 2.4. {@var isprivate} was a stupid idea -
+don't use it. If you need to skip tests based on name, filter the list
+returned by {@code DocTestFinder.find()} instead.
+
+<p>Changed in version 2.4: The parameters {@var extraglobs}, {@var
+raise_on_error} and {@var exclude_empty} were added.
+<blockquote>
+@since Changed in version 2.3: The parameter
+optionflags was added. <br />
+</blockquote>
+
+@@text 
+
+<p>There's also a function to run the doctests associated with a single
+object. This function is provided for backward compatibility. There are
+no plans to deprecate it, but it's rarely useful:
+
+@@function run_docstring_examples(f, globs[, verbose][, name][, compileflags][, optionflags])
+
+<p>Test examples associated with object {@var f}; for example, {@var f}
+may be a module, function, or class object.
+
+<p>A shallow copy of dictionary argument {@var globs} is used for the
+execution context.
+
+<p>Optional argument {@var name} is used in failure messages, and
+defaults to {@code "NoName"}.
+
+<p>If optional argument {@var verbose} is true, output is generated even
+if there are no failures. By default, output is generated only in case
+of an example failure.
+
+<p>Optional argument {@var compileflags} gives the set of flags that
+should be used by the Python compiler when running the examples. By
+default, or if {@link None}, flags are deduced corresponding to the set
+of future features found in {@var globs}.
+
+<p>Optional argument {@var optionflags} works as for function {@link
+testfile} above.
+
+@@text 
+
+<h2>Unittest API</h2>
+
+<p>As your collection of doctest'ed modules grows, you'll want a way to
+run all their doctests systematically. Prior to Python 2.4, {@link
+doctest} had a barely documented {@link Tester} class that supplied a
+rudimentary way to combine doctests from multiple modules. {@link
+Tester} was feeble, and in practice most serious Python testing
+frameworks build on the {@link unittest} module, which supplies many
+flexible ways to combine tests from multiple sources. So, in Python 2.4,
+{@link doctest}'s {@link Tester} class is deprecated, and {@link
+doctest} provides two functions that can be used to create {@link
+unittest} test suites from modules and text files containing doctests.
+These test suites can then be run using {@link unittest} test runners:
+
+<pre>
+import unittest
+import doctest
+import my_module_with_doctests, and_another
+
+suite = unittest.TestSuite()
+for mod in my_module_with_doctests, and_another:
+    suite.addTest(doctest.DocTestSuite(mod))
+runner = unittest.TextTestRunner()
+runner.run(suite)
+</pre>
+
+
+<p>There are two main functions for creating {@link unittest}.TestSuite
+instances from text files and modules with doctests:
+
+@@function DocFileSuite(*paths, **kw)
+
+<p>Convert doctest tests from one or more text files to a {@link
+unittest}.TestSuite.
+
+<p>The returned {@link unittest}.TestSuite is to be run by the unittest
+framework and runs the interactive examples in each file. If an example
+in any file fails, then the synthesized unit test fails, and a {@link
+failureException} exception is raised showing the name of the file
+containing the test and a (sometimes approximate) line number.
+
+<p>Pass one or more paths (as strings) to text files to be examined.
+
+<p>Options may be provided as keyword arguments:
+
+<p>Optional argument {@var module_relative} specifies how the filenames
+in {@var paths} should be interpreted:
+<ul>
+<li>
+<p>If {@var module_relative} is {@link True} (the default), then each
+filename specifies an OS-independent module-relative path. By default,
+this path is relative to the calling module's directory; but if the
+{@var package} argument is specified, then it is relative to that
+package. To ensure OS-independence, each filename should use {@code /}
+characters to separate path segments, and may not be an absolute path
+(i.e., it may not begin with {@code /}).
+<li>
+<p>If {@var module_relative} is {@link False}, then each filename
+specifies an OS-specific path. The path may be absolute or relative;
+relative paths are resolved with respect to the current working
+directory.
+</ul>
+
+<p>Optional argument {@var package} is a Python package or the name of a
+Python package whose directory should be used as the base directory for
+module-relative filenames. If no package is specified, then the calling
+module's directory is used as the base directory for module-relative
+filenames. It is an error to specify {@var package} if {@var
+module_relative} is {@code False}.
+
+<p>Optional argument {@var setUp} specifies a set-up function for the
+test suite. This is called before running the tests in each file. The
+{@var setUp} function will be passed a {@link DocTest} object. The setUp
+function can access the test globals as the {@var globs} attribute of
+the test passed.
+
+<p>Optional argument {@var tearDown} specifies a tear-down function for
+the test suite. This is called after running the tests in each file. The
+{@var tearDown} function will be passed a {@link DocTest} object. The
+setUp function can access the test globals as the {@var globs} attribute
+of the test passed.
+
+<p>Optional argument {@var globs} is a dictionary containing the initial
+global variables for the tests. A new copy of this dictionary is created
+for each test. By default, {@var globs} is a new empty dictionary.
+
+<p>Optional argument {@var optionflags} specifies the default doctest
+options for the tests, created by or-ing together individual option
+flags. See section {@link doctest-options.html#doctest-options}. See
+function {@link set_unittest_reportflags} below for a better way to set
+reporting options.
+
+<p>Optional argument {@var parser} specifies a {@link DocTestParser} (or
+subclass) that should be used to extract tests from the files. It
+defaults to a normal parser (i.e., {@link DocTestParser}()).
+<blockquote>
+@since New in version 2.4. <br />
+</blockquote>
+
+@@function DocTestSuite([module][, globs][, extraglobs][, test_finder][, setUp][, tearDown][, checker])
+
+<p>Convert doctest tests for a module to a {@link unittest}.TestSuite.
+
+<p>The returned {@link unittest}.TestSuite is to be run by the unittest
+framework and runs each doctest in the module. If any of the doctests
+fail, then the synthesized unit test fails, and a {@link
+failureException} exception is raised showing the name of the file
+containing the test and a (sometimes approximate) line number.
+
+<p>Optional argument {@var module} provides the module to be tested. It
+can be a module object or a (possibly dotted) module name. If not
+specified, the module calling this function is used.
+
+<p>Optional argument {@var globs} is a dictionary containing the initial
+global variables for the tests. A new copy of this dictionary is created
+for each test. By default, {@var globs} is a new empty dictionary.
+
+<p>Optional argument {@var extraglobs} specifies an extra set of global
+variables, which is merged into {@var globs}. By default, no extra
+globals are used.
+
+<p>Optional argument {@var test_finder} is the {@link DocTestFinder}
+object (or a drop-in replacement) that is used to extract doctests from
+the module.
+
+<p>Optional arguments {@var setUp}, {@var tearDown}, and {@var
+optionflags} are the same as for function {@link DocFileSuite} above.
+
+<p>Changed in version 2.4: The parameters {@var globs}, {@var
+extraglobs}, {@var test_finder}, {@var setUp}, {@var tearDown}, and
+{@var optionflags} were added; this function now uses the same search
+technique as {@link testmod}.
+<blockquote>
+@since New in version 2.3. <br />
+</blockquote>
+
+@@text 
+
+<p>Under the covers, {@link DocTestSuite} creates a {@link
+unittest}.TestSuite out of {@link doctest.DocTestCase} instances, and
+{@link DocTestCase} is a subclass of {@link }{@link unittest}.TestCase.
+{@link DocTestCase} isn't documented here (it's an internal detail), but
+studying its code can answer questions about the exact details of {@link
+unittest} integration.
+
+<p>Similarly, {@link DocFileSuite} creates a {@link unittest}.TestSuite
+out of {@link doctest.DocFileCase} instances, and {@link DocFileCase} is
+a subclass of {@link DocTestCase}.
+
+<p>So both ways of creating a {@link }{@link unittest}.TestSuite run
+instances of {@link DocTestCase}. This is important for a subtle reason:
+when you run {@link doctest} functions yourself, you can control the
+{@link doctest} options in use directly, by passing option flags to
+{@link doctest} functions. However, if you're writing a {@link unittest}
+framework, {@link unittest} ultimately controls when and how tests get
+run. The framework author typically wants to control {@link }{@link
+doctest} reporting options (perhaps, e.g., specified by command line
+options), but there's no way to pass options through {@link unittest} to
+{@link doctest} test runners.
+
+<p>For this reason, {@link doctest} also supports a notion of {@link
+doctest} reporting flags specific to {@link unittest} support, via this
+function:
+
+@@function set_unittest_reportflags(flags)
+
+<p>Set the {@link doctest} reporting flags to use.
+
+<p>Argument {@var flags} or's together option flags. See section {@link
+doctest-options.html#doctest-options}. Only "reporting flags" can be
+used.
+
+<p>This is a module-global setting, and affects all future doctests run
+by module {@link unittest}: the {@link runTest} method of {@link
+DocTestCase} looks at the option flags specified for the test case when
+the {@link DocTestCase} instance was constructed. If no reporting flags
+were specified (which is the typical and expected case), {@link
+doctest}'s {@link unittest} reporting flags are or'ed into the option
+flags, and the option flags so augmented are passed to the {@link
+DocTestRunner} instance created to run the doctest. If any reporting
+flags were specified when the {@link DocTestCase} instance was
+constructed, {@link doctest}'s {@link unittest} reporting flags are
+ignored.
+
+<p>The value of the {@link unittest} reporting flags in effect before
+the function was called is returned by the function.
+<blockquote>
+@since New in version 2.4. <br />
+</blockquote>
+
+@@text 
+
+<h2>Advanced API</h2>
+
+<p>The basic API is a simple wrapper that's intended to make doctest
+easy to use. It is fairly flexible, and should meet most users' needs;
+however, if you require more fine-grained control over testing, or wish
+to extend doctest's capabilities, then you should use the advanced API.
+
+<p>The advanced API revolves around two container classes, which are
+used to store the interactive examples extracted from doctest cases:
+<ul>
+<li>
+<p>{@link Example}: A single python statement, paired with its expected
+output.
+<li>
+<p>{@link DocTest}: A collection of {@link Example}s, typically
+extracted from a single docstring or text file.
+</ul>
+
+<p>Additional processing classes are defined to find, parse, and run,
+and check doctest examples:
+<ul>
+<li>
+<p>{@link DocTestFinder}: Finds all docstrings in a given module, and
+uses a {@link DocTestParser} to create a {@link DocTest} from every
+docstring that contains interactive examples.
+<li>
+<p>{@link DocTestParser}: Creates a {@link DocTest} object from a string
+(such as an object's docstring).
+<li>
+<p>{@link DocTestRunner}: Executes the examples in a {@link DocTest},
+and uses an {@link OutputChecker} to verify their output.
+<li>
+<p>{@link OutputChecker}: Compares the actual output from a doctest
+example with the expected output, and decides whether they match.
+</ul>
+
+<p>The relationships among these processing classes are summarized in
+the following diagram:
+
+<pre>
+                            list of:
++------+                   +---------+
+|module| --DocTestFinder-&gt; | DocTest | --DocTestRunner-&gt; results
++------+    |        ^     +---------+     |       ^    (printed)
+            |        |     | Example |     |       |
+            v        |     |   ...   |     v       |
+           DocTestParser   | Example |   OutputChecker
+                           +---------+
+</pre>
+
+@@error unexpected div online-navigation
+
+<h3>DocTest Objects</h3>
+
+@@class DocTest(examples, globs, name, filename, lineno, docstring)
+
+<p>A collection of doctest examples that should be run in a single
+namespace. The constructor arguments are used to initialize the member
+variables of the same names.
+<blockquote>
+@since New
+in version 2.4. <br />
+</blockquote>
+
+@@text 
+
+<p>{@link DocTest} defines the following member variables. They are
+initialized by the constructor, and should not be modified directly.
+
+@@attribute DocTest.examples
+
+<p>A list of {@link Example} objects encoding the individual interactive
+Python examples that should be run by this test.
+
+@@attribute DocTest.globs
+
+<p>The namespace (aka globals) that the examples should be run in. This
+is a dictionary mapping names to values. Any changes to the namespace
+made by the examples (such as binding new variables) will be reflected
+in {@link globs} after the test is run.
+
+@@attribute DocTest.name
+
+<p>A string name identifying the {@link DocTest}. Typically, this is the
+name of the object or file that the test was extracted from.
+
+@@attribute DocTest.filename
+
+<p>The name of the file that this {@link DocTest} was extracted from; or
+{@link None} if the filename is unknown, or if the {@link DocTest} was
+not extracted from a file.
+
+@@attribute DocTest.lineno
+
+<p>The line number within {@link filename} where this {@link DocTest}
+begins, or {@link None} if the line number is unavailable. This line
+number is zero-based with respect to the beginning of the file.
+
+@@attribute DocTest.docstring
+
+<p>The string that the test was extracted from, or `None` if the string
+is unavailable, or if the test was not extracted from a string.
+
+@@text 
+
+<h3>Example Objects</h3>
+
+@@class Example(source, want[, exc_msg][, lineno][, indent][, options])
+
+<p>A single interactive example, consisting of a Python statement and
+its expected output. The constructor arguments are used to initialize
+the member variables of the same names.
+<blockquote>
+@since New in version 2.4. <br />
+</blockquote>
+
+@@text 
+
+<p>{@link Example} defines the following member variables. They are
+initialized by the constructor, and should not be modified directly.
+
+@@attribute Example.source
+
+<p>A string containing the example's source code. This source code
+consists of a single Python statement, and always ends with a newline;
+the constructor adds a newline when necessary.
+
+@@attribute Example.want
+
+<p>The expected output from running the example's source code (either
+from stdout, or a traceback in case of exception). {@link want} ends
+with a newline unless no output is expected, in which case it's an empty
+string. The constructor adds a newline when necessary.
+
+@@attribute Example.exc_msg
+
+<p>The exception message generated by the example, if the example is
+expected to generate an exception; or {@link None} if it is not expected
+to generate an exception. This exception message is compared against the
+return value of {@link traceback.format_exception_only}. {@link exc_msg}
+ends with a newline unless it's {@link None}. The constructor adds a
+newline if needed.
+
+@@attribute Example.lineno
+
+<p>The line number within the string containing this example where the
+example begins. This line number is zero-based with respect to the
+beginning of the containing string.
+
+@@attribute Example.indent
+
+<p>The example's indentation in the containing string, i.e., the number
+of space characters that precede the example's first prompt.
+
+@@attribute Example.options
+
+<p>A dictionary mapping from option flags to {@link True} or {@link
+False}, which is used to override default options for this example. Any
+option flags not contained in this dictionary are left at their default
+value (as specified by the {@link DocTestRunner}'s {@link optionflags}).
+By default, no options are set.
+
+@@text 
+
+<h3>DocTestFinder objects</h3>
+
+@@class DocTestFinder([verbose][, parser][, recurse][, exclude_empty])
+
+<p>A processing class used to extract the {@link DocTest}s that are
+relevant to a given object, from its docstring and the docstrings of its
+contained objects. {@link DocTest}s can currently be extracted from the
+following object types: modules, functions, classes, methods,
+staticmethods, classmethods, and properties.
+
+<p>The optional argument {@var verbose} can be used to display the
+objects searched by the finder. It defaults to {@code False} (no
+output).
+
+<p>The optional argument {@var parser} specifies the {@link
+DocTestParser} object (or a drop-in replacement) that is used to extract
+doctests from docstrings.
+
+<p>If the optional argument {@var recurse} is false, then {@link
+DocTestFinder.find} will only examine the given object, and not any
+contained objects.
+
+<p>If the optional argument {@var exclude_empty} is false, then {@link
+DocTestFinder.find} will include tests for objects with empty
+docstrings.
+<blockquote>
+@since New in version 2.4. <br />
+</blockquote>
+
+@@text 
+
+<p>{@link DocTestFinder} defines the following method:
+
+@@method DocTestFinder.find(obj[, name][, module][, globs][, extraglobs])
+
+<p>Return a list of the {@link DocTest}s that are defined by {@var
+obj}'s docstring, or by any of its contained objects' docstrings.
+
+<p>The optional argument {@var name} specifies the object's name; this
+name will be used to construct names for the returned {@link DocTest}s.
+If {@var name} is not specified, then {@var obj}.__name__ is used.
+
+<p>The optional parameter {@var module} is the module that contains the
+given object. If the module is not specified or is None, then the test
+finder will attempt to automatically determine the correct module. The
+object's module is used:
+<ul>
+<li>
+<p>As a default namespace, if {@var globs} is not specified.
+<li>
+<p>To prevent the DocTestFinder from extracting DocTests from objects
+that are imported from other modules. (Contained objects with modules
+other than {@var module} are ignored.)
+<li>
+<p>To find the name of the file containing the object.
+<li>
+<p>To help find the line number of the object within its file.
+</ul>
+
+<p>If {@var module} is {@link False}, no attempt to find the module will
+be made. This is obscure, of use mostly in testing doctest itself: if
+{@var module} is {@link False}, or is {@link None} but cannot be found
+automatically, then all objects are considered to belong to the
+(non-existent) module, so all contained objects will (recursively) be
+searched for doctests.
+
+<p>The globals for each {@link DocTest} is formed by combining {@var
+globs} and {@var extraglobs} (bindings in {@var extraglobs} override
+bindings in {@var globs}). A new shallow copy of the globals dictionary
+is created for each {@link DocTest}. If {@var globs} is not specified,
+then it defaults to the module's {@var __dict__}, if specified, or
+{@code {}} otherwise. If {@var extraglobs} is not specified, then it
+defaults to {@code {}}.
+
+@@text 
+
+<h3>DocTestParser objects</h3>
+
+@@class DocTestParser()
+
+<p>A processing class used to extract interactive examples from a
+string, and use them to create a {@link DocTest} object.
+<blockquote>
+@since New in version 2.4. <br />
+</blockquote>
+
+@@text 
+
+<p>{@link DocTestParser} defines the following methods:
+
+@@method DocTestParser.get_doctest(string, globs, name, filename, lineno)
+
+<p>Extract all doctest examples from the given string, and collect them
+into a {@link DocTest} object.
+
+<p>{@var globs}, {@var name}, {@var filename}, and {@var lineno} are
+attributes for the new {@link DocTest} object. See the documentation for
+{@link DocTest} for more information.
+
+@@method DocTestParser.get_examples(string[, name])
+
+<p>Extract all doctest examples from the given string, and return them
+as a list of {@link Example} objects. Line numbers are 0-based. The
+optional argument {@var name} is a name identifying this string, and is
+only used for error messages.
+
+@@method DocTestParser.parse(string[, name])
+
+<p>Divide the given string into examples and intervening text, and
+return them as a list of alternating {@link Example}s and strings. Line
+numbers for the {@link Example}s are 0-based. The optional argument
+{@var name} is a name identifying this string, and is only used for
+error messages.
+
+@@text 
+
+<h3>DocTestRunner objects</h3>
+
+@@class DocTestRunner([checker][, verbose][, optionflags])
+
+<p>A processing class used to execute and verify the interactive
+examples in a {@link DocTest}.
+
+<p>The comparison between expected outputs and actual outputs is done by
+an {@link OutputChecker}. This comparison may be customized with a
+number of option flags; see section {@link
+doctest-options.html#doctest-options} for more information. If the
+option flags are insufficient, then the comparison may also be
+customized by passing a subclass of {@link OutputChecker} to the
+constructor.
+
+<p>The test runner's display output can be controlled in two ways.
+First, an output function can be passed to {@link TestRunner.run}; this
+function will be called with strings that should be displayed. It
+defaults to {@code sys.stdout.write}. If capturing the output is not
+sufficient, then the display output can be also customized by
+subclassing DocTestRunner, and overriding the methods {@link
+report_start}, {@link report_success}, {@link
+report_unexpected_exception}, and {@link report_failure}.
+
+<p>The optional keyword argument {@var checker} specifies the {@link
+OutputChecker} object (or drop-in replacement) that should be used to
+compare the expected outputs to the actual outputs of doctest examples.
+
+<p>The optional keyword argument {@var verbose} controls the {@link
+DocTestRunner}'s verbosity. If {@var verbose} is {@link True}, then
+information is printed about each example, as it is run. If {@var
+verbose} is {@code False}, then only failures are printed. If {@var
+verbose} is unspecified, or {@link None}, then verbose output is used
+iff the command-line switch -v is used.
+
+<p>The optional keyword argument {@var optionflags} can be used to
+control how the test runner compares expected output to actual output,
+and how it displays failures. For more information, see section {@link
+doctest-options.html#doctest-options}.
+<blockquote>
+@since New in version 2.4. <br />
+</blockquote>
+
+@@text 
+
+<p>{@link DocTestParser} defines the following methods:
+
+@@method DocTestRunner.report_start(out, test, example)
+
+<p>Report that the test runner is about to process the given example.
+This method is provided to allow subclasses of {@link DocTestRunner} to
+customize their output; it should not be called directly.
+
+<p>{@var example} is the example about to be processed. {@var test} is
+the test containing {@var example}. {@var out} is the output function
+that was passed to {@link DocTestRunner.run}.
+
+@@method DocTestRunner.report_success(out, test, example, got)
+
+<p>Report that the given example ran successfully. This method is
+provided to allow subclasses of {@link DocTestRunner} to customize their
+output; it should not be called directly.
+
+<p>{@var example} is the example about to be processed. {@var got} is
+the actual output from the example. {@var test} is the test containing
+{@var example}. {@var out} is the output function that was passed to
+{@link DocTestRunner.run}.
+
+@@method DocTestRunner.report_failure(out, test, example, got)
+
+<p>Report that the given example failed. This method is provided to
+allow subclasses of {@link DocTestRunner} to customize their output; it
+should not be called directly.
+
+<p>{@var example} is the example about to be processed. {@var got} is
+the actual output from the example. {@var test} is the test containing
+{@var example}. {@var out} is the output function that was passed to
+{@link DocTestRunner.run}.
+
+@@method DocTestRunner.report_unexpected_exception(out, test, example, exc_info)
+
+<p>Report that the given example raised an unexpected exception. This
+method is provided to allow subclasses of {@link DocTestRunner} to
+customize their output; it should not be called directly.
+
+<p>{@var example} is the example about to be processed. {@var exc_info}
+is a tuple containing information about the unexpected exception (as
+returned by {@link sys.exc_info}). {@var test} is the test containing
+{@var example}. {@var out} is the output function that was passed to
+{@link DocTestRunner.run}.
+
+@@method DocTestRunner.run(test[, compileflags][, out][, clear_globs])
+
+<p>Run the examples in {@var test} (a {@link DocTest} object), and
+display the results using the writer function {@var out}.
+
+<p>The examples are run in the namespace {@code test.globs}. If {@var
+clear_globs} is true (the default), then this namespace will be cleared
+after the test runs, to help with garbage collection. If you would like
+to examine the namespace after the test completes, then use {@var
+clear_globs=False}.
+
+<p>{@var compileflags} gives the set of flags that should be used by the
+Python compiler when running the examples. If not specified, then it
+will default to the set of future-import flags that apply to {@var
+globs}.
+
+<p>The output of each example is checked using the {@link
+DocTestRunner}'s output checker, and the results are formatted by the
+{@link DocTestRunner.report_*} methods.
+
+@@method DocTestRunner.summarize([verbose])
+
+<p>Print a summary of all the test cases that have been run by this
+DocTestRunner, and return a tuple "{@code (}{@var failure_count}, {@var
+test_count})".
+
+<p>The optional {@var verbose} argument controls how detailed the
+summary is. If the verbosity is not specified, then the {@link
+DocTestRunner}'s verbosity is used.
+
+@@text 
+
+<h3>OutputChecker objects</h3>
+
+@@class OutputChecker()
+
+<p>A class used to check the whether the actual output from a doctest
+example matches the expected output. {@link OutputChecker} defines two
+methods: {@link check_output}, which compares a given pair of outputs,
+and returns true if they match; and {@link output_difference}, which
+returns a string describing the differences between two outputs.
+<blockquote>
+@since New in
+version 2.4. <br />
+</blockquote>
+
+@@text 
+
+<p>{@link OutputChecker} defines the following methods:
+
+@@method OutputChecker.check_output(want, got, optionflags)
+
+<p>Return {@link True} iff the actual output from an example ({@var
+got}) matches the expected output ({@var want}). These strings are
+always considered to match if they are identical; but depending on what
+option flags the test runner is using, several non-exact match types are
+also possible. See section {@link doctest-options.html#doctest-options}
+for more information about option flags.
+
+@@method OutputChecker.output_difference(example, got, optionflags)
+
+<p>Return a string describing the differences between the expected
+output for a given example ({@var example}) and the actual output ({@var
+got}). {@var optionflags} is the set of option flags used to compare
+{@var want} and {@var got}.
+
+@@text 
+
+<h2>Debugging</h2>
+
+<p>Doctest provides several mechanisms for debugging doctest examples:
+<ul>
+<li>
+<p>Several functions convert doctests to executable Python programs,
+which can be run under the Python debugger, {@link pdb}.
+<li>
+<p>The {@link DebugRunner} class is a subclass of {@link DocTestRunner}
+that raises an exception for the first failing example, containing
+information about that example. This information can be used to perform
+post-mortem debugging on the example.
+<li>
+<p>The {@link unittest} cases generated by {@link DocTestSuite} support
+the {@link debug} method defined by {@link unittest}.TestCase.
+<li>
+<p>You can add a call to {@link }{@link pdb}.set_trace() in a doctest
+example, and you'll drop into the Python debugger when that line is
+executed. Then you can inspect current values of variables, and so on.
+For example, suppose a.py contains just this module docstring:
+
+<pre>
+"""
+&gt;&gt;&gt; def f(x):
+...     g(x*2)
+&gt;&gt;&gt; def g(x):
+...     print x+3
+...     import pdb; pdb.set_trace()
+&gt;&gt;&gt; f(3)
+9
+"""
+</pre>
+
+
+<p>Then an interactive Python session may look like this:
+
+<pre>
+&gt;&gt;&gt; import a, doctest
+&gt;&gt;&gt; doctest.testmod(a)
+--Return--
+&gt; &lt;doctest a[1]&gt;(3)g()-&gt;None
+-&gt; import pdb; pdb.set_trace()
+(Pdb) list
+  1     def g(x):
+  2         print x+3
+  3  -&gt;     import pdb; pdb.set_trace()
+[EOF]
+(Pdb) print x
+6
+(Pdb) step
+--Return--
+&gt; &lt;doctest a[0]&gt;(2)f()-&gt;None
+-&gt; g(x*2)
+(Pdb) list
+  1     def f(x):
+  2  -&gt;     g(x*2)
+[EOF]
+(Pdb) print x
+3
+(Pdb) step
+--Return--
+&gt; &lt;doctest a[2]&gt;(1)?()-&gt;None
+-&gt; f(3)
+(Pdb) cont
+(0, 3)
+&gt;&gt;&gt;
+</pre>
+
+
+<p>Changed in version 2.4: The ability to use {@link pdb}.set_trace()
+usefully inside doctests was added.
+</ul>
+
+<p>Functions that convert doctests to Python code, and possibly run the
+synthesized code under the debugger:
+
+@@function script_from_examples(s)
+
+<p>Convert text with examples to a script.
+
+<p>Argument {@var s} is a string containing doctest examples. The string
+is converted to a Python script, where doctest examples in {@var s} are
+converted to regular code, and everything else is converted to Python
+comments. The generated script is returned as a string. For example,
+
+<pre>
+    import doctest
+    print doctest.script_from_examples(r"""
+        Set x and y to 1 and 2.
+        &gt;&gt;&gt; x, y = 1, 2
+
+        Print their sum:
+        &gt;&gt;&gt; print x+y
+        3
+    """)
+</pre>
+
+
+<p>displays:
+
+<pre>
+    # Set x and y to 1 and 2.
+    x, y = 1, 2
+    #
+    # Print their sum:
+    print x+y
+    # Expected:
+    ## 3
+</pre>
+
+
+<p>This function is used internally by other functions (see below), but
+can also be useful when you want to transform an interactive Python
+session into a Python script.
+<blockquote>
+@since New in version 2.4. <br />
+</blockquote>
+
+@@function testsource(module, name)
+
+<p>Convert the doctest for an object to a script.
+
+<p>Argument {@var module} is a module object, or dotted name of a
+module, containing the object whose doctests are of interest. Argument
+{@var name} is the name (within the module) of the object with the
+doctests of interest. The result is a string, containing the object's
+docstring converted to a Python script, as described for {@link
+script_from_examples} above. For example, if module a.py contains a
+top-level function {@link f}, then
+
+<pre>
+import a, doctest
+print doctest.testsource(a, "a.f")
+</pre>
+
+
+<p>prints a script version of function {@link f}'s docstring, with
+doctests converted to code, and the rest placed in comments.
+<blockquote>
+@since New in version 2.3. <br />
+</blockquote>
+
+@@function debug(module, name[, pm])
+
+<p>Debug the doctests for an object.
+
+<p>The {@var module} and {@var name} arguments are the same as for
+function {@link testsource} above. The synthesized Python script for the
+named object's docstring is written to a temporary file, and then that
+file is run under the control of the Python debugger, {@link pdb}.
+
+<p>A shallow copy of {@var module}.__dict__ is used for both local and
+global execution context.
+
+<p>Optional argument {@var pm} controls whether post-mortem debugging is
+used. If {@var pm} has a true value, the script file is run directly,
+and the debugger gets involved only if the script terminates via raising
+an unhandled exception. If it does, then post-mortem debugging is
+invoked, via {@link pdb}.post_mortem(), passing the traceback object
+from the unhandled exception. If {@var pm} is not specified, or is
+false, the script is run under the debugger from the start, via passing
+an appropriate {@link execfile} call to {@link pdb}.run().
+
+<p>Changed in version 2.4: The {@var pm} argument was added.
+<blockquote>
+@since New in version 2.3. <br />
+</blockquote>
+
+@@function debug_src(src[, pm][, globs])
+
+<p>Debug the doctests in a string.
+
+<p>This is like function {@link debug} above, except that a string
+containing doctest examples is specified directly, via the {@var src}
+argument.
+
+<p>Optional argument {@var pm} has the same meaning as in function
+{@link debug} above.
+
+<p>Optional argument {@var globs} gives a dictionary to use as both
+local and global execution context. If not specified, or {@link None},
+an empty dictionary is used. If specified, a shallow copy of the
+dictionary is used.
+<blockquote>
+@since New in version 2.4. <br />
+</blockquote>
+
+@@text 
+
+<p>The {@link DebugRunner} class, and the special exceptions it may
+raise, are of most interest to testing framework authors, and will only
+be sketched here. See the source code, and especially {@link
+DebugRunner}'s docstring (which is a doctest!) for more details:
+
+@@class DebugRunner([checker][, verbose][, optionflags])
+
+<p>A subclass of {@link DocTestRunner} that raises an exception as soon
+as a failure is encountered. If an unexpected exception occurs, an
+{@link UnexpectedException} exception is raised, containing the test,
+the example, and the original exception. If the output doesn't match,
+then a {@link DocTestFailure} exception is raised, containing the test,
+the example, and the actual output.
+
+<p>For information about the constructor parameters and methods, see the
+documentation for {@link DocTestRunner} in section {@link
+doctest-advanced-api.html#doctest-advanced-api}.
+
+@@text 
+
+<p>There are two exceptions that may be raised by {@link DebugRunner}
+instances:
+
+@@exception DocTestFailure(test, example, got)
+
+<p>An exception thrown by {@link DocTestRunner} to signal that a doctest
+example's actual output did not match its expected output. The
+constructor arguments are used to initialize the member variables of the
+same names.
+@@error unexpected tt exception
+
+@@attribute DebugRunner.test
+
+<p>The {@link DocTest} object that was being run when the example
+failed.
+
+@@attribute DebugRunner.example
+
+<p>The {@link Example} that failed.
+
+@@attribute DebugRunner.got
+
+<p>The example's actual output.
+
+@@exception UnexpectedException(test, example, exc_info)
+
+<p>An exception thrown by {@link DocTestRunner} to signal that a doctest
+example raised an unexpected exception. The constructor arguments are
+used to initialize the member variables of the same names.
+@@error unexpected tt exception
+
+@@attribute DebugRunner.test
+
+<p>The {@link DocTest} object that was being run when the example
+failed.
+
+@@attribute DebugRunner.example
+
+<p>The {@link Example} that failed.
+
+@@attribute DebugRunner.exc_info
+
+<p>A tuple containing information about the unexpected exception, as
+returned by {@link sys.exc_info}.
+
+@@text 
+
+<h2>Soapbox</h2>
+
+<p>As mentioned in the introduction, {@link doctest} has grown to have
+three primary uses:
+<ol>
+<li>
+<p>Checking examples in docstrings.
+<li>
+<p>Regression testing.
+<li>
+<p>Executable documentation / literate testing.
+</ol>
+
+<p>These uses have different requirements, and it is important to
+distinguish them. In particular, filling your docstrings with obscure
+test cases makes for bad documentation.
+
+<p>When writing a docstring, choose docstring examples with care.
+There's an art to this that needs to be learned--it may not be natural
+at first. Examples should add genuine value to the documentation. A good
+example can often be worth many words. If done with care, the examples
+will be invaluable for your users, and will pay back the time it takes
+to collect them many times over as the years go by and things change.
+I'm still amazed at how often one of my {@link doctest} examples stops
+working after a "harmless" change.
+
+<p>Doctest also makes an excellent tool for regression testing,
+especially if you don't skimp on explanatory text. By interleaving prose
+and examples, it becomes much easier to keep track of what's actually
+being tested, and why. When a test fails, good prose can make it much
+easier to figure out what the problem is, and how it should be fixed.
+It's true that you could write extensive comments in code-based testing,
+but few programmers do. Many have found that using doctest approaches
+instead leads to much clearer tests. Perhaps this is simply because
+doctest makes writing prose a little easier than writing code, while
+writing comments in code is a little harder. I think it goes deeper than
+just that: the natural attitude when writing a doctest-based test is
+that you want to explain the fine points of your software, and
+illustrate them with examples. This in turn naturally leads to test
+files that start with the simplest features, and logically progress to
+complications and edge cases. A coherent narrative is the result,
+instead of a collection of isolated functions that test isolated bits of
+functionality seemingly at random. It's a different attitude, and
+produces different results, blurring the distinction between testing and
+explaining.
+
+<p>Regression testing is best confined to dedicated objects or files.
+There are several options for organizing tests:
+<ul>
+<li>
+<p>Write text files containing test cases as interactive examples, and
+test the files using {@link testfile} or {@link DocFileSuite}. This is
+recommended, although is easiest to do for new projects, designed from
+the start to use doctest.
+<li>
+<p>Define functions named {@code _regrtest_}topic that consist of single
+docstrings, containing test cases for the named topics. These functions
+can be included in the same file as the module, or separated out into a
+separate test file.
+<li>
+<p>Define a {@code __test__} dictionary mapping from regression test
+topics to docstrings containing test cases.
+</ul>

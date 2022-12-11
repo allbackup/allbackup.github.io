@@ -1,0 +1,35 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>whichdb</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-whichdb.html'>original</a> :::
+<a href='whichdb.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>whichdb&#8212;Guess which DBM module created a database</h1>
+
+<p>The single function in this module attempts to guess which of
+the several simple database modules available-<code>dbm</code>, <code>gdbm</code>,
+or <code>dbhash</code>-should be used to
+open a given file.</p>
+</div>
+<dl><dt class="function" id="whichdb"><b>whichdb(filename)</b> <tt class="nav"><a class="nav" href="whichdb.whichdb" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Returns one of the following values: <code>None</code> if the file can't be opened because it's
+unreadable or doesn't exist; the empty string
+(<code>&#8221;</code>) if the file's format can't be guessed; or a
+string containing the required module name, such as <code>
+'dbm'</code> or <code>'gdbm'</code>.</p>
+</dd>
+</dl></div></body></html>

@@ -1,0 +1,725 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>locale</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-locale.html'>original</a> :::
+<a href='locale.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>locale&#8212;Internationalization services</h1>
+
+<div class="toc"><dl><dt>On this page:</dt><dd><a href="#background-details-hints-tips-and-caveats">Background, details, hints, tips and caveats</a></dd><dd><a href="#for-extension-writers-and-programs-that-embed-python">For extension writers and programs that embed Python</a></dd><dd><a href="#access-to-message-catalogs">Access to message catalogs</a></dd></dl></div><p>The <code>locale</code> module opens
+access to the POSIX locale database and functionality. The POSIX
+locale mechanism allows programmers to deal with certain cultural
+issues in an application, without requiring the programmer to know
+all the specifics of each country where the software is
+executed.</p>
+
+<p>The <code>locale</code> module is
+implemented on top of the <code>
+_locale</code> module, which in turn uses an ANSI C locale
+implementation if available.</p>
+
+<p>The <code>locale</code> module defines
+the following exception and functions:</p>
+</div>
+<dl><dt class="exception" id="Error"><b>exception Error</b> <tt class="nav"><a class="nav" href="locale.Error" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="exception">
+<p>Exception raised when <a class="link" href="#setlocale"><code>
+setlocale</code></a> fails.</p>
+</dd>
+<dt class="function" id="setlocale"><b>setlocale(category[, locale])</b> <tt class="nav"><a class="nav" href="locale.setlocale" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>If <var>locale</var> is specified, it may be a string, a tuple
+of the form <code>(</code><var>language code</var>, <var>
+encoding</var>), or <code>None</code>. If
+it is a tuple, it is converted to a string using the locale
+aliasing engine. If <var>locale</var> is given and not <code>None</code>, <a class="link" href="#setlocale"><code>setlocale</code></a> modifies the locale setting for
+the <var>category</var>. The available categories are listed in the
+data description below. The value is the name of a locale. An empty
+string specifies the user's default settings. If the modification
+of the locale fails, the exception <a class="link" href="#Error"><code>Error</code></a> is raised. If successful, the new
+locale setting is returned.</p>
+
+<p>If <var>locale</var> is omitted or <code>None</code>, the current setting for <var>
+category</var> is returned.</p>
+
+<p><a class="link" href="#setlocale"><code>setlocale</code></a> is not
+thread safe on most systems. Applications typically start with a
+call of</p>
+
+<pre>
+import locale
+locale.setlocale(locale.LC_ALL, '')
+</pre>
+
+<p>This sets the locale for all categories to the user's default
+setting (typically specified in the LANG environment variable). If
+the locale is not changed thereafter, using multithreading should
+not cause problems.</p>
+
+<blockquote><span class="mark">@since</span> Changed in version
+2.0: Added support for tuple values of the locale parameter.<br />
+</blockquote>
+</dd>
+<dt class="function" id="localeconv"><b>localeconv()</b> <tt class="nav"><a class="nav" href="locale.localeconv" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Returns the database of the local conventions as a dictionary.
+This dictionary has the following strings as keys:</p>
+
+<table border="1">
+<tr>
+<th>
+<p>Key</p>
+</th>
+<th>
+<p>Category</p>
+</th>
+<th>
+<p>Meaning</p>
+</th>
+</tr>
+
+<tr>
+<td>
+<p><code>LC_NUMERIC</code></p>
+</td>
+<td>
+<p><code>'decimal_point'</code></p>
+</td>
+<td>
+<p>Decimal point character.</p>
+</td>
+</tr>
+
+<tr>
+<td />
+<td>
+<p><code>'grouping'</code></p>
+</td>
+<td>
+<p>Sequence of numbers specifying which relative positions the
+<code>'thousands_sep'</code> is expected. If the sequence is
+terminated with <code>CHAR_MAX</code>, no further grouping is
+performed. If the sequence terminates with a <code>0</code>, the
+last group size is repeatedly used.</p>
+</td>
+</tr>
+
+<tr>
+<td />
+<td>
+<p><code>'thousands_sep'</code></p>
+</td>
+<td>
+<p>Character used between groups.</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>LC_MONETARY</code></p>
+</td>
+<td>
+<p><code>'int_curr_symbol'</code></p>
+</td>
+<td>
+<p>International currency symbol.</p>
+</td>
+</tr>
+
+<tr>
+<td />
+<td>
+<p><code>'currency_symbol'</code></p>
+</td>
+<td>
+<p>Local currency symbol.</p>
+</td>
+</tr>
+
+<tr>
+<td />
+<td>
+<p><code>'mon_decimal_point'</code></p>
+</td>
+<td>
+<p>Decimal point used for monetary values.</p>
+</td>
+</tr>
+
+<tr>
+<td />
+<td>
+<p><code>'mon_thousands_sep'</code></p>
+</td>
+<td>
+<p>Group separator used for monetary values.</p>
+</td>
+</tr>
+
+<tr>
+<td />
+<td>
+<p><code>'mon_grouping'</code></p>
+</td>
+<td>
+<p>Equivalent to <code>'grouping'</code>, used for monetary
+values.</p>
+</td>
+</tr>
+
+<tr>
+<td />
+<td>
+<p><code>'positive_sign'</code></p>
+</td>
+<td>
+<p>Symbol used to annotate a positive monetary value.</p>
+</td>
+</tr>
+
+<tr>
+<td />
+<td>
+<p><code>'negative_sign'</code></p>
+</td>
+<td>
+<p>Symbol used to annotate a negative monetary value.</p>
+</td>
+</tr>
+
+<tr>
+<td />
+<td>
+<p><code>'frac_digits'</code></p>
+</td>
+<td>
+<p>Number of fractional digits used in local formatting of monetary
+values.</p>
+</td>
+</tr>
+
+<tr>
+<td />
+<td>
+<p><code>'int_frac_digits'</code></p>
+</td>
+<td>
+<p>Number of fractional digits used in international formatting of
+monetary values.</p>
+</td>
+</tr>
+</table>
+
+<br />
+<br />
+ 
+
+<p>The possible values for <code>'p_sign_posn'</code> and <code>
+'n_sign_posn'</code> are given below.</p>
+
+<table border="1">
+<tr>
+<th>
+<p>Value</p>
+</th>
+<th>
+<p>Explanation</p>
+</th>
+</tr>
+
+<tr>
+<td>
+<p><code>0</code></p>
+</td>
+<td>
+<p>Currency and value are surrounded by parentheses.</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>1</code></p>
+</td>
+<td>
+<p>The sign should precede the value and currency symbol.</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>2</code></p>
+</td>
+<td>
+<p>The sign should follow the value and currency symbol.</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>3</code></p>
+</td>
+<td>
+<p>The sign should immediately precede the value.</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>4</code></p>
+</td>
+<td>
+<p>The sign should immediately follow the value.</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>LC_MAX</code></p>
+</td>
+<td>
+<p>Nothing is specified in this locale.</p>
+</td>
+</tr>
+</table>
+
+<br />
+<br />
+</dd>
+<dt class="function" id="nl_langinfo"><b>nl_langinfo(option)</b> <tt class="nav"><a class="nav" href="locale.nl_langinfo" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return some locale-specific information as a string. This
+function is not available on all systems, and the set of possible
+options might also vary across platforms. The possible argument
+values are numbers, for which symbolic constants are available in
+the locale module.</p>
+</dd>
+<dt class="function" id="getdefaultlocale"><b>getdefaultlocale([envvars])</b> <tt class="nav"><a class="nav" href="locale.getdefaultlocale" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Tries to determine the default locale settings and returns them
+as a tuple of the form <code>(</code><var>language code</var>,
+<var>encoding</var>).</p>
+
+<p>According to POSIX, a program which has not called <code>
+setlocale(LC_ALL, &#8221;)</code> runs using the portable <code>
+'C'</code> locale. Calling <code>setlocale(LC_ALL, &#8221;)</code>
+lets it use the default locale as defined by the LANG variable.
+Since we do not want to interfere with the current locale setting
+we thus emulate the behavior in the way described above.</p>
+
+<p>To maintain compatibility with other platforms, not only the
+LANG variable is tested, but a list of variables given as envvars
+parameter. The first found to be defined will be used. <var>
+envvars</var> defaults to the search path used in GNU gettext; it
+must always contain the variable name "<code>LANG</code>". The GNU
+gettext search path contains <code>'LANGUAGE'</code>, <code>
+'LC_ALL'</code>, <code>'LC_CTYPE'</code>, and <code>'LANG'</code>,
+in that order.</p>
+
+<p>Except for the code <code>'C'</code>, the language code
+corresponds to <a class="link" href="http://www.faqs.org/rfcs/rfc1766.html">RFC 1766</a>. <var>
+language code</var> and <var>encoding</var> may be <code>None</code> if their values cannot be determined.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.0.<br />
+</blockquote>
+</dd>
+<dt class="function" id="getlocale"><b>getlocale([category])</b> <tt class="nav"><a class="nav" href="locale.getlocale" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Returns the current setting for the given locale category as
+sequence containing <var>language code</var>, <var>encoding</var>.
+<var>category</var> may be one of the <code>LC_*</code> values
+except <code>LC_ALL</code>. It defaults to <code>
+LC_CTYPE</code>.</p>
+
+<p>Except for the code <code>'C'</code>, the language code
+corresponds to <a class="link" href="http://www.faqs.org/rfcs/rfc1766.html">RFC 1766</a>. <var>
+language code</var> and <var>encoding</var> may be <code>None</code> if their values cannot be determined.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.0.<br />
+</blockquote>
+</dd>
+<dt class="function" id="getpreferredencoding"><b>getpreferredencoding([do_setlocale])</b> <tt class="nav"><a class="nav" href="locale.getpreferredencoding" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return the encoding used for text data, according to user
+preferences. User preferences are expressed differently on
+different systems, and might not be available programmatically on
+some systems, so this function only returns a guess.</p>
+
+<p>On some systems, it is necessary to invoke <a class="link" href="#setlocale"><code>setlocale</code></a> to obtain the user preferences,
+so this function is not thread-safe. If invoking setlocale is not
+necessary or desired, <var>do_setlocale</var> should be set to <code>False</code>.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.3.<br />
+</blockquote>
+</dd>
+<dt class="function" id="normalize"><b>normalize(localename)</b> <tt class="nav"><a class="nav" href="locale.normalize" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Returns a normalized locale code for the given locale name. The
+returned locale code is formatted for use with <a class="link" href="#setlocale"><code>setlocale</code></a>. If normalization fails, the
+original name is returned unchanged.</p>
+
+<p>If the given encoding is not known, the function defaults to the
+default encoding for the locale code just like <a class="link" href="#setlocale"><code>setlocale</code></a>.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.0.<br />
+</blockquote>
+</dd>
+<dt class="function" id="resetlocale"><b>resetlocale([category])</b> <tt class="nav"><a class="nav" href="locale.resetlocale" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Sets the locale for <var>category</var> to the default
+setting.</p>
+
+<p>The default setting is determined by calling <a class="link" href="#getdefaultlocale"><code>getdefaultlocale</code></a>. <var>
+category</var> defaults to <code>LC_ALL</code>.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.0.<br />
+</blockquote>
+</dd>
+<dt class="function" id="strcoll"><b>strcoll(string1, string2)</b> <tt class="nav"><a class="nav" href="locale.strcoll" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Compares two strings according to the current <code>
+LC_COLLATE</code> setting. As any other compare function, returns a
+negative, or a positive value, or <code>0</code>, depending on
+whether <var>string1</var> collates before or after <var>
+string2</var> or is equal to it.</p>
+</dd>
+<dt class="function" id="strxfrm"><b>strxfrm(string)</b> <tt class="nav"><a class="nav" href="locale.strxfrm" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Transforms a string to one that can be used for the built-in
+function <code>cmp</code>, and still returns
+locale-aware results. This function can be used when the same
+string is compared repeatedly, e.g. when collating a sequence of
+strings.</p>
+</dd>
+<dt class="function" id="format"><b>format(format, val[, grouping])</b> <tt class="nav"><a class="nav" href="locale.format" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Formats a number <var>val</var> according to the current <code>
+LC_NUMERIC</code> setting. The format follows the conventions of
+the <code>%</code> operator. For floating point values, the decimal
+point is modified if appropriate. If <var>grouping</var> is true,
+also takes the grouping into account.</p>
+</dd>
+<dt class="function" id="str"><b>str(float)</b> <tt class="nav"><a class="nav" href="locale.str" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Formats a floating point number using the same format as the
+built-in function <code>str(</code><var>float</var>), but takes the
+decimal point into account.</p>
+</dd>
+<dt class="function" id="atof"><b>atof(string)</b> <tt class="nav"><a class="nav" href="locale.atof" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Converts a string to a floating point number, following the
+<code>LC_NUMERIC</code> settings.</p>
+</dd>
+<dt class="function" id="atoi"><b>atoi(string)</b> <tt class="nav"><a class="nav" href="locale.atoi" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Converts a string to an integer, following the <code>
+LC_NUMERIC</code> conventions.</p>
+</dd>
+<dt class="variable" id="LC_CTYPE"><b>LC_CTYPE</b> <tt class="nav"><a class="nav" href="locale.LC_CTYPE" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Locale category for the character type functions. Depending on
+the settings of this category, the functions of module <code>string</code> dealing with case change
+their behaviour.</p>
+</dd>
+<dt class="variable" id="LC_COLLATE"><b>LC_COLLATE</b> <tt class="nav"><a class="nav" href="locale.LC_COLLATE" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Locale category for sorting strings. The functions <a class="link" href="#strcoll"><code>strcoll</code></a> and <a class="link" href="#strxfrm"><code>strxfrm</code></a> of the <code>locale</code> module are affected.</p>
+</dd>
+<dt class="variable" id="LC_TIME"><b>LC_TIME</b> <tt class="nav"><a class="nav" href="locale.LC_TIME" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Locale category for the formatting of time. The function <code>time.strftime</code> follows
+these conventions.</p>
+</dd>
+<dt class="variable" id="LC_MONETARY"><b>LC_MONETARY</b> <tt class="nav"><a class="nav" href="locale.LC_MONETARY" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Locale category for formatting of monetary values. The available
+options are available from the <a class="link" href="#localeconv"><code>localeconv</code></a> function.</p>
+</dd>
+<dt class="variable" id="LC_MESSAGES"><b>LC_MESSAGES</b> <tt class="nav"><a class="nav" href="locale.LC_MESSAGES" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Locale category for message display. Python currently does not
+support application specific locale-aware messages. Messages
+displayed by the operating system, like those returned by <code>os.strerror</code> might be
+affected by this category.</p>
+</dd>
+<dt class="variable" id="LC_NUMERIC"><b>LC_NUMERIC</b> <tt class="nav"><a class="nav" href="locale.LC_NUMERIC" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Locale category for formatting numbers. The functions <a class="link" href="#format"><code>format</code></a>, <a class="link" href="#atoi"><code>atoi</code></a>, <a class="link" href="#atof"><code>
+atof</code></a> and <a class="link" href="#str"><code>str</code></a> of the <code>locale</code> module are affected by
+that category. All other numeric formatting operations are not
+affected.</p>
+</dd>
+<dt class="variable" id="LC_ALL"><b>LC_ALL</b> <tt class="nav"><a class="nav" href="locale.LC_ALL" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Combination of all locale settings. If this flag is used when
+the locale is changed, setting the locale for all categories is
+attempted. If that fails for any category, no category is changed
+at all. When the locale is retrieved using this flag, a string
+indicating the setting for all categories is returned. This string
+can be later used to restore the settings.</p>
+</dd>
+<dt class="variable" id="CHAR_MAX"><b>CHAR_MAX</b> <tt class="nav"><a class="nav" href="locale.CHAR_MAX" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>This is a symbolic constant used for different values returned
+by <a class="link" href="#localeconv"><code>localeconv</code></a>.</p>
+</dd>
+</dl><div class="text">
+<p>The <a class="link" href="#nl_langinfo"><code>nl_langinfo</code></a>
+function accepts one of the following keys. Most descriptions are
+taken from the corresponding description in the GNU C library.</p>
+</div>
+<dl><dt class="variable" id="CODESET"><b>CODESET</b> <tt class="nav"><a class="nav" href="locale.CODESET" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Return a string with the name of the character encoding used in
+the selected locale.</p>
+</dd>
+<dt class="variable" id="D_T_FMT"><b>D_T_FMT</b> <tt class="nav"><a class="nav" href="locale.D_T_FMT" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Return a string that can be used as a format string for
+strftime(3) to represent time and date in a locale-specific
+way.</p>
+</dd>
+<dt class="variable" id="D_FMT"><b>D_FMT</b> <tt class="nav"><a class="nav" href="locale.D_FMT" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Return a string that can be used as a format string for
+strftime(3) to represent a date in a locale-specific way.</p>
+</dd>
+<dt class="variable" id="T_FMT"><b>T_FMT</b> <tt class="nav"><a class="nav" href="locale.T_FMT" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Return a string that can be used as a format string for
+strftime(3) to represent a time in a locale-specific way.</p>
+</dd>
+<dt class="variable" id="T_FMT_AMPM"><b>T_FMT_AMPM</b> <tt class="nav"><a class="nav" href="locale.T_FMT_AMPM" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>The return value can be used as a format string for `strftime'
+to represent time in the am/pm format.</p>
+</dd>
+<dt class="variable" id="DAY_1"><b>DAY_1 ... DAY_7</b> <tt class="nav"><a class="nav" href="locale.DAY_1" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Return name of the n-th day of the week. Warning: This follows
+the US convention of <code>DAY_1</code> being Sunday, not the
+international convention (ISO 8601) that Monday is the first day of
+the week.</p>
+</dd>
+<dt class="variable" id="ABDAY_1"><b>ABDAY_1 ... ABDAY_7</b> <tt class="nav"><a class="nav" href="locale.ABDAY_1" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Return abbreviated name of the n-th day of the week.</p>
+</dd>
+<dt class="variable" id="MON_1"><b>MON_1 ... MON_12</b> <tt class="nav"><a class="nav" href="locale.MON_1" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Return name of the n-th month.</p>
+</dd>
+<dt class="variable" id="ABMON_1"><b>ABMON_1 ... ABMON_12</b> <tt class="nav"><a class="nav" href="locale.ABMON_1" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Return abbreviated name of the n-th month.</p>
+</dd>
+<dt class="variable" id="RADIXCHAR"><b>RADIXCHAR</b> <tt class="nav"><a class="nav" href="locale.RADIXCHAR" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Return radix character (decimal dot, decimal comma, etc.)</p>
+</dd>
+<dt class="variable" id="THOUSEP"><b>THOUSEP</b> <tt class="nav"><a class="nav" href="locale.THOUSEP" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Return separator character for thousands (groups of three
+digits).</p>
+</dd>
+<dt class="variable" id="YESEXPR"><b>YESEXPR</b> <tt class="nav"><a class="nav" href="locale.YESEXPR" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Return a regular expression that can be used with the regex
+function to recognize a positive response to a yes/no question.
+Warning: The expression is in the syntax suitable for the <code>c:regex</code> function from the C
+library, which might differ from the syntax used in <code>re</code>.</p>
+</dd>
+<dt class="variable" id="NOEXPR"><b>NOEXPR</b> <tt class="nav"><a class="nav" href="locale.NOEXPR" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Return a regular expression that can be used with the regex(3)
+function to recognize a negative response to a yes/no question.</p>
+</dd>
+<dt class="variable" id="CRNCYSTR"><b>CRNCYSTR</b> <tt class="nav"><a class="nav" href="locale.CRNCYSTR" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Return the currency symbol, preceded by "-" if the symbol should
+appear before the value, "+" if the symbol should appear after the
+value, or "." if the symbol should replace the radix character.</p>
+</dd>
+<dt class="variable" id="ERA"><b>ERA</b> <tt class="nav"><a class="nav" href="locale.ERA" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>The return value represents the era used in the current
+locale.</p>
+
+<p>Most locales do not define this value. An example of a locale
+which does define this value is the Japanese one. In Japan, the
+traditional representation of dates includes the name of the era
+corresponding to the then-emperor's reign.</p>
+
+<p>Normally it should not be necessary to use this value directly.
+Specifying the <code>E</code> modifier in their format strings
+causes the <code>strftime</code>
+function to use this information. The format of the returned string
+is not specified, and therefore you should not assume knowledge of
+it on different systems.</p>
+</dd>
+<dt class="variable" id="ERA_YEAR"><b>ERA_YEAR</b> <tt class="nav"><a class="nav" href="locale.ERA_YEAR" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>The return value gives the year in the relevant era of the
+locale.</p>
+</dd>
+<dt class="variable" id="ERA_D_T_FMT"><b>ERA_D_T_FMT</b> <tt class="nav"><a class="nav" href="locale.ERA_D_T_FMT" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>This return value can be used as a format string for <code>strftime</code> to represent dates
+and times in a locale-specific era-based way.</p>
+</dd>
+<dt class="variable" id="ERA_D_FMT"><b>ERA_D_FMT</b> <tt class="nav"><a class="nav" href="locale.ERA_D_FMT" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>This return value can be used as a format string for <code>strftime</code> to represent time in
+a locale-specific era-based way.</p>
+</dd>
+<dt class="variable" id="ALT_DIGITS"><b>ALT_DIGITS</b> <tt class="nav"><a class="nav" href="locale.ALT_DIGITS" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>The return value is a representation of up to 100 values used to
+represent the values 0 to 99.</p>
+</dd>
+</dl><div class="text">
+<p>Example:</p>
+
+<pre>
+&gt;&gt;&gt; import locale
+&gt;&gt;&gt; loc = locale.getlocale(locale.LC_ALL) # get current locale
+&gt;&gt;&gt; locale.setlocale(locale.LC_ALL, 'de_DE') # use German locale; name might vary with platform
+&gt;&gt;&gt; locale.strcoll('f\xe4n', 'foo') # compare a string containing an umlaut 
+&gt;&gt;&gt; locale.setlocale(locale.LC_ALL, '') # use user's preferred locale
+&gt;&gt;&gt; locale.setlocale(locale.LC_ALL, 'C') # use default (C) locale
+&gt;&gt;&gt; locale.setlocale(locale.LC_ALL, loc) # restore saved locale
+</pre>
+
+<h2 id="background-details-hints-tips-and-caveats">Background, details, hints, tips and caveats <a class="nav" href="#background-details-hints-tips-and-caveats">#</a></h2>
+
+<p>The C standard defines the locale as a program-wide property
+that may be relatively expensive to change. On top of that, some
+implementation are broken in such a way that frequent locale
+changes may cause core dumps. This makes the locale somewhat
+painful to use correctly.</p>
+
+<p>Initially, when a program is started, the locale is the
+"<code>C</code>" locale, no matter what the user's preferred locale
+is. The program must explicitly say that it wants the user's
+preferred locale settings by calling <code>setlocale(LC_ALL,
+&#8221;)</code>.</p>
+
+<p>It is generally a bad idea to call <a class="link" href="#setlocale"><code>setlocale</code></a> in some library routine, since
+as a side effect it affects the entire program. Saving and
+restoring it is almost as bad: it is expensive and affects other
+threads that happen to run before the settings have been
+restored.</p>
+
+<p>If, when coding a module for general use, you need a locale
+independent version of an operation that is affected by the locale
+(such as <code>string.lower</code>,
+or certain formats used with <code>time.strftime</code>), you will have to find
+a way to do it without using the standard library routine. Even
+better is convincing yourself that using locale settings is okay.
+Only as a last resort should you document that your module is not
+compatible with non-"<code>C</code>" locale settings.</p>
+
+<p>The case conversion functions in the <code>string</code> module are affected by the locale
+settings. When a call to the <a class="link" href="#setlocale"><code>
+setlocale</code></a> function changes the <code>LC_CTYPE</code> settings,
+the variables <code>string.lowercase</code>, <code>
+string.uppercase</code> and <code>string.letters</code> are
+recalculated. Note that this code that uses these variable through
+`<code>from</code> ... <code>import</code> ...', e.g. <code>from string import
+letters</code>, is not affected by subsequent <a class="link" href="#setlocale"><code>setlocale</code></a> calls.</p>
+
+<p>The only way to perform numeric operations according to the
+locale is to use the special functions defined by this module: <a class="link" href="#atof"><code>atof</code></a>, <a class="link" href="#atoi"><code>atoi</code></a>, <a class="link" href="#format"><code>
+format</code></a>, <a class="link" href="#str"><code>str</code></a>.</p>
+
+<h2 id="for-extension-writers-and-programs-that-embed-python">For extension writers and programs that embed Python <a class="nav" href="#for-extension-writers-and-programs-that-embed-python">#</a></h2>
+
+<p>Extension modules should never call <a class="link" href="#setlocale"><code>setlocale</code></a>, except to find out what the
+current locale is. But since the return value can only be used
+portably to restore it, that is not very useful (except perhaps to
+find out whether or not the locale is "<code>C</code>").</p>
+
+<p>When Python code uses the <code>
+locale</code> module to change the locale, this also affects the
+embedding application. If the embedding application doesn't want
+this to happen, it should remove the <code>_locale</code> extension module (which does all
+the work) from the table of built-in modules in the config.c file,
+and make sure that the <code>
+_locale</code> module is not accessible as a shared library.</p>
+
+<h2 id="access-to-message-catalogs">Access to message catalogs <a class="nav" href="#access-to-message-catalogs">#</a></h2>
+
+<p>The locale module exposes the C library's gettext interface on
+systems that provide this interface. It consists of the functions
+<code>gettext</code>, <code>dgettext</code>, <code>dcgettext</code>, <code>textdomain</code>, <code>bindtextdomain</code>, and <code>bind_textdomain_codeset</code>.
+These are similar to the same functions in the <code>gettext</code> module, but use the C library's
+binary format for message catalogs, and the C library's search
+algorithms for locating message catalogs.</p>
+
+<p>Python applications should normally find no need to invoke these
+functions, and should use <code>
+gettext</code> instead. A known exception to this rule are
+applications that link use additional C libraries which internally
+invoke <code>c:gettext</code> or <code>dcgettext</code>. For these
+applications, it may be necessary to bind the text domain, so that
+the libraries can properly locate their message catalogs.</p>
+</div>
+</div></body></html>

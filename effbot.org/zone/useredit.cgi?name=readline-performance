@@ -1,0 +1,312 @@
+<html>
+<head>
+<title>readline-performance ::: www.effbot.org</title>
+<link rel='stylesheet' href='/effbot.css' type='text/css' media='screen' />
+</head>
+<body bgcolor='#ccffcc'>
+<div>[<a href='readline-performance.htm'>back</a>]</div>
+<h3>Welcome to the effbot.org user editor!</h3>
+
+
+<p><b>Note: This is not a contact form!  Support questions, spam, and
+other off-topic stuff will be ignored.</b></p>
+
+<p>To suggest changes, edit the HTML fragment in the text box below.
+You can use the 'update preview' button to check your changes (the
+preview is displayed beneath the text box).  When done, fill in the
+name and address fields (optional) and click 'submit patch' to mail
+the patch to me.  (I reserve the right to decide which patches to
+include, of course.)  Thanks! /F</p>
+
+<form method='post' id='useredit'>
+<input type='hidden' name='name' value='readline-performance'/>
+<p>
+<input type='submit' name='preview' value='update preview' style='background:#084; color:white; width:200px; font-weight:bold;' >
+&nbsp;&nbsp;&nbsp;
+<input type='submit' name='submit' value='submit patch'  style='background:#084; color:white; width:200px; font-weight:bold;' >
+</p>
+<textarea name='text' rows='30' cols='80'>Reading Text Files
+
+&lt;p class='info'&gt;June 09, 2000 | Fredrik Lundh&lt;/p&gt;
+
+&lt;p class='note'&gt;&lt;i&gt;This is somewhat outdated, given the additions of
+xreadlines in 2.1 and text file iterators in 2.2.  See the end of the
+page for examples.&lt;/i&gt;&lt;/p&gt;
+
+&lt;p&gt;This very brief note discusses a few more or less efficient ways
+to read lines of text from a file.&lt;/p&gt;
+
+&lt;h3&gt;Doing it the usual way&lt;/h3&gt;
+
+&lt;p&gt;The standard idiom consists of a an 'endless' &lt;i
+class="statement"&gt;while&lt;/i&gt; loop, in which we repeatedly call the
+file's &lt;i class="method"&gt;readline&lt;/i&gt; method. Here's an
+example:&lt;/p&gt;
+
+&lt;pre class='python'&gt;
+# File: readline-example-1.py
+
+file = open("sample.txt")
+
+while 1:
+    line = file.readline()
+    if not line:
+	break
+    pass # &lt;i&gt;do something&lt;/i&gt;
+&lt;/pre&gt;
+
+&lt;p&gt;This snippet reads the file line by line. If &lt;i class="method"&gt;
+readline&lt;/i&gt; reaches the end of the file, it returns an empty
+string. Otherwise, it returns the line of text, including the
+trailing newline character.&lt;/p&gt;
+
+&lt;p&gt;On my test machine, using a 10 megabyte sample text file, this
+script reads about &lt;b&gt;32,000&lt;/b&gt; lines per second.&lt;/p&gt;
+
+&lt;h3&gt;Using the fileinput module&lt;/h3&gt;
+
+&lt;p&gt;If you think the &lt;i class="statement"&gt;while&lt;/i&gt; loop is ugly,
+you can hide the &lt;i class="method"&gt;readline&lt;/i&gt; call in a wrapper
+class. The standard &lt;i class="module"&gt;fileinput&lt;/i&gt; module contains
+an &lt;i class="class"&gt;input&lt;/i&gt; class which does exactly that.&lt;/p&gt;
+
+&lt;pre class='python'&gt;
+# File: readline-example-2.py
+
+import fileinput
+
+for line in fileinput.input("sample.txt"):
+    pass
+&lt;/pre&gt;
+
+&lt;p&gt;However, adding more layers of Python code doesn't exactly help.
+For the same test setup, performance drops to &lt;b&gt;13,000&lt;/b&gt; lines
+per second. That's nearly two and half times slower!&lt;/p&gt;
+
+&lt;h3&gt;Speeding up line reading&lt;/h3&gt;
+
+&lt;p&gt;To speed things up, we obviously need to make sure we spend as
+little time on in Python code (running under the interpreter) as
+possible.&lt;/p&gt;
+
+&lt;p&gt;One way to do this is to tell the file object to read larger
+chunks of data. For example, if you have enough memory, you can
+slurp the entire file into memory, using the &lt;i class="method"&gt;
+readlines&lt;/i&gt; method. Or you could even use the &lt;i class="method"&gt;
+read&lt;/i&gt; method to read the entire file into a single memory block,
+and then use &lt;i class="function"&gt;string.split&lt;/i&gt; to chop it up
+into individual lines.&lt;/p&gt;
+
+&lt;p&gt;However, if you're processing really large files, it would be
+nice if you could limit the chunk size to something reasonable. For
+example, if you read a few thousand lines at a time, you probably
+won't use up more than 100 kilobytes or so.&lt;/p&gt;
+
+&lt;p&gt;The following script uses a nested loop. The outer loop uses &lt;i
+class="method"&gt;readlines&lt;/i&gt; to read about 100,000 bytes of text,
+and the inner loop processes those lines using a simple &lt;i
+class="statement"&gt;for-in&lt;/i&gt; loop:&lt;/p&gt;
+
+&lt;pre class='python'&gt;
+# File: readline-example-3.py
+
+file = open("sample.txt")
+
+while 1:
+    lines = file.readlines(100000)
+    if not lines:
+	break
+    for line in lines:
+	pass # &lt;i&gt;do something&lt;/i&gt;
+&lt;/pre&gt;
+
+&lt;p&gt;Can this really be faster? You bet. With the same test data, we
+can now process &lt;b&gt;96,900&lt;/b&gt; lines of text per second!&lt;/p&gt;
+
+&lt;p&gt;Or to put it another way, this solution is three times as fast
+as the standard solution, and over seven times faster than the &lt;i
+class="module"&gt;fileinput&lt;/i&gt; version.&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;In Python 2.2 and later, you can loop over the file object itself.
+This works pretty much like readlines(N) under the covers, but looks
+much better:&lt;/p&gt;
+
+&lt;pre class='python'&gt;
+# File: readline-example-5.py
+
+file = open("sample.txt")
+
+for line in file:
+    pass # &lt;i&gt;do something&lt;/i&gt;
+&lt;/pre&gt;
+
+&lt;p&gt;In Python 2.1, you have to use the &lt;b&gt;xreadlines&lt;/b&gt; iterator
+factory instead:&lt;/p&gt;
+
+&lt;pre class='python'&gt;
+# File: readline-example-4.py
+
+file = open("sample.txt")
+
+for line in file.xreadlines():
+    pass # &lt;i&gt;do something&lt;/i&gt;
+&lt;/pre&gt;
+
+&lt;p class='info'&gt;Copyright &amp;#169; 2000 Fredrik Lundh&lt;/p&gt;</textarea>
+<table>
+<tr><td><label for='author'>Name:</label></td><td>
+<div><input name='author' value="" size=40></div>
+</td><td>(Optional)</td></tr>
+<tr><td><label for='email'>Mail:</label></td><td>
+<div><input name='email' value="" size=40></div>
+</td><td>(Optional)</td></tr>
+<tr><td><label for='note'>Comment:</label></td><td>
+<div><input name='note' value="" size=40></div>
+</td><td>(Optional)</td></tr>
+<tr><td><label for='password'>Password:</label></td><td>
+<div><input name='password' value="(replace with the sum of 7+4)" size=40></div>
+</td><td>(Required)</td></tr>
+</table>
+<p>
+<input type='submit' name='preview' value='update preview' style='background:#084; color:white; width:200px; font-weight:bold;' >
+&nbsp;&nbsp;&nbsp;
+<input type='submit' name='submit' value='submit patch'  style='background:#084; color:white; width:200px; font-weight:bold;' >
+</p>
+<p>&nbsp;</p>
+</form>
+<div style='background: white; border: 2px solid #084; padding: 0px 20px;'>
+<h2>Reading Text Files</h2>
+
+<p class='info'>June 09, 2000 | Fredrik Lundh</p>
+
+<p class='note'><i>This is somewhat outdated, given the additions of
+xreadlines in 2.1 and text file iterators in 2.2.  See the end of the
+page for examples.</i></p>
+
+<p>This very brief note discusses a few more or less efficient ways
+to read lines of text from a file.</p>
+
+<h3>Doing it the usual way</h3>
+
+<p>The standard idiom consists of a an 'endless' <i
+class="statement">while</i> loop, in which we repeatedly call the
+file's <i class="method">readline</i> method. Here's an
+example:</p>
+
+<pre class='python'>
+# File: readline-example-1.py
+
+file = open("sample.txt")
+
+while 1:
+    line = file.readline()
+    if not line:
+	break
+    pass # <i>do something</i>
+</pre>
+
+<p>This snippet reads the file line by line. If <i class="method">
+readline</i> reaches the end of the file, it returns an empty
+string. Otherwise, it returns the line of text, including the
+trailing newline character.</p>
+
+<p>On my test machine, using a 10 megabyte sample text file, this
+script reads about <b>32,000</b> lines per second.</p>
+
+<h3>Using the fileinput module</h3>
+
+<p>If you think the <i class="statement">while</i> loop is ugly,
+you can hide the <i class="method">readline</i> call in a wrapper
+class. The standard <i class="module">fileinput</i> module contains
+an <i class="class">input</i> class which does exactly that.</p>
+
+<pre class='python'>
+# File: readline-example-2.py
+
+import fileinput
+
+for line in fileinput.input("sample.txt"):
+    pass
+</pre>
+
+<p>However, adding more layers of Python code doesn't exactly help.
+For the same test setup, performance drops to <b>13,000</b> lines
+per second. That's nearly two and half times slower!</p>
+
+<h3>Speeding up line reading</h3>
+
+<p>To speed things up, we obviously need to make sure we spend as
+little time on in Python code (running under the interpreter) as
+possible.</p>
+
+<p>One way to do this is to tell the file object to read larger
+chunks of data. For example, if you have enough memory, you can
+slurp the entire file into memory, using the <i class="method">
+readlines</i> method. Or you could even use the <i class="method">
+read</i> method to read the entire file into a single memory block,
+and then use <i class="function">string.split</i> to chop it up
+into individual lines.</p>
+
+<p>However, if you're processing really large files, it would be
+nice if you could limit the chunk size to something reasonable. For
+example, if you read a few thousand lines at a time, you probably
+won't use up more than 100 kilobytes or so.</p>
+
+<p>The following script uses a nested loop. The outer loop uses <i
+class="method">readlines</i> to read about 100,000 bytes of text,
+and the inner loop processes those lines using a simple <i
+class="statement">for-in</i> loop:</p>
+
+<pre class='python'>
+# File: readline-example-3.py
+
+file = open("sample.txt")
+
+while 1:
+    lines = file.readlines(100000)
+    if not lines:
+	break
+    for line in lines:
+	pass # <i>do something</i>
+</pre>
+
+<p>Can this really be faster? You bet. With the same test data, we
+can now process <b>96,900</b> lines of text per second!</p>
+
+<p>Or to put it another way, this solution is three times as fast
+as the standard solution, and over seven times faster than the <i
+class="module">fileinput</i> version.</p>
+
+<hr />
+
+<p>In Python 2.2 and later, you can loop over the file object itself.
+This works pretty much like readlines(N) under the covers, but looks
+much better:</p>
+
+<pre class='python'>
+# File: readline-example-5.py
+
+file = open("sample.txt")
+
+for line in file:
+    pass # <i>do something</i>
+</pre>
+
+<p>In Python 2.1, you have to use the <b>xreadlines</b> iterator
+factory instead:</p>
+
+<pre class='python'>
+# File: readline-example-4.py
+
+file = open("sample.txt")
+
+for line in file.xreadlines():
+    pass # <i>do something</i>
+</pre>
+
+<p class='info'>Copyright &#169; 2000 Fredrik Lundh</p>
+</div>
+</body>
+</html>

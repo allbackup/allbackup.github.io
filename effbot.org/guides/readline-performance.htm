@@ -1,0 +1,24 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>Reading Text&nbsp;Files</title> <script type="text/javascript">effbot_page_id=252;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <h1 class="maintitle">Reading Text&nbsp;Files</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p class="info">June 09, 2000 | Fredrik Lundh</p><p class="note"><i>This is somewhat outdated, given the additions of
+xreadlines in 2.1 and text file iterators in 2.2.  See the end of the
+page for examples.</i></p><p>This very brief note discusses a few more or less efficient ways
+to read lines of text from a file.</p><h3>Doing it the usual way</h3><p>The standard idiom consists of a an &#8216;endless&#8217; <i class="statement">while</i> loop, in which we repeatedly call the
+file&#8217;s <i class="method">readline</i> method. Here&#8217;s an
+example:</p><pre class="python">
+<span class="pycomment"># File: readline-example-1.py</span>
+
+file = open(<span class="pystring">"sample.txt"</span>)
+
+<span class="pykeyword">while</span> 1:
+    line = file.readline()
+    <span class="pykeyword">if</span> <span class="pykeyword">not</span> line:
+        <span class="pykeyword">break</span>
+    <span class="pykeyword">pass</span> <span class="pycomment"># do something</span></pre><p>This snippet reads the file line by line. If <i class="method">
+readline</i> reaches the end of the file, it returns an empty
+string. Otherwise, it returns the line of text, including the
+trailing newline character.</p><p>On my test machine, using a 10 megabyte sample text file, this
+script reads about <b>32,000</b> lines per second.</p><h3>Using the fileinput module</h3><p>If you think the <i class="statement">while</i> loop is ugly,
+you can hide the <i class="method">readline</i> call in a wrapper
+class. The standard <i class="module">fileinput</i> module contains
+an <i class="class">input</i> class which does exactly that.</p><pre c

@@ -1,0 +1,129 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>The Tkinter Text&nbsp;Widget</title> <script type="text/javascript">effbot_page_id=1963;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> <p style='color: #8f8f8f; background: #fff5bf; padding: 5px 10px;'> <b>2008-07-15:</b> Selected articles
+ (including this one) 
+now have experimental "comment" links in the left column and at the bottom.
+You're welcome to use them for commenting and voting on articles.
+For a bit more on this, see <a
+href="http://effbot.slinkset.com/links/Welcome_to_discuss_effbot_org">this
+page</a>. /F
+</p> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <p><a href="spinbox.htm">back</a> <a href="toplevel.htm">next</a></p> <h1 class="maintitle">The Tkinter Text&nbsp;Widget</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p>The <b>Text</b> widget provides formatted text display. It
+allows you to display and edit text with various styles and
+attributes. The widget also supports embedded images and
+windows.</p><h2>When to use the Text Widget</h2><p>The text widget is used to display text documents, containing
+either plain text or formatted text (using different fonts,
+embedded images, and other embellishments). The text widget can
+also be used as a text editor.</p><h2>Concepts</h2><p>The text widget stores and displays lines of text.</p><p>The text body can consist of characters, marks, and embedded
+windows or images. Different regions can be displayed in different
+styles, and you can also attach event bindings to regions.</p><p>By default, you can edit the text widget&#8217;s contents using the
+standard keyboard and mouse bindings. To disable editing, set the
+<b>state</b> option to <b>DISABLED</b> (but if you do that, you&#8217;ll
+also disable the <b>insert</b> and <b>delete</b> methods).</p><h3>Indexes</h3><p>Indexes are used to point to positions within the text handled
+by the text widget. Like Python sequence indexes, text widget
+indexes correspond to positions between the actual characters.</p><p>Tkinter provides a number of different index types:</p><ul><li><p>line/column (&#8220;line.column&#8221;)</p></li><li><p>line end (&#8220;line.end&#8221;)</p></li><li><p><b>INSERT</b></p></li><li><p><b>CURRENT</b></p></li><li><p><b>END</b></p></li><li><p>user-defined marks</p></li><li><p>user-defined tags (<span>&#8220;tag.first&#8221;</span>,
+<span>&#8220;tag.last&#8221;</span>)</p></li><li><p>selection (<b>SEL_FIRST</b>, <b>SEL_LAST</b>)</p></li><li><p>window coordinate (<span>&#8220;@x,y&#8221;</span>)</p></li><li><p>embedded object name (window, images)</p></li><li><p>expressions</p></li></ul><h4>Lines and columns</h4><p><i>line/column indexes</i> are the basic index type. They are
+given as strings consisting of a line number and column number,
+separated by a period. Line numbers start at 1, while column
+numbers start at 0, like Python sequence indexes. You can construct
+indexes using the following syntax:</p><pre class="python">
+    <span class="pystring">"%d.%d"</span> % (line, column)</pre><p>It is not an error to specify line numbers beyond the last line,
+or column numbers beyond the last column on a line. Such numbers
+correspond to the line beyond the last, or the newline character
+ending a line.</p><p>Note that line/column indexes may look like floating point
+values, but it&#8217;s seldom possible to treat them as such (consider
+position 1.25 vs. 1.3, for example). I sometimes use <b>1.0</b>
+instead of <span>&#8220;1.0&#8221;</span> to save a few keystrokes when
+referring to the first character in the buffer, but that&#8217;s about
+it.</p><p>You can use the <b>index</b> method to convert all other kinds
+of indexes to the corresponding line/column index string.</p><h4>Line endings</h4><p>A <i>line end</i> index is given as a string consisting of a
+line number directly followed by the text
+<span>&#8220;<b>.end</b>&#8221;</span>. A line end index correspond to the
+newline character ending a line.</p><h4>Named indexes</h4><p><b>INSERT</b> (or <span>&#8220;insert&#8221;</span>) corresponds to the
+insertion cursor.</p><p><b>CURRENT</b> (or <span>&#8220;current&#8221;</span>) corresponds to the
+character closest to the mouse pointer. However, it is only updated
+if you move the mouse without holding down any buttons (if you do,
+it will not be updated until you release the button).</p><p><b>END</b> (or <span>&#8220;end&#8221;</span>) corresponds to the position
+just after the last character in the buffer.</p><p><i>User-defined marks</i> are named positions in the text.
+<b>INSERT</b> and <b>CURRENT</b> are predefined marks, but you can
+also create your own marks. See below for more information.</p><p><i>User-defined tags</i> represent special event bindings and
+styles that can be assigned to ranges of text. For more information
+on tags, see below.</p><p>You can refer to the beginning of a tag range using the syntax
+<span>&#8220;<i>tag</i><b>.first</b>&#8221;</span> (just before the first
+character in the text using that tag), and
+<span>&#8220;<i>tag</i><b>.last</b>&#8221;</span> (just after the last
+character using that tag).</p><pre class="python">
+    <span class="pystring">"%s.first"</span> % tagname
+    <span class="pystring">"%s.last"</span> % tagname</pre><p>If the tag isn&#8217;t in use, Tkinter raises a <b>TclError</b>
+exception.</p><p>The <i>selection</i> is a special tag named <b>SEL</b> (or
+<span>&#8220;sel&#8221;</span>) that corresponds to the current selection. You
+can use the constants <b>SEL_FIRST</b> and <b>SEL_LAST</b> to refer
+to the selection. If there&#8217;s no selection, Tkinter raises a
+<b>TclError</b> exception.</p><h4>Coordinates</h4><p>You can also use <i>window coordinates</i> as indexes. For
+example, in an event binding, you can find the character closest to
+the mouse pointer using the following syntax:</p><pre class="python">
+    <span class="pystring">"@%d,%d"</span> % (event.x, event.y)</pre><h4>Embedded objects</h4><p><i>Embedded object name</i> can be used to refer to windows and
+images embedded in the text widget. To refer to a window, simply
+use the corresponding Tkinter widget instance as an index. To refer
+to an embedded image, use the corresponding Tkinter
+<b>PhotoImage</b> or <b>BitmapImage</b> object.</p><h4>Expressions</h4><p><i>Expressions</i> can be used to modify any kind of index.
+Expressions are formed by taking the string representation of an
+index (use <b>str</b> if the index isn&#8217;t already a string), and
+appending one or more <i>modifiers</i> from the following list:</p><ul><li><p><span>&#8220;<b>+</b> <i>count</i> <b>chars</b>&#8221;</span> moves the
+index forward. The index will move over newlines, but not beyond
+the <b>END</b> index.</p></li><li><p><span>&#8220;<b>-</b> <i>count</i> <b>chars</b>&#8221;</span> moves the
+index backwards. The index will move over newlines, but not beyond
+index <span>&#8220;1.0&#8221;</span>.</p></li><li><p><span>&#8220;<b>+</b> <i>count</i> <b>lines</b>&#8221;</span> and
+<span>&#8220;<b>-</b> <i>count</i> <b>lines</b>&#8221;</span> moves the index
+full lines forward (or backwards). If possible, the index is kept
+in the same column, but if the new line is too short, the index is
+moved to the end of that line.</p></li><li><p><span>&#8220;<b>linestart</b>&#8221;</span> moves the index to the first
+position on the line.</p></li><li><p><span>&#8220;<b>lineend</b>&#8221;</span> the index to the last position on
+the line (the newline, that is).</p></li><li><p><span>&#8220;<b>wordstart</b>&#8221;</span> and
+<span>&#8220;<b>wordend</b>&#8221;</span> moves the index to the beginning
+(end) of the current word. Words are sequences of letters, digits,
+and underline, or single non-space characters.</p></li></ul><p>The keywords can be abbreviated and spaces can be omitted as
+long as the result is not ambigous. For example, <span>&#8220;<b>+ 5
+chars</b>&#8221;</span> can be shortened to
+<span>&#8220;<b>+5c</b>&#8221;</span>.</p><p>For compatibility with implementations where the constants are
+not ordinary strings, you may wish to use <b>str</b> or formatting
+operations to create the expression string. For example, here&#8217;s how
+to remove the character just before the insertion cursor:</p><pre class="python">
+    <span class="pykeyword">def</span> <span class="pyfunction">backspace</span>(event):
+        event.widget.delete(<span class="pystring">"%s-1c"</span> % INSERT, INSERT)</pre><h3>Marks</h3><p>Marks are (usually) invisible objects embedded in the text
+managed by the widget. Marks are positioned between character
+cells, and moves along with the text.</p><ul><li><p>user-defined marks</p></li><li><p><b>INSERT</b></p></li><li><p><b>CURRENT</b></p></li></ul><p>You can use any number of <i>user-defined marks</i> in a text
+widget. Mark names are ordinary strings, and they can contain
+anything except whitespace (for convenience, you should avoid names
+that can be confused with indexes, especially names containing
+periods). To create or move a mark, use the <b>mark_set</b>
+method.</p><p>Two marks are predefined by Tkinter, and have special
+meaning:</p><p><b>INSERT</b> (or <span>&#8220;insert&#8221;</span>) is a special mark that
+is used to represent the insertion cursor. Tkinter draws the cursor
+at this mark&#8217;s position, so it isn&#8217;t entirely invisible.</p><p><b>CURRENT</b> (or <span>&#8220;current&#8221;</span>) is a special mark
+that represents the character closest to the mouse pointer.
+However, it is only updated if you move the mouse without holding
+down any buttons (if you do, it will not be updated until you
+release the button).</p><p>Special marks can be manipulated as other user-defined marks,
+but they cannot be deleted.</p><p>If you insert or delete text before a mark, the mark is moved
+along with the other text. To remove a mark, you must use the
+<b>mark_unset</b> method. Deleting text around a mark doesn&#8217;t
+remove the mark itself.</p><p>If you insert text <i>at</i> a mark, it may be moved to the end
+of that text or left where it was, depending on the mark&#8217;s
+<i>gravity</i> setting (<b>LEFT</b> or <b>RIGHT</b>; default is
+<b>RIGHT</b>). You can use the <b>mark_gravity</b> method to change
+the gravity setting for a given mark.</p><p>In the following example, the <span>&#8220;sentinel&#8221;</span> mark is
+used to keep track of the original position for the insertion
+cursor.</p><pre class="python">
+    text.mark_set(<span class="pystring">"sentinel"</span>, INSERT)
+    text.mark_gravity(<span class="pystring">"sentinel"</span>, LEFT)</pre><p>You can now let the user enter text at the insertion cursor, and
+use <b>text.get(sentinel, INSERT)</b> to pick up the result.</p><h3>Tags</h3><p>Tags are used to associated a display style and/or event
+callbacks with ranges of text.</p><ul><li><p>user-defined tags</p></li><li><p><b>SEL</b></p></li></ul><p>You can define any number of <i>user-defined tags</i>. Any text
+range can have multiple tags, and the same tag can be used for many
+different ranges. Unlike the <b>Canvas</b> widget, tags defined for
+the text widget are not tightly bound to text ranges; the
+information associated with a tag is kept also if there is no text
+in the widget using it.</p><p>Tag names are ordinary strings, and they can contain anything
+except whitespace.</p><p><b>SEL</b> (or <span>&#8220;sel&#8221;</span>) is a special tag which
+corresponds to the current selection, if any. There should be at
+most one range using the selection tag.</p><p>The following options are used with <b>tag_config</b> to specify
+the visual style for text using a certain tag.</p><dl 

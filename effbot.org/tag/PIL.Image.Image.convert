@@ -1,0 +1,33 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>The Image&nbsp;Module</title> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> <div style='padding-top: 1em'> <p class="note" align="center">This is an excerpt from  <a href="/imagingbook/">The Python Imaging Library Handbook</a>, taken from the chapter <a href="/imagingbook/image.htm"><cite>The Image Module</cite></a>.</p> </div> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <h1 class="maintitle">The Image&nbsp;Module</h1> </div> <!-- yui-g --><h3 id="tag-Image.Image.convert">convert&#160;<a class="nav" href="http://effbot.org/imagingbook/image.htm#tag-Image.Image.convert" title="bookmark!">#</a></h3><div class="method" id="image-convert-method"><p><b>im.convert(mode)</b>
+<span>&#8658; image</span></p><p>Converts an image to another mode, and returns the new image.</p><p>When converting from a palette image, this translates pixels through
+the palette. If mode is omitted, a mode is chosen so that all information
+in the image and the palette can be represented without a palette.</p><p>When converting from a colour image to black and white, the library
+uses the ITU-R 601-2 luma transform:</p><pre>
+    L = R * 299/1000 + G * 587/1000 + B * 114/1000
+</pre><p>When converting to a bilevel image (mode &#8220;1&#8221;), the source image is
+first converted to black and white.  Resulting values larger than 127
+are then set to white, and the image is dithered.  To use other
+thresholds, use the <b>point</b> method.  To disable dithering, use
+the <b>dither=</b> option (see below).</p><p><b>im.convert(&#8220;P&#8221;, **options)</b>
+<span>&#8658; image</span></p><p>Same, but provides better control when converting an &#8220;RGB&#8221; image to
+an 8-bit palette image.  Available options are:</p><p><b>dither=</b>. Controls dithering.  The default is
+<b>FLOYDSTEINBERG</b>, which distributes errors to neighboring pixels.
+To disable dithering, use <b>NONE</b>.</p><p><b>palette=</b>. Controls palette generation.  The default is
+<b>WEB</b>, which is the standard 216-color &#8220;web palette&#8221;.  To use an
+optimized palette, use <b>ADAPTIVE</b>.</p><p><b>colors=</b>. Controls the number of colors used for the palette
+when <b>palette</b> is <b>ADAPTIVE</b>.  Defaults to the maximum
+value, 256 colors.</p><p><b>im.convert(mode, matrix)</b>
+<span>&#8658; image</span></p><p>Converts an &#8220;RGB&#8221; image to &#8220;L&#8221; or &#8220;RGB&#8221; using a conversion
+matrix. The matrix is a 4- or 16-tuple.</p><p>The following example converts an RGB image (linearly calibrated
+according to ITU-R 709, using the D65 luminant) to the CIE XYZ
+colour space:</p><div class="example">
+<b>Convert RGB to XYZ</b>
+<pre class="python">
+rgb2xyz = (
+    0.412453, 0.357580, 0.180423, 0,
+    0.212671, 0.715160, 0.072169, 0,
+    0.019334, 0.119193, 0.950227, 0 )
+out = im.convert(<span class="pystring">"RGB"</span>, rgb2xyz)</pre></div></div><p>[<a href="/imagingbook/image.htm#tag-Image.Image.convert">read this entry in context</a>]</p><div class="yui-g"></div> <!-- yui-g --></div> <!-- content --> </div> <!-- yui-b --> </div> <!-- yui-main --> <div class="yui-b"> <div id='menu'> </div> <!-- menu --> </div> <!-- yui-b --> </div> <!-- bd --> <div id="ft"> <!-- footer --> <p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;"></a>
+this page was rendered by a <a href="http://www.djangoproject.com/">django</a> application in 0.00s 2013-02-07 20:50:46.027210.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p> </div> <!-- ft --> </div> <!-- doc --> <script src="/media/js/effbot-min.js" type="text/javascript"> </script> </body> </html>

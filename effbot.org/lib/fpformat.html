@@ -1,0 +1,72 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>fpformat</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-fpformat.html'>original</a> :::
+<a href='fpformat.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>fpformat&#8212;Floating point conversions</h1>
+
+<p class="note"><b>Note:</b> The This module is unneeded:
+everything here could be done via the <code>%</code> string
+interpolation operator.</p>
+
+<p>The <code>fpformat</code> module
+defines the following functions and an exception:</p>
+</div>
+<dl><dt class="function" id="fix"><b>fix(x, digs)</b> <tt class="nav"><a class="nav" href="fpformat.fix" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Format <var>x</var> as <code>[-]ddd.ddd</code> with <var>
+digs</var> digits after the point and at least one digit before. If
+<var>digs</var> &lt;= 0, the decimal point is suppressed.</p>
+
+<p><var>x</var> can be either a number or a string that looks like
+one. <var>digs</var> is an integer.</p>
+
+<p>Return value is a string.</p>
+</dd>
+<dt class="function" id="sci"><b>sci(x, digs)</b> <tt class="nav"><a class="nav" href="fpformat.sci" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Format <var>x</var> as <code>[-]d.dddE[+-]ddd</code> with <var>
+digs</var> digits after the point and exactly one digit before. If
+<var>digs</var> &lt;= 0, one digit is kept and the point is
+suppressed.</p>
+
+<p><var>x</var> can be either a real number, or a string that looks
+like one. <var>digs</var> is an integer.</p>
+
+<p>Return value is a string.</p>
+</dd>
+<dt class="exception" id="NotANumber"><b>exception NotANumber</b> <tt class="nav"><a class="nav" href="fpformat.NotANumber" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="exception">
+<p>Exception raised when a string passed to <a class="link" href="#fix"><code>fix</code></a> or <a class="link" href="#sci"><code>sci</code></a>
+as the <var>x</var> parameter does not look like a number. This is
+a subclass of <code>
+exceptions.ValueError</code> when the standard exceptions are strings.
+The exception value is the improperly formatted string that caused
+the exception to be raised.</p>
+</dd>
+</dl><div class="text">
+<p>Example:</p>
+
+<pre>
+&gt;&gt;&gt; import fpformat
+&gt;&gt;&gt; fpformat.fix(1.23, 1)
+'1.2'
+</pre>
+</div>
+</div></body></html>

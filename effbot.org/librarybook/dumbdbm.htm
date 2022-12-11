@@ -1,0 +1,33 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>The dumbdbm&nbsp;module</title></head><body data-page-id="519"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">The dumbdbm&nbsp;module</h1></div><div class="yui-ge"><div class="yui-u first"><p>This is a very simple database implementation, similar to
+<b><a href="dbm.htm">dbm</a></b> and friends, but written in pure Python.
+It uses two files; a binary file (.dat) which contains the data, and a text
+file (.dir) which contain data descriptors.</p><p>The <a href="anydbm.htm"><b>anydbm</b></a> module uses this as the
+last choice.</p><div class="example">
+<b style="example">Example: Using the dumbdbm module</b>
+<pre>
+# File: <a href="dumbdbm/dumbdbm-example-1.py">dumbdbm-example-1.py</a>
+
+import dumbdbm
+
+db = dumbdbm.open("dumbdbm", "c")
+db["first"] = "fear"
+db["second"] = "surprise"
+db["third"] = "ruthless efficiency"
+db["fourth"] = "an almost fanatical devotion to the Pope"
+db["fifth"] = "nice red uniforms"
+db.close()
+
+db = dumbdbm.open("dumbdbm", "r")
+for key in db.keys():
+    print repr(key), repr(db[key])
+
+</pre><pre class="computeroutput" moreinfo="NONE">
+$ python dumbdbm-example-1.py
+'first' 'fear'
+'third' 'ruthless efficiency'
+'fifth' 'nice red uniforms'
+'second' 'surprise'
+'fourth' 'an almost fanatical devotion to the Pope'
+</pre></div></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to librarybook index page.">::: librarybook :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

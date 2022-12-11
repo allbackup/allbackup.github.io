@@ -1,0 +1,92 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>The pyclbr&nbsp;module</title></head><body data-page-id="627"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">The pyclbr&nbsp;module</h1></div><div class="yui-ge"><div class="yui-u first"><p>This module contains a basic Python class parser.</p><p>In 1.5.2, the module exports a single function,
+<b>readmodule</b>, which parses a given module, and returns a
+list of all classes defined at the module&#8217;s top level.</p><div class="example">
+<b style="example">Example: Using the pyclbr
+module</b>
+<pre>
+# File: <a href="pyclbr/pyclbr-example-1.py">pyclbr-example-1.py</a>
+
+import pyclbr
+
+mod = pyclbr.readmodule("cgi")
+
+for k, v in mod.items():
+    print k, v
+
+</pre><pre class="computeroutput" moreinfo="NONE">
+MiniFieldStorage &lt;pyclbr.Class instance at 7873b0&gt;
+InterpFormContentDict &lt;pyclbr.Class instance at 79bd00&gt;
+FieldStorage &lt;pyclbr.Class instance at 790e20&gt;
+SvFormContentDict &lt;pyclbr.Class instance at 79b5e0&gt;
+StringIO &lt;pyclbr.Class instance at 77dd90&gt;
+FormContent &lt;pyclbr.Class instance at 79bd60&gt;
+FormContentDict &lt;pyclbr.Class instance at 79a9c0&gt;
+</pre></div><p>In 2.0 and later, there&#8217;s also an alternative interface,
+<b>readmodule_ex</b>, which returns global functions as well.</p><div class="example">
+<b style="example">Example: Using the pyclbr
+module to read classes and functions</b>
+<pre>
+# File: <a href="pyclbr/pyclbr-example-3.py">pyclbr-example-3.py</a>
+
+import pyclbr
+
+# available in Python 2.0 and later
+mod = pyclbr.readmodule_ex("cgi")
+
+for k, v in mod.items():
+    print k, v
+
+</pre><pre class="computeroutput" moreinfo="NONE">
+MiniFieldStorage &lt;pyclbr.Class instance at 00905D2C&gt;
+parse_header &lt;pyclbr.Function instance at 00905BD4&gt;
+test &lt;pyclbr.Function instance at 00906FBC&gt;
+print_environ_usage &lt;pyclbr.Function instance at 00907C94&gt;
+parse_multipart &lt;pyclbr.Function instance at 00905294&gt;
+FormContentDict &lt;pyclbr.Class instance at 008D3494&gt;
+initlog &lt;pyclbr.Function instance at 00904AAC&gt;
+parse &lt;pyclbr.Function instance at 00904EFC&gt;
+StringIO &lt;pyclbr.Class instance at 00903EAC&gt;
+SvFormContentDict &lt;pyclbr.Class instance at 00906824&gt;
+...
+</pre></div><p>To get more information about each class, use the various
+attributes in the <b>Class</b> instances:</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><div class="example wide">
+<b style="example">Example: Using the pyclbr
+module</b>
+<pre class="wide">
+# File: <a href="pyclbr/pyclbr-example-2.py">pyclbr-example-2.py</a>
+
+import pyclbr
+import string
+
+mod = pyclbr.readmodule("cgi")
+
+def dump(c):
+    # print class header
+    s = "class " + c.name
+    if c.super:
+        s = s +  "(" + string.join(map(lambda v: v.name, c.super), ", ") + ")"
+    print s + ":"
+    # print method names, sorted by line number
+    methods = c.methods.items()
+    methods.sort(lambda a, b: cmp(a[1], b[1]))
+    for method, lineno in methods:
+        print "  def " + method
+    print
+
+for k, v in mod.items():
+    dump(v)
+
+</pre><pre class="computeroutput wide" moreinfo="NONE">
+class MiniFieldStorage:
+  def __init__
+  def __repr__
+
+class InterpFormContentDict(SvFormContentDict):
+  def __getitem__
+  def values
+  def items
+
+...
+</pre></div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to librarybook index page.">::: librarybook :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

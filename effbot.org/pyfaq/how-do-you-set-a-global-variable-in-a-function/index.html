@@ -1,0 +1,20 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>How do you set a global variable in a&nbsp;function?</title> <script type="text/javascript">effbot_page_id=833;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> <!--
+<p style='color: #8f8f8f; background: #fff5bf; padding: 5px 10px;'> <b>2008-07-15:</b> Selected articles
+
+now have experimental "comment" links in the left column and at the bottom.
+You're welcome to use them for commenting and voting on articles.
+For a bit more on this, see <a
+href="http://effbot.slinkset.com/links/Welcome_to_discuss_effbot_org">this
+page</a>. /F
+</p>
+--> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <h1 class="maintitle">How do you set a global variable in a&nbsp;function?</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p>Q. I&#8217;m trying to change a module variable, but it doesn&#8217;t work.  Can it
+be done?</p><p>A. Did you do something like this?</p><pre class="python">x = 1 <span class="pycomment"># make a global module variable</span>
+
+<span class="pykeyword">def</span> <span class="pyfunction">f</span>():
+      <span class="pykeyword">print</span> x <span class="pycomment"># try to print the global</span>
+      ...
+      <span class="pykeyword">for</span> j <span class="pykeyword">in</span> range(100):
+           <span class="pykeyword">if</span> q &gt; 3:
+              x=4</pre><p>Any variable assigned in a function is local to that function, unless it is specifically declared global. Since a value is bound to <em>x</

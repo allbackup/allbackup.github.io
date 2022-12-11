@@ -1,0 +1,33 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>The colorsys&nbsp;module</title></head><body data-page-id="492"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">The colorsys&nbsp;module</h1></div><div class="yui-ge"><div class="yui-u first"><p>This module contains functions to convert between RGB, YIQ
+(video), HLS, and HSV color values.  The module uses values in
+the range 0.0 to 1.0 to represent individual color components
+(except for I and Q, which can also be negative).</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><div class="example wide">
+<b style="example">Example: Using the colorsys module</b>
+<pre class="wide">
+# File: <a href="colorsys/colorsys-example-1.py">colorsys-example-1.py</a>
+
+import colorsys
+
+# <i>"gold"</i>
+r, g, b = 1.00, 0.84, 0.00
+
+print "RGB", (r, g, b)
+
+y, i, q = colorsys.rgb_to_yiq(r, g, b)
+print "YIQ", (y, i, q), "=&gt;", colorsys.yiq_to_rgb(y, i, q)
+
+h, l, s = colorsys.rgb_to_hls(r, g, b)
+print "HLS", (h, l, s), "=&gt;", colorsys.hls_to_rgb(h, l, s)
+
+h, s, v = colorsys.rgb_to_hsv(r, g, b)
+print "HSV", (h, s, v), "=&gt;", colorsys.hsv_to_rgb(h, s, v)
+
+</pre><pre class="computeroutput wide" moreinfo="NONE">
+$ python colorsys-example-1.py
+RGB (1.0, 0.84, 0.0)
+YIQ (0.7956, 0.3648, -0.2268) =&gt; (0.9999998292, 0.8400000312, 0.0)
+HLS (0.14, 0.5, 1.0) =&gt; (1.0, 0.84, 0.0)
+HSV (0.14, 1.0, 1.0) =&gt; (1.0, 0.84, 0.0)
+</pre></div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to librarybook index page.">::: librarybook :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

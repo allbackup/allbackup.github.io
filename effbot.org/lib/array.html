@@ -1,0 +1,480 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>array</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-array.html'>original</a> :::
+<a href='array.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>array&#8212;Efficient arrays of numeric values</h1>
+
+<p>This module defines an object type which can efficiently
+represent an array of basic values: characters, integers, floating
+point numbers. Arrays are sequence types and behave very much like
+lists, except that the type of objects stored in them is
+constrained. The type is specified at object creation time by using
+a type code, which is a single character. The following type codes
+are defined:</p>
+
+<table border="1">
+<tr>
+<th>
+<p>Type code</p>
+</th>
+<th>
+<p>C Type</p>
+</th>
+<th>
+<p>Python Type</p>
+</th>
+<th>
+<p>Minimum size in bytes</p>
+</th>
+</tr>
+
+<tr>
+<td>
+<p><code>'c'</code></p>
+</td>
+<td>
+<p>char</p>
+</td>
+<td>
+<p>character</p>
+</td>
+<td>
+<p>1</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>'b'</code></p>
+</td>
+<td>
+<p>signed char</p>
+</td>
+<td>
+<p>int</p>
+</td>
+<td>
+<p>1</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>'B'</code></p>
+</td>
+<td>
+<p>unsigned char</p>
+</td>
+<td>
+<p>int</p>
+</td>
+<td>
+<p>1</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>'u'</code></p>
+</td>
+<td>
+<p>Py_UNICODE</p>
+</td>
+<td>
+<p>Unicode character</p>
+</td>
+<td>
+<p>2</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>'h'</code></p>
+</td>
+<td>
+<p>signed short</p>
+</td>
+<td>
+<p>int</p>
+</td>
+<td>
+<p>2</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>'H'</code></p>
+</td>
+<td>
+<p>unsigned short</p>
+</td>
+<td>
+<p>int</p>
+</td>
+<td>
+<p>2</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>'i'</code></p>
+</td>
+<td>
+<p>signed int</p>
+</td>
+<td>
+<p>int</p>
+</td>
+<td>
+<p>2</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>'I'</code></p>
+</td>
+<td>
+<p>unsigned int</p>
+</td>
+<td>
+<p>long</p>
+</td>
+<td>
+<p>2</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>'l'</code></p>
+</td>
+<td>
+<p>signed long</p>
+</td>
+<td>
+<p>int</p>
+</td>
+<td>
+<p>4</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>'L'</code></p>
+</td>
+<td>
+<p>unsigned long</p>
+</td>
+<td>
+<p>long</p>
+</td>
+<td>
+<p>4</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>'f'</code></p>
+</td>
+<td>
+<p>float</p>
+</td>
+<td>
+<p>float</p>
+</td>
+<td>
+<p>4</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>'d'</code></p>
+</td>
+<td>
+<p>double</p>
+</td>
+<td>
+<p>float</p>
+</td>
+<td>
+<p>8</p>
+</td>
+</tr>
+</table>
+
+<br />
+<br />
+ 
+
+<p>The actual representation of values is determined by the machine
+architecture (strictly speaking, by the C implementation). The
+actual size can be accessed through the <a class="link" href="#itemsize"><code>itemsize</code></a> attribute. The values stored for
+<code>'L'</code> and <code>'I'</code> items will be represented as
+Python long integers when retrieved, because Python's plain integer
+type cannot represent the full range of C's unsigned (long)
+integers.</p>
+
+<p>The module defines the following type:</p>
+</div>
+<dl><dt class="class" id="array"><b>class array(typecode[, initializer])</b> <tt class="nav"><a class="nav" href="array.array" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>Return a new array whose items are restricted by <var>
+typecode</var>, and initialized from the optional <var>
+initializer</var> value, which must be a list, string, or iterable
+over elements of the appropriate type. <code>fromlist</code>, <code>fromstring</code>, or <code>fromunicode</code> method (see below) to add
+initial items to the array. Otherwise, the iterable initializer is
+passed to the <code>extend</code>
+method.</p>
+
+<blockquote><span class="mark">@since</span> Changed in version
+2.4: Formerly, only lists or strings were accepted.<br />
+</blockquote>
+</dd>
+<dt class="variable" id="ArrayType"><b>ArrayType</b> <tt class="nav"><a class="nav" href="array.ArrayType" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Obsolete alias for <a class="link" href="#array"><code>
+array</code></a>.</p>
+</dd>
+</dl><div class="text">
+<p>Array objects support the ordinary sequence operations of
+indexing, slicing, concatenation, and multiplication. When using
+slice assignment, the assigned value must be an array object with
+the same type code; in all other cases, <code>exceptions.TypeError</code> is
+raised. Array objects also implement the buffer interface, and may
+be used wherever buffer objects are supported.</p>
+
+<p>The following data items and methods are also supported:</p>
+</div>
+<dl><dt class="attribute" id="array.typecode"><b>typecode</b> <tt class="nav"><a class="nav" href="array.array.typecode" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>The typecode character used to create the array.</p>
+</dd>
+<dt class="attribute" id="itemsize"><b>itemsize</b> <tt class="nav"><a class="nav" href="array.itemsize" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>The length in bytes of one array item in the internal
+representation.</p>
+</dd>
+<dt class="method" id="array.append"><b>append(x)</b> <tt class="nav"><a class="nav" href="array.array.append" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Append a new item with value <var>x</var> to the end of the
+array.</p>
+</dd>
+<dt class="method" id="array.buffer_info"><b>buffer_info()</b> <tt class="nav"><a class="nav" href="array.array.buffer_info" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return a tuple <code>(</code><var>address</var>, <var>
+length</var>) giving the current memory address and the length in
+elements of the buffer used to hold array's contents. The size of
+the memory buffer in bytes can be computed as <var>
+array</var>.buffer_info()[1] * <var>array</var>.itemsize. This is
+occasionally useful when working with low-level (and inherently
+unsafe) I/O interfaces that require memory addresses, such as
+certain <code>c:ioctl</code> operations.
+The returned numbers are valid as long as the array exists and no
+length-changing operations are applied to it.</p>
+
+<p class="note"><b>Note:</b> When using array objects from code
+written in C or C++ (the only way to effectively make use of this
+information), it makes more sense to use the buffer interface
+supported by array objects. This method is maintained for backward
+compatibility and should be avoided in new code. The buffer
+interface is documented in the <code>Python/C API Reference
+Manual</code>.</p>
+</dd>
+<dt class="method" id="array.byteswap"><b>byteswap()</b> <tt class="nav"><a class="nav" href="array.array.byteswap" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>&#8220;Byteswap&#8221; all items of the array. This is only
+supported for values which are 1, 2, 4, or 8 bytes in size; for
+other types of values, <code>exceptions.RuntimeError</code> is
+raised. It is useful when reading data from a file written on a
+machine with a different byte order.</p>
+</dd>
+<dt class="method" id="array.count"><b>count(x)</b> <tt class="nav"><a class="nav" href="array.array.count" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return the number of occurrences of <var>x</var> in the
+array.</p>
+</dd>
+<dt class="method" id="array.extend"><b>extend(iterable)</b> <tt class="nav"><a class="nav" href="array.array.extend" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Append items from <var>iterable</var> to the end of the array.
+If <var>iterable</var> is another array, it must have <em>
+exactly</em> the same type code; if not, <code>exceptions.TypeError</code> will be
+raised. If <var>iterable</var> is not an array, it must be iterable
+and its elements must be the right type to be appended to the
+array.</p>
+
+<blockquote><span class="mark">@since</span> Changed in version
+2.4: Formerly, the argument could only be another array.<br />
+</blockquote>
+</dd>
+<dt class="method" id="array.fromfile"><b>fromfile(f, n)</b> <tt class="nav"><a class="nav" href="array.array.fromfile" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Read <var>n</var> items (as machine values) from the file object
+<var>f</var> and append them to the end of the array. If less than
+<var>n</var> items are available, <code>exceptions.EOFError</code> is raised,
+but the items that were available are still inserted into the
+array. <var>f</var> must be a real built-in file object; something
+else with a <code>read</code> method won't
+do.</p>
+</dd>
+<dt class="method" id="array.fromlist"><b>fromlist(list)</b> <tt class="nav"><a class="nav" href="array.array.fromlist" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Append items from the list. This is equivalent to "<code>for x
+in</code> <var>list</var>: a.append(x)"except that if there is a
+type error, the array is unchanged.</p>
+</dd>
+<dt class="method" id="array.fromstring"><b>fromstring(s)</b> <tt class="nav"><a class="nav" href="array.array.fromstring" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Appends items from the string, interpreting the string as an
+array of machine values (as if it had been read from a file using
+the <code>fromfile</code> method).</p>
+</dd>
+<dt class="method" id="array.fromunicode"><b>fromunicode(s)</b> <tt class="nav"><a class="nav" href="array.array.fromunicode" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Extends this array with data from the given unicode string. The
+array must be a type 'u' array; otherwise a ValueError is raised.
+Use "<code>array.fromstring(ustr.decode(enc))</code>" to append
+Unicode data to an array of some other type.</p>
+</dd>
+<dt class="method" id="array.index"><b>index(x)</b> <tt class="nav"><a class="nav" href="array.array.index" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return the smallest <var>i</var> such that <var>i</var> is the
+index of the first occurrence of <var>x</var> in the array.</p>
+</dd>
+<dt class="method" id="array.insert"><b>insert(i, x)</b> <tt class="nav"><a class="nav" href="array.array.insert" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Insert a new item with value <var>x</var> in the array before
+position <var>i</var>. Negative values are treated as being
+relative to the end of the array.</p>
+</dd>
+<dt class="method" id="array.pop"><b>pop([i])</b> <tt class="nav"><a class="nav" href="array.array.pop" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Removes the item with the index <var>i</var> from the array and
+returns it. The optional argument defaults to <code>-1</code>, so
+that by default the last item is removed and returned.</p>
+</dd>
+<dt class="method" id="array.read"><b>read(f, n)</b> <tt class="nav"><a class="nav" href="array.array.read" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Deprecated since release 1.5.1. Use the <code>fromfile</code> method.</p>
+
+<p>Read <var>n</var> items (as machine values) from the file object
+<var>f</var> and append them to the end of the array. If less than
+<var>n</var> items are available, <code>exceptions.EOFError</code> is raised,
+but the items that were available are still inserted into the
+array. <var>f</var> must be a real built-in file object; something
+else with a <code>read</code> method won't
+do.</p>
+</dd>
+<dt class="method" id="array.remove"><b>remove(x)</b> <tt class="nav"><a class="nav" href="array.array.remove" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Remove the first occurrence of <var>x</var> from the array.</p>
+</dd>
+<dt class="method" id="array.reverse"><b>reverse()</b> <tt class="nav"><a class="nav" href="array.array.reverse" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Reverse the order of the items in the array.</p>
+</dd>
+<dt class="method" id="array.tofile"><b>tofile(f)</b> <tt class="nav"><a class="nav" href="array.array.tofile" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Write all items (as machine values) to the file object <var>
+f</var>.</p>
+</dd>
+<dt class="method" id="array.tolist"><b>tolist()</b> <tt class="nav"><a class="nav" href="array.array.tolist" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Convert the array to an ordinary list with the same items.</p>
+</dd>
+<dt class="method" id="array.tostring"><b>tostring()</b> <tt class="nav"><a class="nav" href="array.array.tostring" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Convert the array to an array of machine values and return the
+string representation (the same sequence of bytes that would be
+written to a file by the <code>
+tofile</code> method.)</p>
+</dd>
+<dt class="method" id="array.tounicode"><b>tounicode()</b> <tt class="nav"><a class="nav" href="array.array.tounicode" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Convert the array to a unicode string. The array must be a type
+'u' array; otherwise a ValueError is raised. Use
+array.tostring().decode(enc) to obtain a unicode string from an
+array of some other type.</p>
+</dd>
+<dt class="method" id="array.write"><b>write(f)</b> <tt class="nav"><a class="nav" href="array.array.write" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Deprecated since release 1.5.1. Use the <code>tofile</code> method.</p>
+
+<p>Write all items (as machine values) to the file object <var>
+f</var>.</p>
+</dd>
+</dl><div class="text">
+<p>When an array object is printed or converted to a string, it is
+represented as <code>array(</code><var>typecode</var>, <var>
+initializer</var>). The <var>initializer</var> is omitted if the
+array is empty, otherwise it is a string if the <var>typecode</var>
+is <code>'c'</code>, otherwise it is a list of numbers. The string
+is guaranteed to be able to be converted back to an array with the
+same type and value using reverse quotes (<code>&#8220;</code>), so
+long as the <a class="link" href="#array"><code>array</code></a> function
+has been imported using <code>from array import array</code>.
+Examples:</p>
+
+<pre>
+array('l')
+array('c', 'hello world')
+array('u', u'hello \textbackslash u2641')
+array('l', [1, 2, 3, 4, 5])
+array('d', [1.0, 2.0, 3.14])
+</pre>
+
+<span class="mark">@see</span> <code>
+Module struct</code> Packing and unpacking of heterogeneous binary
+data. <span class="mark">@see</span> <code>Module xdrlib</code> Packing and unpacking of
+External Data Representation (XDR) data as used in some remote
+procedure call systems. <span class="mark">@see</span> <a class="link" href="http://numpy.sourceforge.net/numdoc/HTML/numdoc.htm">The
+Numerical Python Manual</a> The Numeric Python extension (NumPy)
+defines another array type; see http://numpy.sourceforge.net/ for
+further information about Numerical Python. (A PDF version of the
+NumPy manual is available at
+http://numpy.sourceforge.net/numdoc/numdoc.pdf).</div>
+</div></body></html>

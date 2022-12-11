@@ -1,0 +1,112 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>fnmatch</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-fnmatch.html'>original</a> :::
+<a href='fnmatch.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>fnmatch&#8212;Unix filename pattern matching</h1>
+
+<p>This module provides support for Unix shell-style wildcards,
+which are <em>not</em> the same as regular expressions (which are
+documented in the <code>re</code> module).
+The special characters used in shell-style wildcards are:</p>
+
+<table border="1">
+<tr>
+<th>
+<p>Pattern</p>
+</th>
+<th>
+<p>Meaning</p>
+</th>
+</tr>
+
+<tr>
+<td>
+<p><code>*</code></p>
+</td>
+<td>
+<p>matches everything</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>?</code></p>
+</td>
+<td>
+<p>matches any single character</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>[</code><var>seq</var>]</p>
+</td>
+<td>
+<p>matches any character in <var>seq</var></p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>[!</code><var>seq</var>]</p>
+</td>
+<td>
+<p>matches any character not in <var>seq</var></p>
+</td>
+</tr>
+</table>
+
+<br />
+<br />
+ 
+
+<p>Note that the filename separator (<code>'/'</code> on Unix) is
+<em>not</em> special to this module. See module <code>glob</code> for pathname expansion (<code>glob</code> uses <a class="link" href="#fnmatch"><code>
+fnmatch</code></a> to match pathname segments). Similarly, filenames
+starting with a period are not special for this module, and are
+matched by the <code>*</code> and <code>?</code> patterns.</p>
+</div>
+<dl><dt class="function" id="fnmatch"><b>fnmatch(filename, pattern)</b> <tt class="nav"><a class="nav" href="fnmatch.fnmatch" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Test whether the <var>filename</var> string matches the <var>
+pattern</var> string, returning true or false. If the operating
+system is case-insensitive, then both parameters will be normalized
+to all lower- or upper-case before the comparison is performed. If
+you require a case-sensitive comparison regardless of whether
+that's standard for your operating system, use <a class="link" href="#fnmatchcase"><code>fnmatchcase</code></a> instead.</p>
+</dd>
+<dt class="function" id="fnmatchcase"><b>fnmatchcase(filename, pattern)</b> <tt class="nav"><a class="nav" href="fnmatch.fnmatchcase" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Test whether <var>filename</var> matches <var>pattern</var>,
+returning true or false; the comparison is case-sensitive.</p>
+</dd>
+<dt class="function" id="filter"><b>filter(names, pattern)</b> <tt class="nav"><a class="nav" href="fnmatch.filter" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return the subset of the list of <var>names</var> that match
+<var>pattern</var>. It is the same as <code>[n for n in names if
+fnmatch(n, pattern)]</code>, but implemented more efficiently.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.2.<br />
+</blockquote>
+</dd>
+</dl><div class="text"><span class="mark">@see</span> <code>Module glob</code> Unix shell-style path
+expansion.</div>
+</div></body></html>

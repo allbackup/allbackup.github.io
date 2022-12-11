@@ -1,0 +1,398 @@
+<html>
+<head>
+<title>code ::: www.effbot.org</title>
+<link rel='stylesheet' href='/effbot.css' type='text/css' media='screen' />
+</head>
+<body bgcolor='#ccffcc'>
+<div>[<a href='code.htm'>back</a>]</div>
+<h3>Welcome to the effbot.org user editor!</h3>
+
+
+<p><b>Note: This is not a contact form!  Support questions, spam, and
+other off-topic stuff will be ignored.</b></p>
+
+<p>To suggest changes, edit the HTML fragment in the text box below.
+You can use the 'update preview' button to check your changes (the
+preview is displayed beneath the text box).  When done, fill in the
+name and address fields (optional) and click 'submit patch' to mail
+the patch to me.  (I reserve the right to decide which patches to
+include, of course.)  Thanks! /F</p>
+
+<form method='post' id='useredit'>
+<input type='hidden' name='name' value='code'/>
+<p>
+<input type='submit' name='preview' value='update preview' style='background:#084; color:white; width:200px; font-weight:bold;' >
+&nbsp;&nbsp;&nbsp;
+<input type='submit' name='submit' value='submit patch'  style='background:#084; color:white; width:200px; font-weight:bold;' >
+</p>
+<textarea name='text' rows='30' cols='80'>The code module
+
+&lt;!-- ADSENSE --&gt;
+
+&lt;p class='site'&gt;[&lt;a href='index.htm'&gt;contents&lt;/a&gt;]&lt;/p&gt;
+
+&lt;p&gt;This module provides a number of functions that can be used to
+emulate the behavior of the standard interpreter's interactive
+mode.&lt;/p&gt;
+
+&lt;p&gt;The &lt;b&gt;compile_command&lt;/b&gt; behaves like the built-in
+&lt;b&gt;compile&lt;/b&gt; function, but does some additional tests to make
+sure you pass it a complete Python statement.&lt;/p&gt;
+
+&lt;p&gt;In the following example, we're compiling a program line by
+line, executing the resulting code objects as soon as we manage to
+compile. The program looks like this:&lt;/p&gt;
+
+&lt;pre&gt;
+a = (
+  1,
+  2,
+  3
+)
+print a
+&lt;/pre&gt;
+
+&lt;p&gt;Note that the tuple assignment cannot be properly compiled until
+we've reached the second parenthesis.&lt;/p&gt;
+
+&lt;div class="example"&gt;
+
+&lt;b style="example"&gt;Example: Using the code module to compile statements&lt;/b&gt;
+
+&lt;pre&gt;
+# File: &lt;a href="code-example-1.py"&gt;code-example-1.py&lt;/a&gt;
+
+import code
+import string
+
+# 
+SCRIPT = [
+    "a = (",
+    "  1,",
+    "  2,",
+    "  3 ",
+    ")",
+    "print a"
+]
+
+script = ""
+
+for line in SCRIPT:
+    script = script + line + "\n"
+    co = code.compile_command(script, "&amp;lt;stdin&amp;gt;", "exec")
+    if co:
+        # &lt;i&gt;got a complete statement.  execute it!&lt;/i&gt;
+        print "-"*40
+        print script,
+        print "-"*40
+        exec co
+        script = ""
+
+&lt;/pre&gt;
+
+&lt;pre class="computeroutput" moreinfo="NONE"&gt;
+$ python code-example-1.py
+----------------------------------------
+a = (
+  1,
+  2,
+  3 
+)
+----------------------------------------
+----------------------------------------
+print a
+----------------------------------------
+(1, 2, 3)
+&lt;/pre&gt;
+
+&lt;/div&gt;
+
+&lt;p&gt;The &lt;b&gt;InteractiveConsole&lt;/b&gt; class implements an interactive
+console, much like the one you get when you fire up the Python
+interpreter in interactive mode.&lt;/p&gt;
+
+&lt;p&gt;The console can be either active (it calls a function to get the
+next line) or passive (you call the &lt;b&gt;push&lt;/b&gt; method when you
+have new data). The default is to use the built-in
+&lt;b&gt;raw_input&lt;/b&gt; function. Overload the method with the same name
+if you prefer to use another input function.&lt;/p&gt;
+
+&lt;div class="example"&gt;
+
+&lt;b style="example"&gt;Example: Using the code
+module to emulate the interactive interpreter&lt;/b&gt;
+&lt;pre&gt;
+# File: &lt;a href="code-example-2.py"&gt;code-example-2.py&lt;/a&gt;
+
+import code
+
+console = code.InteractiveConsole()
+console.interact()
+
+&lt;/pre&gt;
+
+&lt;pre class="computeroutput" moreinfo="NONE"&gt;
+$ python code-example-2.py
+Python 1.5.2
+Copyright 1991-1995 Stichting Mathematisch Centrum, Amsterdam
+(InteractiveConsole)
+&amp;gt;&amp;gt;&amp;gt; a = (
+...     1,
+...     2,
+...     3
+... )
+&amp;gt;&amp;gt;&amp;gt; print a
+(1, 2, 3)
+&lt;/pre&gt;
+
+&lt;/div&gt;
+
+&lt;p&gt;The following script defines a function called
+&lt;b&gt;keyboard&lt;/b&gt;. It allows you to hand control over to the
+interactive interpreter at any point in your program.&lt;/p&gt;
+
+&lt;div class="example"&gt;
+
+&lt;b style="example"&gt;Example: Using the code
+module for simple debugging&lt;/b&gt;
+&lt;pre&gt;
+# File: &lt;a href="code-example-3.py"&gt;code-example-3.py&lt;/a&gt;
+
+def keyboard(banner=None):
+    import code, sys
+
+    # &lt;i&gt;use exception trick to pick up the current frame&lt;/i&gt;
+    try:
+        raise None
+    except:
+        frame = sys.exc_info()[2].tb_frame.f_back
+
+    # &lt;i&gt;evaluate commands in current namespace&lt;/i&gt;
+    namespace = frame.f_globals.copy()
+    namespace.update(frame.f_locals)
+
+    code.interact(banner=banner, local=namespace)
+
+def func():
+    print "START"
+    a = 10
+    keyboard()
+    print "END"
+
+func()
+
+&lt;/pre&gt;
+
+&lt;pre class="computeroutput" moreinfo="NONE"&gt;
+$ python code-example-3.py
+START
+Python 1.5.2
+Copyright 1991-1995 Stichting Mathematisch Centrum, Amsterdam
+(InteractiveConsole)
+&amp;gt;&amp;gt;&amp;gt; print a
+10
+&amp;gt;&amp;gt;&amp;gt; print keyboard
+&amp;lt;function keyboard at 9032c8&amp;gt;
+^Z
+END
+&lt;/pre&gt;
+
+&lt;/div&gt;</textarea>
+<table>
+<tr><td><label for='author'>Name:</label></td><td>
+<div><input name='author' value="" size=40></div>
+</td><td>(Optional)</td></tr>
+<tr><td><label for='email'>Mail:</label></td><td>
+<div><input name='email' value="" size=40></div>
+</td><td>(Optional)</td></tr>
+<tr><td><label for='note'>Comment:</label></td><td>
+<div><input name='note' value="" size=40></div>
+</td><td>(Optional)</td></tr>
+<tr><td><label for='password'>Password:</label></td><td>
+<div><input name='password' value="(replace with the sum of 7+4)" size=40></div>
+</td><td>(Required)</td></tr>
+</table>
+<p>
+<input type='submit' name='preview' value='update preview' style='background:#084; color:white; width:200px; font-weight:bold;' >
+&nbsp;&nbsp;&nbsp;
+<input type='submit' name='submit' value='submit patch'  style='background:#084; color:white; width:200px; font-weight:bold;' >
+</p>
+<p>&nbsp;</p>
+</form>
+<div style='background: white; border: 2px solid #084; padding: 0px 20px;'>
+<h2>The code module</h2>
+
+<!-- ADSENSE -->
+
+<p class='site'>[<a href='index.htm'>contents</a>]</p>
+
+<p>This module provides a number of functions that can be used to
+emulate the behavior of the standard interpreter's interactive
+mode.</p>
+
+<p>The <b>compile_command</b> behaves like the built-in
+<b>compile</b> function, but does some additional tests to make
+sure you pass it a complete Python statement.</p>
+
+<p>In the following example, we're compiling a program line by
+line, executing the resulting code objects as soon as we manage to
+compile. The program looks like this:</p>
+
+<pre>
+a = (
+  1,
+  2,
+  3
+)
+print a
+</pre>
+
+<p>Note that the tuple assignment cannot be properly compiled until
+we've reached the second parenthesis.</p>
+
+<div class="example">
+
+<b style="example">Example: Using the code module to compile statements</b>
+
+<pre>
+# File: <a href="code-example-1.py">code-example-1.py</a>
+
+import code
+import string
+
+# 
+SCRIPT = [
+    "a = (",
+    "  1,",
+    "  2,",
+    "  3 ",
+    ")",
+    "print a"
+]
+
+script = ""
+
+for line in SCRIPT:
+    script = script + line + "\n"
+    co = code.compile_command(script, "&lt;stdin&gt;", "exec")
+    if co:
+        # <i>got a complete statement.  execute it!</i>
+        print "-"*40
+        print script,
+        print "-"*40
+        exec co
+        script = ""
+
+</pre>
+
+<pre class="computeroutput" moreinfo="NONE">
+$ python code-example-1.py
+----------------------------------------
+a = (
+  1,
+  2,
+  3 
+)
+----------------------------------------
+----------------------------------------
+print a
+----------------------------------------
+(1, 2, 3)
+</pre>
+
+</div>
+
+<p>The <b>InteractiveConsole</b> class implements an interactive
+console, much like the one you get when you fire up the Python
+interpreter in interactive mode.</p>
+
+<p>The console can be either active (it calls a function to get the
+next line) or passive (you call the <b>push</b> method when you
+have new data). The default is to use the built-in
+<b>raw_input</b> function. Overload the method with the same name
+if you prefer to use another input function.</p>
+
+<div class="example">
+
+<b style="example">Example: Using the code
+module to emulate the interactive interpreter</b>
+<pre>
+# File: <a href="code-example-2.py">code-example-2.py</a>
+
+import code
+
+console = code.InteractiveConsole()
+console.interact()
+
+</pre>
+
+<pre class="computeroutput" moreinfo="NONE">
+$ python code-example-2.py
+Python 1.5.2
+Copyright 1991-1995 Stichting Mathematisch Centrum, Amsterdam
+(InteractiveConsole)
+&gt;&gt;&gt; a = (
+...     1,
+...     2,
+...     3
+... )
+&gt;&gt;&gt; print a
+(1, 2, 3)
+</pre>
+
+</div>
+
+<p>The following script defines a function called
+<b>keyboard</b>. It allows you to hand control over to the
+interactive interpreter at any point in your program.</p>
+
+<div class="example">
+
+<b style="example">Example: Using the code
+module for simple debugging</b>
+<pre>
+# File: <a href="code-example-3.py">code-example-3.py</a>
+
+def keyboard(banner=None):
+    import code, sys
+
+    # <i>use exception trick to pick up the current frame</i>
+    try:
+        raise None
+    except:
+        frame = sys.exc_info()[2].tb_frame.f_back
+
+    # <i>evaluate commands in current namespace</i>
+    namespace = frame.f_globals.copy()
+    namespace.update(frame.f_locals)
+
+    code.interact(banner=banner, local=namespace)
+
+def func():
+    print "START"
+    a = 10
+    keyboard()
+    print "END"
+
+func()
+
+</pre>
+
+<pre class="computeroutput" moreinfo="NONE">
+$ python code-example-3.py
+START
+Python 1.5.2
+Copyright 1991-1995 Stichting Mathematisch Centrum, Amsterdam
+(InteractiveConsole)
+&gt;&gt;&gt; print a
+10
+&gt;&gt;&gt; print keyboard
+&lt;function keyboard at 9032c8&gt;
+^Z
+END
+</pre>
+
+</div>
+</div>
+</body>
+</html>

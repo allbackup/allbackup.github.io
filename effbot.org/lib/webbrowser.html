@@ -1,0 +1,259 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>webbrowser</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-webbrowser.html'>original</a> :::
+<a href='webbrowser.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>webbrowser&#8212;Convenient Web-browser controller</h1>
+
+<div class="toc"><dl><dt>On this page:</dt><dd><a href="#browser-controller-objects">Browser Controller Objects</a></dd></dl></div><p>The <code>webbrowser</code> module
+provides a very high-level interface to allow displaying Web-based
+documents to users. The controller objects are easy to use and are
+platform-independent. Under most circumstances, simply calling the
+<a class="link" href="#open"><code>open</code></a> function from this module
+will do the right thing.</p>
+
+<p>Under Unix, graphical browsers are preferred under X11, but
+text-mode browsers will be used if graphical browsers are not
+available or an X11 display isn't available. If text-mode browsers
+are used, the calling process will block until the user exits the
+browser.</p>
+
+<p>Under Unix, if the environment variable BROWSER exists, it is
+interpreted to override the platform default list of browsers, as a
+colon-separated list of browsers to try in order. When the value of
+a list part contains the string <code>%s</code>, then it is
+interpreted as a literal browser command line to be used with the
+argument URL substituted for the <code>%s</code>; if the part does
+not contain <code>%s</code>, it is simply interpreted as the name
+of the browser to launch.</p>
+
+<p>For non-Unix platforms, or when X11 browsers are available on
+Unix, the controlling process will not wait for the user to finish
+with the browser, but allow the browser to maintain its own window
+on the display.</p>
+
+<p>The following exception is defined:</p>
+</div>
+<dl><dt class="exception" id="Error"><b>exception Error</b> <tt class="nav"><a class="nav" href="webbrowser.Error" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="exception">
+<p>Exception raised when a browser control error occurs.</p>
+</dd>
+</dl><div class="text">
+<p>The following functions are defined:</p>
+</div>
+<dl><dt class="function" id="open"><b>open(url[, new=0][, autoraise=1])</b> <tt class="nav"><a class="nav" href="webbrowser.open" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Display <var>url</var> using the default browser. If <var>
+new</var> is true, a new browser window is opened if possible. If
+<var>autoraise</var> is true, the window is raised if possible
+(note that under many window managers this will occur regardless of
+the setting of this variable).</p>
+</dd>
+<dt class="function" id="open_new"><b>open_new(url)</b> <tt class="nav"><a class="nav" href="webbrowser.open_new" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Open <var>url</var> in a new window of the default browser, if
+possible, otherwise, open <var>url</var> in the only browser
+window.</p>
+</dd>
+<dt class="function" id="get"><b>get([name])</b> <tt class="nav"><a class="nav" href="webbrowser.get" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return a controller object for the browser type <var>name</var>.
+If <var>name</var> is empty, return a controller for a default
+browser appropriate to the caller's environment.</p>
+</dd>
+<dt class="function" id="register"><b>register(name, constructor[, instance])</b> <tt class="nav"><a class="nav" href="webbrowser.register" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Register the browser type <var>name</var>. Once a browser type
+is registered, the <a class="link" href="#get"><code>get</code></a> function
+can return a controller for that browser type. If <var>
+instance</var> is not provided, or is <code>None</code>, <var>constructor</var> will be called
+without parameters to create an instance when needed. If <var>
+instance</var> is provided, <var>constructor</var> will never be
+called, and may be <code>None</code>.</p>
+
+<p>This entry point is only useful if you plan to either set the
+BROWSER variable or call <a class="link" href="#get"><code>get</code></a>
+with a nonempty argument matching the name of a handler you
+declare.</p>
+</dd>
+</dl><div class="text">
+<p>A number of browser types are predefined. This table gives the
+type names that may be passed to the <a class="link" href="#get"><code>get</code></a> function and the corresponding
+instantiations for the controller classes, all defined in this
+module.</p>
+
+<table border="1">
+<tr>
+<th>
+<p>Type Name</p>
+</th>
+<th>
+<p>Class Name</p>
+</th>
+<th>
+<p>Notes</p>
+</th>
+</tr>
+
+<tr>
+<td>
+<p><code>'mozilla'</code></p>
+</td>
+<td>
+<p><code>
+Netscape('mozilla')</code></p>
+</td>
+<td />
+</tr>
+
+<tr>
+<td>
+<p><code>'netscape'</code></p>
+</td>
+<td>
+<p><code>
+Netscape('netscape')</code></p>
+</td>
+<td />
+</tr>
+
+<tr>
+<td>
+<p><code>'mosaic'</code></p>
+</td>
+<td>
+<p><code>%s &amp;')</code></p>
+</td>
+<td />
+</tr>
+
+<tr>
+<td>
+<p><code>'kfm'</code></p>
+</td>
+<td>
+<p><code>Konqueror</code></p>
+</td>
+<td>
+<p>(1)</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>'grail'</code></p>
+</td>
+<td>
+<p><code>Grail</code></p>
+</td>
+<td />
+</tr>
+
+<tr>
+<td>
+<p><code>'links'</code></p>
+</td>
+<td>
+<p><code>%s')</code></p>
+</td>
+<td />
+</tr>
+
+<tr>
+<td>
+<p><code>'lynx'</code></p>
+</td>
+<td>
+<p><code>%s')</code></p>
+</td>
+<td />
+</tr>
+
+<tr>
+<td>
+<p><code>'w3m'</code></p>
+</td>
+<td>
+<p><code>%s')</code></p>
+</td>
+<td />
+</tr>
+
+<tr>
+<td>
+<p><code>'windows-default'</code></p>
+</td>
+<td>
+<p><code>
+WindowsDefault</code></p>
+</td>
+<td>
+<p>(2)</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>'internet-config'</code></p>
+</td>
+<td>
+<p><code>
+InternetConfig</code></p>
+</td>
+<td>
+<p>(3)</p>
+</td>
+</tr>
+</table>
+
+<br />
+<br />
+ 
+
+<p>Notes:</p>
+</div>
+<dl><dt class="variable"><b>(3)</b> <tt class="nav"><a class="nav" href="webbrowser." title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Only on MacOS platforms; requires the standard MacPython <code>ic</code> module, described in the <code>Macintosh Library
+Modules</code> manual.</p>
+</dd>
+</dl><div class="text">
+<h2 id="browser-controller-objects">Browser Controller Objects <a class="nav" href="#browser-controller-objects">#</a></h2>
+
+<p>Browser controllers provide two methods which parallel two of
+the module-level convenience functions:</p>
+</div>
+<dl><dt class="function"><b>open(url[, new])</b> <tt class="nav"><a class="nav" href="webbrowser.open" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Display <var>url</var> using the browser handled by this
+controller. If <var>new</var> is true, a new browser window is
+opened if possible.</p>
+</dd>
+<dt class="function"><b>open_new(url)</b> <tt class="nav"><a class="nav" href="webbrowser.open_new" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Open <var>url</var> in a new window of the browser handled by
+this controller, if possible, otherwise, open <var>url</var> in the
+only browser window.</p>
+</dd>
+</dl></div></body></html>

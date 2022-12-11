@@ -1,0 +1,385 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>Classes&nbsp;(introduction)</title><script type="text/javascript">effbot_page_id=1900;</script></head><body><div id="doc2" class="yui-t2"><div id="hd"><!-- header --></div><!-- hd --><div id="bd"><!-- body --><p class="note" style="text-align: center"><strong>
+
+We're back after a server migration that caused effbot.org to fall
+over a bit harder than expected.  Expect some glitches.
+
+</strong></p><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">Classes&nbsp;(introduction)</h1></div><!-- yui-g --><body><p>COMMENT: <strong>This is my attempt at rewriting the introduction to the Classes section, to make it&#8230; useful. This was orginally hosted at parlar.infogami.com</strong></p>
+
+<p>COMMENT: <strong>The target audience for this page is &#8220;people with some programming experience, but with little or no OO experience&#8221;.  For discussion, see the <a href="#end">comments section</a>.</strong></p>
+
+<h2 id="whats-a-class">What&#8217;s a class?</h2>
+
+<p>If you&#8217;re coming to Python from an object-oriented programming language (C#/Java/Smalltalk/Ruby, etc), then you can probably skip over this section (though you might want to skim over the parts where I discuss <code>self</code>)</p>
+
+<p>If Python is your first programming language though, or your first encounter with object oriented programming, then you&#8217;re definitely going to want to read this.</p>
+
+<h3 id="objects-and-classes">Objects and Classes</h3>
+
+<p>Without getting technical, an <strong>object</strong> is the basic Python building block, the &#8216;lego brick&#8217; with which every program is built.  All the elements that we&#8217;ve met up until now - integers, strings, lists, functions etc. -  they&#8217;re all objects.  And a <strong>class</strong> is simply a <em>user-defined</em> object that lets you keep a bunch of closely related things &#8220;together&#8221;. COMMENT:<strong>Not sure about this paragraph - Gerard</strong></p>
+
+<p>Let&#8217;s take a simple example to see why you would want classes.  First we&#8217;ll write some code in a non-OO procedural fashion, and then we&#8217;ll see how the same code can be written with classes.</p>
+
+<h3 id="the-procedural-approach">The Procedural Approach</h3>
+
+<p>Imagine that you&#8217;re a teacher and, after going through the first few chapters of this tutorial, you&#8217;ve decided to build a little python program to keep track of some stats for your students.</p>
+
+<p>So how do you start? Well, the first thing you want is a list of your students:</p>
+
+<pre class="python"><code>&gt;&gt;&gt; student_list = ["Simon", "Mal", "River", "Zoe", "Jane", "Kaylee", "Hoban"]
+</code></pre>
+
+<p>(We&#8217;ll implement the program in the interactive interpreter, for the sake of the example, but in real life, you&#8217;d put this stuff into actual modules. I&#8217;ll interspere the interpreter code with comments, but keep in mind that all this code goes together.)</p>
+
+<p>You know how fickle the administration is, and with the housing market the way it is, people are moving all the time. So you&#8217;re definitely going to need ways to add and remove kids from the list.:</p>
+
+<pre><code>&gt;&gt;&gt; def add_student(student):
+...     student_list.append(student)
+...
+&gt;&gt;&gt; def remove_student(student):
+...     student_list.remove(student)
+...
+&gt;&gt;&gt; remove_student("Mal")
+&gt;&gt;&gt; add_student("Bill")
+&gt;&gt;&gt; print student_list
+["Simon", "River", "Zoe", "Jane", "Kaylee", "Hoban", "Bill"]
+</code></pre>
+
+<p>Ok, so that works nicely. What now? Well, it&#8217;d be nice to track the grades of each student. Probably the easiest way to do that is to create a dictionary, where each key in the dict is a student name, and each value is a list of their marks.</p>
+
+<pre><code>&gt;&gt;&gt; student_marks = {}
+&gt;&gt;&gt; for student in student_list:
+...     student_marks[student] = []
+...
+</code></pre>
+
+<p>So there we&#8217;ve initialized our <code>student_marks</code>, with no marks for any student yet. So now we should make a function to add marks.</p>
+
+<pre><code>&gt;&gt;&gt; def add_mark(student, mark):
+...     student_marks[student].append(mark)
+...
+</code></pre>
+
+<p>What if we want a function to change the mark though? That&#8217;s a lot tricker. To change a mark, we need to know a few things. First, we need to know the student, that&#8217;s easy. Second, we need to know <em>where</em> in the value of <code>student_marks[student]</code> the old mark existed, or we need to know what the old mark is. Here is a possible way to do this:</p>
+
+<pre><code>&gt;&gt;&gt; def change_mark(student, oldmark, newmark):
+...     # If you know the old mark
+...     temp_mark_list = student_marks[student]
+...     position = temp_mark_list.index(oldmark)
+...     temp_mark_list[position] = newmark
+</code></pre>
+
+<p>So we&#8217;ve given a simple way to change the marks, if you know the old mark and the new mark you want to use.</p>
+
+<p>As a final function, let&#8217;s add a class attendance feature. We&#8217;ll assume that most days, the entire class will be there. So the function will, by default, say that everyone one was there on a certain day. We will though pass in an optional list of names of people who weren&#8217;t there.</p>
+
+<p>First, we need another dictionary, to track attendance:</p>
+
+<pre class="python"><code>&gt;&gt;&gt; student_attendance = {}
+... for student in student_list:
+...     student_attendance[student] = 0
+</code></pre>
+
+<p>This time, we&#8217;re initializing the list with zeros, ie. the number of days they&#8217;ve attended class. Every day, that number will increase by one for each student who is there.</p>
+
+<pre><code>&gt;&gt;&gt; def another_day(absent = []):
+...     for student in student_list:
+...         if student not in absent:
+...             old_attendance = student_attendance[student]
+...             student_attendance[student] = old_attendance + 1
+</code></pre>
+
+<p>So now we can call <code>another_day</code>, and pass in an optional list of students who aren&#8217;t there. Everyone else will have their attendance increase by 1.</p>
+
+<p>So this is great and all, and works fine right now. But what if want want to start adding a bunch of other teaching related functions, lists and dictionaries into this file? Suddenly, at the top level of the file, we&#8217;ll have a lot of different lists defined (like <code>student_attendance</code>, <code>student_marks</code>, etc.), a whole lot of functions (<code>another_day</code>, <code>add_mark</code>, etc.) and no way to tell what goes together with what. In other words, which functions need which variables, how is everything related?</p>
+
+<p>And this is <em>essentially</em> what classes do. They provide &#8220;encapsulation&#8221;, a method of grouping together things that logically relate to each other.</p>
+
+<h3 id="the-object-oriented-approach">The Object-Oriented Approach</h3>
+
+<p>So how do we do this? The first thing we have to do is create a &#8220;class&#8221;. The class is the &#8220;thing&#8221; that will group together common elements.</p>
+
+<h4>The <code>Student</code> Class</h4>
+
+<p>So far, for each student in the class, we&#8217;ve been tracking a lot of different things, in different variables. We&#8217;re tracking the student&#8217;s name (in <code>student_list</code>), then we have a mapping between their name and their marks (<code>student_marks</code>), and a mapping between the name and their attendance (<code>student_attendance</code>). It&#8217;d be really nice to keep all the information for each student together, in one place. Hence, a <code>Student</code> class:</p>
+
+<p>COMMENT: Original - <em>So how do we do this? The first thing we have to do is create a &#8220;class&#8221;. The class is the &#8220;thing&#8221; that will group together common elements. Let&#8217;s call our first class <code>Student</code>. For each student in the class, so far, we&#8217;re tracking a lot of different things, in different variables. We&#8217;re tracking the student&#8217;s name (in <code>student_list</code>), then we have a mapping between their name and their marks (<code>student_marks</code>), and a mapping between the name and their attendance (<code>student_attendance</code>). It&#8217;d be really nice to keep all the information for each student together, in one place.</em></p>
+
+<pre><code>&gt;&gt;&gt; class Student:
+...     def __init__(self, name):
+...         self.name = name
+...         self.attendance = 0
+...         self.marks = []
+</code></pre>
+
+<p>Ok, so some of that definitely looks kind of crazy at this point, but some probably makes some sense. For instance, <code>self.attendance = 0</code> and <code>self.marks = []</code> should look at least a bit familiar, and should make a little bit of sense.</p>
+
+<p>But what exactly are we doing here? Well, first off, we&#8217;re declaring that we are creating a new class, with <code>class Student(object)</code>. The name of this class is <code>Student</code>.</p>
+
+<p>So, that&#8217;s fine, nothing too tough there. But what is that next silly looking thing, the <code>__init__(self, name)</code>? That&#8217;s called a &#8220;constructor&#8221;. It is a special function of the class that is called whenever we create a new instance of the class. Wow, lots of terminology there. Maybe a simple example will help.</p>
+
+<pre><code>&gt;&gt;&gt; class ExampleClass:
+...     def __init__(self, some_message):
+...         self.message = some_message
+...         print "New ExampleClass instance created, with message:"
+...         print self.message
+...
+&gt;&gt;&gt; first_instance = ExampleClass("message1")
+New ExampleClass instance created, with message:
+message1
+&gt;&gt;&gt; second_instance = ExampleClass("message2")
+New ExampleClass instance created, with message:
+message2
+</code></pre>
+
+<p>So what have we done there? Well, we created a new type of class, called <code>ExampleClass</code>. In the constructor (<code>__init__</code>), we print out a message when a new instance gets created. After defining the class, we created two new instances, <code>first_instance</code> and <code>second_instance</code>. When we created them, we can see that the <code>print</code> statements in the <code>__init__</code> function got called, and more importantly, the variable we passed to the class (ie. &#8220;message1&#8221; in <code>ExampleClass("message1"</code>), gets passed to the <code>__init__</code> function.</p>
+
+<p>Ok, so that&#8217;s fine, but what&#8217;s up with the <code>self</code> as the first argument to the <code>__init__</code> function? Every function in a class (functions in classes are actually called &#8220;methods&#8221;, I&#8217;ll call them that from now on) has to take <code>self</code> as the first argument. For anyone coming from another object oriented language, this will seem VERY strange. For new programmers, it will just seem annoying. For now though, have faith that it&#8217;s needed, and you&#8217;ll understand why later.</p>
+
+<p>After the <code>self</code>, you can start putting the &#8220;real&#8221; arguments to the method, the ones you care about. So what arguments did we define? Just <code>some_message</code>. And what is this <code>some_message</code> used for? Well, in this example, we used it when we did <code>print some_message</code>, but more interestingly, we used it to do <code>self.message = some_message</code>.</p>
+
+<p>So what&#8217;s that all about? By doing <code>self.message =</code>, we created something called an &#8220;attribute&#8221;. An attribute (as the name implies), is a piece of information for the class. Once we assign that attribute, we can access it from outside the class, like so:</p>
+
+<pre class="python"><code>&gt;&gt;&gt; first_instance.message
+'message1'
+&gt;&gt;&gt; second_instance.message
+'message2'
+</code></pre>
+
+<p>See that? We assigned the attribute in the <code>__init__</code> constructor, and now, we can access that attribute from outside the class! Is the <code>Student</code> class making more sense now? Let&#8217;s create an example instance of it, and see what happens:</p>
+
+<pre class="python"><code>&gt;&gt;&gt; bobby = Student("Bobby")
+&gt;&gt;&gt; bobby.name
+'Bobby'
+&gt;&gt;&gt; bobby.attendance
+0
+&gt;&gt;&gt; bobby.marks
+[]
+</code></pre>
+
+<p>Isn&#8217;t that MUCH nicer than having to keep three separate lists/dictionaries? All the information for the student &#8220;Bobby&#8221; is kept in one single place, an instance of the <code>Student</code> class.</p>
+
+<p>And remember, it&#8217;s not just from <em>outside</em> the class that you can access these atributes. You can of course access them from within the class. Any attribute tied to <code>self</code> (like we did with <code>self.name</code>, <code>self.attendance</code> and <code>self.marks</code>) essentially becomes a global variable to that <em>instance</em>. So anytime you do anything with that instance, the value of the attribute is still around. Any variables you create inside a class, that aren&#8217;t prepended with <code>self</code> will be local variables, only around during a particular call to a function.</p>
+
+<p>Let&#8217;s see an example of that. We&#8217;ll redefine our <code>Student</code> class as follows:</p>
+
+<pre><code>&gt;&gt;&gt; class Student:
+...     def __init__(self, name):
+...         self.name = name
+...         self.attendance = 0
+...         self.marks = []
+...         number_of_marks = len(self.marks)
+...         print "%s marks so far!" % number_of_marks
+... 
+&gt;&gt;&gt; b = Student("Bobby")
+0 marks so far!
+&gt;&gt;&gt; b.marks
+[]
+&gt;&gt;&gt; b.number_of_marks
+Traceback (most recent call last):
+  File "&lt;stdin&gt;", line 1, in ?
+AttributeError: Student instance has no attribute 'number_of_marks'
+&gt;&gt;&gt;
+</code></pre>
+
+<p>So what happened there? In the <code>__init__</code> function, we created three attributes, <code>name</code>, <code>attendance</code> and <code>marks</code>. We know they are attributes because we put the <code>self</code> in front of them. We also created a local variable though, <code>number_of_marks</code>. As stated above, local variables only hang around for as long as the function is executing. Once the <code>__init__</code> function is done, any local variable created in it will go away. That&#8217;s why when we tried to do <code>b.number_of_marks</code>, we got an <code>AttributeError</code> exception.</p>
+
+<p>And remember that values of attribute variables are unique to each instance. So if we do:</p>
+
+<pre class="python"><code>&gt;&gt;&gt; b = Student("Bobby")
+&gt;&gt;&gt; m = Student("Mary")
+&gt;&gt;&gt; b.name
+'Bobby'
+&gt;&gt;&gt; m.name
+'Mary'
+</code></pre>
+
+<p>We can see that the <code>b</code> instance has its own value for the attribute <code>name</code>, and the <code>m</code> instance has its own value for that attribute.</p>
+
+<p>So let&#8217;s get a bit fancier, let&#8217;s create a <code>StudentTracker</code>. This tracker will receive a list of student names as an argument to its constructor, and then will create a <code>Student</code> instance for EACH of those names:</p>
+
+<pre><code>&gt;&gt;&gt; class StudentTracker:
+...     def __init__(self, initial_student_list):
+...         self.student_names = initial_student_list
+...         self.students = {}
+...         for name in self.student_names:
+...             self.students[name] = Student(name)
+...
+</code></pre>
+
+<p>So, we created a nice attribute, <code>self.students</code>, which is a dictionary of <code>Student</code> instances (or objects, it is common to call an instance an &#8220;object&#8221;). We still need to be able to do stuff with those instances though. The way we&#8217;ll do that is by defining some methods in the class.</p>
+
+<p>A method is a function that is specific just to the class it&#8217;s defined in. Here&#8217;s a simple example:</p>
+
+<pre><code>&gt;&gt;&gt; class Multiplier:
+...     def __init__(self, number):
+...         self.number = number
+...     def multiply_by(self, x):
+...         return self.number * x
+</code></pre>
+
+<p>So this class will have one attribute, <code>self.number</code>. It also has one method, <code>multiply_by</code>, which takes another number, multiplies it by our original number, and returns the result. Let&#8217;s see it in action.</p>
+
+<pre class="python"><code>&gt;&gt;&gt; f = Multiplier(10)
+&gt;&gt;&gt; f.number
+10
+&gt;&gt;&gt; f.multiply_by(5)
+50
+&gt;&gt;&gt; f.number
+10
+</code></pre>
+
+<p>Does that make sense? We created an instance, and called it <code>f</code>. We then showed the attribute, <code>f.number</code>. We then called the method on the class, by doing <code>f.multiply_by(5)</code>, which returned 5*10. Notice though that in our definition of <code>multiply_by</code>, we don&#8217;t change the value of <code>self.number</code>, which is why it remains 10.</p>
+
+<p>It is important to note <em>how</em> we called the method. We can&#8217;t just do <code>multiply_by(5)</code>, we have to say <code>f.multiply_by(5)</code>. Why is that? Well, imagine what would happen if we had created two separate instances. How is Python supposed to know which one to call, unless you tell it?:</p>
+
+<pre class="python"><code>&gt;&gt;&gt; f = Multiplier(10)
+&gt;&gt;&gt; g = Multipler(20)
+&gt;&gt;&gt; f.multiply_by(5)
+50
+&gt;&gt;&gt; g.multiply_by(5)
+100
+</code></pre>
+
+<p>So we told Python which instance to call <code>multiply_by</code> on, and it did it, and everything worked perfectly!</p>
+
+<p>So let&#8217;s get back to our <code>StudentTracker</code>. We haven&#8217;t yet defined any regular methods for it (we defined <code>__init__</code>, but that&#8217;s a special method, you&#8217;re not supposed to call it yourself. Having <code>__</code> on both sides of the method means you&#8217;re not suposed to call it, it&#8217;s a special method that Python will call by itself).</p>
+
+<p>Let&#8217;s redefine our <code>Student</code>, and <code>StudentTracker</code>, but this time with useful methods:</p>
+
+<pre><code>&gt;&gt;&gt; class Student:
+...     def __init__(self, name):
+...         self.name = name
+...         self.attendance = 0
+...         self.marks = []
+...     def add_mark(self, mark):
+...         self.marks.append(mark)
+...     def present(self):
+...         self.attendance = self.attendance + 1
+...     def get_average(self):
+...         return sum(self.marks) / len(self.marks)
+...     def change_mark(self, oldmark, newmark):
+...         position = self.marks.index(oldmark)
+...         self.marks[position] = newmark
+...     def __str__(self):
+...         message = "Name: " + self.name + " "
+...         message = message + "Attendance: " + str(self.attendance)
+...         message = message + "Average: " + str(self.get_average())
+...         return message
+&gt;&gt;&gt; class StudentTracker:
+...     def __init__(self, initial_student_list):
+...         self.student_names = initial_student_list
+...         self.students = {}
+...         for name in self.student_names:
+...             self.students[name] = Student(name)
+...     def another_day(self, absent = []):
+...         for name in self.student_names:
+...             if name not in absent:
+...                 self.students[name].present()
+...     def add_mark(self, name, mark):
+...         self.students[name].add_mark(mark)
+...     def change_mark(self, student, oldmark, newmark):
+...         self.students[name].change_mark(oldmark, newmark)
+...     def prettyprint_students(self):
+...         for student in self.students.values():
+...             print student
+</code></pre>
+
+<p>Almost everything there should be pretty self explanatory at this point (except the <code>__str__</code>), but I&#8217;ll point out a few key ideas.</p>
+
+<p>The <code>__str__</code> method is another special method. It gets called when Python is told to convert something to a string (using the <code>str()</code> function), or when Python is told to print an instance. A small example is as follows:</p>
+
+<pre><code>&gt;&gt;&gt; class Foo:
+...     def __str__(self):
+...         return "I am an instance of Foo!!!"
+&gt;&gt;&gt; f = Foo()
+&gt;&gt;&gt; print f
+I am an instance of Foo!!!
+&gt;&gt;&gt; str(f)
+'I am an instance of Foo!!!'
+</code></pre>
+
+<p>In our <code>__str__</code> method, we build up a nice long message, including the student&#8217;s name, attendance, and mark average, and return that.</p>
+
+<p>Note that in our <code>__str__</code> method, we do <code>self.get_average()</code>. Just like when a class instance wants to access one of its own attributes, we must prepend the <code>self.</code> to the method call.</p>
+
+<p>Reminder about <code>self</code>: Note again that all the methods we defined had <code>self</code> as their first argument, but when we actually call the method, it essentially gets ignored. That is a little bit of magic Python is doing for you. It should make sense when you get deeper into Python programming. For now, just trust that when you <em>define</em> a method, you need <code>self</code> as the first argument, but when you <em>call</em> a method, you can ignore the <code>self</code>.</p>
+
+<p>Notice the short-hand in <code>another_day</code> and the <code>StudentTracker</code> versions of <code>add_mark</code> and <code>change_mark</code>. In <code>another_day</code>, we have the following line:</p>
+
+<pre class="python"><code>self.students[name].present()
+</code></pre>
+
+<p>You&#8217;ve probably figured out what that does, but just in case, I&#8217;ll explain it. Remember what <code>self.students</code> is, right? It&#8217;s a dictionary, where the keys are the students&#8217; names, and the values are instances of the <code>Student</code> class. So if we do <code>self.students[name]</code>, that returns an instance, right? So, we would normally do:</p>
+
+<pre class="python"><code>student = self.students[name]
+student.present()
+</code></pre>
+
+<p>But, if the only thing we need to do with the instance right now is called one method, why waste space? We can instead just do what we did above, namely:</p>
+
+<pre class="python"><code>self.students[name].present()
+</code></pre>
+
+<p>So, the <code>self.students[name]</code> part of that is executed first, and it returns the instance object. It then does the <code>.present()</code> on the instance object. This is an idiom you&#8217;ll see all the time in Python code (and in most object-oriented programming languages), so make sure you understand it. We did the exact same thing in the <code>StudentTracker</code> version of <code>add_mark</code>, namely:</p>
+
+<pre class="python"><code>self.students[name].add_mark(mark)
+</code></pre>
+
+<p>And that ends our mini introduction to what classes are. The further sections in this chapter will go into more detail. I leave it as an exercise to the reader to actually try these out. Create a <code>StudentTracker</code> instance with some names, play around a bit, try to break the code (there&#8217;s no error handling, so there should be a few ways to break it). Messing around and experimenting with it will be the best way to learn.</p>
+
+<p>And to continue with Python, it is pretty important that you learn how classes work. Most Python code is written with classes, most of the standad library is written with classes, it&#8217;s just the way things are done. So even if you don&#8217;t want to ever write your own classes, you&#8217;ll have to understand how they work if you want to use other peoples&#8217; code.</p>
+
+<hr />
+
+<h2 id="old-intro">Old Intro</h2>
+
+<h3 id="whats-a-class">What&#8217;s a class?</h3>
+
+<p>If you&#8217;re coming to Python from an object-oriented programming language (C#/Java/Smalltalk/Ruby, etc), then you can probably skip over this section (though you might want to skim over the parts where I discuss <code>self</code>).</p>
+
+<p>If Python is your first programming language though, or your first encounter with object oriented programming, then you&#8217;re definitely going to want to read this.</p>
+
+<p>A class, in simple terms, is a feature that lets you keep a bunch of closely related things &#8220;together&#8221;. Let&#8217;s take a simple example to see why you would want classes.</p>
+
+<h3 id="3rd-grade-class">3rd Grade Class</h3>
+
+<p>Assume that you&#8217;re the teacher of a 3rd grade class (you know, the type of class with a bunch of little kids running around, has nothing to do with programming languages). As the teacher, you&#8217;ve decided it&#8217;s a good idea to stay current with the hip, new technologies (like Python!) to keep your students from getting ahead of you.</p>
+
+<p>So, after going through the first few chapters of this tutorial, you decided to build a little Python program to track some stats for your class. We&#8217;ll implement the program below in the interactive interpreter, for the sake of the example, but in real life, you&#8217;d put this stuff into actual modules. I&#8217;ll intersperse the interpreter code with comments, but keep in mind that all this code goes together.</p>
+
+<p>So the first thing you want, is a list of students in your class. We&#8217;ll use a list, and not a tuple, because you never know when the administration is going to give you more students!:</p>
+
+<pre class="python"><code>&gt;&gt;&gt; student_list = ["Simon", "Mal", "River", "Zoe", "Jane", "Kaylee", "Hoban"]
+</code></pre>
+
+<p>You know how fickle the administration is, and with the housing market the way it is, people are moving all the time. So you&#8217;re definitely going to need ways to add and remove kids from your class list.:</p>
+
+<pre><code>&gt;&gt;&gt; def add_student(student):
+...     student_list.append(student)
+...
+&gt;&gt;&gt; def remove_student(student):
+...     student_list.remove(student)
+...
+</code></pre>
+
+<p>Ok, so that works nicely. What now? Well&#8230;</p>
+
+<h3 id="the-object-oriented-approach">The Object-Oriented Approach</h3>
+
+<p>So how do we do this? The first thing we have to do is create a &#8220;class&#8221;. The class is the &#8220;thing&#8221; that will group together common elements.</p>
+
+<h4>The <code>Student</code> Class</h4>
+
+<p>So far, for each student in the class, we&#8217;ve been tracking a lot of different things, in different variables. We&#8217;re tracking the student&#8217;s name (in <code>student_list</code>), then we have a mapping between their name and their marks (<code>student_marks</code>), and a mapping between the name and their attendance (<code>student_attendance</code>). It&#8217;d be really nice to keep all the information for each student together, in one place. Hence, a <code>Student</code> class:</p>
+
+<pre><code>&gt;&gt;&gt; class Student(object):
+...     def __init__(self, name):
+...         self.name = name
+...         self.attendance = 0
+
+...         self.marks = []
+</code></pre>
+
+<p>Ok&#8230;</p></body><div class="yui-g"></div><!-- yui-g --></div><!-- content --></div><!-- yui-b --></div><!-- yui-main --><div class="yui-b"><div id='menu'></div><!-- menu --></div><!-- yui-b --></div><!-- bd --><div id="ft"><!-- footer --></div><!-- ft --></div><!-- doc --><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

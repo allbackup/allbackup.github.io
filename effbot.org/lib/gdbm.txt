@@ -1,0 +1,107 @@
+
+@@module gdbm
+
+<h1>gdbm&#8212;GNU's reinterpretation of dbm</h1>
+
+<p>Availability: Unix.
+
+<p>This module is quite similar to the {@link dbm} module, but uses
+{@code gdbm} instead to provide some additional functionality. Please
+note that the file formats created by {@code gdbm} and {@code dbm} are
+incompatible.
+
+<p>The {@link gdbm} module provides an interface to the GNU DBM library.
+{@code gdbm} objects behave like mappings (dictionaries), except that
+keys and values are always strings. Printing a {@code gdbm} object
+doesn't print the keys and values, and the {@link items} and {@link
+values} methods are not supported.
+
+<p>The module defines the following constant and functions:
+
+@@exception error
+
+<p>Raised on {@code gdbm}-specific errors, such as I/O errors. {@link
+exceptions.KeyError} is raised for general mapping errors like
+specifying an incorrect key.
+
+@@function open(filename, [flag, [mode]])
+
+<p>Open a {@code gdbm} database and return a {@code gdbm} object. The
+{@var filename} argument is the name of the database file.
+
+<p>The optional {@var flag} argument can be {@code 'r'} (to open an
+existing database for reading only -- default), {@code 'w'} (to open an
+existing database for reading and writing), {@code 'c'} (which creates
+the database if it doesn't exist), or {@code 'n'} (which always creates
+a new empty database).
+
+<p>The following additional characters may be appended to the flag to
+control how the database is opened:
+<ul>
+<li>
+<p>{@code 'f'} -- Open the database in fast mode. Writes to the database
+will not be synchronized.
+<li>
+<p>{@code 's'} -- Synchronized mode. This will cause changes to the
+database will be immediately written to the file.
+<li>
+<p>{@code 'u'} -- Do not lock database.
+</ul>
+
+<p>Not all flags are valid for all versions of {@code gdbm}. The module
+constant {@code open_flags} is a string of supported flag characters.
+The exception {@link error} is raised if an invalid flag is specified.
+
+<p>The optional {@var mode} argument is the Unix mode of the file, used
+only when the database has to be created. It defaults to octal {@code
+0666}.
+
+@@text 
+
+<p>In addition to the dictionary-like methods, {@code gdbm} objects have
+the following methods:
+
+@@function firstkey()
+
+<p>It's possible to loop over every key in the database using this
+method and the {@link nextkey} method. The traversal is ordered by
+{@code gdbm}'s internal hash values, and won't be sorted by the key
+values. This method returns the starting key.
+
+@@function nextkey(key)
+
+<p>Returns the key that follows {@var key} in the traversal. The
+following code prints every key in the database {@code db}, without
+having to create a list in memory that contains them all:
+
+<pre>
+k = db.firstkey()
+while k != None:
+    print k
+    k = db.nextkey(k)
+</pre>
+
+
+@@function reorganize()
+
+<p>If you have carried out a lot of deletions and would like to shrink
+the space used by the {@code gdbm} file, this routine will reorganize
+the database. {@code gdbm} will not shorten the length of a database
+file except by using this reorganization; otherwise, deleted file space
+will be kept and reused as new (key, value) pairs are added.
+
+@@function sync()
+
+<p>When the database has been opened in fast mode, this method forces
+any unwritten data to be written to the disk.
+
+@@text 
+
+@see 
+{@link anydbm Module anydbm}
+
+Generic interface to dbm-style databases.
+@see 
+{@link whichdb Module whichdb}
+
+Utility module used to determine the type of an existing database.

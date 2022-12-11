@@ -1,0 +1,79 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>The aggdraw&nbsp;Module</title> <script type="text/javascript">effbot_page_id=228;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> <!--
+<p style='color: #8f8f8f; background: #fff5bf; padding: 5px 10px;'> <b>2008-07-15:</b> Selected articles
+
+now have experimental "comment" links in the left column and at the bottom.
+You're welcome to use them for commenting and voting on articles.
+For a bit more on this, see <a
+href="http://effbot.slinkset.com/links/Welcome_to_discuss_effbot_org">this
+page</a>. /F
+</p>
+--> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <h1 class="maintitle">The aggdraw&nbsp;Module</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p>An AGG-based drawing interface.
+</p><p>
+The aggdraw module implements the basic
+<a href="http://effbot.org/zone/wck.htm">WCK 2D Drawing Interface</a>
+on top of
+<a href="http://www.antigrain.com/">the AGG library</a>.
+This library supports anti-aliasing and alpha compositing, but is
+otherwise fully compatible with the WCK renderer.
+</p><p>Examples:</p><pre class="python">
+<span class="pycomment"># draw cross on top of PIL image</span>
+d = aggdraw.Draw(im)
+p = aggdraw.Pen(<span class="pystring">"black"</span>, 0.5)
+d.line((0, 0, 500, 500), p)
+d.line((0, 500, 500, 0), p)
+d.flush()</pre><pre class="python">
+<span class="pycomment"># draw cross on internal image memory</span>
+d = aggdraw.Draw(<span class="pystring">"RGB"</span>, (320, 200), <span class="pystring">"white"</span>)
+p = aggdraw.Pen(<span class="pystring">"black"</span>, 0.5)
+d.line((0, 0, 500, 500), p)
+d.line((0, 500, 500, 0), p)
+s = d.tostring()</pre><h2>Module Contents</h2><dl><dt><a id="aggdraw.Brush-function" name="aggdraw.Brush-function"><b>Brush(color, opacity=255)</b></a> [<a href="#aggdraw.Brush-function">#</a>]</dt><dd>
+<p>Creates a brush object.</p><dl><dt><i>color</i></dt><dd>
+Brush color.  This can be a color tuple, a CSS-style color
+    name, or a color integer (0xaarrggbb).</dd>
+<dt><i>opacity=</i></dt><dd>
+Optional brush opacity.  The default is to create a
+    solid brush.</dd>
+<dt>Returns:</dt><dd>
+A brush object.</dd>
+</dl><br />
+</dd>
+<dt><b>Dib</b> (class)  [<a href="#aggdraw.Dib-class">#</a>]</dt><dd>
+<p>(Windows only; new in 1.2) Creates a drawing interface object that
+can be copied to a window.</p><dl><dt><i>mode</i></dt><dd>
+A mode string.  In the current release, this string
+    must be &#8220;RGB&#8221;.</dd>
+<dt><i>size</i></dt><dd>
+The image size, as a 2-tuple.</dd>
+<dt><i>color</i></dt><dd>
+An optional background color specifier.  If a mode
+    string was given, this is used to initialize the image memory.
+    If omitted, it defaults to white with full alpha.</dd>
+</dl><br />
+<p>For more information about this class, see <a href="#aggdraw.Dib-class"><i>The Dib Class</i></a>.</p></dd>
+<dt><b>Draw(image_or_mode, size, color=None)</b> (class) [<a href="#aggdraw.Draw-class">#</a>]</dt><dd>
+<p>Creates a drawing interface object.</p><dl><dt><i>image_or_mode</i></dt><dd>
+A PIL Image, or a mode string.  The following
+    modes are supported: &#8220;L&#8221;, &#8220;RGB&#8221;, &#8220;RGBA&#8221;, &#8220;BGR&#8221;, &#8220;BGRA&#8221;.</dd>
+<dt><i>size</i></dt><dd>
+If a mode string was given, this argument gives the
+    image size, as a 2-tuple.</dd>
+<dt><i>color</i></dt><dd>
+An optional background color specifier.  If a mode
+    string was given, this is used to initialize the image memory.
+    If omitted, it defaults to white with full alpha.</dd>
+</dl><br />
+<p>For more information about this class, see <a href="#aggdraw.Draw-class"><i>The Draw Class</i></a>.</p></dd>
+<dt><a id="aggdraw.Font-function" name="aggdraw.Font-function"><b>Font(color, file, size=12, opacity=255)</b></a> [<a href="#aggdraw.Font-function">#</a>]</dt><dd>
+<p>Font factory.  This creates a font object for use with <a class="link" href="#aggdraw.Draw.text-method"><b>text</b></a>
+and <a class="link" href="#aggdraw.Draw.textsize-method"><b>textsize</b></a>, from a truetype font file.
+
+</p><dl><dt><i>color</i></dt><dd>
+Font color.  This can be a color tuple, a CSS-style color
+    name, or a color integer (0xaarrggbb).</dd>
+<dt><i>file</i></dt><dd>
+Font source file.</dd>
+<dt><i>size=</i></dt><dd>
+Optional font size, in

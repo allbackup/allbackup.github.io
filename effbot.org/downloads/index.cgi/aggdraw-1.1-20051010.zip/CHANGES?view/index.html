@@ -1,0 +1,98 @@
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta name="generator" content="HTML Tidy for Solaris (vers 1st November 2003), see www.w3.org" />
+<title>downloads.effbot.org ::: www.effbot.org</title>
+<link rel="stylesheet" href="/effbot2.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="/effbotprint.css" type="text/css" media="print" />
+<script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+//<![CDATA[
+_uacct = "UA-578832-1";
+urchinTracker();
+//]]>
+</script>
+</head>
+<body bgcolor="#FFFFFF">
+<div id="effbot-page">
+<div id="effbot-nav"><a href="/"><b>effbot.org</b></a><br />
+&#160;<a href="/zone"><b>zone</b></a><br />
+&#160;&#160;<b>downloads.effbot.org</b></div>
+<div id="effbot-body">
+<h1 class="title">downloads.effbot.org</h1>
+<br />
+<p>[<a href="/">home</a>] [<a href="/zone">zone</a>] [<a href="http://online.effbot.org">blog</a>]</p>
+<p>Assorted software, most of it shipped under an OSI-compatible <a href="/zone/copyright.htm">old-style Python license</a>. If you want to support development, you can always <a href="http://www.amazon.co.uk/gp/registry/2QZDLLDVBENMC">buy me some refreshments</a>.</p>
+<h3>Contents:</h3>
+
+<p>
+Contents of <b>downloads/aggdraw-1.1-20051010.zip/CHANGES</b>:
+</p>
+<pre>
+The Python Imaging Library: The aggdraw Module
+$Id: <a href='CHANGES'>CHANGES</a> 2549 2005-10-08 14:48:10Z fredrik $
+
+*** Changes from release 1.0 to 1.1 ***
+
+(1.1c1 released)
+
+- Fixed rendering of symbols containing nested polygons (broken in
+  1.1b3).
+
+- Added 'coords' method to the Path type.  This returns the current
+  path as a polyline.  If the path consists of multiple path fragments,
+  the return value is undefined. (experimental)
+
+(1.1b3 released)
+
+- The Windows installer now uses Freetype 2.1.10.  This seems to fix
+  the issue with irregular baselines reported for some fonts.
+
+- Performance: changes to how and when drawing adapters are created,
+  and proper clipping in the rasterizer can result in massive speedups
+  for some applications.
+
+- Added experimental 'setantialias' method to the drawing context.
+  Pass in 0 to disable antialiasing, 1 to enable it.  Antialiasing
+  is enabled by default.
+
+- Adjust the size of filled objects (including polygons) depending
+  on the pen width.  If no pen is used, filled antialiased objects
+  are expanded by a half pixel, to avoid banding.  If a pen is used,
+  the objects are shrunk by a half pen width. (experimental)
+
+(1.1b2 released; internal release only)
+
+- Fixed background color bug for non-RGBA images.  The third
+  argument to the Draw constructor now works properly for all
+  modes.
+
+- Fixed big resource leak in the Draw(im) constructor.  The alternate
+  form (Draw(mode, size)) does not leak (reported by Håkan Karlsson).
+
+- Added Path object.  Path objects can be used instead of coordinates
+  with the 'line' and 'polygon' primitives.  Path objects can also be
+  used as symbols.
+
+(1.1b1 released)
+
+- Use ImageColor.getrgb to resolve colors.
+
+(1.0 final released)
+</pre>
+
+<!-- listing goes here -->
+
+
+<div class='navigate'>
+<hr id='zonebar' />
+[<a href='index.htm'>index</a>] [<a href='useredit.cgi?name=zone-template-downloads'>suggest changes</a>] [<a href='edit/?name=zone-template-downloads'>edit</a>] [<a href='edit/?action=new'>new</a>] [<a href="javascript:void(window.open('http://validator.w3.org/check?uri='+escape(document.location.href)))">validate</a>]</div>
+<p class='small'>Copyright &#169; 2002-2006 by Fredrik Lundh.</p>
+</div>
+</div>
+</body>
+</html>
+

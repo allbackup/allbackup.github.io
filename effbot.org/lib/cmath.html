@@ -1,0 +1,172 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>cmath</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-cmath.html'>original</a> :::
+<a href='cmath.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>cmath&#8212;Mathematical functions for complex numbers</h1>
+
+<p>This module is always available. It provides access to
+mathematical functions for complex numbers. The functions are:</p>
+</div>
+<dl><dt class="function" id="acos"><b>acos(x)</b> <tt class="nav"><a class="nav" href="cmath.acos" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return the arc cosine of <var>x</var>. There are two branch
+cuts: One extends right from 1 along the real axis to &#8734;,
+continuous from below. The other extends left from -1 along the
+real axis to -&#8734;, continuous from above.</p>
+</dd>
+<dt class="function" id="acosh"><b>acosh(x)</b> <tt class="nav"><a class="nav" href="cmath.acosh" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return the hyperbolic arc cosine of <var>x</var>. There is one
+branch cut, extending left from 1 along the real axis to -&#8734;,
+continuous from above.</p>
+</dd>
+<dt class="function" id="asin"><b>asin(x)</b> <tt class="nav"><a class="nav" href="cmath.asin" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return the arc sine of <var>x</var>. This has the same branch
+cuts as <a class="link" href="#acos"><code>acos</code></a>.</p>
+</dd>
+<dt class="function" id="asinh"><b>asinh(x)</b> <tt class="nav"><a class="nav" href="cmath.asinh" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return the hyperbolic arc sine of <var>x</var>. There are two
+branch cuts, extending left from &#177;<code>1j</code> to
+&#177;-&#8734;<code>j</code>, both continuous from above. These
+branch cuts should be considered a bug to be corrected in a future
+release. The correct branch cuts should extend along the imaginary
+axis, one from <code>1j</code> up to &#8734;<code>j</code> and
+continuous from the right, and one from -<code>1j</code> down to
+-&#8734;<code>j</code> and continuous from the left.</p>
+</dd>
+<dt class="function" id="atan"><b>atan(x)</b> <tt class="nav"><a class="nav" href="cmath.atan" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return the arc tangent of <var>x</var>. There are two branch
+cuts: One extends from <code>1j</code> along the imaginary axis to
+&#8734;<code>j</code>, continuous from the left. The other extends
+from -<code>1j</code> along the imaginary axis to
+-&#8734;<code>j</code>, continuous from the left. (This should
+probably be changed so the upper cut becomes continuous from the
+other side.)</p>
+</dd>
+<dt class="function" id="atanh"><b>atanh(x)</b> <tt class="nav"><a class="nav" href="cmath.atanh" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return the hyperbolic arc tangent of <var>x</var>. There are two
+branch cuts: One extends from 1 along the real axis to &#8734;,
+continuous from above. The other extends from -1 along the real
+axis to -&#8734;, continuous from above. (This should probably be
+changed so the right cut becomes continuous from the other
+side.)</p>
+</dd>
+<dt class="function" id="cos"><b>cos(x)</b> <tt class="nav"><a class="nav" href="cmath.cos" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return the cosine of <var>x</var>.</p>
+</dd>
+<dt class="function" id="cosh"><b>cosh(x)</b> <tt class="nav"><a class="nav" href="cmath.cosh" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return the hyperbolic cosine of <var>x</var>.</p>
+</dd>
+<dt class="function" id="exp"><b>exp(x)</b> <tt class="nav"><a class="nav" href="cmath.exp" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return the exponential value <code>e**</code><var>x</var>.</p>
+</dd>
+<dt class="function" id="log"><b>log(x[, base])</b> <tt class="nav"><a class="nav" href="cmath.log" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Returns the logarithm of <var>x</var> to the given <var>
+base</var>. If the <var>base</var> is not specified, returns the
+natural logarithm of <var>x</var>. There is one branch cut, from 0
+along the negative real axis to -&#8734;, continuous from
+above.</p>
+
+<blockquote><span class="mark">@since</span> Changed in version
+2.4: base argument added.<br />
+</blockquote>
+</dd>
+<dt class="function" id="log10"><b>log10(x)</b> <tt class="nav"><a class="nav" href="cmath.log10" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return the base-10 logarithm of <var>x</var>. This has the same
+branch cut as <a class="link" href="#log"><code>log</code></a>.</p>
+</dd>
+<dt class="function" id="sin"><b>sin(x)</b> <tt class="nav"><a class="nav" href="cmath.sin" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return the sine of <var>x</var>.</p>
+</dd>
+<dt class="function" id="sinh"><b>sinh(x)</b> <tt class="nav"><a class="nav" href="cmath.sinh" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return the hyperbolic sine of <var>x</var>.</p>
+</dd>
+<dt class="function" id="sqrt"><b>sqrt(x)</b> <tt class="nav"><a class="nav" href="cmath.sqrt" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return the square root of <var>x</var>. This has the same branch
+cut as <a class="link" href="#log"><code>log</code></a>.</p>
+</dd>
+<dt class="function" id="tan"><b>tan(x)</b> <tt class="nav"><a class="nav" href="cmath.tan" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return the tangent of <var>x</var>.</p>
+</dd>
+<dt class="function" id="tanh"><b>tanh(x)</b> <tt class="nav"><a class="nav" href="cmath.tanh" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return the hyperbolic tangent of <var>x</var>.</p>
+</dd>
+</dl><div class="text">
+<p>The module also defines two mathematical constants:</p>
+</div>
+<dl><dt class="variable" id="pi"><b>pi</b> <tt class="nav"><a class="nav" href="cmath.pi" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>The mathematical constant <em>pi</em>, as a real.</p>
+</dd>
+<dt class="variable" id="e"><b>e</b> <tt class="nav"><a class="nav" href="cmath.e" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>The mathematical constant <em>e</em>, as a real.</p>
+</dd>
+</dl><div class="text">
+<p>Note that the selection of functions is similar, but not
+identical, to that in module <code>
+math</code>. The reason for having two modules is that some users
+aren't interested in complex numbers, and perhaps don't even know
+what they are. They would rather have <code>math.sqrt(-1)</code>
+raise an exception than return a complex number. Also note that the
+functions defined in <code>cmath</code>
+always return a complex number, even if the answer can be expressed
+as a real number (in which case the complex number has an imaginary
+part of zero).</p>
+
+<p>A note on branch cuts: They are curves along which the given
+function fails to be continuous. They are a necessary feature of
+many complex functions. It is assumed that if you need to compute
+with complex functions, you will understand about branch cuts.
+Consult almost any (not too elementary) book on complex variables
+for enlightenment. For information of the proper choice of branch
+cuts for numerical purposes, a good reference should be the
+following:</p>
+</div>
+</div></body></html>

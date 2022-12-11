@@ -1,0 +1,18 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>EnvironmentError</title> <script type="text/javascript">effbot_page_id=1273;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <h1 class="maintitle">EnvironmentError</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p>The base class for exceptions that can occur outside the Python
+system: <a href="IOError.htm"><strong>IOError</strong></a>, <a href="OSError.htm"><strong>OSError</strong></a>. When exceptions of this type are created
+with a 2-tuple, the first item is available on the instance&#8217;s errno
+attribute (it is assumed to be an error number), and the second item
+is available on the strerror attribute (it is usually the associated
+error message). The tuple itself is also available on the args
+attribute. New in version 1.5.2.</p><p>When an <strong>EnvironmentError</strong> exception is instantiated with a 3-tuple, the
+first two items are available as above, while the third item is
+available on the filename attribute. However, for backwards
+compatibility, the args attribute contains only a 2-tuple of the first
+two constructor arguments.</p><p>The filename attribute is <a href="None.htm"><strong>None</strong></a> when this exception is created with
+other than 3 arguments. The errno and strerror attributes are also
+<a href="None.htm"><strong>None</strong></a> when the instance was created with other than 2 or 3
+arguments. In this last case, args contains the verbatim constructor
+arguments as a tuple.</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div> <!-- yui-g --></div> <!-- content --> </div> <!-- yui-b --> </div> <!-- yui-main --> <div class="yui-b"> <div id='menu'> <ul> <li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li> <li><b><a href="." title="Go to pyref index page.">::: pyref :::</a></b></li> </ul> </div> <!-- menu --> </div> <!-- yui-b --> </div> <!-- bd --> <div id="ft"> <!-- footer --> <p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;"></a>
+this page was rendered by a <a href="http://www.djangoproject.com/">django</a> application in 0.01s 2011-06-21 23:14:51.802899.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p> </div> <!-- ft --> </div> <!-- doc --> <script src="/media/js/effbot-min.js" type="text/javascript"> </script> </body> </html>

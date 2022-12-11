@@ -1,0 +1,119 @@
+
+@@module thread
+
+<h1>thread&#8212;Multiple threads of control</h1>
+
+<p>This module provides low-level primitives for working with multiple
+threads (a.k.a. light-weight processes or tasks) -- multiple threads of
+control sharing their global data space. For synchronization, simple
+locks (a.k.a. mutexes or binary semaphores) are provided.
+
+<p>The module is optional. It is supported on Windows, Linux, SGI IRIX,
+Solaris 2.x, as well as on systems that have a POSIX thread (a.k.a.
+&#8220;pthread&#8221;) implementation. For systems lacking the {@link
+thread} module, the {@link dummythread dummy_thread} module is
+available. It duplicates this module's interface and can be used as a
+drop-in replacement.
+
+<p>It defines the following constant and functions:
+
+@@exception error
+
+<p>Raised on thread-specific errors.
+
+@@variable LockType
+
+<p>This is the type of lock objects.
+
+@@function start_new_thread(function, args[, kwargs])
+
+<p>Start a new thread and return its identifier. The thread executes the
+function {@var function} with the argument list {@var args} (which must
+be a tuple). The optional {@var kwargs} argument specifies a dictionary
+of keyword arguments. When the function returns, the thread silently
+exits. When the function terminates with an unhandled exception, a stack
+trace is printed and then the thread exits (but other threads continue
+to run).
+
+@@function interrupt_main()
+
+<p>Raise a KeyboardInterrupt in the main thread. A subthread can use
+this function to interrupt the main thread.
+<blockquote>
+@since New in version 2.3. <br />
+</blockquote>
+
+@@function exit()
+
+<p>Raise the {@link exceptions.SystemExit} exception. When not caught,
+this will cause the thread to exit silently.
+
+@@function allocate_lock()
+
+<p>Return a new lock object. Methods of locks are described below. The
+lock is initially unlocked.
+
+@@function get_ident()
+
+<p>Return the `thread identifier' of the current thread. This is a
+nonzero integer. Its value has no direct meaning; it is intended as a
+magic cookie to be used e.g. to index a dictionary of thread-specific
+data. Thread identifiers may be recycled when a thread exits and another
+thread is created.
+
+@@text 
+
+<p>Lock objects have the following methods:
+
+@@method acquire([waitflag])
+
+<p>Without the optional argument, this method acquires the lock
+unconditionally, if necessary waiting until it is released by another
+thread (only one thread at a time can acquire a lock -- that's their
+reason for existence). If the integer {@var waitflag} argument is
+present, the action depends on its value: if it is zero, the lock is
+only acquired if it can be acquired immediately without waiting, while
+if it is nonzero, the lock is acquired unconditionally as before. The
+return value is {@link True} if the lock is acquired successfully,
+{@code False} if not.
+
+@@method release()
+
+<p>Releases the lock. The lock must have been acquired earlier, but not
+necessarily by the same thread.
+
+@@method locked()
+
+<p>Return the status of the lock: {@link True} if it has been acquired
+by some thread, {@link False} if not.
+
+@@text 
+
+<p>Caveats:
+<ul>
+<li>
+<p>Threads interact strangely with interrupts: the {@link
+exceptions.KeyboardInterrupt} exception will be received by an arbitrary
+thread. (When the {@link signal} module is available, interrupts always
+go to the main thread.)
+<li>
+<p>Calling {@link sys.exit} or raising the {@link exceptions.SystemExit}
+exception is equivalent to calling {@link exit}.
+<li>
+<p>Not all built-in functions that may block waiting for I/O allow other
+threads to run. (The most popular ones ({@link time.sleep}, {@var
+file}.read(), {@link select.select}) work as expected.)
+<li>
+<p>It is not possible to interrupt the {@link acquire} method on a lock
+-- the {@link exceptions.KeyboardInterrupt} exception will happen after
+the lock has been acquired.
+<li>
+<p>When the main thread exits, it is system defined whether the other
+threads survive. On SGI IRIX using the native thread implementation,
+they survive. On most other systems, they are killed without executing
+{@link try} ... {@link finally} clauses or executing object destructors.
+<li>
+<p>When the main thread exits, it does not do any of its usual cleanup
+(except that {@link try} ... {@link finally} clauses are honored), and
+the standard I/O files are not flushed.
+</ul>

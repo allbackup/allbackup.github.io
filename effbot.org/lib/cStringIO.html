@@ -1,0 +1,57 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>cStringIO</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-cStringIO.html'>original</a> :::
+<a href='cStringIO.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>cStringIO&#8212;Faster version of StringIO</h1>
+
+<p>The module <code>cStringIO</code>
+provides an interface similar to that of the <code>StringIO</code> module. Heavy use of <code>StringIO.StringIO</code>
+objects can be made more efficient by using the function <code>StringIO</code> from this module
+instead.</p>
+
+<p>Since this module provides a factory function which returns
+objects of built-in types, there's no way to build your own version
+using subclassing. Use the original <code>StringIO</code> module in that case.</p>
+
+<p>Unlike the memory files implemented by the <code>StringIO</code> module, those provided by this
+module are not able to accept Unicode strings that cannot be
+encoded as plain ASCII strings.</p>
+
+<p>Another difference from the <code>StringIO</code> module is that calling <code>StringIO</code> with a string
+parameter creates a read-only object. Unlike an object created
+without a string parameter, it does not have write methods. These
+objects are not generally visible. They turn up in tracebacks as <code>StringI</code> and <code>StringO</code>.</p>
+
+<p>The following data objects are provided as well:</p>
+</div>
+<dl><dt class="variable" id="InputType"><b>InputType</b> <tt class="nav"><a class="nav" href="cStringIO.InputType" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>The type object of the objects created by calling <code>StringIO</code> with a string
+parameter.</p>
+</dd>
+<dt class="variable" id="OutputType"><b>OutputType</b> <tt class="nav"><a class="nav" href="cStringIO.OutputType" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>The type object of the objects returned by calling <code>StringIO</code> with no
+parameters.</p>
+</dd>
+</dl><div class="text">
+<p>There is a C API to the module as well; refer to the module
+source for more information.</p>
+</div>
+</div></body></html>

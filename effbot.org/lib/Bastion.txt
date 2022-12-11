@@ -1,0 +1,48 @@
+
+@@module Bastion
+
+<h1>Bastion&#8212;Restricting access to objects</h1>
+
+<p>Changed in version 2.3: Disabled module.
+
+
+<p class='warning'><b>Warning:</b> The documentation has been left in
+place to help in reading old code that uses the module.
+
+<p>According to the dictionary, a bastion is &#8220;a fortified area or
+position&#8221;, or &#8220;something that is considered a
+stronghold.&#8221; It's a suitable name for this module, which provides
+a way to forbid access to certain attributes of an object. It must
+always be used with the {@link rexec} module, in order to allow
+restricted-mode programs access to certain safe attributes of an object,
+while denying access to other, unsafe attributes.
+
+@@function Bastion(object[, filter[, name[, class]]])
+
+<p>Protect the object {@var object}, returning a bastion for the object.
+Any attempt to access one of the object's attributes will have to be
+approved by the {@var filter} function; if the access is denied an
+{@link exceptions.AttributeError} exception will be raised.
+
+<p>If present, {@var filter} must be a function that accepts a string
+containing an attribute name, and returns true if access to that
+attribute will be permitted; if {@var filter} returns false, the access
+is denied. The default filter denies access to any function beginning
+with an underscore ("{@code _}"). The bastion's string representation
+will be "{@code &ltBastion for }{@var name}>" if a value for {@var name}
+is provided; otherwise, "{@code repr(}{@var object})" will be used.
+
+<p>{@var class}, if present, should be a subclass of {@link
+BastionClass}; see the code in bastion.py for the details. Overriding
+the default {@link BastionClass} will rarely be required.
+
+@@class BastionClass(getfunc, name)
+
+<p>Class which actually implements bastion objects. This is the default
+class used by {@link Bastion}. The {@var getfunc} parameter is a
+function which returns the value of an attribute which should be exposed
+to the restricted execution environment when called with the name of the
+attribute as the only parameter. {@var name} is used to construct the
+{@link repr} of the {@link BastionClass} instance.
+
+@@text 

@@ -1,0 +1,241 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>collections</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-collections.html'>original</a> :::
+<a href='collections.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>collections&#8212;High-performance container datatypes</h1>
+
+<div class="toc"><dl><dt>On this page:</dt><dd><a href="#recipes">Recipes</a></dd></dl></div><p>New in version 2.4.</p>
+
+<p>This module implements high-performance container datatypes.
+Currently, the only datatype is a deque. Future additions may
+include B-trees and Fibonacci heaps.</p>
+</div>
+<dl><dt class="function" id="deque"><b>deque([iterable])</b> <tt class="nav"><a class="nav" href="collections.deque" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Returns a new deque objected initialized left-to-right (using <code>append</code>) with data from <var>
+iterable</var>. If <var>iterable</var> is not specified, the new
+deque is empty.</p>
+
+<p>Deques are a generalization of stacks and queues (the name is
+pronounced &#8220;deck&#8221; and is short for &#8220;double-ended
+queue&#8221;). Deques support thread-safe, memory efficient appends
+and pops from either side of the deque with approximately the same
+<code>O(1)</code> performance in either direction.</p>
+
+<p>Though <code>list</code> objects support
+similar operations, they are optimized for fast fixed-length
+operations and incur <code>O(n)</code> memory movement costs for
+"<code>pop(0)</code>" and "<code>insert(0, v)</code>" operations
+which change both the size and position of the underlying data
+representation.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.4.<br />
+</blockquote>
+</dd>
+</dl><div class="text">
+<p>Deque objects support the following methods:</p>
+</div>
+<dl><dt class="method" id="deque.append"><b>append(x)</b> <tt class="nav"><a class="nav" href="collections.deque.append" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Add <var>x</var> to the right side of the deque.</p>
+</dd>
+<dt class="method" id="deque.appendleft"><b>appendleft(x)</b> <tt class="nav"><a class="nav" href="collections.deque.appendleft" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Add <var>x</var> to the left side of the deque.</p>
+</dd>
+<dt class="method" id="deque.clear"><b>clear()</b> <tt class="nav"><a class="nav" href="collections.deque.clear" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Remove all elements from the deque leaving it with length 0.</p>
+</dd>
+<dt class="method" id="deque.extend"><b>extend(iterable)</b> <tt class="nav"><a class="nav" href="collections.deque.extend" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Extend the right side of the deque by appending elements from
+the iterable argument.</p>
+</dd>
+<dt class="method" id="deque.extendleft"><b>extendleft(iterable)</b> <tt class="nav"><a class="nav" href="collections.deque.extendleft" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Extend the left side of the deque by appending elements from
+<var>iterable</var>. Note, the series of left appends results in
+reversing the order of elements in the iterable argument.</p>
+</dd>
+<dt class="method" id="deque.pop"><b>pop()</b> <tt class="nav"><a class="nav" href="collections.deque.pop" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Remove and return an element from the right side of the deque.
+If no elements are present, raises a <code>exceptions.IndexError</code>.</p>
+</dd>
+<dt class="method" id="deque.popleft"><b>popleft()</b> <tt class="nav"><a class="nav" href="collections.deque.popleft" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Remove and return an element from the left side of the deque. If
+no elements are present, raises a <code>exceptions.IndexError</code>.</p>
+</dd>
+<dt class="method" id="deque.rotate"><b>rotate(n)</b> <tt class="nav"><a class="nav" href="collections.deque.rotate" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Rotate the deque <var>n</var> steps to the right. If <var>
+n</var> is negative, rotate to the left. Rotating one step to the
+right is equivalent to: "<code>d.appendleft(d.pop())</code>".</p>
+</dd>
+</dl><div class="text">
+<p>In addition to the above, deques support iteration, pickling,
+"<code>len(d)</code>", "<code>reversed(d)</code>",
+"<code>copy.copy(d)</code>", "<code>copy.deepcopy(d)</code>",
+membership testing with the <code>in</code>
+operator, and subscript references such as
+"<code>d[-1]</code>".</p>
+
+<p>Example:</p>
+
+<pre>
+&gt;&gt;&gt; from collections import deque
+&gt;&gt;&gt; d = deque('ghi')                 # make a new deque with three items
+&gt;&gt;&gt; for elem in d:                   # iterate over the deque's elements
+...     print elem.upper()  
+G
+H
+I
+
+&gt;&gt;&gt; d.append('j')                    # add a new entry to the right side
+&gt;&gt;&gt; d.appendleft('f')                # add a new entry to the left side
+&gt;&gt;&gt; d                                # show the representation of the deque
+deque(['f', 'g', 'h', 'i', 'j'])
+
+&gt;&gt;&gt; d.pop()                          # return and remove the rightmost item
+'j'
+&gt;&gt;&gt; d.popleft()                      # return and remove the leftmost item
+'f'
+&gt;&gt;&gt; list(d)                          # list the contents of the deque
+['g', 'h', 'i']
+&gt;&gt;&gt; d[0]                             # peek at leftmost item
+'g'
+&gt;&gt;&gt; d[-1]                            # peek at rightmost item
+'i'
+
+&gt;&gt;&gt; list(reversed(d))                # list the contents of a deque in reverse
+['i', 'h', 'g']
+&gt;&gt;&gt; 'h' in d                         # search the deque
+True
+&gt;&gt;&gt; d.extend('jkl')                  # add multiple elements at once
+&gt;&gt;&gt; d
+deque(['g', 'h', 'i', 'j', 'k', 'l'])
+&gt;&gt;&gt; d.rotate(1)                      # right rotation
+&gt;&gt;&gt; d
+deque(['l', 'g', 'h', 'i', 'j', 'k'])
+&gt;&gt;&gt; d.rotate(-1)                     # left rotation
+&gt;&gt;&gt; d
+deque(['g', 'h', 'i', 'j', 'k', 'l'])
+
+&gt;&gt;&gt; deque(reversed(d))               # make a new deque in reverse order
+deque(['l', 'k', 'j', 'i', 'h', 'g'])
+&gt;&gt;&gt; d.clear()                        # empty the deque
+&gt;&gt;&gt; d.pop()                          # cannot pop from an empty deque
+Traceback (most recent call last):
+  File "&lt;pyshell#6&gt;", line 1, in -toplevel-
+    d.pop()
+IndexError: pop from an empty deque
+
+&gt;&gt;&gt; d.extendleft('abc')              # extendleft() reverses the input order
+&gt;&gt;&gt; d
+deque(['c', 'b', 'a'])
+</pre>
+
+<h2 id="recipes">Recipes <a class="nav" href="#recipes">#</a></h2>
+
+<p>This section shows various approaches to working with
+deques.</p>
+
+<p>The <code>rotate</code> method
+provides a way to implement <a class="link" href="#deque"><code>
+deque</code></a> slicing and deletion. For example, a pure python
+implementation of <code>del d[n]</code> relies on the <code>rotate</code> method to position
+elements to be popped:</p>
+
+<pre>
+def delete_nth(d, n):
+    d.rotate(-n)
+    d.popleft()
+    d.rotate(n)
+</pre>
+
+<p>To implement <a class="link" href="#deque"><code>deque</code></a>
+slicing, use a similar approach applying <code>rotate</code> to bring a target element to the left
+side of the deque. Remove old entries with <code>popleft</code>, add new entries with <code>extend</code>, and then reverse the
+rotation.</p>
+
+<p>With minor variations on that approach, it is easy to implement
+Forth style stack manipulations such as <code>dup</code>, <code>
+drop</code>, <code>swap</code>, <code>over</code>, <code>
+pick</code>, <code>rot</code>, and <code>roll</code>.</p>
+
+<p>A roundrobin task server can be built from a <a class="link" href="#deque"><code>deque</code></a> using <code>popleft</code> to select the current task and <code>append</code> to add it back to the
+tasklist if the input stream is not exhausted:</p>
+
+<pre>
+def roundrobin(*iterables):
+    pending = deque(iter(i) for i in iterables)
+    while pending:
+        task = pending.popleft()
+        try:
+            yield task.next()
+        except StopIteration:
+            continue
+        pending.append(task)
+
+&gt;&gt;&gt; for value in roundrobin('abc', 'd', 'efgh'):
+...     print value
+
+a
+d
+e
+b
+f
+c
+g
+h
+</pre>
+
+<p>Multi-pass data reduction algorithms can be succinctly expressed
+and efficiently coded by extracting elements with multiple calls to
+<code>popleft</code>, applying the
+reduction function, and calling <code>
+append</code> to add the result back to the queue.</p>
+
+<p>For example, building a balanced binary tree of nested lists
+entails reducing two adjacent nodes into one by grouping them in a
+list:</p>
+
+<pre>
+def maketree(iterable):
+    d = deque(iterable)
+    while len(d) &gt; 1:
+        pair = [d.popleft(), d.popleft()]
+        d.append(pair)
+    return list(d)
+
+&gt;&gt;&gt; print maketree('abcdefgh')
+[[[['a', 'b'], ['c', 'd']], [['e', 'f'], ['g', 'h']]]]
+</pre>
+</div>
+</div></body></html>

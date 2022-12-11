@@ -1,0 +1,110 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>xml.sax.saxutils</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-xml.sax.saxutils.html'>original</a> :::
+<a href='xml.sax.saxutils.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>xml.sax.saxutils&#8212;SAX Utilities</h1>
+
+<p>New in version 2.0.</p>
+
+<p>The module <code>
+xml.sax.saxutils</code> contains a number of classes and functions
+that are commonly useful when creating SAX applications, either in
+direct use, or as base classes.</p>
+</div>
+<dl><dt class="function" id="escape"><b>escape(data[, entities])</b> <tt class="nav"><a class="nav" href="xml.sax.saxutils.escape" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Escape "<code>&amp;</code>", "<code>&lt;</code>", and
+"<code>&gt;</code>" in a string of data.</p>
+
+<p>You can escape other strings of data by passing a dictionary as
+the optional <var>entities</var> parameter. The keys and values
+must all be strings; each key will be replaced with its
+corresponding value.</p>
+</dd>
+<dt class="function" id="unescape"><b>unescape(data[, entities])</b> <tt class="nav"><a class="nav" href="xml.sax.saxutils.unescape" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Unescape "<code>&amp;amp;</code>", "<code>&amp;lt;</code>", and
+"<code>&amp;gt;</code>" in a string of data.</p>
+
+<p>You can unescape other strings of data by passing a dictionary
+as the optional <var>entities</var> parameter. The keys and values
+must all be strings; each key will be replaced with its
+corresponding value.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.3.<br />
+</blockquote>
+</dd>
+<dt class="function" id="quoteattr"><b>quoteattr(data[, entities])</b> <tt class="nav"><a class="nav" href="xml.sax.saxutils.quoteattr" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Similar to <a class="link" href="#escape"><code>escape</code></a>, but
+also prepares <var>data</var> to be used as an attribute value. The
+return value is a quoted version of <var>data</var> with any
+additional required replacements. <a class="link" href="#quoteattr"><code>quoteattr</code></a> will select a quote character
+based on the content of <var>data</var>, attempting to avoid
+encoding any quote characters in the string. If both single- and
+double-quote characters are already in <var>data</var>, the
+double-quote characters will be encoded and <var>data</var> will be
+wrapped in double-quotes. The resulting string can be used directly
+as an attribute value:</p>
+
+<pre>
+&gt;&gt;&gt; print "&lt;element attr=%s&gt;" % quoteattr("ab ' cd \" ef")
+&lt;element attr="ab ' cd &amp;quot; ef"&gt;
+</pre>
+
+<p>This function is useful when generating attribute values for
+HTML or any SGML using the reference concrete syntax.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.2.<br />
+</blockquote>
+</dd>
+<dt class="class" id="XMLGenerator"><b>class XMLGenerator([out[, encoding]])</b> <tt class="nav"><a class="nav" href="xml.sax.saxutils.XMLGenerator" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>This class implements the <code>ContentHandler</code> interface by writing
+SAX events back into an XML document. In other words, using an <a class="link" href="#XMLGenerator"><code>XMLGenerator</code></a> as the
+content handler will reproduce the original document being parsed.
+<var>out</var> should be a file-like object which will default to
+<var>sys.stdout</var>. <var>encoding</var> is the encoding of the
+output stream which defaults to <code>'iso-8859-1'</code>.</p>
+</dd>
+<dt class="class" id="XMLFilterBase"><b>class XMLFilterBase(base)</b> <tt class="nav"><a class="nav" href="xml.sax.saxutils.XMLFilterBase" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>This class is designed to sit between an <code>XMLReader</code> and the client application's
+event handlers. By default, it does nothing but pass requests up to
+the reader and events on to the handlers unmodified, but subclasses
+can override specific methods to modify the event stream or the
+configuration requests as they pass through.</p>
+</dd>
+<dt class="function" id="prepare_input_source"><b>prepare_input_source(source[, base])</b> <tt class="nav"><a class="nav" href="xml.sax.saxutils.prepare_input_source" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>This function takes an input source and an optional base URL and
+returns a fully resolved <code>
+InputSource</code> object ready for reading. The input source can be
+given as a string, a file-like object, or an <code>InputSource</code> object; parsers will use
+this function to implement the polymorphic <var>source</var>
+argument to their <code>parse</code>
+method.</p>
+</dd>
+</dl></div></body></html>

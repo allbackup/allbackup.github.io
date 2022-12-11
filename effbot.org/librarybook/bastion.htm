@@ -1,0 +1,87 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>The Bastion&nbsp;module</title></head><body data-page-id="474"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">The Bastion&nbsp;module</h1></div><div class="yui-ge"><div class="yui-u first"><p class="note"><b>Note:</b> This module is not safe in Python
+2.2 and later, and has been removed in Python 2.3.</p><p>This module allows you to control how a given object is used. It
+can be used to pass objects from unrestricted parts of your
+application to code running in restricted mode.</p><p>To create a restricted instance, simply call the
+<b>Bastion</b> wrapper. By default, all instance variables are
+hidden, as well as all methods that start with an underscore.</p><div class="example">
+<b style="example">Example: Using the Bastion
+module</b>
+<pre>
+# File: <a href="bastion/bastion-example-1.py">bastion-example-1.py</a>
+
+import Bastion
+
+class Sample:
+    value = 0
+
+    def _set(self, value):
+        self.value = value
+
+    def setvalue(self, value):
+        if 10 &lt; value &lt;= 20:
+            self._set(value)
+        else:
+            raise ValueError, "illegal value"
+
+    def getvalue(self):
+        return self.value
+
+#
+# try it
+
+s = Sample()
+s._set(100) # cheat
+print s.getvalue()
+
+s = Bastion.Bastion(Sample())
+s._set(100) # attempt to cheat
+print s.getvalue()
+
+</pre><pre class="computeroutput" moreinfo="NONE">
+100
+Traceback (innermost last):
+...
+AttributeError: _set
+</pre></div><p>You can control which functions to publish. In the following
+example, the internal method can be called from outside, but the
+<b>getvalue</b> no longer works:</p><div class="example">
+<b style="example">Example: Using the Bastion
+module with a non-standard filter</b>
+<pre>
+# File: <a href="bastion/bastion-example-2.py">bastion-example-2.py</a>
+
+import Bastion
+
+class Sample:
+    value = 0
+
+    def _set(self, value):
+        self.value = value
+
+    def setvalue(self, value):
+        if 10 &lt; value &lt;= 20:
+            self._set(value)
+        else:
+            raise ValueError, "illegal value"
+
+    def getvalue(self):
+        return self.value
+
+#
+# try it
+
+def is_public(name):
+    return name[:3] != "get"
+
+s = Bastion.Bastion(Sample(), is_public)
+s._set(100) # this works
+print s.getvalue() # but not this
+
+</pre><pre class="computeroutput" moreinfo="NONE">
+100
+Traceback (innermost last):
+...
+AttributeError: getvalue
+</pre></div></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to librarybook index page.">::: librarybook :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

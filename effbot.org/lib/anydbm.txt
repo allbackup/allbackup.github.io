@@ -1,0 +1,67 @@
+
+@@module anydbm
+
+<h1>anydbm&#8212;Generic access to DBM-style databases</h1>
+
+<p>{@link anydbm} is a generic interface to variants of the DBM database
+-- {@link dbhash} (requires {@link bsddb}), {@link gdbm}, or {@link
+dbm}. If none of these modules is installed, the slow-but-simple
+implementation in module {@link dumbdbm} will be used.
+
+@@function open(filename[, flag[, mode]])
+
+<p>Open the database file {@var filename} and return a corresponding
+object.
+
+<p>If the database file already exists, the {@link whichdb} module is
+used to determine its type and the appropriate module is used; if it
+does not exist, the first module listed above that can be imported is
+used.
+
+<p>The optional {@var flag} argument can be {@code 'r'} to open an
+existing database for reading only, {@code 'w'} to open an existing
+database for reading and writing, {@code 'c'} to create the database if
+it doesn't exist, or {@code 'n'}, which will always create a new empty
+database. If not specified, the default value is {@code 'r'}.
+
+<p>The optional {@var mode} argument is the Unix mode of the file, used
+only when the database has to be created. It defaults to octal {@code
+0666} (and will be modified by the prevailing umask).
+
+@@exception error
+
+<p>A tuple containing the exceptions that can be raised by each of the
+supported modules, with a unique exception {@link anydbm.error} as the
+first item -- the latter is used when {@link anydbm.error} is raised.
+
+@@text 
+
+<p>The object returned by {@link open} supports most of the same
+functionality as dictionaries; keys and their corresponding values can
+be stored, retrieved, and deleted, and the {@link has_key} and {@link
+keys} methods are available. Keys and values must always be strings.
+
+@see 
+{@link dbhash Module dbhash}
+
+BSD db database interface.
+@see 
+{@link dbm Module dbm}
+
+Standard Unix database interface.
+@see 
+{@link dumbdbm Module dumbdbm}
+
+Portable implementation of the dbm interface.
+@see 
+{@link gdbm Module gdbm}
+
+GNU database interface, based on the dbm interface.
+@see 
+{@link shelve Module shelve}
+
+General object persistence built on top of the Python dbm interface.
+@see 
+{@link whichdb Module whichdb}
+
+Utility module used to determine the type of an existing database.

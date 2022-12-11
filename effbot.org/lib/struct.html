@@ -1,0 +1,513 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>struct</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-struct.html'>original</a> :::
+<a href='struct.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>struct&#8212;Interpret strings as packed binary data</h1>
+
+<p>This module performs conversions between Python values and C
+structs represented as Python strings. It uses format strings
+(explained below) as compact descriptions of the lay-out of the C
+structs and the intended conversion to/from Python values. This can
+be used in handling binary data stored in files or from network
+connections, among other sources.</p>
+
+<p>The module defines the following exception and functions:</p>
+</div>
+<dl><dt class="exception" id="error"><b>exception error</b> <tt class="nav"><a class="nav" href="struct.error" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="exception">
+<p>Exception raised on various occasions; argument is a string
+describing what is wrong.</p>
+</dd>
+<dt class="function" id="pack"><b>pack(fmt, v1, v2, ...)</b> <tt class="nav"><a class="nav" href="struct.pack" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return a string containing the values <var>v1</var>, <var>
+v2</var>, ... packed according to the given format. The arguments
+must match the values required by the format exactly.</p>
+</dd>
+<dt class="function" id="unpack"><b>unpack(fmt, string)</b> <tt class="nav"><a class="nav" href="struct.unpack" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Unpack the string (presumably packed by <code>
+pack(</code><var>fmt</var>, ...)) according to the given format.
+The result is a tuple even if it contains exactly one item. The
+string must contain exactly the amount of data required by the
+format (<code>len(</code><var>string</var>) must equal <code>
+calcsize(</code><var>fmt</var>)).</p>
+</dd>
+<dt class="function" id="calcsize"><b>calcsize(fmt)</b> <tt class="nav"><a class="nav" href="struct.calcsize" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return the size of the struct (and hence of the string)
+corresponding to the given format.</p>
+</dd>
+</dl><div class="text">
+<p>Format characters have the following meaning; the conversion
+between C and Python values should be obvious given their
+types:</p>
+
+<table border="1">
+<tr>
+<th>
+<p>Format</p>
+</th>
+<th>
+<p>C Type</p>
+</th>
+<th>
+<p>Python</p>
+</th>
+<th>
+<p>Notes</p>
+</th>
+</tr>
+
+<tr>
+<td>
+<p><code>x</code></p>
+</td>
+<td>
+<p>pad byte</p>
+</td>
+<td>
+<p>no value</p>
+</td>
+<td />
+</tr>
+
+<tr>
+<td>
+<p><code>c</code></p>
+</td>
+<td>
+<p><code>c:char</code></p>
+</td>
+<td>
+<p>string of length 1</p>
+</td>
+<td />
+</tr>
+
+<tr>
+<td>
+<p><code>b</code></p>
+</td>
+<td>
+<p><code>char</code></p>
+</td>
+<td>
+<p>integer</p>
+</td>
+<td />
+</tr>
+
+<tr>
+<td>
+<p><code>B</code></p>
+</td>
+<td>
+<p><code>char</code></p>
+</td>
+<td>
+<p>integer</p>
+</td>
+<td />
+</tr>
+
+<tr>
+<td>
+<p><code>h</code></p>
+</td>
+<td>
+<p><code>c:short</code></p>
+</td>
+<td>
+<p>integer</p>
+</td>
+<td />
+</tr>
+
+<tr>
+<td>
+<p><code>H</code></p>
+</td>
+<td>
+<p><code>short</code></p>
+</td>
+<td>
+<p>integer</p>
+</td>
+<td />
+</tr>
+
+<tr>
+<td>
+<p><code>i</code></p>
+</td>
+<td>
+<p><code>c:int</code></p>
+</td>
+<td>
+<p>integer</p>
+</td>
+<td />
+</tr>
+
+<tr>
+<td>
+<p><code>I</code></p>
+</td>
+<td>
+<p><code>int</code></p>
+</td>
+<td>
+<p>long</p>
+</td>
+<td />
+</tr>
+
+<tr>
+<td>
+<p><code>l</code></p>
+</td>
+<td>
+<p><code>c:long</code></p>
+</td>
+<td>
+<p>integer</p>
+</td>
+<td />
+</tr>
+
+<tr>
+<td>
+<p><code>L</code></p>
+</td>
+<td>
+<p><code>long</code></p>
+</td>
+<td>
+<p>long</p>
+</td>
+<td />
+</tr>
+
+<tr>
+<td>
+<p><code>q</code></p>
+</td>
+<td>
+<p><code>long</code></p>
+</td>
+<td>
+<p>long</p>
+</td>
+<td>
+<p>(1)</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>Q</code></p>
+</td>
+<td>
+<p><code>long long</code></p>
+</td>
+<td>
+<p>long</p>
+</td>
+<td>
+<p>(1)</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>f</code></p>
+</td>
+<td>
+<p><code>c:float</code></p>
+</td>
+<td>
+<p>float</p>
+</td>
+<td />
+</tr>
+
+<tr>
+<td>
+<p><code>d</code></p>
+</td>
+<td>
+<p><code>c:double</code></p>
+</td>
+<td>
+<p>float</p>
+</td>
+<td />
+</tr>
+
+<tr>
+<td>
+<p><code>s</code></p>
+</td>
+<td>
+<p><code>c:char[]</code></p>
+</td>
+<td>
+<p>string</p>
+</td>
+<td />
+</tr>
+
+<tr>
+<td>
+<p><code>p</code></p>
+</td>
+<td>
+<p><code>c:char[]</code></p>
+</td>
+<td>
+<p>string</p>
+</td>
+<td />
+</tr>
+
+<tr>
+<td>
+<p><code>P</code></p>
+</td>
+<td>
+<p><code>*</code></p>
+</td>
+<td>
+<p>integer</p>
+</td>
+<td />
+</tr>
+</table>
+
+<br />
+<br />
+ 
+
+<p>Notes:</p>
+</div>
+<dl><dt class="variable"><b>(1)</b> <tt class="nav"><a class="nav" href="struct." title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>The "<code>q</code>" and "<code>Q</code>" conversion codes are
+available in native mode only if the platform C compiler supports C
+<code>long</code>, or, on Windows, <code>c:__int64</code>. They are always
+available in standard modes.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.2.<br />
+</blockquote>
+</dd>
+</dl><div class="text">
+<p>A format character may be preceded by an integral repeat count.
+For example, the format string <code>'4h'</code> means exactly the
+same as <code>'hhhh'</code>.</p>
+
+<p>Whitespace characters between formats are ignored; a count and
+its format must not contain whitespace though.</p>
+
+<p>For the "<code>s</code>" format character, the count is
+interpreted as the size of the string, not a repeat count like for
+the other format characters; for example, <code>'10s'</code> means
+a single 10-byte string, while <code>'10c'</code> means 10
+characters. For packing, the string is truncated or padded with
+null bytes as appropriate to make it fit. For unpacking, the
+resulting string always has exactly the specified number of bytes.
+As a special case, <code>'0s'</code> means a single, empty string
+(while <code>'0c'</code> means 0 characters).</p>
+
+<p>The "<code>p</code>" format character encodes a "Pascal string",
+meaning a short variable-length string stored in a fixed number of
+bytes. The count is the total number of bytes stored. The first
+byte stored is the length of the string, or 255, whichever is
+smaller. The bytes of the string follow. If the string passed in to
+<a class="link" href="#pack"><code>pack</code></a> is too long (longer than
+the count minus 1), only the leading count-1 bytes of the string
+are stored. If the string is shorter than count-1, it is padded
+with null bytes so that exactly count bytes in all are used. Note
+that for <a class="link" href="#unpack"><code>unpack</code></a>, the
+"<code>p</code>" format character consumes count bytes, but that
+the string returned can never contain more than 255 characters.</p>
+
+<p>For the "<code>I</code>", "<code>L</code>", "<code>q</code>" and
+"<code>Q</code>" format characters, the return value is a Python
+long integer.</p>
+
+<p>For the "<code>P</code>" format character, the return value is a
+Python integer or long integer, depending on the size needed to
+hold a pointer when it has been cast to an integer type. A <code>
+NULL</code> pointer will always be returned as the Python integer
+<code>0</code>. When packing pointer-sized values, Python integer
+or long integer objects may be used. For example, the Alpha and
+Merced processors use 64-bit pointer values, meaning a Python long
+integer will be used to hold the pointer; other platforms use
+32-bit pointers and will use a Python integer.</p>
+
+<p>By default, C numbers are represented in the machine's native
+format and byte order, and properly aligned by skipping pad bytes
+if necessary (according to the rules used by the C compiler).</p>
+
+<p>Alternatively, the first character of the format string can be
+used to indicate the byte order, size and alignment of the packed
+data, according to the following table:</p>
+
+<table border="1">
+<tr>
+<th>
+<p>Character</p>
+</th>
+<th>
+<p>Byte order</p>
+</th>
+<th>
+<p>Size and alignment</p>
+</th>
+</tr>
+
+<tr>
+<td>
+<p><code>@</code></p>
+</td>
+<td>
+<p>native</p>
+</td>
+<td>
+<p>native</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>=</code></p>
+</td>
+<td>
+<p>native</p>
+</td>
+<td>
+<p>standard</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>&lt;</code></p>
+</td>
+<td>
+<p>little-endian</p>
+</td>
+<td>
+<p>standard</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>&gt;</code></p>
+</td>
+<td>
+<p>big-endian</p>
+</td>
+<td>
+<p>standard</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>!</code></p>
+</td>
+<td>
+<p>network (= big-endian)</p>
+</td>
+<td>
+<p>standard</p>
+</td>
+</tr>
+</table>
+
+<br />
+<br />
+ 
+
+<p>If the first character is not one of these, "<code>@</code>" is
+assumed.</p>
+
+<p>Native byte order is big-endian or little-endian, depending on
+the host system. For example, Motorola and Sun processors are
+big-endian; Intel and DEC processors are little-endian.</p>
+
+<p>Native size and alignment are determined using the C compiler's
+<code>sizeof</code> expression. This is
+always combined with native byte order.</p>
+
+<p>Standard size and alignment are as follows: no alignment is
+required for any type (so you have to use pad bytes); <code>c:short</code> is 2 bytes; <code>c:int</code> and <code>c:long</code> are 4 bytes; <code>long</code> (<code>c:__int64</code> on Windows) is 8 bytes; <code>c:float</code> and <code>c:double</code> are 32-bit and 64-bit IEEE
+floating point numbers, respectively.</p>
+
+<p>Note the difference between "<code>@</code>" and
+"<code>=</code>": both use native byte order, but the size and
+alignment of the latter is standardized.</p>
+
+<p>The form "<code>!</code>" is available for those poor souls who
+claim they can't remember whether network byte order is big-endian
+or little-endian.</p>
+
+<p>There is no way to indicate non-native byte order (force
+byte-swapping); use the appropriate choice of "<code>&lt;</code>"
+or "<code>&gt;</code>".</p>
+
+<p>The "<code>P</code>" format character is only available for the
+native byte ordering (selected as the default or with the
+"<code>@</code>" byte order character). The byte order character
+"<code>=</code>" chooses to use little- or big-endian ordering
+based on the host system. The struct module does not interpret this
+as native ordering, so the "<code>P</code>" format is not
+available.</p>
+
+<p>Examples (all using native byte order, size and alignment, on a
+big-endian machine):</p>
+
+<pre>
+&gt;&gt;&gt; from struct import *
+&gt;&gt;&gt; pack('hhl', 1, 2, 3)
+'\x00\x01\x00\x02\x00\x00\x00\x03'
+&gt;&gt;&gt; unpack('hhl', '\x00\x01\x00\x02\x00\x00\x00\x03')
+(1, 2, 3)
+&gt;&gt;&gt; calcsize('hhl')
+8
+</pre>
+
+<p>Hint: to align the end of a structure to the alignment
+requirement of a particular type, end the format with the code for
+that type with a repeat count of zero. For example, the format
+<code>'llh0l'</code> specifies two pad bytes at the end, assuming
+longs are aligned on 4-byte boundaries. This only works when native
+size and alignment are in effect; standard size and alignment does
+not enforce any alignment. <span class="mark">@see</span> <code>Module array</code> Packed binary
+storage of homogeneous data. <span class="mark">@see</span> <code>Module xdrlib</code> Packing and
+unpacking of XDR data.</p>
+</div>
+</div></body></html>

@@ -1,0 +1,201 @@
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>downloads.effbot.org ::: www.effbot.org</title>
+<link rel="stylesheet" href="/effbot2.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="/effbotprint.css" type="text/css" media="print" />
+</head>
+
+<body bgcolor="white">
+
+<script src="/effbot.js" type="text/javascript"></script>
+<script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-578832-1";
+urchinTracker();
+</script>
+
+<div id="effbot-page">
+
+<div id="effbot-head">
+<a href="/"><b>effbot.org</b></a> ::: 
+<a href="/zone/"><b>zone</b></a> :::
+<b>downloads.effbot.org</b>
+</div>
+
+<div id="effbot-nav">
+
+<div style="margin-top: 10px;" class='small'>Think this article can be improved? <a href='#add-comment'>Check</a> for comments, or <a href='/comment/zone/zone-template-downloads.htm'>add your own</a>!</div>
+
+</div>
+
+<div id="effbot-body">
+
+
+<h1 class="title">downloads.effbot.org</h1>
+<p>
+[<a href="/">home</a>]
+[<a href="/zone">zone</a>]
+[<a href="http://online.effbot.org">blog</a>]
+
+</p><p>Assorted software, most of it shipped under an OSI-compatible <a href="/zone/copyright.htm">old-style Python license</a>.  If you want
+to support development, you can always <a href="http://www.amazon.co.uk/gp/registry/2QZDLLDVBENMC">buy me some refreshments</a>.
+
+<h3>Contents:</h3>
+
+
+<p>
+Contents of <b>downloads/elementtree-1.1-20030511.zip/README</b>:
+</p>
+<pre>
+$Id: //people/fredrik/elementtree/<a href='README'>README</a>#7 $
+
+======================
+The elementtree module
+======================
+
+This kit contains a separate distribution of the ElementTree data
+structure from the xmltoys library.
+
+For more information on this library, see:
+
+    <a href='http://effbot.org/zone/element-index.htm'>http://effbot.org/zone/element-index.htm</a>
+
+The modules are designed to work with Python 2.1 and newer.  The core
+tree implementation and the SimpleXMLTreeBuilder class also works
+under 1.5.2 and 2.0.
+
+Enjoy /F
+
+fredrik@pythonware.com
+<a href='http://www.pythonware.com'>http://www.pythonware.com</a>
+
+--------------------------------------------------------------------
+The ElementTree / XML Toys Library is
+
+Copyright (c) 1999-2003 by Secret Labs AB
+Copyright (c) 1999-2003 by Fredrik Lundh
+
+By obtaining, using, and/or copying this software and/or its
+associated documentation, you agree that you have read, understood,
+and will comply with the following terms and conditions:
+
+Permission to use, copy, modify, and distribute this software and its
+associated documentation for any purpose and without fee is hereby
+granted, provided that the above copyright notice appears in all
+copies, and that both that copyright notice and this permission notice
+appear in supporting documentation, and that the name of Secret Labs
+AB or the author not be used in advertising or publicity pertaining to
+distribution of the software without specific, written prior
+permission.
+
+SECRET LABS AB AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH REGARD TO
+THIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND
+FITNESS.  IN NO EVENT SHALL SECRET LABS AB OR THE AUTHOR BE LIABLE FOR
+ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
+OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+--------------------------------------------------------------------
+
+release info
+------------
+
+For a list of changes in this release, see below.
+
+The latest version of this library can be downloaded from:
+
+    <a href='http://effbot.org/downloads'>http://effbot.org/downloads</a>
+
+Comments, bug reports, and patches are welcome.  Send them to
+fredrik@pythonware.com.
+
+Note that this is free software, with limited support.  If you need
+commercial support on this module, contact fredrik@pythonware.com.
+
+--------------------------------------------------------------------
+contents
+--------------------------------------------------------------------
+
+<a href='README'>README</a>                        This file
+
+elementtree/
+  ElementTree.py              Element tree implementation
+  HTMLTreeBuilder.py          Element tree builder for HTML
+  XMLTreeBuilder.py           Element tree builder for XML
+  SimpleXMLWriter.py          Simple XML writer
+  SimpleXMLTreeBuilder.py     Old element tree builder for XML, based on
+                              xmllib.  Due to bugs in xmllib, the namespace
+                              support is not reliable.
+  TidyTools.py                Build element trees from HTML, using
+			      the external 'tidy' utility.
+
+setup.py                      Build/installation script
+
+demo*.py                      Sample scripts
+samples/*                     Sample data
+
+selftest.py                   Selftest (requires Python 2.1)
+benchmark.py                  Benchmark script (usage: benchmark.py file)
+
+--------------------------------------------------------------------
+changes in 1.1
+
+- Added 'fromstring' and 'tostring' helpers.  The 'XML' function is
+  an alias for 'fromstring', and provides a convenient way to add XML
+  literals to source code:
+
+	element = XML('&lt;element&gt;content&lt;/element&gt;')
+
+- Moved XMLTreeBuilder functionality into the ElementTree module.  If
+all you need is basic XML support, you can simply copy the ElementTree
+module to your own project.
+
+- Added SimpleXMLWriter module.
+
+- Changed default encoding to US-ASCII.  Use tree.write(file, "utf-8")
+to get the old behaviour.  If the tree contains text that cannot be
+encoded using the given encoding, the writer uses numerical entities
+for all non-ASCII characters in that text segment.
+
+- Map tags and attribute names having the same value to the same
+object.  This saves space when reading large XML trees, and also gives
+a small speedup (less than 10%).
+
+- Added benchmark script.  This script takes a filename argument, and
+loads the given file into memory using the XML and SimpleXML tree
+builders.  For each parser, it reports the document size and the time
+needed to parse the document.
+</pre>
+
+
+
+
+
+</p>
+
+
+<hr />
+
+<div class='navigate'>
+<div  style='float: right;'>
+admin:
+[<a href='/zone/edit/?name=zone-template-downloads'>edit</a>]
+[<a href='/zone/edit/?action=new'>new</a>]
+[<a href='http://validator.w3.org/check?uri=http://www.effbot.org/zone/zone-template-downloads.htm'>validate</a>]
+</div>
+<div>
+[<a id="add-comment" href='/comment/zone/zone-template-downloads.htm'><b>add a comment!</b></a>]
+</div>
+</div>
+
+<p class='small'>Copyright &copy; 2002-2006 by Fredrik Lundh.</p>
+
+</div> <!-- effbot-body -->
+</div> <!-- effbot-page -->
+
+</body>
+</html>

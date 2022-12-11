@@ -1,0 +1,126 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>Network&nbsp;Protocols</title></head><body data-page-id="592"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">Network&nbsp;Protocols</h1></div><div class="yui-ge"><div class="yui-u first"><h2>Overview</h2><p>This chapter describes Python&#8217;s socket protocol support, and the
+networking modules built on top of the socket module. This includes
+client handlers for most popular Internet protocols, as well as
+several frameworks that can be used to implement Internet
+servers.</p><p>For the low-level examples in this chapter I&#8217;ll use two
+protocols for illustration; the <i>Internet Time Protocol</i>, and
+the <i>Hypertext Transfer Protocol</i>.</p><h3 style="sect2">Internet Time Protocol</h3><p>The Internet Time Protocol (RFC 868, Postel and Harrenstien
+1983) is a simple protocol which allows a network client to get the
+current time from a server.</p><p>Since this protocol is relatively light weight, many (but far
+from all) Unix systems provide this service. It&#8217;s also about as
+easy to implement as a network protocol can possibly be. The server
+simply waits for a connection request, and immediately returns the
+current time as a 4-byte integer, containing the number of seconds
+since January 1st, 1900.</p><p>In fact, the protocol is so simple that I can include the entire
+specification:</p></div><div class="yui-u"><p class="sidebar"><i><span>&#8220;Increasingly, people seem to misinterpret complexity
+as sophistication, which is baffling &#8212; the incomprehensible
+should cause suspicion rather than admiration. Possibly this trend
+results from a mistaken belief that using a somewhat mysterious
+device confers an aura of power on the user&#8221;</span></i>
+&#8212;
+<i>Niklaus Wirth</i></p></div></div><div class="yui-g"><pre class="wide wide">
+# File: rfc868.txt
+
+Network Working Group                                    J. Postel - ISI
+Request for Comments: 868                           K. Harrenstien - SRI
+                                                                May 1983
+
+                             Time Protocol
+
+This RFC specifies a standard for the ARPA Internet community.  Hosts on
+the ARPA Internet that choose to implement a Time Protocol are expected
+to adopt and implement this standard.
+
+This protocol provides a site-independent, machine readable date and
+time.  The Time service sends back to the originating source the time in
+seconds since midnight on January first 1900.
+
+One motivation arises from the fact that not all systems have a
+date/time clock, and all are subject to occasional human or machine
+error.  The use of time-servers makes it possible to quickly confirm or
+correct a system's idea of the time, by making a brief poll of several
+independent sites on the network.
+
+This protocol may be used either above the Transmission Control Protocol
+(TCP) or above the User Datagram Protocol (UDP).
+
+When used via TCP the time service works as follows:
+
+   S: Listen on port 37 (45 octal).
+
+   U: Connect to port 37.
+
+   S: Send the time as a 32 bit binary number.
+
+   U: Receive the time.
+
+   U: Close the connection.
+
+   S: Close the connection.
+
+   The server listens for a connection on port 37.  When the connection
+   is established, the server returns a 32-bit time value and closes the
+   connection.  If the server is unable to determine the time at its
+   site, it should either refuse the connection or close it without
+   sending anything.
+
+When used via UDP the time service works as follows:
+
+   S: Listen on port 37 (45 octal).
+
+   U: Send an empty datagram to port 37.
+
+   S: Receive the empty datagram.
+
+   S: Send a datagram containing the time as a 32 bit binary number.
+
+   U: Receive the time datagram.
+
+   The server listens for a datagram on port 37.  When a datagram
+   arrives, the server returns a datagram containing the 32-bit time
+   value.  If the server is unable to determine the time at its site, it
+   should discard the arriving datagram and make no reply.
+
+The Time
+
+The time is the number of seconds since 00:00 (midnight) 1 January 1900
+GMT, such that the time 1 is 12:00:01 am on 1 January 1900 GMT; this
+base will serve until the year 2036.
+
+For example:
+
+   the time  2,208,988,800 corresponds to 00:00  1 Jan 1970 GMT,
+
+             2,398,291,200 corresponds to 00:00  1 Jan 1976 GMT,
+
+             2,524,521,600 corresponds to 00:00  1 Jan 1980 GMT,
+
+             2,629,584,000 corresponds to 00:00  1 May 1983 GMT,
+
+        and -1,297,728,000 corresponds to 00:00 17 Nov 1858 GMT.
+</pre></div><div class="yui-ge"><div class="yui-u first"><h3 style="sect2">Hypertext Transfer Protocol</h3><p>The Hypertext Transfer Protocol (HTTP, Fielding et al., RFC
+2616) is something completely different. The most recent
+specification (version 1.1), is over 100 pages.</p><p>However, in its simplest form, this protocol is very
+straightforward. To fetch a document, the client connects to the
+server, and sends a request like:</p><pre>
+GET /hello.txt HTTP/1.0
+Host: hostname
+User-Agent: name
+
+[optional request body]
+</pre><p>In return, the server returns a response like this:</p><pre>
+HTTP/1.0 200 OK
+Content-Type: text/plain
+Content-Length: 7
+
+Hello
+</pre><p>Both the request and response headers usually contains more
+fields, but the <b>Host</b> field in the request header is the
+only one that must always be present.</p><p>The header lines are separated by &#8220;<b>\r\n</b>&#8220;, and the
+header must be followed by an empty line, even if there is no body
+(this applies to both the request and the response).</p><p>The rest of the HTTP specification deals with stuff like content
+negotiation, cache mechanics, persistent connections, and much
+more. For the full story, see <a href="http://www.w3.org/Protocols"><i>Hypertext Transfer Protocol
+&#8212; HTTP/1.1</i></a>.</p><h3>Contents</h3><p><a href="socket.htm">The socket module</a></p><p><a href="select.htm">The select module</a></p><p><a href="asyncore.htm">The asyncore module</a></p><p><a href="asynchat.htm">The asynchat module</a></p><p><a href="urllib.htm">The urllib module</a></p><p><a href="urlparse.htm">The urlparse module</a></p><p><a href="cookie.htm">The Cookie module</a></p><p><a href="robotparser.htm">The robotparser module</a></p><p><a href="ftplib.htm">The ftplib module</a></p><p><a href="gopherlib.htm">The gopherlib module</a></p><p><a href="httplib.htm">The httplib module</a></p><p><a href="poplib.htm">The poplib module</a></p><p><a href="imaplib.htm">The imaplib module</a></p><p><a href="smtplib.htm">The smtplib module</a></p><p><a href="telnetlib.htm">The telnetlib module</a></p><p><a href="nntplib.htm">The nntplib module</a></p><p><a href="socketserver.htm">The SocketServer module</a></p><p><a href="basehttpserver.htm">The BaseHTTPServer module</a></p><p><a href="simplehttpserver.htm">The SimpleHTTPServer module</a></p><p><a href="cgihttpserver.htm">The CGIHTTPServer module</a></p><p><a href="cgi.htm">The cgi module</a></p><p><a href="webbrowser.htm">The webbrowser module</a></p></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to librarybook index page.">::: librarybook :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

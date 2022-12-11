@@ -1,0 +1,34 @@
+
+@@module copy_reg
+
+<h1>copy_reg&#8212;Register pickle support functions</h1>
+
+<p>The {@link copy_reg} module provides support for the {@link pickle}
+and {@link cPickle} modules. The {@link }{@link copy} module is likely
+to use this in the future as well. It provides configuration information
+about object constructors which are not classes. Such constructors may
+be factory functions or class instances.
+
+@@function constructor(object)
+
+<p>Declares {@var object} to be a valid constructor. If {@var object} is
+not callable (and hence not valid as a constructor), raises {@link
+exceptions.TypeError}.
+
+@@function pickle(type, function[, constructor])
+
+<p>Declares that {@var function} should be used as a
+&#8220;reduction&#8221; function for objects of type {@var type}; {@var
+type} must not be a &#8220;classic&#8221; class object. (Classic classes
+are handled differently; see the documentation for the {@link pickle}
+module for details.) {@var function} should return either a string or a
+tuple containing two or three elements.
+
+<p>The optional {@var constructor} parameter, if provided, is a callable
+object which can be used to reconstruct the object when called with the
+tuple of arguments returned by {@var function} at pickling time. {@link
+exceptions.TypeError} will be raised if {@var object} is a class or
+{@var constructor} is not callable.
+
+<p>See the {@link pickle} module for more details on the interface
+expected of {@var function} and {@var constructor}.

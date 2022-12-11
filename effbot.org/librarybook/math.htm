@@ -1,0 +1,27 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>The math&nbsp;module</title></head><body data-page-id="579"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">The math&nbsp;module</h1></div><div class="yui-ge"><div class="yui-u first"><p>This module implements a number of mathematical operations for
+floating point numbers. The functions are generally thin wrappers
+around the platform C library functions of the same name, so
+results may vary slightly across platforms in normal cases, or vary
+a lot in exceptional cases.</p><p>The <a href="cmath.htm"><b>cmath</b></a> module provides similar
+functionality for complex numbers.</p><div class="example">
+<b style="example">Example: Using the math module</b>
+<pre>
+# File: <a href="math/math-example-1.py">math-example-1.py</a>
+
+import math
+
+print "e", "=&gt;", math.e
+print "pi", "=&gt;", math.pi
+print "hypot", "=&gt;", math.hypot(3.0, 4.0)
+
+# <i>and many others...</i>
+
+</pre><pre class="computeroutput" moreinfo="NONE">
+$ python math-example-1.py
+e =&gt; 2.71828182846
+pi =&gt; 3.14159265359
+hypot =&gt; 5.0
+</pre></div><p>See the <i><a href="#python-library-reference-book">Python
+Library Reference</a></i> for a full list of functions.</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to librarybook index page.">::: librarybook :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

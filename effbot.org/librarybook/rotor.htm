@@ -1,0 +1,30 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>The rotor&nbsp;module</title></head><body data-page-id="644"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">The rotor&nbsp;module</h1></div><div class="yui-ge"><div class="yui-u first"><p>(Optional). This module implements a simple encryption algorithm,
+based on the WWII Enigma engine.  This algorithm isn&#8217;t exactly strong,
+and shouldn&#8217;t be used for any serious cryptography work.</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><div class="example wide">
+<b style="example">Example: Using the rotor
+module</b>
+<pre class="wide">
+# File: <a href="rotor/rotor-example-1.py">rotor-example-1.py</a>
+
+import rotor
+
+SECRET_KEY = "spam"
+MESSAGE = "the holy grail"
+
+r = rotor.newrotor(SECRET_KEY)
+
+encoded_message = r.encrypt(MESSAGE)
+decoded_message = r.decrypt(encoded_message)
+
+print "original:", repr(MESSAGE)
+print "encoded message:", repr(encoded_message)
+print "decoded message:", repr(decoded_message)
+
+</pre><pre class="computeroutput wide" moreinfo="NONE">
+$ python rotor-example-1.py
+original: 'the holy grail'
+encoded message: '\227\271\244\015\305sw\3340\337\252\237\340U'
+decoded message: 'the holy grail'
+</pre></div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to librarybook index page.">::: librarybook :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

@@ -1,0 +1,38 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>Core&nbsp;Modules</title></head><body data-page-id="500"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">Core&nbsp;Modules</h1></div><div class="yui-ge"><div class="yui-u first"><blockquote class="epigraph"><p><i><span>&#8220;Since the functions in the C runtime library are not
+part of the Win32 API, we believe the number of applications that
+will be affected by this bug to be very limited&#8221;</span></i></p><i>Microsoft, January 1999</i></blockquote><h2>Overview</h2><p>Python&#8217;s standard library covers a wide range of modules.
+Everything from modules that are as much a part of the Python
+language as the types and statements defined by the language
+specification, to obscure modules that are probably useful only to
+a small number of programs.</p><p>This section describes a number of fundamental standard library
+modules. Any larger Python program is likely to use most of these
+modules, either directly or indirectly.</p><h3 style="sect2">Built-in Functions and Exceptions</h3><p>Two modules are even more basic than all other modules combined:
+the <b><a href="builtin.htm">__builtin__</a></b> module
+defines built-in functions (like <b>len</b>, <b>int</b>, and
+<b>range</b>), and the <b><a href="exceptions.htm">exceptions</a></b>
+module defines all built-in exceptions.</p><p>Python imports both modules when it starts up, and makes their
+content available for all programs.</p><h3 style="sect2">Operating System Interface Modules</h3><p>There are a number of modules providing platform-independent
+interfaces to the underlying operating system. They are modeled
+after the POSIX standard API and the standard C library.</p><p>The modules in this group include <b><a href="os.htm">os</a></b>,
+which provides file and process operations, <b><a href="os-path.htm">os.path</a></b> which offers a
+platform-independent way to pull apart and put together file names,
+and <b><a href="time.htm">time</a></b> which
+provides functions to work with dates and times.</p><p>To some extent, <a href="network-protocols-index.htm">networking</a>
+and <a href="threads-and-processes-index.htm">thread
+support</a> modules could also belong in this group, but they are
+not supported by all Python implementations.</p><h3 style="sect2">Type Support Modules</h3><p>Several built-in types have support modules in the standard
+library. The <b><a href="string.htm">string</a></b> module implements
+commonly used string operations, the <b><a href="math.htm">math</a></b> module provides math
+operations and constants, and the <b><a href="cmath.htm">cmath</a></b> module does the same
+for complex numbers.</p><h3 style="sect2">Regular Expressions</h3><p>The <b><a href="re.htm">re</a></b> module
+provides regular expressions support for Python. Regular
+expressions are string patterns written in a special syntax, which
+can be used to match strings, and extract substrings.</p><h3 style="sect2">Language Support Modules</h3><p>
+<b><a href="sys.htm">sys</a></b> gives you
+access to various interpreter variables, such as the module search
+path, and the interpreter version. <b><a href="operator.htm">operator</a></b> provides
+functional equivalents to many built-in operators. <b><a href="copy.htm">copy</a></b> allows you to copy
+objects. And finally, <b><a href="gc.htm">gc</a></b> gives you more control
+over the garbage collector facilities in Python 2.0.</p><p><a href="builtin.htm">The __builtin__ module</a></p><p><a href="exceptions.htm">The exceptions module</a></p><p><a href="os.htm">The os module</a></p><p><a href="os-path.htm">The os.path module</a></p><p><a href="stat.htm">The stat module</a></p><p><a href="string.htm">The string module</a></p><p><a href="re.htm">The re module</a></p><p><a href="math.htm">The math module</a></p><p><a href="cmath.htm">The cmath module</a></p><p><a href="operator.htm">The operator module</a></p><p><a href="copy.htm">The copy module</a></p><p><a href="sys.htm">The sys module</a></p><p><a href="atexit.htm">The atexit module</a></p><p><a href="time.htm">The time module</a></p><p><a href="types.htm">The types module</a></p><p><a href="gc.htm">The gc module</a></p></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to librarybook index page.">::: librarybook :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

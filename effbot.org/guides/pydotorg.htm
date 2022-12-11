@@ -1,0 +1,30 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>An Alternative Python.Org Content Management&nbsp;System</title> <script type="text/javascript">effbot_page_id=199;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> <!--
+<p style='color: #8f8f8f; background: #fff5bf; padding: 5px 10px;'> <b>2008-07-15:</b> Selected articles
+
+now have experimental "comment" links in the left column and at the bottom.
+You're welcome to use them for commenting and voting on articles.
+For a bit more on this, see <a
+href="http://effbot.slinkset.com/links/Welcome_to_discuss_effbot_org">this
+page</a>. /F
+</p>
+--> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <h1 class="maintitle">An Alternative Python.Org Content Management&nbsp;System</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p class="info">Fredrik Lundh | January 2006</p><div style="float: right; width: 200px; margin-left: 30px; margin-bottom: 20px;"><p><a href="http://www.flickr.com/photos/effbot/90750530/" title="moinmoin+django=python.org ?"><img alt="moinmoin+django=python.org ?" border="1" height="240" src="http://static.flickr.com/42/90750530_5db6715e98_m.jpg" width="174" /></a></p><p class="small"><i>Alt PyDotOrg CMS design sketch (click on the image
+to get an annotated version)</i></p></div><p>The PSF is running a project to design and deploy a new version
+of the python.org site.  This far, that project has developed a new
+batch-oriented content generation tool,
+<a href="http://beta.python.org">a design proposal</a>, and translated
+some content, but that&#8217;s about it.  And they&#8217;re about a year late,
+compared to the original plans.
+
+</p><p>Frustrated with the slow progress, and the &#8220;let&#8217;s build our own
+<s>cathedral</s> pyramid&#8221; approach used this far, I&#8217;ve been experimenting
+with alternative ways to maintain and produce the site, based on
+existing Python technology.
+
+</p><p>My current experimental system consists of a
+<a href="http://moinmoin.wikiwikiweb.de/">MoinMoin wiki</a>
+as the editor/CMS, combined with a
+<a href="http://www.djangoproject.com">Django</a>
+frontend for rendering.  To convert the existing content, I&#8217;ve
+develope

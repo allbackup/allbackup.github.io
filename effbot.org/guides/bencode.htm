@@ -1,0 +1,38 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>A Simple BitTorrent "bencode"&nbsp;Decoder</title> <script type="text/javascript">effbot_page_id=12;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> <!--
+<p style='color: #8f8f8f; background: #fff5bf; padding: 5px 10px;'> <b>2008-07-15:</b> Selected articles
+ (including this one) 
+now have experimental "comment" links in the left column and at the bottom.
+You're welcome to use them for commenting and voting on articles.
+For a bit more on this, see <a
+href="http://effbot.slinkset.com/links/Welcome_to_discuss_effbot_org">this
+page</a>. /F
+</p>
+--> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <h1 class="maintitle">A Simple BitTorrent "bencode"&nbsp;Decoder</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p class="info">Fredrik Lundh | August 2007</p><p>Here&#8217;s a simple decoder for BitTorrent&#8217;s <a href="http://www.bittorrent.org/protocol.html">torrent encoding format</a>, <b>bencode</b>. This uses the iterator-based approach from <a href="simple-iterator-parser.htm"><cite>Simple Iterator-based Parsing</cite></a>, which results in readable and
+pretty efficient code.</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><pre class="python wide wide">
+<span class="pykeyword">import</span> re
+
+<span class="pykeyword">def</span> <span class="pyfunction">tokenize</span>(text, match=re.compile(<span class="pystring">"([idel])|(\d+):|(-?\d+)"</span>).match):
+    i = 0
+    <span class="pykeyword">while</span> i &lt; len(text):
+        m = match(text, i)
+        s = m.group(m.lastindex)
+        i = m.end()
+        <span class="pykeyword">if</span> m.lastindex == 2:
+            <span class="pykeyword">yield</span> <span class="pystring">"s"</span>
+            <span class="pykeyword">yield</span> text[i:i+int(s)]
+            i = i + int(s)
+        <span class="pykeyword">else</span>:
+            <span class="pykeyword">yield</span> s
+
+<span class="pykeyword">def</span> <span class="pyfunction">decode_item</span>(next, token):
+    <span class="pykeyword">if</span> token == <span class="pystring">"i"</span>:
+        <span class="pycomment"># integer: "i" value "e"</span>
+        data = int(next())
+        <span class="pykeyword">if</span> next() != <span class="pystring">"e"</span>:
+            <span class="pykeyword">raise</span> ValueError
+    <span class="pykeyword">elif</span> token == <span class="pystring">"s"</span>:
+        <span class="pycomment"># string: "s" value (virtual tokens)</span>
+        data = next()
+    <span

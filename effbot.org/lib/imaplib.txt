@@ -1,0 +1,508 @@
+
+@@module imaplib
+
+<h1>imaplib&#8212;IMAP4 protocol client</h1>
+
+<p>This module defines three classes, {@link IMAP4}, {@link IMAP4_SSL}
+and {@link IMAP4_stream}, which encapsulate a connection to an IMAP4
+server and implement a large subset of the IMAP4rev1 client protocol as
+defined in {@link http://www.faqs.org/rfcs/rfc2060.html RFC 2060}. It is
+backward compatible with IMAP4 ({@link
+http://www.faqs.org/rfcs/rfc1730.html RFC 1730}) servers, but note that
+the "{@code STATUS}" command is not supported in IMAP4.
+
+<p>Three classes are provided by the {@link imaplib} module, {@link
+IMAP4} is the base class:
+
+@@class IMAP4([host[, port]])
+
+<p>This class implements the actual IMAP4 protocol. The connection is
+created and protocol version (IMAP4 or IMAP4rev1) is determined when the
+instance is initialized. If {@var host} is not specified, {@code
+&#8221;} (the local host) is used. If {@var port} is omitted, the
+standard IMAP4 port (143) is used.
+
+@@text 
+
+<p>Three exceptions are defined as attributes of the {@link IMAP4}
+class:
+
+@@exception IMAP4.error
+
+<p>Exception raised on any errors. The reason for the exception is
+passed to the constructor as a string.
+
+@@exception IMAP4.abort
+
+<p>IMAP4 server errors cause this exception to be raised. This is a
+sub-class of {@link IMAP4.error}. Note that closing the instance and
+instantiating a new one will usually allow recovery from this exception.
+
+@@exception IMAP4.readonly
+
+<p>This exception is raised when a writable mailbox has its status
+changed by the server. This is a sub-class of {@link IMAP4.error}. Some
+other client now has write permission, and the mailbox will need to be
+re-opened to re-obtain write permission.
+
+@@text 
+
+<p>There's also a subclass for secure connections:
+
+@@class IMAP4_SSL([host[, port[, keyfile[, certfile]]]])
+
+<p>This is a subclass derived from {@link IMAP4} that connects over an
+SSL encrypted socket (to use this class you need a socket module that
+was compiled with SSL support). If {@var host} is not specified, {@code
+&#8221;} (the local host) is used. If {@var port} is omitted, the
+standard IMAP4-over-SSL port (993) is used. {@var keyfile} and {@var
+certfile} are also optional - they can contain a PEM formatted private
+key and certificate chain file for the SSL connection.
+
+@@text 
+
+<p>The second subclass allows for connections created by a child
+process:
+
+@@class IMAP4_stream(command)
+
+<p>This is a subclass derived from {@link IMAP4} that connects to the
+{@code stdin/stdout} file descriptors created by passing {@var command}
+to {@code os.popen2()}.
+<blockquote>
+@since New in version 2.3. <br />
+</blockquote>
+
+@@text 
+
+<p>The following utility functions are defined:
+
+@@function Internaldate2tuple(datestr)
+
+<p>Converts an IMAP4 INTERNALDATE string to Coordinated Universal Time.
+Returns a {@link time} module tuple.
+
+@@function Int2AP(num)
+
+<p>Converts an integer into a string representation using characters
+from the set [{@code A} .. {@code P}].
+
+@@function ParseFlags(flagstr)
+
+<p>Converts an IMAP4 "{@code FLAGS}" response to a tuple of individual
+flags.
+
+@@function Time2Internaldate(date_time)
+
+<p>Converts a {@link time} module tuple to an IMAP4 "{@code
+INTERNALDATE}" representation. Returns a string in the form: {@code
+"DD-Mmm-YYYY HH:MM:SS +HHMM"} (including double-quotes).
+
+@@text 
+
+<p>Note that IMAP4 message numbers change as the mailbox changes; in
+particular, after an "{@code EXPUNGE}" command performs deletions the
+remaining messages are renumbered. So it is highly advisable to use UIDs
+instead, with the UID command.
+
+<p>At the end of the module, there is a test section that contains a
+more extensive example of usage.
+
+
+<h2>IMAP4 Objects</h2>
+
+<p>All IMAP4rev1 commands are represented by methods of the same name,
+either upper-case or lower-case.
+
+<p>All arguments to commands are converted to strings, except for
+"{@code AUTHENTICATE}", and the last argument to "{@code APPEND}" which
+is passed as an IMAP4 literal. If necessary (the string contains IMAP4
+protocol-sensitive characters and isn't enclosed with either parentheses
+or double quotes) each string is quoted. However, the {@var password}
+argument to the "{@code LOGIN}" command is always quoted. If you want to
+avoid having an argument string quoted (eg: the {@var flags} argument to
+"{@code STORE}") then enclose the string in parentheses (eg: {@code
+r'(\Deleted)'}).
+
+<p>Each command returns a tuple: {@code (}{@var type}, [{@var data},
+...]) where {@var type} is usually {@code 'OK'} or {@code 'NO'}, and
+{@var data} is either the text from the command response, or mandated
+results from the command. Each {@var data} is either a string, or a
+tuple. If a tuple, then the first part is the header of the response,
+and the second part contains the data (ie: 'literal' value).
+
+<p>The {@var message_set} options to commands below is a string
+specifying one or more messages to be acted upon. It may be a simple
+message number ({@code '1'}), a range of message numbers ({@code
+'2:4'}), or a group of non-contiguous ranges separated by commas ({@code
+'1:3,6:9'}). A range can contain an asterisk to indicate an infinite
+upper bound ({@code '3:*'}).
+
+<p>An {@link IMAP4} instance has the following methods:
+
+@@method IMAP4.append(mailbox, flags, date_time, message)
+
+<p>Append {@var message} to named mailbox.
+
+@@method IMAP4.authenticate(mechanism, authobject)
+
+<p>Authenticate command -- requires response processing.
+
+<p>{@var mechanism} specifies which authentication mechanism is to be
+used - it should appear in the instance variable {@code capabilities} in
+the form {@code AUTH=mechanism}.
+
+<p>{@var authobject} must be a callable object:
+
+<pre>
+data = authobject(response)
+</pre>
+
+
+<p>It will be called to process server continuation responses. It should
+return {@code data} that will be encoded and sent to server. It should
+return {@link None} if the client abort response "{@code *}" should be
+sent instead.
+
+@@method IMAP4.check()
+
+<p>Checkpoint mailbox on server.
+
+@@method IMAP4.close()
+
+<p>Close currently selected mailbox. Deleted messages are removed from
+writable mailbox. This is the recommended command before "{@code
+LOGOUT}".
+
+@@method IMAP4.copy(message_set, new_mailbox)
+
+<p>Copy {@var message_set} messages onto end of {@var new_mailbox}.
+
+@@method IMAP4.create(mailbox)
+
+<p>Create new mailbox named {@var mailbox}.
+
+@@method IMAP4.delete(mailbox)
+
+<p>Delete old mailbox named {@var mailbox}.
+
+@@method IMAP4.deleteacl(mailbox, who)
+
+<p>Delete the ACLs (remove any rights) set for who on mailbox.
+<blockquote>
+@since New in version 2.4. <br />
+</blockquote>
+
+@@method IMAP4.expunge()
+
+<p>Permanently remove deleted items from selected mailbox. Generates an
+"{@code EXPUNGE}" response for each deleted message. Returned data
+contains a list of "{@code EXPUNGE}" message numbers in order received.
+
+@@method IMAP4.fetch(message_set, message_parts)
+
+<p>Fetch (parts of) messages. {@var message_parts} should be a string of
+message part names enclosed within parentheses, eg: "{@code "(UID
+BODY[TEXT])"}". Returned data are tuples of message part envelope and
+data.
+
+@@method IMAP4.getacl(mailbox)
+
+<p>Get the "{@code ACL}"s for {@var mailbox}. The method is
+non-standard, but is supported by the "{@code Cyrus}" server.
+
+@@method IMAP4.getquota(root)
+
+<p>Get the "{@code quota}" {@var root}'s resource usage and limits. This
+method is part of the IMAP4 QUOTA extension defined in rfc2087.
+<blockquote>
+@since New in
+version 2.3. <br />
+</blockquote>
+
+@@method IMAP4.getquotaroot(mailbox)
+
+<p>Get the list of "{@code quota}" "{@code roots}" for the named {@var
+mailbox}. This method is part of the IMAP4 QUOTA extension defined in
+rfc2087.
+<blockquote>
+@since New in version 2.3. <br />
+</blockquote>
+
+@@method IMAP4.list([directory[, pattern]])
+
+<p>List mailbox names in {@var directory} matching {@var pattern}. {@var
+directory} defaults to the top-level mail folder, and {@var pattern}
+defaults to match anything. Returned data contains a list of "{@code
+LIST}" responses.
+
+@@method IMAP4.login(user, password)
+
+<p>Identify the client using a plaintext password. The {@var password}
+will be quoted.
+
+@@method IMAP4.login_cram_md5(user, password)
+
+<p>Force use of "{@code CRAM-MD5}" authentication when identifying the
+client to protect the password. Will only work if the server "{@code
+CAPABILITY}" response includes the phrase "{@code AUTH=CRAM-MD5}".
+<blockquote>
+@since New in version 2.3. <br />
+</blockquote>
+
+@@method IMAP4.logout()
+
+<p>Shutdown connection to server. Returns server "{@code BYE}" response.
+
+@@method IMAP4.lsub([directory[, pattern]])
+
+<p>List subscribed mailbox names in directory matching pattern. {@var
+directory} defaults to the top level directory and {@var pattern}
+defaults to match any mailbox. Returned data are tuples of message part
+envelope and data.
+
+@@method IMAP4.myrights(mailbox)
+
+<p>Show my ACLs for a mailbox (i.e. the rights that I have on mailbox).
+<blockquote>
+@since New in version 2.4. <br />
+</blockquote>
+
+@@method IMAP4.namespace()
+
+<p>Returns IMAP namespaces as defined in RFC2342.
+<blockquote>
+@since New in version 2.3. <br />
+</blockquote>
+
+@@method IMAP4.noop()
+
+<p>Send "{@code NOOP}" to server.
+
+@@method IMAP4.open(host, port)
+
+<p>Opens socket to {@var port} at {@var host}. The connection objects
+established by this method will be used in the {@code read}, {@code
+readline}, {@code send}, and {@code shutdown} methods. You may override
+this method.
+
+@@method IMAP4.partial(message_num, message_part, start, length)
+
+<p>Fetch truncated part of a message. Returned data is a tuple of
+message part envelope and data.
+
+@@method IMAP4.proxyauth(user)
+
+<p>Assume authentication as {@var user}. Allows an authorised
+administrator to proxy into any user's mailbox.
+<blockquote>
+@since New in version 2.3. <br />
+</blockquote>
+
+@@method IMAP4.read(size)
+
+<p>Reads {@var size} bytes from the remote server. You may override this
+method.
+
+@@method IMAP4.readline()
+
+<p>Reads one line from the remote server. You may override this method.
+
+@@method IMAP4.recent()
+
+<p>Prompt server for an update. Returned data is {@link None} if no new
+messages, else value of "{@code RECENT}" response.
+
+@@method IMAP4.rename(oldmailbox, newmailbox)
+
+<p>Rename mailbox named {@var oldmailbox} to {@var newmailbox}.
+
+@@method IMAP4.response(code)
+
+<p>Return data for response {@var code} if received, or {@code None}.
+Returns the given code, instead of the usual type.
+
+@@method IMAP4.search(charset, criterion[, ...])
+
+<p>Search mailbox for matching messages. {@var charset} may be {@link
+None}, in which case no "{@code CHARSET}" will be specified in the
+request to the server. The IMAP protocol requires that at least one
+criterion be specified; an exception will be raised when the server
+returns an error.
+
+<p>Example:
+
+<pre>
+# M is a connected IMAP4 instance...
+typ, msgnums = M.search(None, 'FROM', '"LDJ"')
+
+# or:
+typ, msgnums = M.search(None, '(FROM "LDJ")')
+</pre>
+
+
+@@method IMAP4.select([mailbox[, readonly]])
+
+<p>Select a mailbox. Returned data is the count of messages in {@var
+mailbox} ("{@code EXISTS}" response). The default {@var mailbox} is
+{@code 'INBOX'}. If the {@var readonly} flag is set, modifications to
+the mailbox are not allowed.
+
+@@method IMAP4.send(data)
+
+<p>Sends {@code data} to the remote server. You may override this
+method.
+
+@@method IMAP4.setacl(mailbox, who, what)
+
+<p>Set an "{@code ACL}" for {@var mailbox}. The method is non-standard,
+but is supported by the "{@code Cyrus}" server.
+
+@@method IMAP4.setquota(root, limits)
+
+<p>Set the "{@code quota}" {@var root}'s resource {@var limits}. This
+method is part of the IMAP4 QUOTA extension defined in rfc2087.
+<blockquote>
+@since New in
+version 2.3. <br />
+</blockquote>
+
+@@method IMAP4.shutdown()
+
+<p>Close connection established in {@code open}. You may override this
+method.
+
+@@method IMAP4.socket()
+
+<p>Returns socket instance used to connect to server.
+
+@@method IMAP4.sort(sort_criteria, charset, search_criterion[, ...])
+
+<p>The {@code sort} command is a variant of {@code search} with sorting
+semantics for the results. Returned data contains a space separated list
+of matching message numbers.
+
+<p>Sort has two arguments before the {@var search_criterion}
+argument(s); a parenthesized list of {@var sort_criteria}, and the
+searching {@var charset}. Note that unlike {@code search}, the searching
+{@var charset} argument is mandatory. There is also a {@code uid sort}
+command which corresponds to {@code sort} the way that {@code uid
+search} corresponds to {@code search}. The {@code sort} command first
+searches the mailbox for messages that match the given searching
+criteria using the charset argument for the interpretation of strings in
+the searching criteria. It then returns the numbers of matching
+messages.
+
+<p>This is an "{@code IMAP4rev1}" extension command.
+
+@@method IMAP4.status(mailbox, names)
+
+<p>Request named status conditions for {@var mailbox}.
+
+@@method IMAP4.store(message_set, command, flag_list)
+
+<p>Alters flag dispositions for messages in mailbox. {@var command} is
+specified by section 6.4.6 of {@link
+http://www.faqs.org/rfcs/rfc2060.html RFC 2060} as being one of "FLAGS",
+"+FLAGS", or "-FLAGS", optionally with a suffix of ".SILENT".
+
+<p>For example, to set the delete flag on all messages:
+
+<pre>
+typ, data = M.search(None, 'ALL')
+for num in data[0].split():
+   M.store(num, '+FLAGS', '\\Deleted')
+M.expunge()
+</pre>
+
+
+@@method IMAP4.subscribe(mailbox)
+
+<p>Subscribe to new mailbox.
+
+@@method IMAP4.thread(threading_algorithm, charset, search_criterion[, ...])
+
+<p>The {@code thread} command is a variant of {@code search} with
+threading semantics for the results. Returned data contains a space
+separated list of thread members.
+
+<p>Thread members consist of zero or more messages numbers, delimited by
+spaces, indicating successive parent and child.
+
+<p>Thread has two arguments before the {@var search_criterion}
+argument(s); a {@var threading_algorithm}, and the searching {@var
+charset}. Note that unlike {@code search}, the searching {@var charset}
+argument is mandatory. There is also a {@code uid thread} command which
+corresponds to {@code thread} the way that {@code uid search}
+corresponds to {@code search}. The {@code thread} command first searches
+the mailbox for messages that match the given searching criteria using
+the charset argument for the interpretation of strings in the searching
+criteria. It then returns the matching messages threaded according to
+the specified threading algorithm.
+
+<p>This is an "{@code IMAP4rev1}" extension command.
+<blockquote>
+@since New in version 2.4. <br />
+</blockquote>
+
+@@method IMAP4.uid(command, arg[, ...])
+
+<p>Execute command args with messages identified by UID, rather than
+message number. Returns response appropriate to command. At least one
+argument must be supplied; if none are provided, the server will return
+an error and an exception will be raised.
+
+@@method IMAP4.unsubscribe(mailbox)
+
+<p>Unsubscribe from old mailbox.
+
+@@method IMAP4.xatom(name[, arg[, ...]])
+
+<p>Allow simple extension commands notified by server in "{@code
+CAPABILITY}" response.
+
+@@text 
+
+<p>Instances of {@link IMAP4_SSL} have just one additional method:
+
+@@method IMAP4.ssl()
+
+<p>Returns SSLObject instance used for the secure connection with the
+server.
+
+@@text 
+
+<p>The following attributes are defined on instances of {@link IMAP4}:
+
+@@attribute IMAP4.PROTOCOL_VERSION
+
+<p>The most recent supported protocol in the "{@code CAPABILITY}"
+response from the server.
+
+@@attribute IMAP4.debug
+
+<p>Integer value to control debugging output. The initialize value is
+taken from the module variable {@code Debug}. Values greater than three
+trace each command.
+
+@@text 
+
+<h2>IMAP4 Example</h2>
+
+<p>Here is a minimal example (without error checking) that opens a
+mailbox and retrieves and prints all messages:
+
+<pre>
+import getpass, imaplib
+
+M = imaplib.IMAP4()
+M.login(getpass.getuser(), getpass.getpass())
+M.select()
+typ, data = M.search(None, 'ALL')
+for num in data[0].split():
+    typ, data = M.fetch(num, '(RFC822)')
+    print 'Message %s\n%s\n' % (num, data[0][1])
+M.close()
+M.logout()
+</pre>
+

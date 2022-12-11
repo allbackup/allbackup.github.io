@@ -1,0 +1,19 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>Sequences</title> <script type="text/javascript">effbot_page_id=1343;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <h1 class="maintitle">Sequences</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p>These represent finite ordered sets indexed by non-negative
+numbers. The built-in function <a href="len.htm"><strong>len</strong></a> returns the number of items of a
+sequence. When the length of a sequence is <em>n</em>, the index set contains
+the numbers 0, 1, &#8230;, <em>n</em>-1. Item <em>i</em> of sequence <em>a</em> is selected by
+<code>a[i]</code>.</p><p>Sequences also support slicing: &#8220;a[i:j]&#8221; selects all items with index
+<em>k</em> such that <em>i</em> &lt;= <em>k</em> &lt; <em>j</em>. When used as an expression, a slice
+is a sequence of the same type. This implies that the index set is
+renumbered so that it starts at 0.</p><p>Some sequences also support <q>extended slicing</q> with a third step
+parameter: <code>a[i:j:k]</code> selects all items of <em>a</em> with index <em>x</em> where
+<em>x</em> = <em>i</em> + <em>n</em>*<em>k</em>, <em>n</em> &gt;= 0 and <em>i</em> &lt;= <em>x</em> &lt; <em>j</em>.</p><p>Sequences are distinguished according to their mutability.</p><p><strong>Immutable sequences</strong></p><p>An object of an immutable sequence type cannot change once it is
+created. (If the object contains references to other objects, these
+other objects may be mutable and may be changed; however, the
+collection of objects directly referenced by an immutable object
+cannot change.)</p><ul><li><a href="type-string.htm"><strong>type-string</strong></a></li><li><a href="type-unicode.htm"><strong>type-unicode</strong></a></li><li><a href="type-tuple.htm"><strong>type-tuple</strong></a></li></ul><p><strong>Mutable sequences</strong></p><p>Mutable sequences can be changed after they are created. The
+subscription and slicing notations can be used as the target of
+<a href="assignments.htm"><strong>assignments</strong></a> and <a href="del.htm"><strong>del</strong></a> statements.</p><ul><li><a href="type-list.htm"><strong>type-list</strong></a></li></ul></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div> <!-- yui-g --></div> <!-- content --> </div> <!-- yui-b --> </div> <!-- yui-main --> <div class="yui-b"> <div id='menu'> <ul> <li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li> <li><b><a href="." title="Go to pyref index page.">::: pyref :::</a></b></li> </ul> </div> <!-- menu --> </div> <!-- yui-b --> </div> <!-- bd --> <div id="ft"> <!-- footer --> <p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;"></a>
+this page was rendered by a <a href="http://www.djangoproject.com/">django</a> application in 0.01s 2011-06-21 21:07:17.615712.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p> </div> <!-- ft --> </div> <!-- doc --> <script src="/media/js/effbot-min.js" type="text/javascript"> </script> </body> </html>

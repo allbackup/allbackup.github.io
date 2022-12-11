@@ -1,0 +1,39 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>Django</title> <script type="text/javascript">effbot_page_id=39;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> <!--
+<p style='color: #8f8f8f; background: #fff5bf; padding: 5px 10px;'> <b>2008-07-15:</b> Selected articles
+
+now have experimental "comment" links in the left column and at the bottom.
+You're welcome to use them for commenting and voting on articles.
+For a bit more on this, see <a
+href="http://effbot.slinkset.com/links/Welcome_to_discuss_effbot_org">this
+page</a>. /F
+</p>
+--> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <h1 class="maintitle">Django</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p>&#8220;<i>Django is a high-level Python Web framework that encourages rapid development and clean, pragmatic design.</i>&#8221;
+
+</p><p><a href="http://www.djangoproject.com/">http://www.djangoproject.com/</a>
+</p><p>On this site:</p><dl><dt><a href="#installing">Installing Django on Windows</a>
+</dt><dt><a href="django-pageview.htm"><cite>The Django PageView Application</cite></a>
+</dt><dt><a href="django-multihost.htm"><cite>Serving Multiple Hosts from a Single Django Instance</cite></a>
+</dt><dt><a href="zone-django-notes.htm"><cite>Some Notes on Moving the Zone to Django</cite></a>
+</dt></dl><h2 id="installing">Installing Django on Windows in less than 5 minutes&#160;<a class="nav" href="#installing" title="bookmark!">#</a></h2><p> Assuming you have Python 2.4 or Python 2.5, <a href="exemaker.htm">exemaker</a>,
+and <a href="http://subversion.tigris.org/servlets/ProjectDocumentList?folderID=91">the <b>svn</b> Subversion command-line client</a>.</p><h3 id="installing-for-python-24">Python 2.4&#160;<a class="nav" href="#installing-for-python-24" title="bookmark!">#</a></h3><p> In a command line window, do:
+
+<pre>
+cd C:\Python24\Lib\site-packages
+svn co http://code.djangoproject.com/svn/django/trunk/django
+
+cd django\bin
+exemaker django-admin.py
+</pre></p><p> Install pysqlite 2 (for sqlite 3) from
+<a href="http://www.initd.org/tracker/pysqlite">http://www.initd.org/tracker/pysqlite</a>.  The latest stable version should work fine (currently <a href="http://initd.org/pub/software/pysqlite/releases/2.0/2.0.5/pysqlite-2.0.5.win32-py2.4.exe">2.0.5</a>).
+
+<h3 id="installing-for-python-25">Python 2.5&#160;<a class="nav" href="#installing-for-python-25" title="bookmark!">#</a></h3></p><p> In a command line window, do:
+
+<pre>
+cd C:\Python25\Lib\site-packages
+svn co http://code.djangoproject.com/svn/django/trunk/django
+
+cd django\bin
+exemaker django-admin.py
+</pre><h3 id="setting-up-django">Setting up Django&#160;<a class="nav" href="#setting-up-django" titl

@@ -1,0 +1,117 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>Brief Tour of the Standard&nbsp;Library</title> <script type="text/javascript">effbot_page_id=1901;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> <!--
+<p style='color: #8f8f8f; background: #fff5bf; padding: 5px 10px;'> <b>2008-07-15:</b> Selected articles
+
+now have experimental "comment" links in the left column and at the bottom.
+You're welcome to use them for commenting and voting on articles.
+For a bit more on this, see <a
+href="http://effbot.slinkset.com/links/Welcome_to_discuss_effbot_org">this
+page</a>. /F
+</p>
+--> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <h1 class="maintitle">Brief Tour of the Standard&nbsp;Library</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p>COMMENT: <a href="http://docs.python.org/tut/node12.html">Original Source</a></p><h2 id="operating-system-interface">Operating System Interface&#160;<a class="nav" href="#operating-system-interface" title="bookmark!">#</a></h2><p>The <a href="/pyref/os.htm"><strong>os</strong></a> module provides dozens of functions for interacting with the operating system:</p><pre class="python">&gt;&gt;&gt; <span class="pykeyword">import</span> os
+&gt;&gt;&gt; os.system(<span class="pystring">'time 0:02'</span>)
+0
+&gt;&gt;&gt; os.getcwd()      <span class="pycomment"># Return the current working directory</span>
+<span class="pystring">'C:\\Python24'</span>
+&gt;&gt;&gt; os.chdir(<span class="pystring">'/server/accesslogs'</span>)</pre><p>Be sure to use the &#8220;import os&#8221; style instead of &#8220;from os import *&#8221;. This will keep <a href="/pyref/os.open.htm"><strong>os.open</strong></a> from shadowing the builtin <a href="/pyref/open.htm"><strong>open</strong></a> function which operates much differently.</p><p>The builtin <a href="/pyref/dir.htm"><strong>dir</strong></a> and <a href="/pyref/help.htm"><strong>help</strong></a> functions are useful as interactive aids for working with large modules like <a href="/pyref/os.htm"><strong>os</strong></a>:</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><pre class="python wide wide">&gt;&gt;&gt; <span class="pykeyword">import</span> os
+&gt;&gt;&gt; dir(os)
+&lt;returns a list of all module functions&gt;
+&gt;&gt;&gt; help(os)
+&lt;returns an extensive manual page created <span class="pykeyword">from</span> the module's docstrings&gt;</pre></div><div class="yui-ge"><div class="yui-u first"><p>For daily file and directory management tasks, the <a href="/pyref/shutil.htm"><strong>shutil</strong></a> module provides a higher level interface that is easier to use:</p><pre class="python">&gt;&gt;&gt; <span class="pykeyword">import</span> shutil
+&gt;&gt;&gt; shutil.copyfile(<span class="pystring">'data.db'</span>, <span class="pystring">'archive.db'</span>)
+&gt;&gt;&gt; shutil.move(<span class="pystring">'/build/executables'</span>, <span class="pystring">'installdir'</span>)</pre><h2 id="file-wildcards">File Wildcards&#160;<a class="nav" href="#file-wildcards" title="bookmark!">#</a></h2><p>The <a href="/pyref/glob.htm"><strong>glob</strong></a> module provides a function for making file lists from directory wildcard searches:</p><pre class="python">&gt;&gt;&gt; <span class="pykeyword">import</span> glob
+&gt;&gt;&gt; glob.glob(<span class="pystring">'*.py'</span>)
+[<span class="pystring">'primes.py'</span>, <span class="pystring">'random.py'</span>, <span class="pystring">'quote.py'</span>]</pre><h2 id="command-line-arguments">Command Line Arguments&#160;<a class="nav" href="#command-line-arguments" title="bookmark!">#</a></h2><p>Common utility scripts often need to process command line arguments. These arguments are stored in the <a href="/pyref/sys.htm"><strong>sys</strong></a> module&#8217;s argv attribute as a list. For instance the following output results from running &#8220;python demo.py one two three&#8221; at the command line:</p><pre class="python">&gt;&gt;&gt; <span class="pykeyword">import</span> sys
+&gt;&gt;&gt; <span class="pykeyword">print</span> sys.argv
+[<span class="pystring">'demo.py'</span>, <span class="pystring">'one'</span>, <span class="pystring">'two'</span>, <span class="pystring">'three'</span>]</pre><p>The <a href="/pyref/getopt.htm"><strong>getopt</strong></a> module processes sys.argv using the conventions of the Unix getopt() function. More powerful and flexible command line processing is provided by the <a href="/pyref/optparse.htm"><strong>optparse</strong></a> module.</p><h2 id="error-output-redirection-and-program-termination">Error Output Redirection and Program Termination&#160;<a class="nav" href="#error-output-redirection-and-program-termination" title="bookmark!">#</a></h2><p>The <a href="/pyref/sys.htm"><strong>sys</strong></a> module also has attributes for stdin, stdout, and stderr. The latter is useful for emitting warnings and error messages to make them visible even when stdout has been redirected:</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><pre class="python wide wide">&gt;&gt;&gt; sys.stderr.write(<span class="pystring">'Warning, log file not found starting a new one\n'</span>)
+Warning, log file <span class="pykeyword">not</span> found starting a new one</pre></div><div class="yui-ge"><div class="yui-u first"><p>The most direct way to terminate a script is to use &#8220;sys.exit()&#8221;.</p><h2 id="string-pattern-matching">String Pattern Matching&#160;<a class="nav" href="#string-pattern-matching" title="bookmark!">#</a></h2><p>The <a href="/pyref/re.htm"><strong>re</strong></a> module provides regular expression tools for advanced string processing. For complex matching and manipulation, regular expressions offer succinct, optimized solutions:</p><pre class="python">&gt;&gt;&gt; <span class="pykeyword">import</span> re
+&gt;&gt;&gt; re.findall(<span class="pystring">r'\bf[a-z]*'</span>, <span class="pystring">'which foot or hand fell fastest'</span>)
+[<span class="pystring">'foot'</span>, <span class="pystring">'fell'</span>, <span class="pystring">'fastest'</span>]
+&gt;&gt;&gt; re.sub(<span class="pystring">r'(\b[a-z]+) \1'</span>, <span class="pystring">r'\1'</span>, <span class="pystring">'cat in the the hat'</span>)
+<span class="pystring">'cat in the hat'</span></pre><p>When only simple capabilities are needed, string methods are preferred because they are easier to read and debug:</p><pre class="python">&gt;&gt;&gt; <span class="pystring">'tea for too'</span>.replace(<span class="pystring">'too'</span>, <span class="pystring">'two'</span>)
+<span class="pystring">'tea for two'</span></pre><h2 id="mathematics">Mathematics&#160;<a class="nav" href="#mathematics" title="bookmark!">#</a></h2><p>The <a href="/pyref/math.htm"><strong>math</strong></a> module gives access to the underlying C library functions for floating point math:</p><pre class="python">&gt;&gt;&gt; <span class="pykeyword">import</span> math
+&gt;&gt;&gt; math.cos(math.pi / 4.0)
+0.70710678118654757
+&gt;&gt;&gt; math.log(1024, 2)
+10.0</pre><p>The <a href="/pyref/random.htm"><strong>random</strong></a> module provides tools for making random selections:</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><pre class="python wide wide">&gt;&gt;&gt; <span class="pykeyword">import</span> random
+&gt;&gt;&gt; random.choice([<span class="pystring">'apple'</span>, <span class="pystring">'pear'</span>, <span class="pystring">'banana'</span>])
+<span class="pystring">'apple'</span>
+&gt;&gt;&gt; random.sample(xrange(100), 10)   <span class="pycomment"># sampling without replacement</span>
+[30, 83, 16, 4, 8, 81, 41, 50, 18, 33]
+&gt;&gt;&gt; random.random()    <span class="pycomment"># random float</span>
+0.17970987693706186
+&gt;&gt;&gt; random.randrange(6)    <span class="pycomment"># random integer chosen from range(6)</span>
+4</pre></div><div class="yui-ge"><div class="yui-u first"><h2 id="internet-access">Internet Access&#160;<a class="nav" href="#internet-access" title="bookmark!">#</a></h2><p>There are a number of modules for accessing the internet and processing internet protocols. Two of the simplest are <a href="/pyref/urllib2.htm"><strong>urllib2</strong></a> for retrieving data from urls and <a href="/pyref/smtplib.htm"><strong>smtplib</strong></a> for sending mail:</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><pre class="wide wide"><code>&gt;&gt;&gt; import urllib2
+&gt;&gt;&gt; for line in urllib2.urlopen('http://tycho.usno.navy.mil/cgi-bin/timer.pl'):
+...     if 'EST' in line:      # look for Eastern Standard Time
+...         print line
+
+&lt;BR&gt;Nov. 25, 09:43:32 PM EST
+
+&gt;&gt;&gt; import smtplib
+&gt;&gt;&gt; server = smtplib.SMTP('localhost')
+&gt;&gt;&gt; server.sendmail('soothsayer@example.org', 'jcaesar@example.org',
+"""To: jcaesar@example.org
+From: soothsayer@example.org
+
+Beware the Ides of March.
+""")
+&gt;&gt;&gt; server.quit()
+</code></pre></div><div class="yui-ge"><div class="yui-u first"><h2 id="dates-and-times">Dates and Times&#160;<a class="nav" href="#dates-and-times" title="bookmark!">#</a></h2><p>The <a href="/pyref/datetime.htm"><strong>datetime</strong></a> module supplies classes for manipulating dates and times in both simple and complex ways. While date and time arithmetic is supported, the focus of the implementation is on efficient member extraction for output formatting and manipulation. The module also supports objects that are time zone aware.</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><pre class="python wide wide"><span class="pycomment"># dates are easily constructed and formatted</span>
+&gt;&gt;&gt; <span class="pykeyword">from</span> datetime <span class="pykeyword">import</span> date
+&gt;&gt;&gt; now = date.today()
+&gt;&gt;&gt; now
+datetime.date(2003, 12, 2)
+&gt;&gt;&gt; now.strftime(<span class="pystring">"%m-%d-%y. %d %b %Y is a %A on the %d day of %B."</span>)
+<span class="pystring">'12-02-03. 02 Dec 2003 is a Tuesday on the 02 day of December.'</span>
+
+<span class="pycomment"># dates support calendar arithmetic</span>
+&gt;&gt;&gt; birthday = date(1964, 7, 31)
+&gt;&gt;&gt; age = now - birthday
+&gt;&gt;&gt; age.days
+14368</pre></div><div class="yui-ge"><div class="yui-u first"><h2 id="data-compression">Data Compression&#160;<a class="nav" href="#data-compression" title="bookmark!">#</a></h2><p>Common data archiving and compression formats are directly supported by modules including:
+<a href="/pyref/zlib.htm"><strong>zlib</strong></a>,
+<a href="/pyref/gzip.htm"><strong>gzip</strong></a>,
+<a href="/pyref/bz2.htm"><strong>bz2</strong></a>,
+<a href="/pyref/zipfile.htm"><strong>zipfile</strong></a>,
+and <a href="/pyref/tarfile.htm"><strong>tarfile</strong></a>.</p><pre class="python">&gt;&gt;&gt; <span class="pykeyword">import</span> zlib
+&gt;&gt;&gt; s = <span class="pystring">'witch which has which witches wrist watch'</span>
+&gt;&gt;&gt; len(s)
+41
+&gt;&gt;&gt; t = zlib.compress(s)
+&gt;&gt;&gt; len(t)
+37
+&gt;&gt;&gt; zlib.decompress(t)
+<span class="pystring">'witch which has which witches wrist watch'</span>
+&gt;&gt;&gt; zlib.crc32(s)
+226805979</pre><h2 id="performance-measurement">Performance Measurement&#160;<a class="nav" href="#performance-measurement" title="bookmark!">#</a></h2><p>Some Python users develop a deep interest in knowing the relative performance of different approaches to the same problem. Python provides a measurement tool that answers those questions immediately.</p><p>For example, it may be tempting to use the tuple packing and unpacking feature instead of the traditional approach to swapping arguments. The <a href="/pyref/timeit.htm"><strong>timeit</strong></a> module quickly demonstrates a modest performance advantage:</p><pre class="python">&gt;&gt;&gt; <span class="pykeyword">from</span> timeit <span class="pykeyword">import</span> Timer
+&gt;&gt;&gt; Timer(<span class="pystring">'t=a; a=b; b=t'</span>, <span class="pystring">'a=1; b=2'</span>).timeit()
+0.57535828626024577
+&gt;&gt;&gt; Timer(<span class="pystring">'a,b = b,a'</span>, <span class="pystring">'a=1; b=2'</span>).timeit()
+0.54962537085770791</pre><p>In contrast to timeit&#8217;s fine level of granularity, the <a href="/pyref/profile.htm"><strong>profile</strong></a> and pstats modules provide tools for identifying time critical sections in larger blocks of code.</p><h2 id="quality-control">Quality Control&#160;<a class="nav" href="#quality-control" title="bookmark!">#</a></h2><p>One approach for developing high quality software is to write tests for each function as it is developed and to run those tests frequently during the development process.</p><p>The <a href="/pyref/doctest.htm"><strong>doctest</strong></a> module provides a tool for scanning a module and validating tests embedded in a program&#8217;s docstrings. Test construction is as simple as cutting-and-pasting a typical call along with its results into the docstring. This improves the documentation by providing the user with an example and it allows the doctest module to make sure the code remains true to the documentation:</p><pre class="python"><span class="pykeyword">def</span> <span class="pyfunction">average</span>(values):
+    <span class="pystring">"""Computes the arithmetic mean of a list of numbers.</span>
+
+    &gt;&gt;&gt; print average([20, 30, 70])
+    40.0
+    """
+    <span class="pykeyword">return</span> sum(values, 0.0) / len(values)
+
+<span class="pykeyword">import</span> doctest
+doctest.testmod()   <span class="pycomment"># automatically validate the embedded tests</span></pre><p>The <a href="/pyref/unittest.htm"><strong>unittest</strong></a> module is not as effortless as the doctest module, but it allows a more comprehensive set of tests to be maintained in a separate file:</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><pre class="python wide wide"><span class="pykeyword">import</span> unittest
+
+<span class="pykeyword">class</span> <span class="pyclass">TestStatisticalFunctions</span>(unittest.TestCase):
+
+    <span class="pykeyword">def</span> <span class="pyfunction">test_average</span>(self):
+        self.assertEqual(average([20, 30, 70]), 40.0)
+        self.assertEqual(round(average([1, 5, 7]), 1), 4.3)
+        self.assertRaises(ZeroDivisionError, average, [])
+        self.assertRaises(TypeError, average, 20, 30, 70)
+
+unittest.main() <span class="pycomment"># Calling from the command line invokes all tests</span></pre></div><div class="yui-ge"><div class="yui-u first"><h2 id="batteries-included">Batteries Included&#160;<a class="nav" href="#batteries-included" title="bookmark!">#</a></h2><p>Python has a <q>batteries included</q> philosophy. This is best seen through the sophisticated and robust capabilities of its larger packages. For example:</p><ul><li>The <a href="/pyref/xmlrpclib.htm"><strong>xmlrpclib</strong></a> and <a href="/pyref/SimpleXMLRPCServer.htm"><strong>SimpleXMLRPCServer</strong></a> modules make implementing remote procedure calls into an almost trivial task. Despite the names, no direct knowledge or handling of XML is needed. </li><li>The <a href="/pyref/email.htm"><strong>email</strong></a> package is a library for managing email messages, including MIME and other RFC 2822-based message documents. Unlike smtplib and poplib which actually send and receive messages, the email package has a complete toolset for building or decoding complex message structures (including attachments) and for implementing internet encoding and header protocols. </li><li>The <a href="/pyref/xml.dom.htm"><strong>xml.dom</strong></a> and <a href="/pyref/xml.sax.htm"><strong>xml.sax</strong></a> packages provide robust support for parsing this popular data interchange format. Likewise, the <a href="/pyref/csv.htm"><strong>csv</strong></a> module supports direct reads and writes in a common database format. Together, these modules and packages greatly simplify data interchange between python applications and other tools. </li><li>Internationalization is supported by a number of modules including <a href="/pyref/gettext.htm"><strong>gettext</strong></a>, <a href="/pyref/locale.htm"><strong>locale</strong></a>, and the <a href="/pyref/codecs.htm"><strong>codecs</strong></a> package.</li></ul></div><div class="yui-u">&#160;</div></div><div class="yui-g"><div class='comment' target-id='None' timestamp='1164824235.35'>
+ <p><b>Comment:</b></p>
+ <p>An example that resets the computer clock?  That's not very polite, I think.</p>
+ <p>Posted by <b class='author'>Fredrik</b> <span class='mark'>(2006-11-29)</span></p>
+</div>
+</div> <!-- yui-g --></div> <!-- content --> </div> <!-- yui-b --> </div> <!-- yui-main --> <div class="yui-b"> <div id='menu'> <ul> <li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li> <li><b><a href="." title="Go to pytut index page.">::: pytut :::</a></b></li> </ul> <ul><li><b>::: contents</b></li></ul> <ul><li><ul><li><a href="#operating-system-interface">Operating System Interface</a></li><li><a href="#file-wildcards">File Wildcards</a></li><li><a href="#command-line-arguments">Command Line Arguments</a></li><li><a href="#error-output-redirection-and-program-termination">Error Output Redirection and Program Termination</a></li><li><a href="#string-pattern-matching">String Pattern Matching</a></li><li><a href="#mathematics">Mathematics</a></li><li><a href="#internet-access">Internet Access</a></li><li><a href="#dates-and-times">Dates and Times</a></li><li><a href="#data-compression">Data Compression</a></li><li><a href="#performance-measurement">Performance Measurement</a></li><li><a href="#quality-control">Quality Control</a></li><li><a href="#batteries-included">Batteries Included</a></li></ul></li></ul> </div> <!-- menu --> </div> <!-- yui-b --> </div> <!-- bd --> <div id="ft"> <!-- footer --> <p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15_grey.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;"></a>
+this page was rendered by a <a href="http://www.djangoproject.com/">django</a> application in 0.06s 2009-06-05 02:23:33.123162.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p> </div> <!-- ft --> </div> <!-- doc --> <script src="/media/js/effbot-min.js" type="text/javascript"> </script> </body> </html>

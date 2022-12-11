@@ -1,0 +1,48 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>tty</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-tty.html'>original</a> :::
+<a href='tty.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>tty&#8212;Terminal control functions</h1>
+
+<p>Availability: Unix.</p>
+
+<p>The <code>tty</code> module defines
+functions for putting the tty into cbreak and raw modes.</p>
+
+<p>Because it requires the <code>
+termios</code> module, it will work only on Unix.</p>
+
+<p>The <code>tty</code> module defines the
+following functions:</p>
+</div>
+<dl><dt class="function" id="setraw"><b>setraw(fd[, when])</b> <tt class="nav"><a class="nav" href="tty.setraw" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Change the mode of the file descriptor <var>fd</var> to raw. If
+<var>when</var> is omitted, it defaults to <code>
+termios.TCSAFLUSH</code>, and is passed to <code>termios.tcsetattr</code>.</p>
+</dd>
+<dt class="function" id="setcbreak"><b>setcbreak(fd[, when])</b> <tt class="nav"><a class="nav" href="tty.setcbreak" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Change the mode of file descriptor <var>fd</var> to cbreak. If
+<var>when</var> is omitted, it defaults to <code>
+termios.TCSAFLUSH</code>, and is passed to <code>termios.tcsetattr</code>.</p>
+</dd>
+</dl><div class="text"><span class="mark">@see</span> <code>Module termios</code> Low-level terminal control
+interface.</div>
+</div></body></html>

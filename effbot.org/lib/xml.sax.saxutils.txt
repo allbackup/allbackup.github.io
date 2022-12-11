@@ -1,0 +1,80 @@
+
+@@module xml.sax.saxutils
+
+<h1>xml.sax.saxutils&#8212;SAX Utilities</h1>
+
+<p>New in version 2.0.
+
+<p>The module {@link xml.sax.saxutils} contains a number of classes and
+functions that are commonly useful when creating SAX applications,
+either in direct use, or as base classes.
+
+@@function escape(data[, entities])
+
+<p>Escape "{@code &amp;}", "{@code &lt}", and "{@code >}" in a string of
+data.
+
+<p>You can escape other strings of data by passing a dictionary as the
+optional {@var entities} parameter. The keys and values must all be
+strings; each key will be replaced with its corresponding value.
+
+@@function unescape(data[, entities])
+
+<p>Unescape "{@code &amp;amp;}", "{@code &amp;lt;}", and "{@code
+&amp;gt;}" in a string of data.
+
+<p>You can unescape other strings of data by passing a dictionary as the
+optional {@var entities} parameter. The keys and values must all be
+strings; each key will be replaced with its corresponding value.
+<blockquote>
+@since New in version 2.3. <br />
+</blockquote>
+
+@@function quoteattr(data[, entities])
+
+<p>Similar to {@link escape}, but also prepares {@var data} to be used
+as an attribute value. The return value is a quoted version of {@var
+data} with any additional required replacements. {@link quoteattr} will
+select a quote character based on the content of {@var data}, attempting
+to avoid encoding any quote characters in the string. If both single-
+and double-quote characters are already in {@var data}, the double-quote
+characters will be encoded and {@var data} will be wrapped in
+double-quotes. The resulting string can be used directly as an attribute
+value:
+
+<pre>
+&gt;&gt;&gt; print "&lt;element attr=%s&gt;" % quoteattr("ab ' cd \" ef")
+&lt;element attr="ab ' cd &amp;quot; ef"&gt;
+</pre>
+
+
+<p>This function is useful when generating attribute values for HTML or
+any SGML using the reference concrete syntax.
+<blockquote>
+@since New in version 2.2. <br />
+</blockquote>
+
+@@class XMLGenerator([out[, encoding]])
+
+<p>This class implements the {@link ContentHandler} interface by writing
+SAX events back into an XML document. In other words, using an {@link
+XMLGenerator} as the content handler will reproduce the original
+document being parsed. {@var out} should be a file-like object which
+will default to {@var sys.stdout}. {@var encoding} is the encoding of
+the output stream which defaults to {@code 'iso-8859-1'}.
+
+@@class XMLFilterBase(base)
+
+<p>This class is designed to sit between an {@link XMLReader} and the
+client application's event handlers. By default, it does nothing but
+pass requests up to the reader and events on to the handlers unmodified,
+but subclasses can override specific methods to modify the event stream
+or the configuration requests as they pass through.
+
+@@function prepare_input_source(source[, base])
+
+<p>This function takes an input source and an optional base URL and
+returns a fully resolved {@link InputSource} object ready for reading.
+The input source can be given as a string, a file-like object, or an
+{@link InputSource} object; parsers will use this function to implement
+the polymorphic {@var source} argument to their {@link parse} method.

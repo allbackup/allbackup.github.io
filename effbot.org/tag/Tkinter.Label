@@ -1,0 +1,51 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>The Tkinter Label&nbsp;Widget</title> <script type="text/javascript">effbot_page_id=1925;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <p><a href="frame.htm">back</a> <a href="labelframe.htm">next</a></p> <h1 class="maintitle">The Tkinter Label&nbsp;Widget</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p>The <b>Label</b> widget is a standard Tkinter widget used to
+display a text or image on the screen. The label can only display
+text in a single font, but the text may span more than one line. In
+addition, one of the characters can be underlined, for example to
+mark a keyboard shortcut.</p><h2>When to use the Label Widget</h2><p>Labels are used to display texts and images. The label widget
+uses double buffering, so you can update the contents at any time,
+without annoying flicker.</p><p>To display data that the user can manipulate in place, it&#8217;s
+probably easier to use the <a href="canvas.htm"><b>Canvas</b></a> widget.</p><h2 id="patterns">Patterns&#160;<a class="nav" href="#patterns" title="bookmark!">#</a></h2><p>To use a label, you just have to specify what to display in it
+(this can be text, a bitmap, or an image):</p><pre class="python">
+<span class="pykeyword">from</span> Tkinter <span class="pykeyword">import</span> *
+
+master = Tk()
+
+w = Label(master, text=<span class="pystring">"Hello, world!"</span>)
+w.pack()
+
+mainloop()</pre><p>If you don&#8217;t specify a size, the label is made just large enough
+to hold its contents. You can also use the <b>height</b> and
+<b>width</b> options to explicitly set the size. If you display
+text in the label, these options define the size of the label in
+text units. If you display bitmaps or images instead, they define
+the size in pixels (or other screen units). See the <a href="button.htm"><b>Button</b></a> description for an example
+how to specify the size in pixels also for text labels.</p><p>You can specify which color to use for the label with the
+<b>foreground</b> (or <b>fg</b>) and <b>background</b> (or
+<b>bg</b>) options. You can also choose which font to use in the
+label (the following example uses Tk 8.0 font descriptors). Use
+colors and fonts sparingly; unless you have a good reason to do
+otherwise, you should stick to the default values.</p><pre class="python">
+w = Label(master, text=<span class="pystring">"Rouge"</span>, fg=<span class="pystring">"red"</span>)
+w = Label(master, text=<span class="pystring">"Helvetica"</span>, font=(<span class="pystring">"Helvetica"</span>, 16))</pre><p>Labels can display multiple lines of text. You can use newlines
+or use the <b>wraplength</b> option to make the label wrap text by
+itself. When wrapping text, you might wish to use the <b>anchor</b>
+and <b>justify</b> options to make things look exactly as you wish.
+An example:</p><pre class="python">
+w = Label(master, text=longtext, anchor=W, justify=LEFT)</pre><p>You can associate a Tkinter variable with a label. When the
+contents of the variable changes, the label is automatically
+updated:</p><pre class="python">
+v = StringVar()
+Label(master, textvariable=v).pack()
+
+v.set(<span class="pystring">"New Text!"</span>)</pre><p>You can use the label to display <a href="photoimage.htm"><b>PhotoImage</b></a> and <a href="bitmapimage.htm"><b>BitmapImage</b></a> objects. When
+doing this, make sure you keep a reference to the image object, to
+prevent it from being garbage collected by Python&#8217;s memory
+allocator. You can use a global variable or an instance attribute,
+or easier, just add an attribute to the widget instance:</p><pre class="python">
+photo = PhotoImage(file=<span class="pystring">"icon.gif"</span>)
+w = Label(parent, image=photo)
+w.photo = photo
+w.pack()</pre><h2 id="reference">Reference&

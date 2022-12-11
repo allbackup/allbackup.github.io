@@ -1,0 +1,489 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>Tix</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-Tix.html'>original</a> :::
+<a href='Tix.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>Tix&#8212;Extension widgets for Tk</h1>
+
+<div class="toc"><dl><dt>On this page:</dt><dd><a href="#using-tix">Using Tix</a></dd><dd><a href="#tix-widgets">Tix Widgets</a></dd><dd><a href="#tix-commands">Tix Commands</a></dd></dl></div><p>The <a class="link" href="#Tix"><code>Tix</code></a> (Tk Interface
+Extension) module provides an additional rich set of widgets.
+Although the standard Tk library has many useful widgets, they are
+far from complete. The <a class="link" href="#Tix"><code>Tix</code></a>
+library provides most of the commonly needed widgets that are
+missing from standard Tk: <a class="link" href="#HList"><code>
+HList</code></a>, <a class="link" href="#ComboBox"><code>ComboBox</code></a>, <a class="link" href="#Control"><code>Control</code></a> (a.k.a. SpinBox) and
+an assortment of scrollable widgets. <a class="link" href="#Tix"><code>Tix</code></a> also includes many more widgets that are
+generally useful in a wide range of applications: <a class="link" href="#NoteBook"><code>NoteBook</code></a>, <a class="link" href="#FileEntry"><code>FileEntry</code></a>, <a class="link" href="#PanedWindow"><code>PanedWindow</code></a>, etc; there are more than
+40 of them.</p>
+
+<p>With all these new widgets, you can introduce new interaction
+techniques into applications, creating more useful and more
+intuitive user interfaces. You can design your application by
+choosing the most appropriate widgets to match the special needs of
+your application and users. <span class="mark">@see</span> <a class="link" href="http://tix.sourceforge.net/">Tix Homepage</a>
+The home page for Tix. This includes links to additional
+documentation and downloads. <span class="mark">@see</span> <a class="link" href="http://tix.sourceforge.net/dist/current/man/">
+Tix Man Pages</a> On-line version of the man pages and reference
+material. <span class="mark">@see</span> <a class="link" href="http://tix.sourceforge.net/dist/current/docs/tix-book/tix.book.html">
+Tix Programming Guide</a> On-line version of the programmer's
+reference material. <span class="mark">@see</span> <a class="link" href="http://tix.sourceforge.net/Tide/">Tix Development
+Applications</a> Tix applications for development of Tix and
+Tkinter programs. Tide applications work under Tk or Tkinter, and
+include TixInspect, an inspector to remotely modify and debug
+Tix/Tk/Tkinter applications.</p>
+
+<h2 id="using-tix">Using Tix <a class="nav" href="#using-tix">#</a></h2>
+</div>
+<dl><dt class="class" id="Tix"><b>class Tix(screenName[, baseName[, className]])</b> <tt class="nav"><a class="nav" href="Tix.Tix" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>Toplevel widget of Tix which represents mostly the main window
+of an application. It has an associated Tcl interpreter.</p>
+
+<p>Classes in the <a class="link" href="#Tix"><code>Tix</code></a> module
+subclasses the classes in the <code>
+Tkinter</code> module. The former imports the latter, so to use <a class="link" href="#Tix"><code>Tix</code></a> with Tkinter, all you need to
+do is to import one module. In general, you can just import <a class="link" href="#Tix"><code>Tix</code></a>, and replace the toplevel call
+to <code>Tkinter.Tk</code> with <code>Tix.Tk</code>:</p>
+
+<pre>
+import Tix
+from Tkconstants import *
+root = Tix.Tk()
+</pre>
+</dd>
+</dl><div class="text">
+<p>To use <a class="link" href="#Tix"><code>Tix</code></a>, you must have
+the <a class="link" href="#Tix"><code>Tix</code></a> widgets installed,
+usually alongside your installation of the Tk widgets. To test your
+installation, try the following:</p>
+
+<pre>
+import Tix
+root = Tix.Tk()
+root.tk.eval('package require Tix')
+</pre>
+
+<p>If this fails, you have a Tk installation problem which must be
+resolved before proceeding. Use the environment variable
+TIX_LIBRARY to point to the installed <a class="link" href="#Tix"><code>Tix</code></a> library directory, and make sure you have
+the dynamic object library (tix8183.dll or libtix8183.so) in the
+same directory that contains your Tk dynamic object library
+(tk8183.dll or libtk8183.so). The directory with the dynamic object
+library should also have a file called pkgIndex.tcl (case
+sensitive), which contains the line:</p>
+
+<pre>
+package ifneeded Tix 8.1 [list load "[file join $dir tix8183.dll]" Tix]
+</pre>
+
+<h2 id="tix-widgets">Tix Widgets <a class="nav" href="#tix-widgets">#</a></h2>
+
+<p><a class="link" href="http://tix.sourceforge.net/dist/current/man/html/TixCmd/TixIntro.htm">
+Tix</a> introduces over 40 widget classes to the <code>Tkinter</code> repertoire. There is a demo of all
+the <a class="link" href="#Tix"><code>Tix</code></a> widgets in the Demo/tix
+directory of the standard distribution.</p>
+</div>
+<div class="error">
+<h3>Basic Widgets</h3>
+</div>
+<dl><dt class="class" id="Balloon"><b>class Balloon()</b> <tt class="nav"><a class="nav" href="Tix.Balloon" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>A <a class="link" href="http://tix.sourceforge.net/dist/current/man/html/TixCmd/tixBalloon.htm">
+Balloon</a> that pops up over a widget to provide help. When the
+user moves the cursor inside a widget to which a Balloon widget has
+been bound, a small pop-up window with a descriptive message will
+be shown on the screen.</p>
+</dd>
+<dt class="class" id="ButtonBox"><b>class ButtonBox()</b> <tt class="nav"><a class="nav" href="Tix.ButtonBox" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>The <a class="link" href="http://tix.sourceforge.net/dist/current/man/html/TixCmd/tixButtonBox.htm">
+ButtonBox</a> widget creates a box of buttons, such as is commonly
+used for <code>Ok Cancel</code>.</p>
+</dd>
+<dt class="class" id="ComboBox"><b>class ComboBox()</b> <tt class="nav"><a class="nav" href="Tix.ComboBox" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>The <a class="link" href="http://tix.sourceforge.net/dist/current/man/html/TixCmd/tixComboBox.htm">
+ComboBox</a> widget is similar to the combo box control in MS
+Windows. The user can select a choice by either typing in the entry
+subwdget or selecting from the listbox subwidget.</p>
+</dd>
+<dt class="class" id="Control"><b>class Control()</b> <tt class="nav"><a class="nav" href="Tix.Control" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>The <a class="link" href="http://tix.sourceforge.net/dist/current/man/html/TixCmd/tixControl.htm">
+Control</a> widget is also known as the <code>SpinBox</code> widget. The user can adjust the
+value by pressing the two arrow buttons or by entering the value
+directly into the entry. The new value will be checked against the
+user-defined upper and lower limits.</p>
+</dd>
+<dt class="class" id="LabelEntry"><b>class LabelEntry()</b> <tt class="nav"><a class="nav" href="Tix.LabelEntry" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>The <a class="link" href="http://tix.sourceforge.net/dist/current/man/html/TixCmd/tixLabelEntry.htm">
+LabelEntry</a> widget packages an entry widget and a label into one
+mega widget. It can be used be used to simplify the creation of
+&#8220;entry-form&#8221; type of interface.</p>
+</dd>
+<dt class="class" id="LabelFrame"><b>class LabelFrame()</b> <tt class="nav"><a class="nav" href="Tix.LabelFrame" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>The <a class="link" href="http://tix.sourceforge.net/dist/current/man/html/TixCmd/tixLabelFrame.htm">
+LabelFrame</a> widget packages a frame widget and a label into one
+mega widget. To create widgets inside a LabelFrame widget, one
+creates the new widgets relative to the <code>frame</code> subwidget and manage them inside the <code>frame</code> subwidget.</p>
+</dd>
+<dt class="class" id="Meter"><b>class Meter()</b> <tt class="nav"><a class="nav" href="Tix.Meter" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>The <a class="link" href="http://tix.sourceforge.net/dist/current/man/html/TixCmd/tixMeter.htm">
+Meter</a> widget can be used to show the progress of a background
+job which may take a long time to execute.</p>
+</dd>
+<dt class="class" id="OptionMenu"><b>class OptionMenu()</b> <tt class="nav"><a class="nav" href="Tix.OptionMenu" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>The <a class="link" href="http://tix.sourceforge.net/dist/current/man/html/TixCmd/tixOptionMenu.htm">
+OptionMenu</a> creates a menu button of options.</p>
+</dd>
+<dt class="class" id="PopupMenu"><b>class PopupMenu()</b> <tt class="nav"><a class="nav" href="Tix.PopupMenu" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>The <a class="link" href="http://tix.sourceforge.net/dist/current/man/html/TixCmd/tixPopupMenu.htm">
+PopupMenu</a> widget can be used as a replacement of the <code>
+tk_popup</code> command. The advantage of the <a class="link" href="#Tix"><code>Tix</code></a> <a class="link" href="#PopupMenu"><code>
+PopupMenu</code></a> widget is it requires less application code to
+manipulate.</p>
+</dd>
+<dt class="class" id="Select"><b>class Select()</b> <tt class="nav"><a class="nav" href="Tix.Select" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>The <a class="link" href="http://tix.sourceforge.net/dist/current/man/html/TixCmd/tixSelect.htm">
+Select</a> widget is a container of button subwidgets. It can be
+used to provide radio-box or check-box style of selection options
+for the user.</p>
+</dd>
+<dt class="class" id="StdButtonBox"><b>class StdButtonBox()</b> <tt class="nav"><a class="nav" href="Tix.StdButtonBox" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>The <a class="link" href="http://tix.sourceforge.net/dist/current/man/html/TixCmd/tixStdButtonBox.htm">
+StdButtonBox</a> widget is a group of standard buttons for
+Motif-like dialog boxes.</p>
+</dd>
+</dl><div class="text">
+<h3>File Selectors</h3>
+</div>
+<dl><dt class="class" id="DirList"><b>class DirList()</b> <tt class="nav"><a class="nav" href="Tix.DirList" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>The <a class="link" href="http://tix.sourceforge.net/dist/current/man/html/TixCmd/tixDirList.htm">
+DirList</a> widget displays a list view of a directory, its
+previous directories and its sub-directories. The user can choose
+one of the directories displayed in the list or change to another
+directory.</p>
+</dd>
+<dt class="class" id="DirTree"><b>class DirTree()</b> <tt class="nav"><a class="nav" href="Tix.DirTree" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>The <a class="link" href="http://tix.sourceforge.net/dist/current/man/html/TixCmd/tixDirTree.htm">
+DirTree</a> widget displays a tree view of a directory, its
+previous directories and its sub-directories. The user can choose
+one of the directories displayed in the list or change to another
+directory.</p>
+</dd>
+<dt class="class" id="DirSelectDialog"><b>class DirSelectDialog()</b> <tt class="nav"><a class="nav" href="Tix.DirSelectDialog" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>The <a class="link" href="http://tix.sourceforge.net/dist/current/man/html/TixCmd/tixDirSelectDialog.htm">
+DirSelectDialog</a> widget presents the directories in the file
+system in a dialog window. The user can use this dialog window to
+navigate through the file system to select the desired
+directory.</p>
+</dd>
+<dt class="class" id="DirSelectBox"><b>class DirSelectBox()</b> <tt class="nav"><a class="nav" href="Tix.DirSelectBox" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>The <a class="link" href="#DirSelectBox"><code>DirSelectBox</code></a> is
+similar to the standard Motif(TM) directory-selection box. It is
+generally used for the user to choose a directory. DirSelectBox
+stores the directories mostly recently selected into a ComboBox
+widget so that they can be quickly selected again.</p>
+</dd>
+<dt class="class" id="ExFileSelectBox"><b>class ExFileSelectBox()</b> <tt class="nav"><a class="nav" href="Tix.ExFileSelectBox" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>The <a class="link" href="http://tix.sourceforge.net/dist/current/man/html/TixCmd/tixExFileSelectBox.htm">
+ExFileSelectBox</a> widget is usually embedded in a
+tixExFileSelectDialog widget. It provides an convenient method for
+the user to select files. The style of the <a class="link" href="#ExFileSelectBox"><code>ExFileSelectBox</code></a> widget is very
+similar to the standard file dialog on MS Windows 3.1.</p>
+</dd>
+<dt class="class" id="FileSelectBox"><b>class FileSelectBox()</b> <tt class="nav"><a class="nav" href="Tix.FileSelectBox" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>The <a class="link" href="http://tix.sourceforge.net/dist/current/man/html/TixCmd/tixFileSelectBox.htm">
+FileSelectBox</a> is similar to the standard Motif(TM)
+file-selection box. It is generally used for the user to choose a
+file. FileSelectBox stores the files mostly recently selected into
+a <a class="link" href="#ComboBox"><code>ComboBox</code></a> widget so that
+they can be quickly selected again.</p>
+</dd>
+<dt class="class" id="FileEntry"><b>class FileEntry()</b> <tt class="nav"><a class="nav" href="Tix.FileEntry" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>The <a class="link" href="http://tix.sourceforge.net/dist/current/man/html/TixCmd/tixFileEntry.htm">
+FileEntry</a> widget can be used to input a filename. The user can
+type in the filename manually. Alternatively, the user can press
+the button widget that sits next to the entry, which will bring up
+a file selection dialog.</p>
+</dd>
+</dl><div class="text">
+<h3>Hierachical ListBox</h3>
+</div>
+<dl><dt class="class" id="HList"><b>class HList()</b> <tt class="nav"><a class="nav" href="Tix.HList" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>The <a class="link" href="http://tix.sourceforge.net/dist/current/man/html/TixCmd/tixHList.htm">
+HList</a> widget can be used to display any data that have a
+hierarchical structure, for example, file system directory trees.
+The list entries are indented and connected by branch lines
+according to their places in the hierarchy.</p>
+</dd>
+<dt class="class" id="CheckList"><b>class CheckList()</b> <tt class="nav"><a class="nav" href="Tix.CheckList" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>The <a class="link" href="http://tix.sourceforge.net/dist/current/man/html/TixCmd/tixCheckList.htm">
+CheckList</a> widget displays a list of items to be selected by the
+user. CheckList acts similarly to the Tk checkbutton or radiobutton
+widgets, except it is capable of handling many more items than
+checkbuttons or radiobuttons.</p>
+</dd>
+<dt class="class" id="Tree"><b>class Tree()</b> <tt class="nav"><a class="nav" href="Tix.Tree" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>The <a class="link" href="http://tix.sourceforge.net/dist/current/man/html/TixCmd/tixTree.htm">
+Tree</a> widget can be used to display hierarchical data in a tree
+form. The user can adjust the view of the tree by opening or
+closing parts of the tree.</p>
+</dd>
+</dl><div class="text">
+<h3>Tabular ListBox</h3>
+</div>
+<dl><dt class="class" id="TList"><b>class TList()</b> <tt class="nav"><a class="nav" href="Tix.TList" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>The <a class="link" href="http://tix.sourceforge.net/dist/current/man/html/TixCmd/tixTList.htm">
+TList</a> widget can be used to display data in a tabular format.
+The list entries of a <a class="link" href="#TList"><code>TList</code></a>
+widget are similar to the entries in the Tk listbox widget. The
+main differences are (1) the <a class="link" href="#TList"><code>
+TList</code></a> widget can display the list entries in a two dimensional
+format and (2) you can use graphical images as well as multiple
+colors and fonts for the list entries.</p>
+</dd>
+</dl><div class="text">
+<h3>Manager Widgets</h3>
+</div>
+<dl><dt class="class" id="PanedWindow"><b>class PanedWindow()</b> <tt class="nav"><a class="nav" href="Tix.PanedWindow" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>The <a class="link" href="http://tix.sourceforge.net/dist/current/man/html/TixCmd/tixPanedWindow.htm">
+PanedWindow</a> widget allows the user to interactively manipulate
+the sizes of several panes. The panes can be arranged either
+vertically or horizontally. The user changes the sizes of the panes
+by dragging the resize handle between two panes.</p>
+</dd>
+<dt class="class" id="ListNoteBook"><b>class ListNoteBook()</b> <tt class="nav"><a class="nav" href="Tix.ListNoteBook" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>The <a class="link" href="http://tix.sourceforge.net/dist/current/man/html/TixCmd/tixListNoteBook.htm">
+ListNoteBook</a> widget is very similar to the <code>TixNoteBook</code> widget: it can be used to
+display many windows in a limited space using a notebook metaphor.
+The notebook is divided into a stack of pages (windows). At one
+time only one of these pages can be shown. The user can navigate
+through these pages by choosing the name of the desired page in the
+<code>hlist</code> subwidget.</p>
+</dd>
+<dt class="class" id="NoteBook"><b>class NoteBook()</b> <tt class="nav"><a class="nav" href="Tix.NoteBook" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>The <a class="link" href="http://tix.sourceforge.net/dist/current/man/html/TixCmd/tixNoteBook.htm">
+NoteBook</a> widget can be used to display many windows in a
+limited space using a notebook metaphor. The notebook is divided
+into a stack of pages. At one time only one of these pages can be
+shown. The user can navigate through these pages by choosing the
+visual &#8220;tabs&#8221; at the top of the NoteBook widget.</p>
+</dd>
+</dl><div class="text">
+<h3>Image Types</h3>
+
+<p>The <a class="link" href="#Tix"><code>Tix</code></a> module adds:</p>
+
+<ul>
+<li>
+<p><a class="link" href="http://tix.sourceforge.net/dist/current/man/html/TixCmd/pixmap.htm">
+pixmap</a> capabilities to all <a class="link" href="#Tix"><code>
+Tix</code></a> and <code>Tkinter</code> widgets
+to create color images from XPM files.</p>
+</li>
+
+<li>
+<p><a class="link" href="http://tix.sourceforge.net/dist/current/man/html/TixCmd/compound.htm">
+Compound</a> image types can be used to create images that consists
+of multiple horizontal lines; each line is composed of a series of
+items (texts, bitmaps, images or spaces) arranged from left to
+right. For example, a compound image can be used to display a
+bitmap and a text string simultaneously in a Tk <code>Button</code> widget.</p>
+</li>
+</ul>
+
+<h3>Miscellaneous Widgets</h3>
+</div>
+<dl><dt class="class" id="InputOnly"><b>class InputOnly()</b> <tt class="nav"><a class="nav" href="Tix.InputOnly" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>The <a class="link" href="http://tix.sourceforge.net/dist/current/man/html/TixCmd/tixInputOnly.htm">
+InputOnly</a> widgets are to accept inputs from the user, which can
+be done with the <code>bind</code> command (Unix only).</p>
+</dd>
+</dl><div class="text">
+<h3>Form Geometry Manager</h3>
+
+<p>In addition, <a class="link" href="#Tix"><code>Tix</code></a> augments <code>Tkinter</code> by providing:</p>
+</div>
+<dl><dt class="class" id="Form"><b>class Form()</b> <tt class="nav"><a class="nav" href="Tix.Form" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>The <a class="link" href="http://tix.sourceforge.net/dist/current/man/html/TixCmd/tixForm.htm">
+Form</a> geometry manager based on attachment rules for all Tk
+widgets.</p>
+</dd>
+</dl><div class="text">
+<h2 id="tix-commands">Tix Commands <a class="nav" href="#tix-commands">#</a></h2>
+</div>
+<dl><dt class="class" id="tixCommand"><b>class tixCommand()</b> <tt class="nav"><a class="nav" href="Tix.tixCommand" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>The <a class="link" href="http://tix.sourceforge.net/dist/current/man/html/TixCmd/tix.htm">
+tix commands</a> provide access to miscellaneous elements of <a class="link" href="#Tix"><code>Tix</code></a>'s internal state and the <a class="link" href="#Tix"><code>Tix</code></a> application context. Most of
+the information manipulated by these methods pertains to the
+application as a whole, or to a screen or display, rather than to a
+particular window.</p>
+
+<p>To view the current settings, the common usage is:</p>
+
+<pre>
+import Tix
+root = Tix.Tk()
+print root.tix_configure()
+</pre>
+</dd>
+<dt class="method" id="tixCommand.tix_configure"><b>tix_configure([cnf,] **kw)</b> <tt class="nav"><a class="nav" href="Tix.tixCommand.tix_configure" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Query or modify the configuration options of the Tix application
+context. If no option is specified, returns a dictionary all of the
+available options. If option is specified with no value, then the
+method returns a list describing the one named option (this list
+will be identical to the corresponding sublist of the value
+returned if no option is specified). If one or more option-value
+pairs are specified, then the method modifies the given option(s)
+to have the given value(s); in this case the method returns an
+empty string. Option may be any of the configuration options.</p>
+</dd>
+<dt class="method" id="tixCommand.tix_cget"><b>tix_cget(option)</b> <tt class="nav"><a class="nav" href="Tix.tixCommand.tix_cget" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Returns the current value of the configuration option given by
+<var>option</var>. Option may be any of the configuration
+options.</p>
+</dd>
+<dt class="method" id="tixCommand.tix_getbitmap"><b>tix_getbitmap(name)</b> <tt class="nav"><a class="nav" href="Tix.tixCommand.tix_getbitmap" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Locates a bitmap file of the name <code>name.xpm</code> or
+<code>name</code> in one of the bitmap directories (see the <code>tix_addbitmapdir</code>
+method). By using <code>
+tix_getbitmap</code>, you can avoid hard coding the pathnames of the
+bitmap files in your application. When successful, it returns the
+complete pathname of the bitmap file, prefixed with the character
+"<code>@</code>". The returned value can be used to configure the
+<code>bitmap</code> option of the Tk and Tix widgets.</p>
+</dd>
+<dt class="method" id="tixCommand.tix_addbitmapdir"><b>tix_addbitmapdir(directory)</b> <tt class="nav"><a class="nav" href="Tix.tixCommand.tix_addbitmapdir" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Tix maintains a list of directories under which the <code>tix_getimage</code> and <code>tix_getbitmap</code> methods
+will search for image files. The standard bitmap directory is
+$TIX_LIBRARY/bitmaps. The <code>tix_addbitmapdir</code> method adds <var>
+directory</var> into this list. By using this method, the image
+files of an applications can also be located using the <code>tix_getimage</code> or <code>tix_getbitmap</code>
+method.</p>
+</dd>
+<dt class="method" id="tixCommand.tix_filedialog"><b>tix_filedialog([dlgclass])</b> <tt class="nav"><a class="nav" href="Tix.tixCommand.tix_filedialog" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Returns the file selection dialog that may be shared among
+different calls from this application. This method will create a
+file selection dialog widget when it is called the first time. This
+dialog will be returned by all subsequent calls to <code>tix_filedialog</code>. An optional dlgclass
+parameter can be passed as a string to specified what type of file
+selection dialog widget is desired. Possible options are <code>
+tix</code>, <code>FileSelectDialog</code> or <code>
+tixExFileSelectDialog</code>.</p>
+</dd>
+<dt class="method" id="tixCommand.tix_getimage"><b>tix_getimage(self, name)</b> <tt class="nav"><a class="nav" href="Tix.tixCommand.tix_getimage" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Locates an image file of the name name.xpm, name.xbm or name.ppm
+in one of the bitmap directories (see the <code>tix_addbitmapdir</code> method above). If
+more than one file with the same name (but different extensions)
+exist, then the image type is chosen according to the depth of the
+X display: xbm images are chosen on monochrome displays and color
+images are chosen on color displays. By using <code>tix_getimage</code>, you can avoid hard
+coding the pathnames of the image files in your application. When
+successful, this method returns the name of the newly created
+image, which can be used to configure the <code>image</code> option
+of the Tk and Tix widgets.</p>
+</dd>
+<dt class="method" id="tixCommand.tix_option_get"><b>tix_option_get(name)</b> <tt class="nav"><a class="nav" href="Tix.tixCommand.tix_option_get" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Gets the options maintained by the Tix scheme mechanism.</p>
+</dd>
+<dt class="method" id="tixCommand.tix_resetoptions"><b>tix_resetoptions(newScheme,
+newFontSet[, newScmPrio])</b> <tt class="nav"><a class="nav" href="Tix.tixCommand.tix_resetoptions" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Resets the scheme and fontset of the Tix application to <var>
+newScheme</var> and <var>newFontSet</var>, respectively. This
+affects only those widgets created after this call. Therefore, it
+is best to call the resetoptions method before the creation of any
+widgets in a Tix application.</p>
+
+<p>The optional parameter <var>newScmPrio</var> can be given to
+reset the priority level of the Tk options set by the Tix
+schemes.</p>
+
+<p>Because of the way Tk handles the X option database, after Tix
+has been has imported and inited, it is not possible to reset the
+color schemes and font sets using the <code>tix_config</code> method. Instead, the <code>tix_resetoptions</code>
+method must be used.</p>
+</dd>
+</dl></div></body></html>

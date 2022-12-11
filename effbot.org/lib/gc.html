@@ -1,0 +1,236 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>gc</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-gc.html'>original</a> :::
+<a href='gc.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>gc&#8212;Garbage Collector interface</h1>
+
+<p>This module provides an interface to the optional garbage
+collector. It provides the ability to disable the collector, tune
+the collection frequency, and set debugging options. It also
+provides access to unreachable objects that the collector found but
+cannot free. Since the collector supplements the reference counting
+already used in Python, you can disable the collector if you are
+sure your program does not create reference cycles. Automatic
+collection can be disabled by calling <code>gc.disable()</code>. To
+debug a leaking program call <code>
+gc.set_debug(gc.DEBUG_LEAK)</code>. Notice that this includes
+<code>gc.DEBUG_SAVEALL</code>, causing garbage-collected objects to
+be saved in gc.garbage for inspection.</p>
+
+<p>The <code>gc</code> module provides the
+following functions:</p>
+</div>
+<dl><dt class="function" id="enable"><b>enable()</b> <tt class="nav"><a class="nav" href="gc.enable" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Enable automatic garbage collection.</p>
+</dd>
+<dt class="function" id="disable"><b>disable()</b> <tt class="nav"><a class="nav" href="gc.disable" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Disable automatic garbage collection.</p>
+</dd>
+<dt class="function" id="isenabled"><b>isenabled()</b> <tt class="nav"><a class="nav" href="gc.isenabled" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Returns true if automatic collection is enabled.</p>
+</dd>
+<dt class="function" id="collect"><b>collect()</b> <tt class="nav"><a class="nav" href="gc.collect" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Run a full collection. All generations are examined and the
+number of unreachable objects found is returned.</p>
+</dd>
+<dt class="function" id="set_debug"><b>set_debug(flags)</b> <tt class="nav"><a class="nav" href="gc.set_debug" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Set the garbage collection debugging flags. Debugging
+information will be written to <code>sys.stderr</code>. See below
+for a list of debugging flags which can be combined using bit
+operations to control debugging.</p>
+</dd>
+<dt class="function" id="get_debug"><b>get_debug()</b> <tt class="nav"><a class="nav" href="gc.get_debug" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return the debugging flags currently set.</p>
+</dd>
+<dt class="function" id="get_objects"><b>get_objects()</b> <tt class="nav"><a class="nav" href="gc.get_objects" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Returns a list of all objects tracked by the collector,
+excluding the list returned.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.2.<br />
+</blockquote>
+</dd>
+<dt class="function" id="set_threshold"><b>set_threshold(threshold0[, threshold1[,
+threshold2]])</b> <tt class="nav"><a class="nav" href="gc.set_threshold" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Set the garbage collection thresholds (the collection
+frequency). Setting <var>threshold0</var> to zero disables
+collection.</p>
+
+<p>The GC classifies objects into three generations depending on
+how many collection sweeps they have survived. New objects are
+placed in the youngest generation (generation <code>0</code>). If
+an object survives a collection it is moved into the next older
+generation. Since generation <code>2</code> is the oldest
+generation, objects in that generation remain there after a
+collection. In order to decide when to run, the collector keeps
+track of the number object allocations and deallocations since the
+last collection. When the number of allocations minus the number of
+deallocations exceeds <var>threshold0</var>, collection starts.
+Initially only generation <code>0</code> is examined. If generation
+<code>0</code> has been examined more than <var>threshold1</var>
+times since generation <code>1</code> has been examined, then
+generation <code>1</code> is examined as well. Similarly, <var>
+threshold2</var> controls the number of collections of generation
+<code>1</code> before collecting generation <code>2</code>.</p>
+</dd>
+<dt class="function" id="get_threshold"><b>get_threshold()</b> <tt class="nav"><a class="nav" href="gc.get_threshold" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return the current collection thresholds as a tuple of <code>
+(</code><var>threshold0</var>, <var>threshold1</var>, <var>
+threshold2</var>).</p>
+</dd>
+<dt class="function" id="get_referrers"><b>get_referrers(*objs)</b> <tt class="nav"><a class="nav" href="gc.get_referrers" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return the list of objects that directly refer to any of objs.
+This function will only locate those containers which support
+garbage collection; extension types which do refer to other objects
+but do not support garbage collection will not be found.</p>
+
+<p>Note that objects which have already been dereferenced, but
+which live in cycles and have not yet been collected by the garbage
+collector can be listed among the resulting referrers. To get only
+currently live objects, call <a class="link" href="#collect"><code>
+collect</code></a> before calling <a class="link" href="#get_referrers"><code>get_referrers</code></a>.</p>
+
+<p>Care must be taken when using objects returned by <a class="link" href="#get_referrers"><code>get_referrers</code></a> because
+some of them could still be under construction and hence in a
+temporarily invalid state. Avoid using <a class="link" href="#get_referrers"><code>get_referrers</code></a> for any purpose other
+than debugging.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.2.<br />
+</blockquote>
+</dd>
+<dt class="function" id="get_referents"><b>get_referents(*objs)</b> <tt class="nav"><a class="nav" href="gc.get_referents" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return a list of objects directly referred to by any of the
+arguments. The referents returned are those objects visited by the
+arguments' C-level <code>
+tp_traverse</code> methods (if any), and may not be all objects
+actually directly reachable. <code>tp_traverse</code> methods are supported only
+by objects that support garbage collection, and are only required
+to visit objects that may be involved in a cycle. So, for example,
+if an integer is directly reachable from an argument, that integer
+object may or may not appear in the result list.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.3.<br />
+</blockquote>
+</dd>
+</dl><div class="text">
+<p>The following variable is provided for read-only access (you can
+mutate its value but should not rebind it):</p>
+</div>
+<dl><dt class="variable" id="garbage"><b>garbage</b> <tt class="nav"><a class="nav" href="gc.garbage" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>A list of objects which the collector found to be unreachable
+but could not be freed (uncollectable objects). By default, this
+list contains only objects with <code>__del__</code> methods.<code>footnote:5795</code>Objects that have <code>__del__</code> methods and are part
+of a reference cycle cause the entire reference cycle to be
+uncollectable, including objects not necessarily in the cycle but
+reachable only from it. Python doesn't collect such cycles
+automatically because, in general, it isn't possible for Python to
+guess a safe order in which to run the <code>__del__</code> methods. If you know a safe order,
+you can force the issue by examining the <var>garbage</var> list,
+and explicitly breaking cycles due to your objects within the list.
+Note that these objects are kept alive even so by virtue of being
+in the <var>garbage</var> list, so they should be removed from
+<var>garbage</var> too. For example, after breaking cycles, do
+<code>del gc.garbage[:]</code> to empty the list. It's generally
+better to avoid the issue by not creating cycles containing objects
+with <code>__del__</code> methods, and
+<var>garbage</var> can be examined in that case to verify that no
+such cycles are being created.</p>
+
+<p>If <code>DEBUG_SAVEALL</code> is set, then all unreachable
+objects will be added to this list rather than freed.</p>
+</dd>
+</dl><div class="text">
+<p>The following constants are provided for use with <a class="link" href="#set_debug"><code>set_debug</code></a>:</p>
+</div>
+<dl><dt class="variable" id="DEBUG_STATS"><b>DEBUG_STATS</b> <tt class="nav"><a class="nav" href="gc.DEBUG_STATS" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Print statistics during collection. This information can be
+useful when tuning the collection frequency.</p>
+</dd>
+<dt class="variable" id="DEBUG_COLLECTABLE"><b>DEBUG_COLLECTABLE</b> <tt class="nav"><a class="nav" href="gc.DEBUG_COLLECTABLE" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Print information on collectable objects found.</p>
+</dd>
+<dt class="variable" id="DEBUG_UNCOLLECTABLE"><b>DEBUG_UNCOLLECTABLE</b> <tt class="nav"><a class="nav" href="gc.DEBUG_UNCOLLECTABLE" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Print information of uncollectable objects found (objects which
+are not reachable but cannot be freed by the collector). These
+objects will be added to the <code>garbage</code> list.</p>
+</dd>
+<dt class="variable" id="DEBUG_INSTANCES"><b>DEBUG_INSTANCES</b> <tt class="nav"><a class="nav" href="gc.DEBUG_INSTANCES" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>When <code>DEBUG_COLLECTABLE</code> or <code>
+DEBUG_UNCOLLECTABLE</code> is set, print information about instance
+objects found.</p>
+</dd>
+<dt class="variable" id="DEBUG_OBJECTS"><b>DEBUG_OBJECTS</b> <tt class="nav"><a class="nav" href="gc.DEBUG_OBJECTS" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>When <code>DEBUG_COLLECTABLE</code> or <code>
+DEBUG_UNCOLLECTABLE</code> is set, print information about objects
+other than instance objects found.</p>
+</dd>
+<dt class="variable" id="DEBUG_SAVEALL"><b>DEBUG_SAVEALL</b> <tt class="nav"><a class="nav" href="gc.DEBUG_SAVEALL" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>When set, all unreachable objects found will be appended to
+<var>garbage</var> rather than being freed. This can be useful for
+debugging a leaking program.</p>
+</dd>
+<dt class="variable" id="DEBUG_LEAK"><b>DEBUG_LEAK</b> <tt class="nav"><a class="nav" href="gc.DEBUG_LEAK" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>The debugging flags necessary for the collector to print
+information about a leaking program (equal to <code>
+DEBUG_COLLECTABLE | DEBUG_UNCOLLECTABLE | DEBUG_INSTANCES |
+DEBUG_OBJECTS | DEBUG_SAVEALL</code>).</p>
+</dd>
+</dl><div class="footnote">
+<p>Prior to Python 2.2, the list contained all instance objects in
+unreachable cycles, not only those with <code>__del__</code> methods.</p>
+</div>
+</div></body></html>

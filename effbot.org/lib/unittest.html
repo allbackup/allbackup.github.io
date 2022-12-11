@@ -1,0 +1,981 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>unittest</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-unittest.html'>original</a> :::
+<a href='unittest.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>unittest&#8212;Unit testing framework</h1>
+
+<div class="toc"><dl><dt>On this page:</dt><dd><a href="#basic-example">Basic example</a></dd><dd><a href="#organizing-test-code">Organizing test code</a></dd><dd><a href="#re-using-old-test-code">Re-using old test code</a></dd><dd><a href="#classes-and-functions">Classes and functions</a></dd><dd><a href="#testcase-objects">TestCase Objects</a></dd><dd><a href="#testsuite-objects">TestSuite Objects</a></dd><dd><a href="#testresult-objects">TestResult Objects</a></dd><dd><a href="#testloader-objects">TestLoader Objects</a></dd></dl></div><p>New in version 2.1.</p>
+
+<p>The Python unit testing framework, often referred to as
+&#8220;PyUnit,&#8221; is a Python language version of JUnit, by
+Kent Beck and Erich Gamma. JUnit is, in turn, a Java version of
+Kent's Smalltalk testing framework. Each is the de facto standard
+unit testing framework for its respective language.</p>
+
+<p>PyUnit supports test automation, sharing of setup and shutdown
+code for tests, aggregation of tests into collections, and
+independence of the tests from the reporting framework. The <code>unittest</code> module provides
+classes that make it easy to support these qualities for a set of
+tests.</p>
+
+<p>To achieve this, PyUnit supports some important concepts:</p>
+</div>
+<dl><dt class="variable" id="test"><b>test runner</b> <tt class="nav"><a class="nav" href="unittest.test" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>A test runner is a component which orchestrates the execution of
+tests and provides the outcome to the user. The runner may use a
+graphical interface, a textual interface, or return a special value
+to indicate the results of executing the tests.</p>
+</dd>
+</dl><div class="text">
+<p>The test case and test fixture concepts are supported through
+the <a class="link" href="#TestCase"><code>TestCase</code></a> and <a class="link" href="#FunctionTestCase"><code>FunctionTestCase</code></a>
+classes; the former should be used when creating new tests, and the
+latter can be used when integrating existing test code with a
+PyUnit-driven framework. When building test fixtures using <a class="link" href="#TestCase"><code>TestCase</code></a>, the <code>setUp</code> and <code>tearDown</code> methods can be overridden to
+provide initialization and cleanup for the fixture. With <a class="link" href="#FunctionTestCase"><code>FunctionTestCase</code></a>,
+existing functions can be passed to the constructor for these
+purposes. When the test is run, the fixture initialization is run
+first; if it succeeds, the cleanup method is run after the test has
+been executed, regardless of the outcome of the test. Each instance
+of the <a class="link" href="#TestCase"><code>TestCase</code></a> will only
+be used to run a single test method, so a new fixture is created
+for each test.</p>
+
+<p>Test suites are implemented by the <a class="link" href="#TestSuite"><code>TestSuite</code></a> class. This class allows
+individual tests and test suites to be aggregated; when the suite
+is executed, all tests added directly to the suite and in
+&#8220;child&#8221; test suites are run.</p>
+
+<p>A test runner is an object that provides a single method, <code>run</code>, which accepts a <a class="link" href="#TestCase"><code>TestCase</code></a> or <a class="link" href="#TestSuite"><code>TestSuite</code></a> object as a parameter, and
+returns a result object. The class <code>TestResult</code> is provided for use as the
+result object. PyUnit provide the <a class="link" href="#TextTestRunner"><code>TextTestRunner</code></a> as an example test
+runner which reports test results on the standard error stream by
+default. Alternate runners can be implemented for other
+environments (such as graphical environments) without any need to
+derive from a specific class. <span class="mark">@see</span> <code>Module doctest</code> Another
+test-support module with a very different flavor. <span class="mark">@see</span> <a class="link" href="http://pyunit.sourceforge.net/">PyUnit Web Site</a> The
+source for further information on PyUnit. <span class="mark">
+@see</span> <a class="link" href="http://www.XProgramming.com/testfram.htm">Simple Smalltalk
+Testing: With Patterns</a> Kent Beck's original paper on testing
+frameworks using the pattern shared by unittest.</p>
+
+<h2 id="basic-example">Basic example <a class="nav" href="#basic-example">#</a></h2>
+
+<p>The <code>unittest</code> module
+provides a rich set of tools for constructing and running tests.
+This section demonstrates that a small subset of the tools suffice
+to meet the needs of most users.</p>
+
+<p>Here is a short script to test three functions from the <code>random</code> module:</p>
+
+<pre>
+import random
+import unittest
+
+class TestSequenceFunctions(unittest.TestCase):
+    
+    def setUp(self):
+        self.seq = range(10)
+
+    def testshuffle(self):
+        # make sure the shuffled sequence does not lose any elements
+        random.shuffle(self.seq)
+        self.seq.sort()
+        self.assertEqual(self.seq, range(10))
+
+    def testchoice(self):
+        element = random.choice(self.seq)
+        self.assert_(element in self.seq)
+
+    def testsample(self):
+        self.assertRaises(ValueError, random.sample, self.seq, 20)
+        for element in random.sample(self.seq, 5):
+            self.assert_(element in self.seq)
+
+if __name__ == '__main__':
+    unittest.main()
+</pre>
+
+<p>A testcase is created by subclassing <code>unittest.TestCase</code>. The three
+individual tests are defined with methods whose names start with
+the letters "<code>test</code>". This naming convention informs the
+test runner about which methods represent tests.</p>
+
+<p>The crux of each test is a call to <code>assertEqual</code> to check for an expected
+result; <code>assert_</code> to verify a
+condition; or <code>
+assertRaises</code> to verify that an expected exception gets raised.
+These methods are used instead of the <code>assert</code> statement so the test runner can
+accumulate all test results and produce a report.</p>
+
+<p>When a <code>setUp</code> method is
+defined, the test runner will run that method prior to each test.
+Likewise, if a <code>tearDown</code>
+method is defined, the test runner will invoke that method after
+each test. In the example, <code>
+setUp</code> was used to create a fresh sequence for each test.</p>
+
+<p>The final block shows a simple way to run the tests. <code>unittest.main</code> provides a
+command line interface to the test script. When run from the
+command line, the above script produces an output that looks like
+this:</p>
+
+<pre>
+...
+----------------------------------------------------------------------
+Ran 3 tests in 0.000s
+
+OK
+</pre>
+
+<p>Instead of <code>
+unittest.main</code>, there are other ways to run the tests with a
+finer level of control, less terse output, and no requirement to be
+run from the command line. For example, the last two lines may be
+replaced with:</p>
+
+<pre>
+suite = unittest.makeSuite(TestSequenceFunctions)
+unittest.TextTestRunner(verbosity=2).run(suite)
+</pre>
+
+<p>Running the revised script from the interpreter or another
+script produces the following output:</p>
+
+<pre>
+testchoice (__main__.TestSequenceFunctions) ... ok
+testsample (__main__.TestSequenceFunctions) ... ok
+testshuffle (__main__.TestSequenceFunctions) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.110s
+
+OK
+</pre>
+
+<p>The above examples show the most commonly used <code>unittest</code> features which are sufficient to
+meet many everyday testing needs. The remainder of the
+documentation explores the full feature set from first
+principles.</p>
+
+<h2 id="organizing-test-code">Organizing test code <a class="nav" href="#organizing-test-code">#</a></h2>
+
+<p>The basic building blocks of unit testing are test cases --
+single scenarios that must be set up and checked for correctness.
+In PyUnit, test cases are represented by instances of the <a class="link" href="#TestCase"><code>TestCase</code></a> class in the <code>unittest</code> module. To make your
+own test cases you must write subclasses of <a class="link" href="#TestCase"><code>TestCase</code></a>, or use <a class="link" href="#FunctionTestCase"><code>FunctionTestCase</code></a>.</p>
+
+<p>An instance of a <a class="link" href="#TestCase"><code>
+TestCase</code></a>-derived class is an object that can completely run a
+single test method, together with optional set-up and tidy-up
+code.</p>
+
+<p>The testing code of a <a class="link" href="#TestCase"><code>
+TestCase</code></a> instance should be entirely self contained, such that
+it can be run either in isolation or in arbitrary combination with
+any number of other test cases.</p>
+
+<p>The simplest test case subclass will simply override the <code>runTest</code> method in order to
+perform specific testing code:</p>
+
+<pre>
+import unittest
+
+class DefaultWidgetSizeTestCase(unittest.TestCase):
+    def runTest(self):
+        widget = Widget("The widget")
+        self.failUnless(widget.size() == (50,50), 'incorrect default size')
+</pre>
+
+<p>Note that in order to test something, we use the one of the <code>assert*</code> or <code>fail*</code> methods provided by the <a class="link" href="#TestCase"><code>TestCase</code></a> base class. If the test fails
+when the test case runs, an exception will be raised, and the
+testing framework will identify the test case as a failure. Other
+exceptions that do not arise from checks made through the <code>assert*</code> and <code>fail*</code> methods are identified by the testing
+framework as dfnerrors.</p>
+
+<p>The way to run a test case will be described later. For now,
+note that to construct an instance of such a test case, we call its
+constructor without arguments:</p>
+
+<pre>
+testCase = DefaultWidgetSizeTestCase()
+</pre>
+
+<p>Now, such test cases can be numerous, and their set-up can be
+repetitive. In the above case, constructing a &#8220;Widget&#8221;
+in each of 100 Widget test case subclasses would mean unsightly
+duplication.</p>
+
+<p>Luckily, we can factor out such set-up code by implementing a
+method called <code>setUp</code>, which
+the testing framework will automatically call for us when we run
+the test:</p>
+
+<pre>
+import unittest
+
+class SimpleWidgetTestCase(unittest.TestCase):
+    def setUp(self):
+        self.widget = Widget("The widget")
+
+class DefaultWidgetSizeTestCase(SimpleWidgetTestCase):
+    def runTest(self):
+        self.failUnless(self.widget.size() == (50,50),
+                        'incorrect default size')
+
+class WidgetResizeTestCase(SimpleWidgetTestCase):
+    def runTest(self):
+        self.widget.resize(100,150)
+        self.failUnless(self.widget.size() == (100,150),
+                        'wrong size after resize')
+</pre>
+
+<p>If the <code>setUp</code> method raises
+an exception while the test is running, the framework will consider
+the test to have suffered an error, and the <code>runTest</code> method will not be executed.</p>
+
+<p>Similarly, we can provide a <code>tearDown</code> method that tidies up after the
+<code>runTest</code> method has been
+run:</p>
+
+<pre>
+import unittest
+
+class SimpleWidgetTestCase(unittest.TestCase):
+    def setUp(self):
+        self.widget = Widget("The widget")
+
+    def tearDown(self):
+        self.widget.dispose()
+        self.widget = None
+</pre>
+
+<p>If <code>setUp</code> succeeded, the <code>tearDown</code> method will be run
+regardless of whether or not <code>
+runTest</code> succeeded.</p>
+
+<p>Such a working environment for the testing code is called a
+fixture.</p>
+
+<p>Often, many small test cases will use the same fixture. In this
+case, we would end up subclassing <code>SimpleWidgetTestCase</code> into many
+small one-method classes such as <code>
+DefaultWidgetSizeTestCase</code>. This is time-consuming and
+discouraging, so in the same vein as JUnit, PyUnit provides a
+simpler mechanism:</p>
+
+<pre>
+import unittest
+
+class WidgetTestCase(unittest.TestCase):
+    def setUp(self):
+        self.widget = Widget("The widget")
+
+    def tearDown(self):
+        self.widget.dispose()
+        self.widget = None
+
+    def testDefaultSize(self):
+        self.failUnless(self.widget.size() == (50,50),
+                        'incorrect default size')
+
+    def testResize(self):
+        self.widget.resize(100,150)
+        self.failUnless(self.widget.size() == (100,150),
+                        'wrong size after resize')
+</pre>
+
+<p>Here we have not provided a <code>
+runTest</code> method, but have instead provided two different test
+methods. Class instances will now each run one of the <code>test*</code> methods, with <code>
+self.widget</code> created and destroyed separately for each
+instance. When creating an instance we must specify the test method
+it is to run. We do this by passing the method name in the
+constructor:</p>
+
+<pre>
+defaultSizeTestCase = WidgetTestCase("testDefaultSize")
+resizeTestCase = WidgetTestCase("testResize")
+</pre>
+
+<p>Test case instances are grouped together according to the
+features they test. PyUnit provides a mechanism for this: the <a class="link" href="#test"><code>suite</code></a>, represented by the class
+<a class="link" href="#TestSuite"><code>TestSuite</code></a> in the <code>unittest</code> module:</p>
+
+<pre>
+widgetTestSuite = unittest.TestSuite()
+widgetTestSuite.addTest(WidgetTestCase("testDefaultSize"))
+widgetTestSuite.addTest(WidgetTestCase("testResize"))
+</pre>
+
+<p>For the ease of running tests, as we will see later, it is a
+good idea to provide in each test module a callable object that
+returns a pre-built test suite:</p>
+
+<pre>
+def suite():
+    suite = unittest.TestSuite()
+    suite.addTest(WidgetTestCase("testDefaultSize"))
+    suite.addTest(WidgetTestCase("testResize"))
+    return suite
+</pre>
+
+<p>or even:</p>
+
+<pre>
+class WidgetTestSuite(unittest.TestSuite):
+    def __init__(self):
+        unittest.TestSuite.__init__(self,map(WidgetTestCase,
+                                              ("testDefaultSize",
+                                               "testResize")))
+</pre>
+
+<p>(The latter is admittedly not for the faint-hearted!)</p>
+
+<p>Since it is a common pattern to create a <a class="link" href="#TestCase"><code>TestCase</code></a> subclass with many similarly
+named test functions, there is a convenience function called <code>makeSuite</code> that constructs a
+test suite that comprises all of the test cases in a test case
+class:</p>
+
+<pre>
+suite = unittest.makeSuite(WidgetTestCase)
+</pre>
+
+<p>Note that when using the <code>
+makeSuite</code> function, the order in which the various test cases
+will be run by the test suite is the order determined by sorting
+the test function names using the <code>
+cmp</code> built-in function.</p>
+
+<p>Often it is desirable to group suites of test cases together, so
+as to run tests for the whole system at once. This is easy, since
+<a class="link" href="#TestSuite"><code>TestSuite</code></a> instances can
+be added to a <a class="link" href="#TestSuite"><code>TestSuite</code></a>
+just as <a class="link" href="#TestCase"><code>TestCase</code></a> instances
+can be added to a <a class="link" href="#TestSuite"><code>
+TestSuite</code></a>:</p>
+
+<pre>
+suite1 = module1.TheTestSuite()
+suite2 = module2.TheTestSuite()
+alltests = unittest.TestSuite((suite1, suite2))
+</pre>
+
+<p>You can place the definitions of test cases and test suites in
+the same modules as the code they are to test (such as widget.py),
+but there are several advantages to placing the test code in a
+separate module, such as widgettests.py:</p>
+
+<ul>
+<li>
+<p>The test module can be run standalone from the command line.</p>
+</li>
+
+<li>
+<p>The test code can more easily be separated from shipped
+code.</p>
+</li>
+
+<li>
+<p>There is less temptation to change test code to fit the code it
+tests without a good reason.</p>
+</li>
+
+<li>
+<p>Test code should be modified much less frequently than the code
+it tests.</p>
+</li>
+
+<li>
+<p>Tested code can be refactored more easily.</p>
+</li>
+
+<li>
+<p>Tests for modules written in C must be in separate modules
+anyway, so why not be consistent?</p>
+</li>
+
+<li>
+<p>If the testing strategy changes, there is no need to change the
+source code.</p>
+</li>
+</ul>
+
+<h2 id="re-using-old-test-code">Re-using old test code <a class="nav" href="#re-using-old-test-code">#</a></h2>
+
+<p>Some users will find that they have existing test code that they
+would like to run from PyUnit, without converting every old test
+function to a <a class="link" href="#TestCase"><code>TestCase</code></a>
+subclass.</p>
+
+<p>For this reason, PyUnit provides a <a class="link" href="#FunctionTestCase"><code>FunctionTestCase</code></a> class. This
+subclass of <a class="link" href="#TestCase"><code>TestCase</code></a> can
+be used to wrap an existing test function. Set-up and tear-down
+functions can also optionally be wrapped.</p>
+
+<p>Given the following test function:</p>
+
+<pre>
+def testSomething():
+    something = makeSomething()
+    assert something.name is not None
+    # ...
+</pre>
+
+<p>one can create an equivalent test case instance as follows:</p>
+
+<pre>
+testcase = unittest.FunctionTestCase(testSomething)
+</pre>
+
+<p>If there are additional set-up and tear-down methods that should
+be called as part of the test case's operation, they can also be
+provided:</p>
+
+<pre>
+testcase = unittest.FunctionTestCase(testSomething,
+                                     setUp=makeSomethingDB,
+                                     tearDown=deleteSomethingDB)
+</pre>
+
+<p class="note"><b>Note:</b> PyUnit supports the use of <code>
+exceptions.AssertionError</code> as an indicator of test failure, but
+does not recommend it. Future versions may treat <code>exceptions.AssertionError</code>
+differently.</p>
+
+<h2 id="classes-and-functions">Classes and functions <a class="nav" href="#classes-and-functions">#</a></h2>
+</div>
+<dl><dt class="class" id="TestCase"><b>class TestCase()</b> <tt class="nav"><a class="nav" href="unittest.TestCase" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>Instances of the <a class="link" href="#TestCase"><code>
+TestCase</code></a> class represent the smallest testable units in a set
+of tests. This class is intended to be used as a base class, with
+specific tests being implemented by concrete subclasses. This class
+implements the interface needed by the test runner to allow it to
+drive the test, and methods that the test code can use to check for
+and report various kinds of failures.</p>
+</dd>
+<dt class="class" id="FunctionTestCase"><b>class FunctionTestCase(testFunc[, setUp[, tearDown[,
+description]]])</b> <tt class="nav"><a class="nav" href="unittest.FunctionTestCase" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>This class implements the portion of the <a class="link" href="#TestCase"><code>TestCase</code></a> interface which allows the test
+runner to drive the test, but does not provide the methods which
+test code can use to check and report errors. This is used to
+create test cases using legacy test code, allowing it to be
+integrated into a <code>
+unittest</code>-based test framework.</p>
+</dd>
+<dt class="class" id="TestSuite"><b>class TestSuite([tests])</b> <tt class="nav"><a class="nav" href="unittest.TestSuite" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>This class represents an aggregation of individual tests cases
+and test suites. The class presents the interface needed by the
+test runner to allow it to be run as any other test case, but all
+the contained tests and test suites are executed. Additional
+methods are provided to add test cases and suites to the
+aggregation. If <var>tests</var> is given, it must be a sequence of
+individual tests that will be added to the suite.</p>
+</dd>
+<dt class="class" id="TestLoader"><b>class TestLoader()</b> <tt class="nav"><a class="nav" href="unittest.TestLoader" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>This class is responsible for loading tests according to various
+criteria and returning them wrapped in a <a class="link" href="#TestSuite"><code>TestSuite</code></a>. It can load all tests within a
+given module or <a class="link" href="#TestCase"><code>TestCase</code></a>
+class. When loading from a module, it considers all <a class="link" href="#TestCase"><code>TestCase</code></a>-derived classes. For each such
+class, it creates an instance for each method with a name beginning
+with the string "<code>test</code>".</p>
+</dd>
+<dt class="variable" id="defaultTestLoader"><b>defaultTestLoader</b> <tt class="nav"><a class="nav" href="unittest.defaultTestLoader" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Instance of the <a class="link" href="#TestLoader"><code>
+TestLoader</code></a> class which can be shared. If no customization of
+the <a class="link" href="#TestLoader"><code>TestLoader</code></a> is
+needed, this instance can always be used instead of creating new
+instances.</p>
+</dd>
+<dt class="class" id="TextTestRunner"><b>class TextTestRunner([stream[, descriptions[,
+verbosity]]])</b> <tt class="nav"><a class="nav" href="unittest.TextTestRunner" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>A basic test runner implementation which prints results on
+standard output. It has a few configurable parameters, but is
+essentially very simple. Graphical applications which run test
+suites should provide alternate implementations.</p>
+</dd>
+<dt class="function" id="main"><b>main([module[, defaultTest[, argv[, testRunner[,
+testRunner]]]]])</b> <tt class="nav"><a class="nav" href="unittest.main" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>A command-line program that runs a set of tests; this is
+primarily for making test modules conveniently executable. The
+simplest use for this function is:</p>
+
+<pre>
+if __name__ == '__main__':
+    unittest.main()
+</pre>
+</dd>
+</dl><div class="text">
+<p>In some cases, the existing tests may have be written using the
+<code>doctest</code> module. If so, that
+module provides a <code>
+DocTestSuite</code> class that can automatically build <code>unittest.TestSuite</code> instances
+from the existing test code. New in version 2.3.</p>
+
+<h2 id="testcase-objects">TestCase Objects <a class="nav" href="#testcase-objects">#</a></h2>
+
+<p>Each <a class="link" href="#TestCase"><code>TestCase</code></a> instance
+represents a single test, but each concrete subclass may be used to
+define multiple tests -- the concrete class represents a single
+test fixture. The fixture is created and cleaned up for each test
+case.</p>
+
+<p><a class="link" href="#TestCase"><code>TestCase</code></a> instances
+provide three groups of methods: one group used to run the test,
+another used by the test implementation to check conditions and
+report failures, and some inquiry methods allowing information
+about the test itself to be gathered.</p>
+
+<p>Methods in the first group are:</p>
+</div>
+<dl><dt class="method" id="TestCase.setUp"><b>setUp()</b> <tt class="nav"><a class="nav" href="unittest.TestCase.setUp" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Method called to prepare the test fixture. This is called
+immediately before calling the test method; any exception raised by
+this method will be considered an error rather than a test failure.
+The default implementation does nothing.</p>
+</dd>
+<dt class="method" id="TestCase.tearDown"><b>tearDown()</b> <tt class="nav"><a class="nav" href="unittest.TestCase.tearDown" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Method called immediately after the test method has been called
+and the result recorded. This is called even if the test method
+raised an exception, so the implementation in subclasses may need
+to be particularly careful about checking internal state. Any
+exception raised by this method will be considered an error rather
+than a test failure. This method will only be called if the <code>setUp</code> succeeds, regardless of
+the outcome of the test method. The default implementation does
+nothing.</p>
+</dd>
+<dt class="method" id="TestCase.run"><b>run([result])</b> <tt class="nav"><a class="nav" href="unittest.TestCase.run" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Run the test, collecting the result into the test result object
+passed as <var>result</var>. If <var>result</var> is omitted or
+<code>None</code>, a temporary result object is created and used,
+but is not made available to the caller. This is equivalent to
+simply calling the <a class="link" href="#TestCase"><code>
+TestCase</code></a> instance.</p>
+</dd>
+<dt class="method" id="TestCase.debug"><b>debug()</b> <tt class="nav"><a class="nav" href="unittest.TestCase.debug" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Run the test without collecting the result. This allows
+exceptions raised by the test to be propagated to the caller, and
+can be used to support running tests under a debugger.</p>
+</dd>
+</dl><div class="text">
+<p>The test code can use any of the following methods to check for
+and report failures.</p>
+</div>
+<dl><dt class="method" id="TestCase.failUnless"><b>failUnless(expr[, msg])</b> <tt class="nav"><a class="nav" href="unittest.TestCase.failUnless" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Signal a test failure if <var>expr</var> is false; the
+explanation for the error will be <var>msg</var> if given,
+otherwise it will be <code>None</code>.</p>
+</dd>
+<dt class="method" id="TestCase.failUnlessEqual"><b>failUnlessEqual(first, second[,
+msg])</b> <tt class="nav"><a class="nav" href="unittest.TestCase.failUnlessEqual" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Test that <var>first</var> and <var>second</var> are equal. If
+the values do not compare equal, the test will fail with the
+explanation given by <var>msg</var>, or <code>None</code>. Note
+that using <code>
+failUnlessEqual</code> improves upon doing the comparison as the first
+parameter to <code>failUnless</code>:
+the default value for <var>msg</var> can be computed to include
+representations of both <var>first</var> and <var>second</var>.</p>
+</dd>
+<dt class="method" id="TestCase.failIfEqual"><b>failIfEqual(first, second[, msg])</b> <tt class="nav"><a class="nav" href="unittest.TestCase.failIfEqual" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Test that <var>first</var> and <var>second</var> are not equal.
+If the values do compare equal, the test will fail with the
+explanation given by <var>msg</var>, or <code>None</code>. Note
+that using <code>failIfEqual</code>
+improves upon doing the comparison as the first parameter to <code>failUnless</code> is that the
+default value for <var>msg</var> can be computed to include
+representations of both <var>first</var> and <var>second</var>.</p>
+</dd>
+<dt class="method" id="TestCase.failUnlessAlmostEqual"><b>failUnlessAlmostEqual(first, second[,
+places[, msg]])</b> <tt class="nav"><a class="nav" href="unittest.TestCase.failUnlessAlmostEqual" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Test that <var>first</var> and <var>second</var> are
+approximately equal by computing the difference, rounding to the
+given number of <var>places</var>, and comparing to zero. Note that
+comparing a given number of decimal places is not the same as
+comparing a given number of significant digits. If the values do
+not compare equal, the test will fail with the explanation given by
+<var>msg</var>, or <code>None</code>.</p>
+</dd>
+<dt class="method" id="TestCase.failIfAlmostEqual"><b>failIfAlmostEqual(first, second[,
+places[, msg]])</b> <tt class="nav"><a class="nav" href="unittest.TestCase.failIfAlmostEqual" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Test that <var>first</var> and <var>second</var> are not
+approximately equal by computing the difference, rounding to the
+given number of <var>places</var>, and comparing to zero. Note that
+comparing a given number of decimal places is not the same as
+comparing a given number of significant digits. If the values do
+not compare equal, the test will fail with the explanation given by
+<var>msg</var>, or <code>None</code>.</p>
+</dd>
+<dt class="method" id="TestCase.failUnlessRaises"><b>failUnlessRaises(exception, callable,
+...)</b> <tt class="nav"><a class="nav" href="unittest.TestCase.failUnlessRaises" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Test that an exception is raised when <var>callable</var> is
+called with any positional or keyword arguments that are also
+passed to <code>
+assertRaises</code>. The test passes if <var>exception</var> is
+raised, is an error if another exception is raised, or fails if no
+exception is raised. To catch any of a group of exceptions, a tuple
+containing the exception classes may be passed as <var>
+exception</var>.</p>
+</dd>
+<dt class="method" id="TestCase.failIf"><b>failIf(expr[, msg])</b> <tt class="nav"><a class="nav" href="unittest.TestCase.failIf" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>The inverse of the <code>
+failUnless</code> method is the <code>
+failIf</code> method. This signals a test failure if <var>expr</var>
+is true, with <var>msg</var> or <code>None</code> for the error
+message.</p>
+</dd>
+<dt class="method" id="TestCase.fail"><b>fail([msg])</b> <tt class="nav"><a class="nav" href="unittest.TestCase.fail" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Signals a test failure unconditionally, with <var>msg</var> or
+<code>None</code> for the error message.</p>
+</dd>
+<dt class="attribute" id="TestCase.failureException"><b>failureException</b> <tt class="nav"><a class="nav" href="unittest.TestCase.failureException" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>This class attribute gives the exception raised by the <a class="link" href="#test"><code>test</code></a> method. If a test framework
+needs to use a specialized exception, possibly to carry additional
+information, it must subclass this exception in order to
+&#8220;play fair&#8221; with the framework. The initial value of
+this attribute is <code>
+exceptions.AssertionError</code>.</p>
+</dd>
+</dl><div class="text">
+<p>Testing frameworks can use the following methods to collect
+information on the test:</p>
+</div>
+<dl><dt class="method" id="TestCase.countTestCases"><b>countTestCases()</b> <tt class="nav"><a class="nav" href="unittest.TestCase.countTestCases" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return the number of tests represented by the this test object.
+For <a class="link" href="#TestCase"><code>TestCase</code></a> instances,
+this will always be <code>1</code>, but this method is also
+implemented by the <a class="link" href="#TestSuite"><code>
+TestSuite</code></a> class, which can return larger values.</p>
+</dd>
+<dt class="method" id="TestCase.defaultTestResult"><b>defaultTestResult()</b> <tt class="nav"><a class="nav" href="unittest.TestCase.defaultTestResult" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return the default type of test result object to be used to run
+this test.</p>
+</dd>
+<dt class="method" id="TestCase.id"><b>id()</b> <tt class="nav"><a class="nav" href="unittest.TestCase.id" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return a string identifying the specific test case. This is
+usually the full name of the test method, including the module and
+class names.</p>
+</dd>
+<dt class="method" id="TestCase.shortDescription"><b>shortDescription()</b> <tt class="nav"><a class="nav" href="unittest.TestCase.shortDescription" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Returns a one-line description of the test, or <code>None</code>
+if no description has been provided. The default implementation of
+this method returns the first line of the test method's docstring,
+if available, or <code>None</code>.</p>
+</dd>
+</dl><div class="text">
+<h2 id="testsuite-objects">TestSuite Objects <a class="nav" href="#testsuite-objects">#</a></h2>
+
+<p><a class="link" href="#TestSuite"><code>TestSuite</code></a> objects
+behave much like <a class="link" href="#TestCase"><code>TestCase</code></a>
+objects, except they do not actually implement a test. Instead,
+they are used to aggregate tests into groups that should be run
+together. Some additional methods are available to add tests to <a class="link" href="#TestSuite"><code>TestSuite</code></a> instances:</p>
+</div>
+<dl><dt class="method" id="TestSuite.addTest"><b>addTest(test)</b> <tt class="nav"><a class="nav" href="unittest.TestSuite.addTest" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Add a <a class="link" href="#TestCase"><code>TestCase</code></a> or <a class="link" href="#TestSuite"><code>TestSuite</code></a> to the set of
+tests that make up the suite.</p>
+</dd>
+<dt class="method" id="TestSuite.addTests"><b>addTests(tests)</b> <tt class="nav"><a class="nav" href="unittest.TestSuite.addTests" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Add all the tests from a sequence of <a class="link" href="#TestCase"><code>TestCase</code></a> and <a class="link" href="#TestSuite"><code>TestSuite</code></a> instances to this test
+suite.</p>
+</dd>
+</dl><div class="text">
+<p>The <code>run</code> method is also
+slightly different:</p>
+</div>
+<dl><dt class="method" id="TestSuite.run"><b>run(result)</b> <tt class="nav"><a class="nav" href="unittest.TestSuite.run" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Run the tests associated with this suite, collecting the result
+into the test result object passed as <var>result</var>. Note that
+unlike <a class="link" href="#TestCase.run"><code>TestCase.run</code></a>,
+<a class="link" href="#TestSuite.run"><code>TestSuite.run</code></a>
+requires the result object to be passed in.</p>
+</dd>
+</dl><div class="text">
+<p>In the typical usage of a <a class="link" href="#TestSuite"><code>
+TestSuite</code></a> object, the <code>run</code>
+method is invoked by a <code>
+TestRunner</code> rather than by the end-user test harness.</p>
+
+<h2 id="testresult-objects">TestResult Objects <a class="nav" href="#testresult-objects">#</a></h2>
+
+<p>A <code>TestResult</code> object
+stores the results of a set of tests. The <a class="link" href="#TestCase"><code>TestCase</code></a> and <a class="link" href="#TestSuite"><code>TestSuite</code></a> classes ensure that results are
+properly stored; test authors do not need to worry about recording
+the outcome of tests.</p>
+
+<p>Testing frameworks built on top of <code>unittest</code> may want access to the <code>TestResult</code> object generated
+by running a set of tests for reporting purposes; a <code>TestResult</code> instance is returned by the
+<code>TestRunner.run</code>
+method for this purpose.</p>
+
+<p>Each instance holds the total number of tests run, and
+collections of failures and errors that occurred among those test
+runs. The collections contain tuples of <code>
+(</code><var>testcase</var>, <var>traceback</var>), where <var>
+traceback</var> is a string containing a formatted version of the
+traceback for the exception.</p>
+
+<p><code>TestResult</code> instances
+have the following attributes that will be of interest when
+inspecting the results of running a set of tests:</p>
+</div>
+<dl><dt class="attribute" id="TestResult.errors"><b>errors</b> <tt class="nav"><a class="nav" href="unittest.TestResult.errors" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>A list containing pairs of <a class="link" href="#TestCase"><code>
+TestCase</code></a> instances and the formatted tracebacks for tests which
+raised an exception but did not signal a test failure.</p>
+
+<blockquote><span class="mark">@since</span> Changed in version
+2.2: Contains formatted tracebacks instead of sys.exc_info()
+results.<br />
+</blockquote>
+</dd>
+<dt class="attribute" id="TestResult.failures"><b>failures</b> <tt class="nav"><a class="nav" href="unittest.TestResult.failures" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>A list containing pairs of <a class="link" href="#TestCase"><code>
+TestCase</code></a> instances and the formatted tracebacks for tests which
+signalled a failure in the code under test.</p>
+
+<blockquote><span class="mark">@since</span> Changed in version
+2.2: Contains formatted tracebacks instead of sys.exc_info()
+results.<br />
+</blockquote>
+</dd>
+<dt class="attribute" id="TestResult.testsRun"><b>testsRun</b> <tt class="nav"><a class="nav" href="unittest.TestResult.testsRun" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>The number of tests which have been started.</p>
+</dd>
+<dt class="method" id="TestResult.wasSuccessful"><b>wasSuccessful()</b> <tt class="nav"><a class="nav" href="unittest.TestResult.wasSuccessful" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Returns true if all tests run so far have passed, otherwise
+returns false.</p>
+</dd>
+</dl><div class="text">
+<p>The following methods of the <code>TestResult</code> class are used to maintain
+the internal data structures, and may be extended in subclasses to
+support additional reporting requirements. This is particularly
+useful in building tools which support interactive reporting while
+tests are being run.</p>
+</div>
+<dl><dt class="method" id="TestResult.startTest"><b>startTest(test)</b> <tt class="nav"><a class="nav" href="unittest.TestResult.startTest" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Called when the test case <var>test</var> is about to be
+run.</p>
+</dd>
+<dt class="method" id="TestResult.stopTest"><b>stopTest(test)</b> <tt class="nav"><a class="nav" href="unittest.TestResult.stopTest" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Called when the test case <var>test</var> has been executed,
+regardless of the outcome.</p>
+</dd>
+<dt class="method" id="TestResult.addError"><b>addError(test, err)</b> <tt class="nav"><a class="nav" href="unittest.TestResult.addError" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Called when the test case <var>test</var> raises an exception
+without signalling a test failure. <var>err</var> is a tuple of the
+form returned by <code>
+sys.exc_info</code>: <code>(</code><var>type</var>, <var>value</var>,
+<var>traceback</var>).</p>
+</dd>
+<dt class="method" id="TestResult.addFailure"><b>addFailure(test, err)</b> <tt class="nav"><a class="nav" href="unittest.TestResult.addFailure" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Called when the test case <var>test</var> signals a failure.
+<var>err</var> is a tuple of the form returned by <code>sys.exc_info</code>: <code>
+(</code><var>type</var>, <var>value</var>, <var>
+traceback</var>).</p>
+</dd>
+<dt class="method" id="TestResult.addSuccess"><b>addSuccess(test)</b> <tt class="nav"><a class="nav" href="unittest.TestResult.addSuccess" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>This method is called for a test that does not fail; <var>
+test</var> is the test case object.</p>
+</dd>
+</dl><div class="text">
+<p>One additional method is available for <code>TestResult</code> objects:</p>
+</div>
+<dl><dt class="method" id="TestResult.stop"><b>stop()</b> <tt class="nav"><a class="nav" href="unittest.TestResult.stop" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>This method can be called to signal that the set of tests being
+run should be aborted. Once this has been called, the <code>TestRunner</code> object return to
+its caller without running any additional tests. This is used by
+the <a class="link" href="#TextTestRunner"><code>TextTestRunner</code></a>
+class to stop the test framework when the user signals an interrupt
+from the keyboard. Interactive tools which provide runners can use
+this in a similar manner.</p>
+</dd>
+</dl><div class="text">
+<h2 id="testloader-objects">TestLoader Objects <a class="nav" href="#testloader-objects">#</a></h2>
+
+<p>The <a class="link" href="#TestLoader"><code>TestLoader</code></a> class
+is used to create test suites from classes and modules. Normally,
+there is no need to create an instance of this class; the <code>unittest</code> module provides an
+instance that can be shared as the <code>defaultTestLoader</code>
+module attribute. Using a subclass or instance would allow
+customization of some configurable properties.</p>
+
+<p><a class="link" href="#TestLoader"><code>TestLoader</code></a> objects
+have the following methods:</p>
+</div>
+<dl><dt class="method"><b>
+TestLoader.loadTestsFromTestCase(testCaseClass)</b> <tt class="nav"><a class="nav" href="unittest." title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return a suite of all tests cases contained in the <a class="link" href="#TestCase"><code>TestCase</code></a>-derived class <code>testCaseClass</code>.</p>
+</dd>
+<dt class="method" id="TestLoader.loadTestsFromModule"><b>loadTestsFromModule(module)</b> <tt class="nav"><a class="nav" href="unittest.TestLoader.loadTestsFromModule" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return a suite of all tests cases contained in the given module.
+This method searches <var>module</var> for classes derived from <a class="link" href="#TestCase"><code>TestCase</code></a> and creates an
+instance of the class for each test method defined for the
+class.</p>
+
+<p class="warning"><b>Warning:</b> While using a hierarchy of <code>Testcase</code>-derived classes can
+be convenient in sharing fixtures and helper functions, defining
+test methods on base classes that are not intended to be
+instantiated directly does not play well with this method. Doing
+so, however, can be useful when the fixtures are different and
+defined in subclasses.</p>
+</dd>
+<dt class="method" id="TestLoader.loadTestsFromName"><b>loadTestsFromName(name[, module])</b> <tt class="nav"><a class="nav" href="unittest.TestLoader.loadTestsFromName" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return a suite of all tests cases given a string specifier.</p>
+
+<p>The specifier <var>name</var> is a &#8220;dotted name&#8221;
+that may resolve either to a module, a test case class, a test
+method within a test case class, or a callable object which returns
+a <a class="link" href="#TestCase"><code>TestCase</code></a> or <a class="link" href="#TestSuite"><code>TestSuite</code></a> instance. For
+example, if you have a module <code>SampleTests</code> containing a <a class="link" href="#TestCase"><code>TestCase</code></a>-derived class <code>SampleTestCase</code> with
+three test methods (<code>test_one</code>, <code>test_two</code>, and <code>test_three</code>), the specifier <code>
+'SampleTests.SampleTestCase'</code> would cause this method to
+return a suite which will run all three test methods. Using the
+specifier <code>'SampleTests.SampleTestCase.test_two'</code> would
+cause it to return a test suite which will run only the <code>test_two</code> test method. The
+specifier can refer to modules and packages which have not been
+imported; they will be imported as a side-effect.</p>
+
+<p>The method optionally resolves <var>name</var> relative to a
+given module.</p>
+</dd>
+<dt class="method" id="TestLoader.loadTestsFromNames"><b>loadTestsFromNames(names[,
+module])</b> <tt class="nav"><a class="nav" href="unittest.TestLoader.loadTestsFromNames" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Similar to <code>
+loadTestsFromName</code>, but takes a sequence of names rather than a
+single name. The return value is a test suite which supports all
+the tests defined for each name.</p>
+</dd>
+<dt class="method" id="TestLoader.getTestCaseNames"><b>getTestCaseNames(testCaseClass)</b> <tt class="nav"><a class="nav" href="unittest.TestLoader.getTestCaseNames" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return a sorted sequence of method names found within <var>
+testCaseClass</var>.</p>
+</dd>
+</dl><div class="text">
+<p>The following attributes of a <a class="link" href="#TestLoader"><code>TestLoader</code></a> can be configured either by
+subclassing or assignment on an instance:</p>
+</div>
+<dl><dt class="attribute" id="TestLoader.testMethodPrefix"><b>testMethodPrefix</b> <tt class="nav"><a class="nav" href="unittest.TestLoader.testMethodPrefix" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>String giving the prefix of method names which will be
+interpreted as test methods. The default value is <code>
+'test'</code>.</p>
+</dd>
+<dt class="attribute" id="TestLoader.sortTestMethodsUsing"><b>sortTestMethodsUsing</b> <tt class="nav"><a class="nav" href="unittest.TestLoader.sortTestMethodsUsing" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>Function to be used to compare method names when sorting them in
+<code>getTestCaseNames</code>.
+The default value is the built-in <code>
+cmp</code> function; it can be set to <code>None</code> to disable the
+sort.</p>
+</dd>
+<dt class="attribute" id="TestLoader.suiteClass"><b>suiteClass</b> <tt class="nav"><a class="nav" href="unittest.TestLoader.suiteClass" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>Callable object that constructs a test suite from a list of
+tests. No methods on the resulting object are needed. The default
+value is the <a class="link" href="#TestSuite"><code>TestSuite</code></a>
+class.</p>
+</dd>
+</dl></div></body></html>

@@ -1,0 +1,204 @@
+<html>
+<head>
+<title>consumer-gzip ::: www.effbot.org</title>
+<link rel='stylesheet' href='/effbot.css' type='text/css' media='screen' />
+</head>
+<body bgcolor='#ccffcc'>
+<div>[<a href='consumer-gzip.htm'>back</a>]</div>
+<h3>Welcome to the effbot.org user editor!</h3>
+
+
+<p><b>Note: This is not a contact form!  Support questions, spam, and
+other off-topic stuff will be ignored.</b></p>
+
+<p>To suggest changes, edit the HTML fragment in the text box below.
+You can use the 'update preview' button to check your changes (the
+preview is displayed beneath the text box).  When done, fill in the
+name and address fields (optional) and click 'submit patch' to mail
+the patch to me.  (I reserve the right to decide which patches to
+include, of course.)  Thanks! /F</p>
+
+<form method='post' id='useredit'>
+<input type='hidden' name='name' value='consumer-gzip'/>
+<p>
+<input type='submit' name='preview' value='update preview' style='background:#084; color:white; width:200px; font-weight:bold;' >
+&nbsp;&nbsp;&nbsp;
+<input type='submit' name='submit' value='submit patch'  style='background:#084; color:white; width:200px; font-weight:bold;' >
+</p>
+<textarea name='text' rows='30' cols='80'>Gzip Consumer Class
+
+&lt;p class='info'&gt;January 27, 2003 | Fredrik Lundh&lt;/p&gt;
+
+&lt;p&gt;The following &lt;a href="consumer.htm"&gt;consumer&lt;/a&gt; class provides gzip
+decoding on the fly.  The consumer acts like a filter, passing decoded data
+on to another consumer object.&lt;/p&gt;
+
+&lt;p&gt;The consumer's &lt;b&gt;feed&lt;/b&gt; and &lt;b&gt;close&lt;/b&gt; methods may raise
+&lt;b&gt;IOError&lt;/b&gt; or &lt;b&gt;zlib.error&lt;/b&gt; exceptions, if the input data
+is not a valid gzip stream.&lt;/p&gt;
+
+&lt;p&gt;Note that this class delegates all method calls to the underlying
+target consumer.  This allows you to use &lt;b&gt;GzipConsumer(consumer)&lt;/b&gt;
+instead of a plain &lt;b&gt;consumer&lt;/b&gt;, in many cases.&lt;/p&gt;
+
+&lt;div class='example'&gt;
+&lt;b&gt;The GzipConsumer Class&lt;/b&gt;
+&lt;pre&gt;
+# File: GzipConsumer.py
+# &lt;a href="copyright.htm"&gt;Copyright&lt;/a&gt; (c) 2003 by Fredrik Lundh.
+
+class GzipConsumer:
+
+    def __init__(self, consumer):
+        self.__consumer = consumer
+        self.__decoder = None
+        self.__data = ""
+
+    def __getattr__(self, key):
+        # &lt;i&gt;delegate unknown methods/attributes&lt;/i&gt;
+        return getattr(self.__consumer, key)
+
+    def feed(self, data):
+        if self.__decoder is None:
+            # &lt;i&gt;check if we have a full gzip header&lt;/i&gt;
+            data = self.__data + data
+            try:
+                i = 10
+                flag = ord(data[3])
+                if flag &amp; 4: # &lt;i&gt;extra&lt;/i&gt;
+                    x = ord(data[i]) + 256*ord(data[i+1])
+                    i = i + 2 + x
+                if flag &amp; 8: # &lt;i&gt;filename&lt;/i&gt;
+                    while ord(data[i]):
+                        i = i + 1
+                    i = i + 1
+                if flag &amp; 16: # &lt;i&gt;comment&lt;/i&gt;
+                    while ord(data[i]):
+                        i = i + 1
+                    i = i + 1
+                if flag &amp; 2: # &lt;i&gt;crc&lt;/i&gt;
+                    i = i + 2
+                if len(data) &amp;lt; i:
+                    raise IndexError("not enough data")
+                if data[:3] != "\x1f\x8b\x08":
+                    raise IOError("invalid gzip data")
+                data = data[i:]
+            except IndexError:
+                self.__data = data
+                return # &lt;i&gt;need more data&lt;/i&gt;
+            import zlib
+            self.__data = ""
+            self.__decoder = zlib.decompressobj(-zlib.MAX_WBITS)
+        data = self.__decoder.decompress(data)
+        if data:
+            self.__consumer.feed(data)
+
+    def close(self):
+        if self.__decoder:
+            data = self.__decoder.flush()
+            if data:
+                self.__consumer.feed(data)
+        self.__consumer.close()
+&lt;/pre&gt;
+&lt;/div&gt;</textarea>
+<table>
+<tr><td><label for='author'>Name:</label></td><td>
+<div><input name='author' value="" size=40></div>
+</td><td>(Optional)</td></tr>
+<tr><td><label for='email'>Mail:</label></td><td>
+<div><input name='email' value="" size=40></div>
+</td><td>(Optional)</td></tr>
+<tr><td><label for='note'>Comment:</label></td><td>
+<div><input name='note' value="" size=40></div>
+</td><td>(Optional)</td></tr>
+<tr><td><label for='password'>Password:</label></td><td>
+<div><input name='password' value="(replace with the sum of 7+4)" size=40></div>
+</td><td>(Required)</td></tr>
+</table>
+<p>
+<input type='submit' name='preview' value='update preview' style='background:#084; color:white; width:200px; font-weight:bold;' >
+&nbsp;&nbsp;&nbsp;
+<input type='submit' name='submit' value='submit patch'  style='background:#084; color:white; width:200px; font-weight:bold;' >
+</p>
+<p>&nbsp;</p>
+</form>
+<div style='background: white; border: 2px solid #084; padding: 0px 20px;'>
+<h2>Gzip Consumer Class</h2>
+
+<p class='info'>January 27, 2003 | Fredrik Lundh</p>
+
+<p>The following <a href="consumer.htm">consumer</a> class provides gzip
+decoding on the fly.  The consumer acts like a filter, passing decoded data
+on to another consumer object.</p>
+
+<p>The consumer's <b>feed</b> and <b>close</b> methods may raise
+<b>IOError</b> or <b>zlib.error</b> exceptions, if the input data
+is not a valid gzip stream.</p>
+
+<p>Note that this class delegates all method calls to the underlying
+target consumer.  This allows you to use <b>GzipConsumer(consumer)</b>
+instead of a plain <b>consumer</b>, in many cases.</p>
+
+<div class='example'>
+<b>The GzipConsumer Class</b>
+<pre>
+# File: GzipConsumer.py
+# <a href="copyright.htm">Copyright</a> (c) 2003 by Fredrik Lundh.
+
+class GzipConsumer:
+
+    def __init__(self, consumer):
+        self.__consumer = consumer
+        self.__decoder = None
+        self.__data = ""
+
+    def __getattr__(self, key):
+        # <i>delegate unknown methods/attributes</i>
+        return getattr(self.__consumer, key)
+
+    def feed(self, data):
+        if self.__decoder is None:
+            # <i>check if we have a full gzip header</i>
+            data = self.__data + data
+            try:
+                i = 10
+                flag = ord(data[3])
+                if flag & 4: # <i>extra</i>
+                    x = ord(data[i]) + 256*ord(data[i+1])
+                    i = i + 2 + x
+                if flag & 8: # <i>filename</i>
+                    while ord(data[i]):
+                        i = i + 1
+                    i = i + 1
+                if flag & 16: # <i>comment</i>
+                    while ord(data[i]):
+                        i = i + 1
+                    i = i + 1
+                if flag & 2: # <i>crc</i>
+                    i = i + 2
+                if len(data) &lt; i:
+                    raise IndexError("not enough data")
+                if data[:3] != "\x1f\x8b\x08":
+                    raise IOError("invalid gzip data")
+                data = data[i:]
+            except IndexError:
+                self.__data = data
+                return # <i>need more data</i>
+            import zlib
+            self.__data = ""
+            self.__decoder = zlib.decompressobj(-zlib.MAX_WBITS)
+        data = self.__decoder.decompress(data)
+        if data:
+            self.__consumer.feed(data)
+
+    def close(self):
+        if self.__decoder:
+            data = self.__decoder.flush()
+            if data:
+                self.__consumer.feed(data)
+        self.__consumer.close()
+</pre>
+</div>
+</div>
+</body>
+</html>

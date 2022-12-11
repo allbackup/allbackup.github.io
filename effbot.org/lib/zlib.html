@@ -1,0 +1,203 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>zlib</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-zlib.html'>original</a> :::
+<a href='zlib.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>zlib&#8212;Compression compatible with gzip</h1>
+
+<p>For applications that require data compression, the functions in
+this module allow compression and decompression, using the zlib
+library. The zlib library has its own home page at <a class="link" href="http://www.gzip.org/zlib/">http://www.gzip.org/zlib/</a>.
+There are known incompatibilities between the Python module and
+versions of the zlib library earlier than 1.1.3; 1.1.3 has a
+security vulnerability, so we recommend using 1.1.4 or later.</p>
+
+<p>The available exception and functions in this module are:</p>
+</div>
+<dl><dt class="exception" id="error"><b>exception error</b> <tt class="nav"><a class="nav" href="zlib.error" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="exception">
+<p>Exception raised on compression and decompression errors.</p>
+</dd>
+<dt class="function" id="adler32"><b>adler32(string[, value])</b> <tt class="nav"><a class="nav" href="zlib.adler32" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Computes a Adler-32 checksum of <var>string</var>. (An Adler-32
+checksum is almost as reliable as a CRC32 but can be computed much
+more quickly.) If <var>value</var> is present, it is used as the
+starting value of the checksum; otherwise, a fixed default value is
+used. This allows computing a running checksum over the
+concatenation of several input strings. The algorithm is not
+cryptographically strong, and should not be used for authentication
+or digital signatures. Since the algorithm is designed for use as a
+checksum algorithm, it is not suitable for use as a general hash
+algorithm.</p>
+</dd>
+<dt class="function" id="compress"><b>compress(string[, level])</b> <tt class="nav"><a class="nav" href="zlib.compress" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Compresses the data in <var>string</var>, returning a string
+contained compressed data. <var>level</var> is an integer from
+<code>1</code> to <code>9</code> controlling the level of
+compression; <code>1</code> is fastest and produces the least
+compression, <code>9</code> is slowest and produces the most. The
+default value is <code>6</code>. Raises the <a class="link" href="#error"><code>error</code></a> exception if any error occurs.</p>
+</dd>
+<dt class="function" id="compressobj"><b>compressobj([level])</b> <tt class="nav"><a class="nav" href="zlib.compressobj" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Returns a compression object, to be used for compressing data
+streams that won't fit into memory at once. <var>level</var> is an
+integer from <code>1</code> to <code>9</code> controlling the level
+of compression; <code>1</code> is fastest and produces the least
+compression, <code>9</code> is slowest and produces the most. The
+default value is <code>6</code>.</p>
+</dd>
+<dt class="function" id="crc32"><b>crc32(string[, value])</b> <tt class="nav"><a class="nav" href="zlib.crc32" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Computes a CRC (Cyclic Redundancy Check) checksum of <var>
+string</var>. If <var>value</var> is present, it is used as the
+starting value of the checksum; otherwise, a fixed default value is
+used. This allows computing a running checksum over the
+concatenation of several input strings. The algorithm is not
+cryptographically strong, and should not be used for authentication
+or digital signatures. Since the algorithm is designed for use as a
+checksum algorithm, it is not suitable for use as a general hash
+algorithm.</p>
+</dd>
+<dt class="function" id="decompress"><b>decompress(string[, wbits[, bufsize]])</b> <tt class="nav"><a class="nav" href="zlib.decompress" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Decompresses the data in <var>string</var>, returning a string
+containing the uncompressed data. The <var>wbits</var> parameter
+controls the size of the window buffer. If <var>bufsize</var> is
+given, it is used as the initial size of the output buffer. Raises
+the <a class="link" href="#error"><code>error</code></a> exception if any
+error occurs.</p>
+
+<p>The absolute value of <var>wbits</var> is the base two logarithm
+of the size of the history buffer (the &#8220;window size&#8221;)
+used when compressing data. Its absolute value should be between 8
+and 15 for the most recent versions of the zlib library, larger
+values resulting in better compression at the expense of greater
+memory usage. The default value is 15. When <var>wbits</var> is
+negative, the standard gzip header is suppressed; this is an
+undocumented feature of the zlib library, used for compatibility
+with unzip's compression file format.</p>
+
+<p><var>bufsize</var> is the initial size of the buffer used to
+hold decompressed data. If more space is required, the buffer size
+will be increased as needed, so you don't have to get this value
+exactly right; tuning it will only save a few calls to <code>c:malloc</code>. The default size is
+16384.</p>
+</dd>
+<dt class="function" id="decompressobj"><b>decompressobj([wbits])</b> <tt class="nav"><a class="nav" href="zlib.decompressobj" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Returns a decompression object, to be used for decompressing
+data streams that won't fit into memory at once. The <var>
+wbits</var> parameter controls the size of the window buffer.</p>
+</dd>
+</dl><div class="text">
+<p>Compression objects support the following methods:</p>
+</div>
+<dl><dt class="method"><b>compress(string)</b> <tt class="nav"><a class="nav" href="zlib.compress" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Compress <var>string</var>, returning a string containing
+compressed data for at least part of the data in <var>string</var>.
+This data should be concatenated to the output produced by any
+preceding calls to the <a class="link" href="#compress"><code>
+compress</code></a> method. Some input may be kept in internal buffers for
+later processing.</p>
+</dd>
+<dt class="method" id="flush"><b>flush([mode])</b> <tt class="nav"><a class="nav" href="zlib.flush" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>All pending input is processed, and a string containing the
+remaining compressed output is returned. <var>mode</var> can be
+selected from the constants <code>Z_SYNC_FLUSH</code>, <code>
+Z_FULL_FLUSH</code>, or <code>Z_FINISH</code>, defaulting to <code>
+Z_FINISH</code>. <code>Z_SYNC_FLUSH</code> and <code>
+Z_FULL_FLUSH</code> allow compressing further strings of data and
+are used to allow partial error recovery on decompression, while
+<code>Z_FINISH</code> finishes the compressed stream and prevents
+compressing any more data. After calling <a class="link" href="#flush"><code>flush</code></a> with <var>mode</var> set to <code>
+Z_FINISH</code>, the <a class="link" href="#compress"><code>
+compress</code></a> method cannot be called again; the only realistic
+action is to delete the object.</p>
+</dd>
+</dl><div class="text">
+<p>Decompression objects support the following methods, and two
+attributes:</p>
+</div>
+<dl><dt class="attribute" id="unused_data"><b>unused_data</b> <tt class="nav"><a class="nav" href="zlib.unused_data" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>A string which contains any bytes past the end of the compressed
+data. That is, this remains <code>""</code> until the last byte
+that contains compression data is available. If the whole string
+turned out to contain compressed data, this is <code>""</code>, the
+empty string.</p>
+
+<p>The only way to determine where a string of compressed data ends
+is by actually decompressing it. This means that when compressed
+data is contained part of a larger file, you can only find the end
+of it by reading data and feeding it followed by some non-empty
+string into a decompression object's <a class="link" href="#decompress"><code>decompress</code></a> method until the <a class="link" href="#unused_data"><code>unused_data</code></a> attribute is
+no longer the empty string.</p>
+</dd>
+<dt class="attribute" id="unconsumed_tail"><b>unconsumed_tail</b> <tt class="nav"><a class="nav" href="zlib.unconsumed_tail" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>A string that contains any data that was not consumed by the
+last <a class="link" href="#decompress"><code>decompress</code></a> call
+because it exceeded the limit for the uncompressed data buffer.
+This data has not yet been seen by the zlib machinery, so you must
+feed it (possibly with further data concatenated to it) back to a
+subsequent <a class="link" href="#decompress"><code>decompress</code></a>
+method call in order to get correct output.</p>
+</dd>
+<dt class="method"><b>decompress(string[, max_length])</b> <tt class="nav"><a class="nav" href="zlib.decompress" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Decompress <var>string</var>, returning a string containing the
+uncompressed data corresponding to at least part of the data in
+<var>string</var>. This data should be concatenated to the output
+produced by any preceding calls to the <a class="link" href="#decompress"><code>decompress</code></a> method. Some of the input
+data may be preserved in internal buffers for later processing.</p>
+
+<p>If the optional parameter <var>max_length</var> is supplied then
+the return value will be no longer than <var>max_length</var>. This
+may mean that not all of the compressed input can be processed; and
+unconsumed data will be stored in the attribute <a class="link" href="#unconsumed_tail"><code>unconsumed_tail</code></a>. This string must
+be passed to a subsequent call to <a class="link" href="#decompress"><code>decompress</code></a> if decompression is to
+continue. If <var>max_length</var> is not supplied then the whole
+input is decompressed, and <a class="link" href="#unconsumed_tail"><code>unconsumed_tail</code></a> is an empty
+string.</p>
+</dd>
+<dt class="method"><b>flush()</b> <tt class="nav"><a class="nav" href="zlib.flush" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>All pending input is processed, and a string containing the
+remaining uncompressed output is returned. After calling <a class="link" href="#flush"><code>flush</code></a>, the <a class="link" href="#decompress"><code>decompress</code></a> method cannot be called
+again; the only realistic action is to delete the object.</p>
+</dd>
+</dl><div class="text"><span class="mark">@see</span> <code>Module gzip</code> Reading and writing gzip-format
+files. <span class="mark">@see</span> <a class="link" href="http://www.gzip.org/zlib/">http://www.gzip.org/zlib/</a> The
+zlib library home page.</div>
+</div></body></html>

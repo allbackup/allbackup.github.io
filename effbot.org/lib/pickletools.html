@@ -1,0 +1,56 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>pickletools</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-pickletools.html'>original</a> :::
+<a href='pickletools.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>pickletools&#8212;Tools for pickle developers.</h1>
+
+<p>This module contains various constants relating to the intimate
+details of the <code>pickle</code>
+module, some lengthy comments about the implementation, and a few
+useful functions for analyzing pickled data. The contents of this
+module are useful for Python core developers who are working on the
+<code>pickle</code> and <code>cPickle</code> implementations; ordinary users of
+the <code>pickle</code> module probably
+won't find the <code>
+pickletools</code> module relevant.</p>
+</div>
+<dl><dt class="function" id="dis"><b>dis(pickle[, out=None, memo=None,
+indentlevel=4])</b> <tt class="nav"><a class="nav" href="pickletools.dis" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Outputs a symbolic disassembly of the pickle to the file-like
+object <var>out</var>, defaulting to <code>sys.stdout</code>. <var>
+pickle</var> can be a string or a file-like object. <var>memo</var>
+can be a Python dictionary that will be used as the pickle's memo;
+it can be used to perform disassemblies across multiple pickles
+created by the same pickler. Successive levels, indicated by <code>
+MARK</code> opcodes in the stream, are indented by <var>
+indentlevel</var> spaces.</p>
+</dd>
+<dt class="function" id="genops"><b>genops(pickle)</b> <tt class="nav"><a class="nav" href="pickletools.genops" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Provides an iterator over all of the opcodes in a pickle,
+returning a sequence of <code>(</code><var>opcode</var>, <var>
+arg</var>, <var>pos</var>) triples. <var>opcode</var> is an
+instance of an <code>
+OpcodeInfo</code> class; <var>arg</var> is the decoded value, as a
+Python object, of the opcode's argument; <var>pos</var> is the
+position at which this opcode is located. <var>pickle</var> can be
+a string or a file-like object.</p>
+</dd>
+</dl></div></body></html>

@@ -1,0 +1,94 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>Calls</title> <script type="text/javascript">effbot_page_id=1226;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <h1 class="maintitle">Calls</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p>A call calls a callable object (e.g. a function) with a possibly empty series
+of arguments:</p><p>Syntax:</p><blockquote><p><em><a href="syntax-primary">primary</a></em> <strong>(</strong> <em>argument list</em> [<strong>,</strong>] <strong>)</strong></p></blockquote><p>[primary 
+call ::= [ primary][1] &#8220;(&#8221; [[argument_list][2] [&#8220;,&#8221;]] &#8220;)&#8221;
+&#8220;(&#8221; [[argument_list][2] [&#8220;,&#8221;] | [test][3] [ genexpr_for][4] ] &#8220;)&#8221; 
+argument_list ::= [positional_arguments][5] [&#8220;,&#8221; [keyword_arguments][6]]
+<code>["," "\*" [ expression][7]]</code>
+<code>["," "\*\*" [ expression][7]]</code>
+<code>| [keyword\_arguments][6] ["," "\*" [ expression][7]]</code>
+<code>["," "\*\*" [ expression][7]]</code>
+<code>| "\*" [expression][7] ["," "\*\*" [ expression][7]]</code>
+<code>| "\*\*" [expression][7]</code>
+positional_arguments ::= [ expression][7] (&#8220;,&#8221; [expression][7])*
+keyword_arguments ::= [ keyword_item][8] (&#8220;,&#8221; [keyword_item][8])*
+keyword_item ::= [ identifier][9] &#8220;=&#8221; [expression][7]</p><p>A trailing comma may be present after the positional and keyword
+arguments but does not affect the semantics.</p><p>The primary must evaluate to a <em>callable object</em> (user-defined
+functions, built-in functions, methods of built-in objects, class
+objects, methods of class instances, and certain class instances
+themselves are callable; extensions may define additional callable
+object types). All argument expressions are evaluated before the call
+is attempted. Please refer to section [7.6][11] for the syntax of
+formal parameter lists.</p><p>If keyword arguments are present, they are first converted to
+positional arguments, as follows. First, a list of unfilled slots is
+created for the formal parameters. If there are N positional
+arguments, they are placed in the first N slots. Next, for each
+keyword argument, the identifier is used to determine the
+corresponding slot (if the identifier is the same as the first formal
+parameter name, the first slot is used, and so on). If the slot is
+already filled, a <a href="TypeError.htm"><strong>TypeError</strong></a> exception is raised. Otherwise, the value
+of the argument is placed in the slot, filling it (even if the
+expression is <a href="None.htm"><strong>None</strong></a>, it fills the slot). When all arguments have
+been processed, the slots that are still unfilled are filled with the
+corresponding default value from the function definition. (Default
+values are calculated, once, when the function is defined; thus, a
+mutable object such as a list or dictionary used as default value will
+be shared by all calls that don&#8217;t specify an argument value for the
+corresponding slot; this should usually be avoided.) If there are any
+unfilled slots for which no default value is specified, a <a href="TypeError.htm"><strong>TypeError</strong></a>
+exception is raised. Otherwise, the list of filled slots is used as
+the argument list for the call.</p><p>If there are more positional arguments than there are formal parameter
+slots, a <a href="TypeError.htm"><strong>TypeError</strong></a> exception is raised, unless a formal parameter
+using the syntax &#8220;*identifier&#8221; is present; in this case, that formal
+parameter receives a tuple containing the excess positional arguments
+(or an empty tuple if there were no excess positional arguments).</p><p>If any keyword argument does not correspond to a formal parameter
+name, a <a href="TypeError.htm"><strong>TypeError</strong></a> exception is raised, unless a formal parameter using
+the syntax &#8220;**identifier&#8221; is present; in this case, that formal
+parameter receives a dictionary containing the excess keyword
+arguments (using the keywords as keys and the argument values as
+corresponding values), or a (new) empty dictionary if there were no
+excess keyword arguments.</p><p>If the syntax &#8220;*expression&#8221; appears in the function call,
+&#8220;expression&#8221; must evaluate to a sequence. Elements from this sequence
+are treated as if they were additional positional arguments; if there
+are postional arguments x1,&#8230;,xN , and &#8220;expression&#8221; evaluates to a
+sequence y1,&#8230;,yM, this is equivalent to a call with M+N positional
+arguments x1,&#8230;,xN,y1,&#8230;,yM.</p><p>A consequence of this is that although the &#8220;*expression&#8221; syntax
+appears <em>after</em> any keyword arguments, it is processed <em>before</em> the
+keyword arguments (and the &#8220;**expression&#8221; argument, if any - see
+below). So:</p><pre><code>&gt;&gt;&gt; def f(a, b):
+...  print a, b
+...
+&gt;&gt;&gt; f(b=1, *(2,))
+2 1
+&gt;&gt;&gt; f(a=1, *(2,))
+Traceback (most recent call last):
+  File "&lt;stdin&gt;", line 1, in ?
+TypeError: f() got multiple values for keyword argument 'a'
+&gt;&gt;&gt; f(1, *(2,))
+1 2
+</code></pre><p>It is unusual for both keyword arguments and the &#8220;*expression&#8221; syntax
+to be used in the same call, so in practice this confusion does not
+arise.</p><p>If the syntax &#8220;**expression&#8221; appears in the function call,
+&#8220;expression&#8221; must evaluate to a (subclass of) dictionary, the contents
+of which are treated as additional keyword arguments. In the case of a
+keyword appearing in both &#8220;expression&#8221; and as an explicit keyword
+argument, a <a href="TypeError.htm"><strong>TypeError</strong></a> exception is raised.</p><p>Formal parameters using the syntax &#8220;*identifier&#8221; or &#8220;**identifier&#8221;
+cannot be used as positional argument slots or as keyword argument
+names. Formal parameters using the syntax &#8220;(sublist)&#8221; cannot be used
+as keyword argument names; the outermost sublist corresponds to a
+single unnamed argument slot, and the argument value is assigned to
+the sublist using the usual tuple assignment rules after all other
+parameter processing is done.</p><p>A call always returns some value, possibly <a href="None.htm"><strong>None</strong></a>, unless it raises an
+exception. How this value is computed depends on the type of the
+callable object.</p><p>If it is&#8212;</p><p><strong>a user-defined function:</strong></p><p>The code block for the function is executed, passing it the argument
+list. The first thing the code block will do is bind the formal
+parameters to the arguments; this is described in section
+[7.6][11]. When the code block executes a <a href="return.htm"><strong>return</strong></a> statement, this
+specifies the return value of the function call.</p><p><strong>a built-in function or method:</strong></p><p>The result is up to the interpreter; see the <em>[Python Library
+Reference][12]</em> for the descriptions of built-in functions and
+methods.</p><p><strong>a class object:</strong></p><p>A new instance of that class is returned.</p><p><strong>a class instance method:</strong></p><p>The corresponding user-defined function is called, with an argument
+list that is one longer than the argument list of the call; the
+instance becomes the first argument.</p><p><strong>a class instance:</strong></p><p>The class must define a <a href="method-call">__call__</a> method; the effect
+is then the same as if that method was called.</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div> <!-- yui-g --></div> <!-- content --> </div> <!-- yui-b --> </div> <!-- yui-main --> <div class="yui-b"> <div id='menu'> <ul> <li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li> <li><b><a href="." title="Go to pyref index page.">::: pyref :::</a></b></li> </ul> </div> <!-- menu --> </div> <!-- yui-b --> </div> <!-- bd --> <div id="ft"> <!-- footer --> <p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;"></a>
+this page was rendered by a <a href="http://www.djangoproject.com/">django</a> application in 0.02s 2011-06-21 20:49:27.300217.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p> </div> <!-- ft --> </div> <!-- doc --> <script src="/media/js/effbot-min.js" type="text/javascript"> </script> </body> </html>

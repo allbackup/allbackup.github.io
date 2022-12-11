@@ -1,0 +1,111 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>binascii -- Convert between binary and&nbsp;ASCII</title> <script type="text/javascript">effbot_page_id=971;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> <!--
+<p style='color: #8f8f8f; background: #fff5bf; padding: 5px 10px;'> <b>2008-07-15:</b> Selected articles
+
+now have experimental "comment" links in the left column and at the bottom.
+You're welcome to use them for commenting and voting on articles.
+For a bit more on this, see <a
+href="http://effbot.slinkset.com/links/Welcome_to_discuss_effbot_org">this
+page</a>. /F
+</p>
+--> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <h1 class="maintitle">binascii -- Convert between binary and&nbsp;ASCII</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><div class="module"><p>The <a class="link" href="binascii.htm#binascii">binascii</a> module
+contains a number of methods to convert between binary and various
+ASCII-encoded binary representations. Normally, you will not use
+these functions directly but use wrapper modules like <a class="link" href="uu.htm#uu">uu</a> or <a class="link" href="binhex.htm#binhex">binhex</a> instead, this module solely exists
+because bit-manipulation of large amounts of data is slow in
+Python.</p><p>The <a class="link" href="binascii.htm#binascii">binascii</a> module
+defines the following functions:</p></div><dl><dt class="function" id="binascii.a2b_uu"><b>a2b_uu(string)</b> <tt class="mark"><a href="#binascii.a2b_uu" title="bookmark">#</a>|<a href="/comment/pylib/binascii.htm%23binascii.a2b_uu" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="function">
+<p>Convert a single line of uuencoded data back to binary and
+return the binary data. Lines normally contain 45 (binary) bytes,
+except for the last line. Line data may be followed by
+whitespace.</p></dd>
+<dt class="function" id="binascii.b2a_uu"><b>b2a_uu(data)</b> <tt class="mark"><a href="#binascii.b2a_uu" title="bookmark">#</a>|<a href="/comment/pylib/binascii.htm%23binascii.b2a_uu" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="function">
+<p>Convert binary data to a line of ASCII characters, the return
+value is the converted line, including a newline char. The length
+of <var>data</var> should be at most 45.</p></dd>
+<dt class="function" id="binascii.a2b_base64"><b>a2b_base64(string)</b> <tt class="mark"><a href="#binascii.a2b_base64" title="bookmark">#</a>|<a href="/comment/pylib/binascii.htm%23binascii.a2b_base64" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="function">
+<p>Convert a block of base64 data back to binary and return the
+binary data. More than one line may be passed at a time.</p></dd>
+<dt class="function" id="binascii.b2a_base64"><b>b2a_base64(data)</b> <tt class="mark"><a href="#binascii.b2a_base64" title="bookmark">#</a>|<a href="/comment/pylib/binascii.htm%23binascii.b2a_base64" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="function">
+<p>Convert binary data to a line of ASCII characters in base64
+coding. The return value is the converted line, including a newline
+char. The length of <var>data</var> should be at most 57 to adhere
+to the base64 standard.</p></dd>
+<dt class="function" id="binascii.a2b_qp"><b>a2b_qp(string[, header])</b> <tt class="mark"><a href="#binascii.a2b_qp" title="bookmark">#</a>|<a href="/comment/pylib/binascii.htm%23binascii.a2b_qp" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="function">
+<p>Convert a block of quoted-printable data back to binary and
+return the binary data. More than one line may be passed at a time.
+If the optional argument <var>header</var> is present and true,
+underscores will be decoded as spaces.</p></dd>
+<dt class="function" id="binascii.b2a_qp"><b>b2a_qp(data[, quotetabs, istext, header])</b> <tt class="mark"><a href="#binascii.b2a_qp" title="bookmark">#</a>|<a href="/comment/pylib/binascii.htm%23binascii.b2a_qp" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="function">
+<p>Convert binary data to a line(s) of ASCII characters in
+quoted-printable encoding. The return value is the converted
+line(s). If the optional argument <var>quotetabs</var> is present
+and true, all tabs and spaces will be encoded. If the optional
+argument <var>istext</var> is present and true, newlines are not
+encoded but trailing whitespace will be encoded. If the optional
+argument <var>header</var> is present and true, spaces will be
+encoded as underscores per RFC1522. If the optional argument <var>
+header</var> is present and false, newline characters will be
+encoded as well; otherwise linefeed conversion might corrupt the
+binary data stream.</p></dd>
+<dt class="function" id="binascii.a2b_hqx"><b>a2b_hqx(string)</b> <tt class="mark"><a href="#binascii.a2b_hqx" title="bookmark">#</a>|<a href="/comment/pylib/binascii.htm%23binascii.a2b_hqx" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="function">
+<p>Convert binhex4 formatted ASCII data to binary, without doing
+RLE-decompression. The string should contain a complete number of
+binary bytes, or (in case of the last portion of the binhex4 data)
+have the remaining bits zero.</p></dd>
+<dt class="function" id="binascii.rledecode_hqx"><b>rledecode_hqx(data)</b> <tt class="mark"><a href="#binascii.rledecode_hqx" title="bookmark">#</a>|<a href="/comment/pylib/binascii.htm%23binascii.rledecode_hqx" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="function">
+<p>Perform RLE-decompression on the data, as per the binhex4
+standard. The algorithm uses <code>0x90</code> after a byte as a
+repeat indicator, followed by a count. A count of <code>0</code>
+specifies a byte value of <code>0x90</code>. The routine returns
+the decompressed data, unless data input data ends in an orphaned
+repeat indicator, in which case the <a class="link" href="binascii.htm#binascii.Incomplete">Incomplete</a> exception is raised.</p></dd>
+<dt class="function" id="binascii.rlecode_hqx"><b>rlecode_hqx(data)</b> <tt class="mark"><a href="#binascii.rlecode_hqx" title="bookmark">#</a>|<a href="/comment/pylib/binascii.htm%23binascii.rlecode_hqx" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="function">
+<p>Perform binhex4 style RLE-compression on <var>data</var> and
+return the result.</p></dd>
+<dt class="function" id="binascii.b2a_hqx"><b>b2a_hqx(data)</b> <tt class="mark"><a href="#binascii.b2a_hqx" title="bookmark">#</a>|<a href="/comment/pylib/binascii.htm%23binascii.b2a_hqx" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="function">
+<p>Perform hexbin4 binary-to-ASCII translation and return the
+resulting string. The argument should already be RLE-coded, and
+have a length divisible by 3 (except possibly the last
+fragment).</p></dd>
+<dt class="function" id="binascii.crc_hqx"><b>crc_hqx(data, crc)</b> <tt class="mark"><a href="#binascii.crc_hqx" title="bookmark">#</a>|<a href="/comment/pylib/binascii.htm%23binascii.crc_hqx" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="function">
+<p>Compute the binhex4 crc value of <var>data</var>, starting with
+an initial <var>crc</var> and returning the result.</p></dd>
+<dt class="function" id="binascii.crc32"><b>crc32(data[, crc])</b> <tt class="mark"><a href="#binascii.crc32" title="bookmark">#</a>|<a href="/comment/pylib/binascii.htm%23binascii.crc32" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="function">
+<p>Compute CRC-32, the 32-bit checksum of data, starting with an
+initial crc. This is consistent with the ZIP file checksum. Since
+the algorithm is designed for use as a checksum algorithm, it is
+not suitable for use as a general hash algorithm. Use as
+follows:</p><pre>
+    print binascii.crc32("hello world")
+    # Or, in two pieces:
+    crc = binascii.crc32("hello")
+    crc = binascii.crc32(" world", crc)
+    print crc
+</pre></dd>
+<dt class="function" id="binascii.hexlify"><b>hexlify(data)</b> <tt class="mark"><a href="#binascii.hexlify" title="bookmark">#</a>|<a href="/comment/pylib/binascii.htm%23binascii.hexlify" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="function">
+<p>Return the hexadecimal representation of the binary <var>
+data</var>. Every byte of <var>data</var> is converted into the
+corresponding 2-digit hex representation. The resulting string is
+therefore twice as long as the length of <var>data</var>.</p></dd>
+<dt class="function" id="binascii.unhexlify"><b>unhexlify(hexstr)</b> <tt class="mark"><a href="#binascii.unhexlify" title="bookmark">#</a>|<a href="/comment/pylib/binascii.htm%23binascii.unhexlify" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="function">
+<p>Return the binary data represented by the hexadecimal string
+<var>hexstr</var>. This function is the inverse of <a class="link" href="b2a_hex.htm#b2a_hex">b2a_hex</a>. <var>hexstr</var> must contain an
+even number of hexadecimal digits (which can be upper or lower
+case), otherwise a <a class="link" href="exceptions.htm#exceptions.TypeError">exceptions.TypeError</a> is
+raised.</p></dd>
+<dt class="exception" id="binascii.Error"><b>exception Error</b> <tt class="mark"><a href="#binascii.Error" title="bookmark">#</a>|<a href="/comment/pylib/binascii.htm%23binascii.Error" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="exception">
+<p>Exception raised on errors. These are usually programming
+errors.</p></dd>
+<dt class="exception" id="binascii.Incomplete"><b>exception Incomplete</b> <tt class="mark"><a href="#binascii.Incomplete" title="bookmark">#</a>|<a href="/comment/pylib/binascii.htm%23binascii.Incomplete" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="exception">
+<p>Exception raised on incomplete data. These are usually not
+programming errors, but may be handled by reading a little more
+data and trying again.</p></dd>
+</dl><div class="text"><span class="mark">@see</span> <a class="link" href="base64.htm#base64">Module base64</a> Support for base64 encoding
+used in MIME email messages. <span class="mark">@see</span> <a class="link" href="binhex.htm#binhex">Module binhex</a> Support for the
+binhex format used on the Macintosh. <span class="mark">@see</span>
+<a class="link" href="uu.htm#uu">Module uu</a> Support for UU
+encoding used on Unix. <span class="mark">@see</span> <a class="link" href="quopri.htm#quopri">Module quopri</a> Support for
+quoted-printable encoding used in MIME email messages. .</div></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div> <!-- yui-g --></div> <!-- content --> </div> <!-- yui-b --> </div> <!-- yui-main --> <div class="yui-b"> <div id='menu'> <ul> <li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li> <li><b><a href="." title="Go to pylib index page.">::: pylib :::</a></b></li> </ul> </div> <!-- menu --> </div> <!-- yui-b --> </div> <!-- bd --> <div id="ft"> <!-- footer --> <p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15_grey.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;"></a>
+this page was rendered by a <a href="http://www.djangoproject.com/">django</a> application in 0.03s 2009-06-15 16:35:29.389457.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p> </div> <!-- ft --> </div> <!-- doc --> <script src="/media/js/effbot-min.js" type="text/javascript"> </script> </body> </html>

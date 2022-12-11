@@ -1,0 +1,360 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>posixfile</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-posixfile.html'>original</a> :::
+<a href='posixfile.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>posixfile&#8212;File-like objects with locking support</h1>
+
+<p>Availability: Unix.</p>
+</div>
+<div class="error">
+<p>This module implements some additional functionality over the
+built-in file objects. In particular, it implements file locking,
+control over the file flags, and an easy interface to duplicate the
+file object. The module defines a new file object, the posixfile
+object. It has all the standard file object methods and adds the
+methods described below. This module only works for certain flavors
+of Unix, since it uses <code>
+fcntl.fcntl</code> for file locking.</p>
+
+<p>To instantiate a posixfile object, use the <a class="link" href="#open"><code>open</code></a> function in the <code>posixfile</code> module. The resulting object
+looks and feels roughly the same as a standard file object.</p>
+
+<p>The <code>posixfile</code> module
+defines the following constants:</p>
+</div>
+<dl><dt class="variable" id="SEEK_SET"><b>SEEK_SET</b> <tt class="nav"><a class="nav" href="posixfile.SEEK_SET" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Offset is calculated from the start of the file.</p>
+</dd>
+<dt class="variable" id="SEEK_CUR"><b>SEEK_CUR</b> <tt class="nav"><a class="nav" href="posixfile.SEEK_CUR" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Offset is calculated from the current position in the file.</p>
+</dd>
+<dt class="variable" id="SEEK_END"><b>SEEK_END</b> <tt class="nav"><a class="nav" href="posixfile.SEEK_END" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Offset is calculated from the end of the file.</p>
+</dd>
+</dl><div class="text">
+<p>The <code>posixfile</code> module
+defines the following functions:</p>
+</div>
+<dl><dt class="function" id="open"><b>open(filename[, mode[, bufsize]])</b> <tt class="nav"><a class="nav" href="posixfile.open" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Create a new posixfile object with the given filename and mode.
+The <var>filename</var>, <var>mode</var> and <var>bufsize</var>
+arguments are interpreted the same way as by the built-in <a class="link" href="#open"><code>open</code></a> function.</p>
+</dd>
+<dt class="function" id="fileopen"><b>fileopen(fileobject)</b> <tt class="nav"><a class="nav" href="posixfile.fileopen" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Create a new posixfile object with the given standard file
+object. The resulting object has the same filename and mode as the
+original file object.</p>
+</dd>
+</dl><div class="text">
+<p>The posixfile object defines the following additional
+methods:</p>
+</div>
+<dl><dt class="function" id="lock"><b>lock(fmt, [len[, start[, whence]]])</b> <tt class="nav"><a class="nav" href="posixfile.lock" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Lock the specified section of the file that the file object is
+referring to. The format is explained below in a table. The <var>
+len</var> argument specifies the length of the section that should
+be locked. The default is <code>0</code>. <var>start</var>
+specifies the starting offset of the section, where the default is
+<code>0</code>. The <var>whence</var> argument specifies where the
+offset is relative to. It accepts one of the constants <code>
+SEEK_SET</code>, <code>SEEK_CUR</code> or <code>SEEK_END</code>.
+The default is <code>SEEK_SET</code>. For more information about
+the arguments refer to the fcntl(2) manual page on your system.</p>
+</dd>
+<dt class="function" id="flags"><b>flags([flags])</b> <tt class="nav"><a class="nav" href="posixfile.flags" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Set the specified flags for the file that the file object is
+referring to. The new flags are ORed with the old flags, unless
+specified otherwise. The format is explained below in a table.
+Without the <var>flags</var> argument a string indicating the
+current flags is returned (this is the same as the "<code>?</code>"
+modifier). For more information about the flags refer to the
+fcntl(2) manual page on your system.</p>
+</dd>
+<dt class="function" id="dup"><b>dup()</b> <tt class="nav"><a class="nav" href="posixfile.dup" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Duplicate the file object and the underlying file pointer and
+file descriptor. The resulting object behaves as if it were newly
+opened.</p>
+</dd>
+<dt class="function" id="dup2"><b>dup2(fd)</b> <tt class="nav"><a class="nav" href="posixfile.dup2" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Duplicate the file object and the underlying file pointer and
+file descriptor. The new object will have the given file
+descriptor. Otherwise the resulting object behaves as if it were
+newly opened.</p>
+</dd>
+<dt class="function" id="file"><b>file()</b> <tt class="nav"><a class="nav" href="posixfile.file" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return the standard file object that the posixfile object is
+based on. This is sometimes necessary for functions that insist on
+a standard file object.</p>
+</dd>
+</dl><div class="text">
+<p>All methods raise <code>exceptions.IOError</code> when the
+request fails.</p>
+
+<p>Format characters for the <a class="link" href="#lock"><code>
+lock</code></a> method have the following meaning:</p>
+
+<table border="1">
+<tr>
+<th>
+<p>Format</p>
+</th>
+<th>
+<p>Meaning</p>
+</th>
+</tr>
+
+<tr>
+<td>
+<p><code>u</code></p>
+</td>
+<td>
+<p>unlock the specified region</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>r</code></p>
+</td>
+<td>
+<p>request a read lock for the specified section</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>w</code></p>
+</td>
+<td>
+<p>request a write lock for the specified section</p>
+</td>
+</tr>
+</table>
+
+<br />
+<br />
+ 
+
+<p>In addition the following modifiers can be added to the
+format:</p>
+
+<table border="1">
+<tr>
+<th>
+<p>Modifier</p>
+</th>
+<th>
+<p>Meaning</p>
+</th>
+<th>
+<p>Notes</p>
+</th>
+</tr>
+
+<tr>
+<td>
+<p><code>|</code></p>
+</td>
+<td>
+<p>wait until the lock has been granted</p>
+</td>
+<td />
+</tr>
+
+<tr>
+<td>
+<p><code>?</code></p>
+</td>
+<td>
+<p>return the first lock conflicting with the requested lock, or <code>None</code> if there is no conflict.</p>
+</td>
+<td>
+<p>(1)</p>
+</td>
+</tr>
+</table>
+
+<br />
+<br />
+ 
+
+<p>Note:</p>
+</div>
+<dl><dt class="variable"><b>(1)</b> <tt class="nav"><a class="nav" href="posixfile." title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>The lock returned is in the format <code>
+(</code><var>mode</var>, <var>len</var>, <var>start</var>, <var>
+whence</var>, <var>pid</var>) where <var>mode</var> is a character
+representing the type of lock ('r' or 'w'). This modifier prevents
+a request from being granted; it is for query purposes only.</p>
+</dd>
+</dl><div class="text">
+<p>Format characters for the <a class="link" href="#flags"><code>
+flags</code></a> method have the following meanings:</p>
+
+<table border="1">
+<tr>
+<th>
+<p>Format</p>
+</th>
+<th>
+<p>Meaning</p>
+</th>
+</tr>
+
+<tr>
+<td>
+<p><code>a</code></p>
+</td>
+<td>
+<p>append only flag</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>c</code></p>
+</td>
+<td>
+<p>close on exec flag</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>n</code></p>
+</td>
+<td>
+<p>no delay flag (also called non-blocking flag)</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>s</code></p>
+</td>
+<td>
+<p>synchronization flag</p>
+</td>
+</tr>
+</table>
+
+<br />
+<br />
+ 
+
+<p>In addition the following modifiers can be added to the
+format:</p>
+
+<table border="1">
+<tr>
+<th>
+<p>Modifier</p>
+</th>
+<th>
+<p>Meaning</p>
+</th>
+<th>
+<p>Notes</p>
+</th>
+</tr>
+
+<tr>
+<td>
+<p><code>!</code></p>
+</td>
+<td>
+<p>turn the specified flags 'off', instead of the default 'on'</p>
+</td>
+<td>
+<p>(1)</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>=</code></p>
+</td>
+<td>
+<p>replace the flags, instead of the default 'OR' operation</p>
+</td>
+<td>
+<p>(1)</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>?</code></p>
+</td>
+<td>
+<p>return a string in which the characters represent the flags that
+are set.</p>
+</td>
+<td>
+<p>(2)</p>
+</td>
+</tr>
+</table>
+
+<br />
+<br />
+ 
+
+<p>Notes:</p>
+</div>
+<dl><dt class="variable"><b>(2)</b> <tt class="nav"><a class="nav" href="posixfile." title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>This string represents the flags after they may have been
+altered by the same call.</p>
+</dd>
+</dl><div class="text">
+<p>Examples:</p>
+
+<pre>
+import posixfile
+
+file = posixfile.open('/tmp/test', 'w')
+file.lock('w|')
+...
+file.lock('u')
+file.close()
+</pre>
+</div>
+</div></body></html>

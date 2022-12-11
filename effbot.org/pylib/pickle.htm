@@ -1,0 +1,544 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>pickle -- Python object&nbsp;serialization</title> <script type="text/javascript">effbot_page_id=1086;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <h1 class="maintitle">pickle -- Python object&nbsp;serialization</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><div class="module"><p>The <a class="link" href="pickle.htm#pickle">pickle</a> module
+implements a fundamental, but powerful algorithm for serializing
+and de-serializing a Python object structure.
+&#8220;Pickling&#8221; is the process whereby a Python object
+hierarchy is converted into a byte stream, and
+&#8220;unpickling&#8221; is the inverse operation, whereby a byte
+stream is converted back into an object hierarchy. Pickling (and
+unpickling) is alternatively known as &#8220;serialization&#8221;,
+&#8220;marshalling,&#8221;<a class="link" href="footnote:8963.htm#footnote:8963">footnote:8963</a> or
+&#8220;flattening&#8221;, however, to avoid confusion, the terms
+used here are &#8220;pickling&#8221; and
+&#8220;unpickling&#8221;.</p><p>This documentation describes both the <a class="link" href="pickle.htm#pickle">pickle</a> module and the <a class="link" href="cPickle.htm#cPickle">cPickle</a> module.</p><h4>Footnotes</h4></div><dl><dt class="variable" id="pickle...."><b>&#8230; &#8220;marshalling,&#8221;3.2</b> <tt class="mark"><a href="#pickle...." title="bookmark">#</a>|<a href="/comment/pylib/pickle.htm%23pickle...." title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="variable">
+<p>Don&#8217;t confuse this with the <a class="link" href="marshal.htm#marshal">
+marshal</a> module</p></dd>
+</dl><div class="text"><h2 id="relationship-to-other-python-modules">Relationship to other Python modules&#160;<a class="nav" href="#relationship-to-other-python-modules" title="bookmark!">#</a></h2><p>The <a class="link" href="pickle.htm#pickle">pickle</a> module has an
+optimized cousin called the <a class="link" href="cPickle.htm#cPickle">
+cPickle</a> module. As its name implies, <a class="link" href="cPickle.htm#cPickle">cPickle</a> is written in C, so it can be up to
+1000 times faster than <a class="link" href="pickle.htm#pickle">
+pickle</a>. However it does not support subclassing of the <a class="link" href="pickle.htm#pickle.Pickler">Pickler</a> and <a class="link" href="pickle.htm#pickle.Unpickler">Unpickler</a> classes, because in <a class="link" href="cPickle.htm#cPickle">cPickle</a> these are functions,
+not classes. Most applications have no need for this functionality,
+and can benefit from the improved performance of <a class="link" href="cPickle.htm#cPickle">cPickle</a>. Other than that, the interfaces of
+the two modules are nearly identical; the common interface is
+described in this manual and differences are pointed out where
+necessary. In the following discussions, we use the term
+&#8220;pickle&#8221; to collectively describe the <a class="link" href="pickle.htm#pickle">pickle</a> and <a class="link" href="cPickle.htm#cPickle">cPickle</a> modules.</p><p>The data streams the two modules produce are guaranteed to be
+interchangeable.</p><p>Python has a more primitive serialization module called <a class="link" href="marshal.htm#marshal">marshal</a>, but in general <a class="link" href="pickle.htm#pickle">pickle</a> should always be the
+preferred way to serialize Python objects. <a class="link" href="marshal.htm#marshal">marshal</a> exists primarily to support
+Python&#8217;s .pyc files.</p><p>The <a class="link" href="pickle.htm#pickle">pickle</a> module differs
+from <a class="link" href="marshal.htm#marshal">marshal</a> several
+significant ways:</p><ul><li><p>The <a class="link" href="pickle.htm#pickle">pickle</a> module keeps
+track of the objects it has already serialized, so that later
+references to the same object won&#8217;t be serialized again. <a class="link" href="marshal.htm#marshal">marshal</a> doesn&#8217;t do this.</p><p>This has implications both for recursive objects and object
+sharing. Recursive objects are objects that contain references to
+themselves. These are not handled by marshal, and in fact,
+attempting to marshal recursive objects will crash your Python
+interpreter. Object sharing happens when there are multiple
+references to the same object in different places in the object
+hierarchy being serialized. <a class="link" href="pickle.htm#pickle">
+pickle</a> stores such objects only once, and ensures that all
+other references point to the master copy. Shared objects remain
+shared, which can be very important for mutable objects.</p></li><li><p><a class="link" href="marshal.htm#marshal">marshal</a> cannot be used
+to serialize user-defined classes and their instances. <a class="link" href="pickle.htm#pickle">pickle</a> can save and restore
+class instances transparently, however the class definition must be
+importable and live in the same module as when the object was
+stored.</p></li><li><p>The <a class="link" href="marshal.htm#marshal">marshal</a>
+serialization format is not guaranteed to be portable across Python
+versions. Because its primary job in life is to support .pyc files,
+the Python implementers reserve the right to change the
+serialization format in non-backwards compatible ways should the
+need arise. The <a class="link" href="pickle.htm#pickle">pickle</a>
+serialization format is guaranteed to be backwards compatible
+across Python releases.</p></li></ul><p class="warning"><b>Warning:</b> The <a class="link" href="pickle.htm#pickle">pickle</a> module is not intended to be secure
+against erroneous or maliciously constructed data. Never unpickle
+data received from an untrusted or unauthenticated source.</p><p>Note that serialization is a more primitive notion than
+persistence; although <a class="link" href="pickle.htm#pickle">pickle</a>
+reads and writes file objects, it does not handle the issue of
+naming persistent objects, nor the (even more complicated) issue of
+concurrent access to persistent objects. The <a class="link" href="pickle.htm#pickle">pickle</a> module can transform a complex object
+into a byte stream and it can transform the byte stream into an
+object with the same internal structure. Perhaps the most obvious
+thing to do with these byte streams is to write them onto a file,
+but it is also conceivable to send them across a network or store
+them in a database. The module <a class="link" href="shelve.htm#shelve">
+shelve</a> provides a simple interface to pickle and unpickle
+objects on DBM-style database files.</p><h2 id="data-stream-format">Data stream format&#160;<a class="nav" href="#data-stream-format" title="bookmark!">#</a></h2><p>The data format used by <a class="link" href="pickle.htm#pickle">
+pickle</a> is Python-specific. This has the advantage that there
+are no restrictions imposed by external standards such as XDR
+(which can&#8217;t represent pointer sharing); however it means that
+non-Python programs may not be able to reconstruct pickled Python
+objects.</p><p>By default, the <a class="link" href="pickle.htm#pickle">pickle</a>
+data format uses a printable ASCII representation. This is slightly
+more voluminous than a binary representation. The big advantage of
+using printable ASCII (and of some other characteristics of <a class="link" href="pickle.htm#pickle">pickle</a>&#8216;s representation) is
+that for debugging or recovery purposes it is possible for a human
+to read the pickled file with a standard text editor.</p><p>There are currently 3 different protocols which can be used for
+pickling.</p><ul><li><p>Protocol version 0 is the original ASCII protocol and is
+backwards compatible with earlier versions of Python.</p></li><li><p>Protocol version 1 is the old binary format which is also
+compatible with earlier versions of Python.</p></li><li><p>Protocol version 2 was introduced in Python 2.3. It provides
+much more efficient pickling of new-style classes.</p></li></ul><p>Refer to PEP 307 for more information.</p><p>If a <var>protocol</var> is not specified, protocol 0 is used.
+If <var>protocol</var> is specified as a negative value or <code>
+HIGHEST_PROTOCOL</code>, the highest protocol version available
+will be used.</p><p>Changed in version 2.3: The <var>bin</var> parameter is
+deprecated and only provided for backwards compatibility. You
+should use the <var>protocol</var> parameter instead.</p><p>A binary format, which is slightly more efficient, can be chosen
+by specifying a true value for the <var>bin</var> argument to the
+<a class="link" href="pickle.htm#pickle.Pickler">Pickler</a> constructor or the
+<a class="link" href="pickle.htm#pickle.dump">dump</a> and <a class="link" href="pickle.htm#pickle.dumps">dumps</a> functions. A <var>protocol</var>
+version &gt;= 1 implies use of a binary format.</p><h2 id="usage">Usage&#160;<a class="nav" href="#usage" title="bookmark!">#</a></h2><p>To serialize an object hierarchy, you first create a pickler,
+then you call the pickler&#8217;s <a class="link" href="pickle.htm#pickle.dump">
+dump</a> method. To de-serialize a data stream, you first create an
+unpickler, then you call the unpickler&#8217;s <a class="link" href="pickle.htm#pickle.load">load</a> method. The <a class="link" href="pickle.htm#pickle">pickle</a> module provides the following
+constant:</p></div><dl><dt class="variable" id="pickle.HIGHEST_PROTOCOL"><b>HIGHEST_PROTOCOL</b> <tt class="mark"><a href="#pickle.HIGHEST_PROTOCOL" title="bookmark">#</a>|<a href="/comment/pylib/pickle.htm%23pickle.HIGHEST_PROTOCOL" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="variable">
+<p>The highest protocol version available. This value can be passed
+as a <var>protocol</var> value.</p><blockquote><span class="mark">@since</span> New in version
+2.3.<br />
+</blockquote></dd>
+</dl><div class="text"><p>The <a class="link" href="pickle.htm#pickle">pickle</a> module
+provides the following functions to make this process more
+convenient:</p></div><dl><dt class="function" id="pickle.dump"><b>dump(obj, file[, protocol[, bin]])</b> <tt class="mark"><a href="#pickle.dump" title="bookmark">#</a>|<a href="/comment/pylib/pickle.htm%23pickle.dump" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="function">
+<p>Write a pickled representation of <var>obj</var> to the open
+file object <var>file</var>. This is equivalent to <code>
+Pickler(</code><var>file</var>, <var>protocol</var>, <var>
+bin</var>).dump(<var>obj</var>).</p><p>If the <var>protocol</var> parameter is omitted, protocol 0 is
+used. If <var>protocol</var> is specified as a negative value or
+<code>HIGHEST_PROTOCOL</code>, the highest protocol version will be
+used.</p><p>If the optional <var>bin</var> argument is true, the binary
+pickle format is used; otherwise the (less efficient) text pickle
+format is used (for backwards compatibility, this is the
+default).</p><p><var>file</var> must have a <a class="link" href="write.htm#write">
+write</a> method that accepts a single string argument. It can thus
+be a file object opened for writing, a <a class="link" href="StringIO.htm#StringIO">StringIO</a> object, or any other custom
+object that meets this interface.</p><blockquote><span class="mark">@since</span> Changed in version
+2.3: The protocol parameter was added. The bin parameter is
+deprecated and only provided for backwards compatibility. You
+should use the protocol parameter instead.<br />
+</blockquote></dd>
+<dt class="function" id="pickle.load"><b>load(file)</b> <tt class="mark"><a href="#pickle.load" title="bookmark">#</a>|<a href="/comment/pylib/pickle.htm%23pickle.load" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="function">
+<p>Read a string from the open file object <var>file</var> and
+interpret it as a pickle data stream, reconstructing and returning
+the original object hierarchy. This is equivalent to <code>
+Unpickler(</code><var>file</var>).load().</p><p><var>file</var> must have two methods, a <a class="link" href="read.htm#read">read</a> method that takes an integer argument,
+and a <a class="link" href="readline.htm#readline">readline</a> method that
+requires no arguments. Both methods should return a string. Thus
+<var>file</var> can be a file object opened for reading, a <a class="link" href="StringIO.htm#StringIO">StringIO</a> object, or any other
+custom object that meets this interface.</p><p>This function automatically determines whether the data stream
+was written in binary mode or not.</p></dd>
+<dt class="function" id="pickle.dumps"><b>dumps(obj[, protocol[, bin]])</b> <tt class="mark"><a href="#pickle.dumps" title="bookmark">#</a>|<a href="/comment/pylib/pickle.htm%23pickle.dumps" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="function">
+<p>Return the pickled representation of the object as a string,
+instead of writing it to a file.</p><p>If the <var>protocol</var> parameter is omitted, protocol 0 is
+used. If <var>protocol</var> is specified as a negative value or
+<code>HIGHEST_PROTOCOL</code>, the highest protocol version will be
+used.</p><p>If the optional <var>bin</var> argument is true, the binary
+pickle format is used; otherwise the (less efficient) text pickle
+format is used (this is the default).</p><blockquote><span class="mark">@since</span> Changed in version
+2.3: The protocol parameter was added. The bin parameter is
+deprecated and only provided for backwards compatibility. You
+should use the protocol parameter instead.<br />
+</blockquote></dd>
+<dt class="function" id="pickle.loads"><b>loads(string)</b> <tt class="mark"><a href="#pickle.loads" title="bookmark">#</a>|<a href="/comment/pylib/pickle.htm%23pickle.loads" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="function">
+<p>Read a pickled object hierarchy from a string. Characters in the
+string past the pickled object&#8217;s representation are ignored.</p></dd>
+</dl><div class="text"><p>The <a class="link" href="pickle.htm#pickle">pickle</a> module also
+defines three exceptions:</p></div><dl><dt class="exception" id="pickle.PickleError"><b>exception PickleError</b> <tt class="mark"><a href="#pickle.PickleError" title="bookmark">#</a>|<a href="/comment/pylib/pickle.htm%23pickle.PickleError" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="exception">
+<p>A common base class for the other exceptions defined below. This
+inherits from <a class="link" href="exceptions.htm#exceptions.Exception">
+exceptions.Exception</a>.</p></dd>
+<dt class="exception" id="pickle.PicklingError"><b>exception PicklingError</b> <tt class="mark"><a href="#pickle.PicklingError" title="bookmark">#</a>|<a href="/comment/pylib/pickle.htm%23pickle.PicklingError" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="exception">
+<p>This exception is raised when an unpicklable object is passed to
+the <a class="link" href="pickle.htm#pickle.dump">dump</a> method.</p></dd>
+<dt class="exception" id="pickle.UnpicklingError"><b>exception UnpicklingError</b> <tt class="mark"><a href="#pickle.UnpicklingError" title="bookmark">#</a>|<a href="/comment/pylib/pickle.htm%23pickle.UnpicklingError" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="exception">
+<p>This exception is raised when there is a problem unpickling an
+object. Note that other exceptions may also be raised during
+unpickling, including (but not necessarily limited to) <a class="link" href="exceptions.htm#exceptions.AttributeError">
+exceptions.AttributeError</a>, <a class="link" href="exceptions.htm#exceptions.EOFError">exceptions.EOFError</a>, <a class="link" href="exceptions.htm#exceptions.ImportError">
+exceptions.ImportError</a>, and <a class="link" href="exceptions.htm#exceptions.IndexError">exceptions.IndexError</a>.</p></dd>
+</dl><div class="text"><p>The <a class="link" href="pickle.htm#pickle">pickle</a> module also
+exports two callables<a class="link" href="footnote:8968.htm#footnote:8968">footnote:8968</a>, <a class="link" href="pickle.htm#pickle.Pickler">Pickler</a> and <a class="link" href="pickle.htm#pickle.Unpickler">Unpickler</a>:</p></div><dl><dt class="class" id="pickle.Pickler"><b>class Pickler(file[, protocol[, bin]])</b> <tt class="mark"><a href="#pickle.Pickler" title="bookmark">#</a>|<a href="/comment/pylib/pickle.htm%23pickle.Pickler" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="class">
+<p>This takes a file-like object to which it will write a pickle
+data stream.</p><p>If the <var>protocol</var> parameter is omitted, protocol 0 is
+used. If <var>protocol</var> is specified as a negative value, the
+highest protocol version will be used.</p><p>Optional <var>bin</var> if true, tells the pickler to use the
+more efficient binary pickle format, otherwise the ASCII format is
+used (this is the default).</p><p><var>file</var> must have a <a class="link" href="write.htm#write">
+write</a> method that accepts a single string argument. It can thus
+be an open file object, a <a class="link" href="StringIO.htm#StringIO">
+StringIO</a> object, or any other custom object that meets this
+interface.</p><blockquote><span class="mark">@since</span> Changed in version
+2.3: The bin parameter is deprecated and only provided for
+backwards compatibility. You should use the protocol parameter
+instead.<br />
+</blockquote></dd>
+</dl><div class="text"><p><a class="link" href="pickle.htm#pickle.Pickler">Pickler</a> objects define
+one (or two) public methods:</p></div><dl><dt class="method" id="pickle.Pickler.dump"><b>dump(obj)</b> <tt class="mark"><a href="#pickle.Pickler.dump" title="bookmark">#</a>|<a href="/comment/pylib/pickle.htm%23pickle.Pickler.dump" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="method">
+<p>Write a pickled representation of <var>obj</var> to the open
+file object given in the constructor. Either the binary or ASCII
+format will be used, depending on the value of the <var>bin</var>
+flag passed to the constructor.</p></dd>
+<dt class="method" id="pickle.Pickler.clear_memo"><b>clear_memo()</b> <tt class="mark"><a href="#pickle.Pickler.clear_memo" title="bookmark">#</a>|<a href="/comment/pylib/pickle.htm%23pickle.Pickler.clear_memo" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="method">
+<p>Clears the pickler&#8217;s &#8220;memo&#8221;. The memo is the data
+structure that remembers which objects the pickler has already
+seen, so that shared or recursive objects pickled by reference and
+not by value. This method is useful when re-using picklers.</p><p class="note"><b>Note:</b> Prior to Python 2.3, <a class="link" href="clear_memo.htm#clear_memo">clear_memo</a> was only available on the
+picklers created by <a class="link" href="cPickle.htm#cPickle">
+cPickle</a>. In the <a class="link" href="pickle.htm#pickle">pickle</a>
+module, picklers have an instance variable called <a class="link" href="memo.htm#memo">memo</a> which is a Python dictionary. So to clear
+the memo for a <a class="link" href="pickle.htm#pickle">pickle</a> module
+pickler, you could do the following: mypickler.memo.clear() Code
+that does not need to support older versions of Python should
+simply use <a class="link" href="clear_memo.htm#clear_memo">
+clear_memo</a>.</p></dd>
+</dl><div class="text"><p>It is possible to make multiple calls to the <a class="link" href="pickle.htm#pickle.dump">dump</a> method of the same <a class="link" href="pickle.htm#pickle.Pickler">Pickler</a> instance. These must then be
+matched to the same number of calls to the <a class="link" href="pickle.htm#pickle.load">load</a> method of the corresponding <a class="link" href="pickle.htm#pickle.Unpickler">Unpickler</a> instance. If the
+same object is pickled by multiple <a class="link" href="pickle.htm#pickle.dump">dump</a> calls, the <a class="link" href="pickle.htm#pickle.load">load</a> will all yield references to the same
+object.<a class="link" href="footnote:8970.htm#footnote:8970">footnote:8970</a></p><p><a class="link" href="pickle.htm#pickle.Unpickler">Unpickler</a> objects are
+defined as:</p></div><dl><dt class="class" id="pickle.Unpickler"><b>class Unpickler(file)</b> <tt class="mark"><a href="#pickle.Unpickler" title="bookmark">#</a>|<a href="/comment/pylib/pickle.htm%23pickle.Unpickler" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="class">
+<p>This takes a file-like object from which it will read a pickle
+data stream. This class automatically determines whether the data
+stream was written in binary mode or not, so it does not need a
+flag as in the <a class="link" href="pickle.htm#pickle.Pickler">Pickler</a>
+factory.</p><p><var>file</var> must have two methods, a <a class="link" href="read.htm#read">read</a> method that takes an integer argument,
+and a <a class="link" href="readline.htm#readline">readline</a> method that
+requires no arguments. Both methods should return a string. Thus
+<var>file</var> can be a file object opened for reading, a <a class="link" href="StringIO.htm#StringIO">StringIO</a> object, or any other
+custom object that meets this interface.</p></dd>
+</dl><div class="text"><p><a class="link" href="pickle.htm#pickle.Unpickler">Unpickler</a> objects have
+one (or two) public methods:</p></div><dl><dt class="method" id="pickle.Unpickler.load"><b>load()</b> <tt class="mark"><a href="#pickle.Unpickler.load" title="bookmark">#</a>|<a href="/comment/pylib/pickle.htm%23pickle.Unpickler.load" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="method">
+<p>Read a pickled object representation from the open file object
+given in the constructor, and return the reconstituted object
+hierarchy specified therein.</p></dd>
+<dt class="method" id="pickle.Unpickler.noload"><b>noload()</b> <tt class="mark"><a href="#pickle.Unpickler.noload" title="bookmark">#</a>|<a href="/comment/pylib/pickle.htm%23pickle.Unpickler.noload" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="method">
+<p>This is just like <a class="link" href="pickle.htm#pickle.load">load</a>
+except that it doesn&#8217;t actually create any objects. This is useful
+primarily for finding what&#8217;s called &#8220;persistent ids&#8221;
+that may be referenced in a pickle data stream. See section <a class="link" href="pickle-protocol.htm#pickle-protocol.html#pickle-protocol">
+pickle-protocol.html#pickle-protocol</a> below for more
+details.</p><p>Note: the <a class="link" href="noload.htm#noload">noload</a> method
+is currently only available on <a class="link" href="pickle.htm#pickle.Unpickler">Unpickler</a> objects created with the <a class="link" href="cPickle.htm#cPickle">cPickle</a> module. <a class="link" href="pickle.htm#pickle">pickle</a> module <a class="link" href="pickle.htm#pickle.Unpickler">Unpickler</a>s do not have the <a class="link" href="noload.htm#noload">noload</a> method.</p></dd>
+</dl><div class="text"><h4>Footnotes</h4></div><dl><dt class="variable"><b>&#8230; object.3.4</b> </dt><dd class="variable">
+<p><em>Warning</em>: this is intended for pickling multiple objects
+without intervening modifications to the objects or their parts. If
+you modify an object and then pickle it again using the same <a class="link" href="pickle.htm#pickle.Pickler">Pickler</a> instance, the object
+is not pickled again &#8212; a reference to it is pickled and the <a class="link" href="pickle.htm#pickle.Unpickler">Unpickler</a> will return the
+old value, not the modified one. There are two problems here: (1)
+detecting changes, and (2) marshalling a minimal set of changes.
+Garbage Collection may also become a problem here.</p></dd>
+</dl><div class="text"><h2 id="what-can-be-pickled-and-unpickled">What can be pickled and unpickled?&#160;<a class="nav" href="#what-can-be-pickled-and-unpickled" title="bookmark!">#</a></h2><p>The following types can be pickled:</p><ul><li><p><a class="link" href="/pyref/None">None</a>, <a class="link" href="/pyref/True">True</a>, and <code>False</code></p></li><li><p>integers, long integers, floating point numbers, complex
+numbers</p></li><li><p>normal and Unicode strings</p></li><li><p>tuples, lists, sets, and dictionaries containing only picklable
+objects</p></li><li><p>functions defined at the top level of a module</p></li><li><p>built-in functions defined at the top level of a module</p></li><li><p>classes that are defined at the top level of a module</p></li><li><p>instances of such classes whose <a class="link" href="/pyref/__dict__">__dict__</a> or <a class="link" href="__setstate__.htm#__setstate__">__setstate__</a> is picklable (see section
+<a class="link" href="pickle-protocol.htm#pickle-protocol.html#pickle-protocol">
+pickle-protocol.html#pickle-protocol</a> for details)</p></li></ul><p>Attempts to pickle unpicklable objects will raise the <a class="link" href="pickle.htm#pickle.PicklingError">PicklingError</a> exception;
+when this happens, an unspecified number of bytes may have already
+been written to the underlying file.</p><p>Note that functions (built-in and user-defined) are pickled by
+&#8220;fully qualified&#8221; name reference, not by value. This
+means that only the function name is pickled, along with the name
+of module the function is defined in. Neither the function&#8217;s code,
+nor any of its function attributes are pickled. Thus the defining
+module must be importable in the unpickling environment, and the
+module must contain the named object, otherwise an exception will
+be raised.<a class="link" href="footnote:8971.htm#footnote:8971">footnote:8971</a></p><p>Similarly, classes are pickled by named reference, so the same
+restrictions in the unpickling environment apply. Note that none of
+the class&#8217;s code or data is pickled, so in the following example
+the class attribute <code>attr</code> is not restored in the
+unpickling environment:</p><pre>
+class Foo:
+    attr = 'a class attr'
+
+picklestring = pickle.dumps(Foo)
+</pre><p>These restrictions are why picklable functions and classes must
+be defined in the top level of a module.</p><p>Similarly, when class instances are pickled, their class&#8217;s code
+and data are not pickled along with them. Only the instance data
+are pickled. This is done on purpose, so you can fix bugs in a
+class or add methods to the class and still load objects that were
+created with an earlier version of the class. If you plan to have
+long-lived objects that will see many versions of a class, it may
+be worthwhile to put a version number in the objects so that
+suitable conversions can be made by the class&#8217;s <a class="link" href="__setstate__.htm#__setstate__">__setstate__</a> method.</p><h4>Footnotes</h4></div><dl><dt class="variable"><b>&#8230; raised.3.5</b> </dt><dd class="variable">
+<p>The exception raised will likely be an <a class="link" href="exceptions.htm#exceptions.ImportError">exceptions.ImportError</a> or an
+<a class="link" href="exceptions.htm#exceptions.AttributeError">
+exceptions.AttributeError</a> but it could be something else.</p></dd>
+</dl><div class="text"><h2 id="the-pickle-protocol">The pickle protocol&#160;<a class="nav" href="#the-pickle-protocol" title="bookmark!">#</a></h2><p>This section describes the &#8220;pickling protocol&#8221; that
+defines the interface between the pickler/unpickler and the objects
+that are being serialized. This protocol provides a standard way
+for you to define, customize, and control how your objects are
+serialized and de-serialized. The description in this section
+doesn&#8217;t cover specific customizations that you can employ to make
+the unpickling environment slightly safer from untrusted pickle
+data streams; see section <a class="link" href="pickle-sub.htm#pickle-sub.html#pickle-sub">
+pickle-sub.html#pickle-sub</a> for more details.</p></div><div class="error"><h3 id="pickling-and-unpickling-normal-class-instances">Pickling and unpickling normal class instances&#160;<a class="nav" href="#pickling-and-unpickling-normal-class-instances" title="bookmark!">#</a></h3><p>When a pickled class instance is unpickled, its <a class="link" href="/pyref/__init__">__init__</a> method is normally <em>not</em>
+invoked. If it is desirable that the <a class="link" href="/pyref/__init__">__init__</a> method be called on unpickling,
+an old-style class can define a method <a class="link" href="__getinitargs__.htm#__getinitargs__">__getinitargs__</a>, which should
+return a <em>tuple</em> containing the arguments to be passed to
+the class constructor (i.e. <a class="link" href="/pyref/__init__">
+__init__</a>). The <a class="link" href="__getinitargs__.htm#__getinitargs__">
+__getinitargs__</a> method is called at pickle time; the tuple it
+returns is incorporated in the pickle for the instance.</p><p>New-style types can provide a <a class="link" href="__getnewargs__.htm#__getnewargs__">__getnewargs__</a> method that is used
+for protocol 2. Implementing this method is needed if the type
+establishes some internal invariants when the instance is created,
+or if the memory allocation is affected by the values passed to the
+<a class="link" href="/pyref/__new__">__new__</a> method for the type
+(as it is for tuples and strings). Instances of a new-style type <a class="link" href="C.htm#C">C</a> are created using</p><pre>
+<tt>obj = C.__new__(C, *<var>args</var>)
+</tt>
+</pre><p>where <var>args</var> is the result of calling <a class="link" href="__getnewargs__.htm#__getnewargs__">__getnewargs__</a> on the original
+object; if there is no <a class="link" href="__getnewargs__.htm#__getnewargs__">
+__getnewargs__</a>, an empty tuple is assumed.</p><p>Classes can further influence how their instances are pickled;
+if the class defines the method <a class="link" href="__getstate__.htm#__getstate__">__getstate__</a>, it is called and the
+return state is pickled as the contents for the instance, instead
+of the contents of the instance&#8217;s dictionary. If there is no <a class="link" href="__getstate__.htm#__getstate__">__getstate__</a> method, the
+instance&#8217;s <a class="link" href="/pyref/__dict__">__dict__</a> is
+pickled.</p><p>Upon unpickling, if the class also defines the method <a class="link" href="__setstate__.htm#__setstate__">__setstate__</a>, it is
+called with the unpickled state.<a class="link" href="footnote:8816.htm#footnote:8816">footnote:8816</a> If there is no <a class="link" href="__setstate__.htm#__setstate__">__setstate__</a> method, the
+pickled state must be a dictionary and its items are assigned to
+the new instance&#8217;s dictionary. If a class defines both <a class="link" href="__getstate__.htm#__getstate__">__getstate__</a> and <a class="link" href="__setstate__.htm#__setstate__">__setstate__</a>, the state
+object needn&#8217;t be a dictionary and these methods can do what they
+want.<a class="link" href="footnote:8979.htm#footnote:8979">footnote:8979</a></p><p class="warning"><b>Warning:</b> For new-style classes, if <a class="link" href="__getstate__.htm#__getstate__">__getstate__</a> returns a
+false value, the <a class="link" href="__setstate__.htm#__setstate__">
+__setstate__</a> method will not be called.</p><h4>Footnotes</h4></div><dl><dt class="variable"><b>&#8230; want.3.7</b> </dt><dd class="variable">
+<p>This protocol is also used by the shallow and deep copying
+operations defined in the <a class="link" href="copy.htm#copy">copy</a>
+module.</p></dd>
+</dl><div class="text"><h3 id="pickling-and-unpickling-extension-types">Pickling and unpickling extension types&#160;<a class="nav" href="#pickling-and-unpickling-extension-types" title="bookmark!">#</a></h3><p>When the <a class="link" href="pickle.htm#pickle.Pickler">Pickler</a>
+encounters an object of a type it knows nothing about &#8212; such as an
+extension type &#8212; it looks in two places for a hint of how to
+pickle it. One alternative is for the object to implement a <a class="link" href="/pyref/__reduce__">__reduce__</a> method. If
+provided, at pickling time <a class="link" href="/pyref/__reduce__">
+__reduce__</a> will be called with no arguments, and it must return
+either a string or a tuple.</p><p>If a string is returned, it names a global variable whose
+contents are pickled as normal. The string returned by <a class="link" href="/pyref/__reduce__">__reduce__</a> should be the
+object&#8217;s local name relative to its module; the pickle module
+searches the module namespace to determine the object&#8217;s module.</p><p>When a tuple is returned, it must be between two and five
+elements long. Optional elements can either be omitted, or <code>
+None</code> can be provided as their value. The semantics of each
+element are:</p><ul><li><p>A callable object that will be called to create the initial
+version of the object. The next element of the tuple will provide
+arguments for this callable, and later elements provide additional
+state information that will subsequently be used to fully
+reconstruct the pickled date.</p><p>In the unpickling environment this object must be either a
+class, a callable registered as a &#8220;safe constructor&#8221;
+(see below), or it must have an attribute <a class="link" href="__safe_for_unpickling__.htm#__safe_for_unpickling__">__safe_for_unpickling__</a>
+with a true value. Otherwise, an <a class="link" href="pickle.htm#pickle.UnpicklingError">UnpicklingError</a> will be raised in
+the unpickling environment. Note that as usual, the callable itself
+is pickled by name.</p></li><li><p>A tuple of arguments for the callable object, or <code>
+None</code>.</p><p>Deprecated since release 2.3. If this item is <a class="link" href="/pyref/None">None</a>, then instead of calling the callable
+directly, its <a class="link" href="__basicnew__.htm#__basicnew__">
+__basicnew__</a> method is called without arguments; this method
+should also return the unpickled object. Providing <a class="link" href="/pyref/None">None</a> is deprecated, however; return a tuple of
+arguments instead.</p></li><li><p>Optionally, the object&#8217;s state, which will be passed to the
+object&#8217;s <a class="link" href="__setstate__.htm#__setstate__">__setstate__</a>
+method as described in section <a class="link" href="pickle-inst.htm#pickle-inst.html#pickle-inst">
+pickle-inst.html#pickle-inst</a>. If the object has no <a class="link" href="__setstate__.htm#__setstate__">__setstate__</a> method,
+then, as above, the value must be a dictionary and it will be added
+to the object&#8217;s <a class="link" href="/pyref/__dict__">
+__dict__</a>.</p></li><li><p>Optionally, an iterator (and not a sequence) yielding successive
+list items. These list items will be pickled, and appended to the
+object using either <code>obj.append(</code><var>item</var>) or
+<code>obj.extend(</code><var>list_of_items</var>). This is
+primarily used for list subclasses, but may be used by other
+classes as long as they have <a class="link" href="append.htm#append">
+append</a> and <a class="link" href="extend.htm#extend">extend</a>
+methods with the appropriate signature. (Whether <a class="link" href="append.htm#append">append</a> or <a class="link" href="extend.htm#extend">extend</a> is used depends on which pickle
+protocol version is used as well as the number of items to append,
+so both must be supported.)</p></li><li><p>Optionally, an iterator (not a sequence) yielding successive
+dictionary items, which should be tuples of the form <code>
+(</code><var>key</var>, <var>value</var>). These items will be
+pickled and stored to the object using <code>
+obj[</code><var>key</var>] = <var>value</var>. This is primarily
+used for dictionary subclasses, but may be used by other classes as
+long as they implement <a class="link" href="__setitem__.htm#__setitem__">
+__setitem__</a>.</p></li></ul><p>It is sometimes useful to know the protocol version when
+implementing <a class="link" href="/pyref/__reduce__">__reduce__</a>.
+This can be done by implementing a method named <a class="link" href="/pyref/__reduce_ex__">__reduce_ex__</a> instead of <a class="link" href="/pyref/__reduce__">__reduce__</a>. <a class="link" href="/pyref/__reduce_ex__">__reduce_ex__</a>, when it exists, is
+called in preference over <a class="link" href="/pyref/__reduce__">
+__reduce__</a> (you may still provide <a class="link" href="/pyref/__reduce__">__reduce__</a> for backwards compatibility).
+The <a class="link" href="/pyref/__reduce_ex__">__reduce_ex__</a>
+method will be called with a single integer argument, the protocol
+version.</p><p>The <a class="link" href="/pyref/object">object</a> class
+implements both <a class="link" href="/pyref/__reduce__">
+__reduce__</a> and <a class="link" href="/pyref/__reduce_ex__">
+__reduce_ex__</a>; however, if a subclass overrides <a class="link" href="/pyref/__reduce__">__reduce__</a> but not <a class="link" href="/pyref/__reduce_ex__">__reduce_ex__</a>, the <a class="link" href="/pyref/__reduce_ex__">__reduce_ex__</a> implementation detects
+this and calls <a class="link" href="/pyref/__reduce__">
+__reduce__</a>.</p><p>An alternative to implementing a <a class="link" href="/pyref/__reduce__">__reduce__</a> method on the object to be
+pickled, is to register the callable with the <a class="link" href="copyreg.htm#copyreg">copy_reg</a> module. This module provides a way
+for programs to register &#8220;reduction functions&#8221; and
+constructors for user-defined types. Reduction functions have the
+same semantics and interface as the <a class="link" href="/pyref/__reduce__">__reduce__</a> method described above,
+except that they are called with a single argument, the object to
+be pickled.</p><p>The registered constructor is deemed a &#8220;safe
+constructor&#8221; for purposes of unpickling as described
+above.</p><h3 id="pickling-and-unpickling-external-objects">Pickling and unpickling external objects&#160;<a class="nav" href="#pickling-and-unpickling-external-objects" title="bookmark!">#</a></h3><p>For the benefit of object persistence, the <a class="link" href="pickle.htm#pickle">pickle</a> module supports the notion of a
+reference to an object outside the pickled data stream. Such
+objects are referenced by a &#8220;persistent id&#8221;, which is
+just an arbitrary string of printable ASCII characters. The
+resolution of such names is not defined by the <a class="link" href="pickle.htm#pickle">pickle</a> module; it will delegate this
+resolution to user defined functions on the pickler and
+unpickler.<a class="link" href="footnote:8985.htm#footnote:8985">footnote:8985</a></p><p>To define external persistent id resolution, you need to set the
+<a class="link" href="persistent_id.htm#persistent_id">persistent_id</a>
+attribute of the pickler object and the <a class="link" href="persistent_load.htm#persistent_load">persistent_load</a> attribute of the
+unpickler object.</p><p>To pickle objects that have an external persistent id, the
+pickler must have a custom <a class="link" href="persistent_id.htm#persistent_id">persistent_id</a> method that takes an
+object as an argument and returns either <a class="link" href="/pyref/None">None</a> or the persistent id for that object.
+When <a class="link" href="/pyref/None">None</a> is returned, the
+pickler simply pickles the object as normal. When a persistent id
+string is returned, the pickler will pickle that string, along with
+a marker so that the unpickler will recognize the string as a
+persistent id.</p><p>To unpickle external objects, the unpickler must have a custom
+<a class="link" href="persistent_load.htm#persistent_load">persistent_load</a>
+function that takes a persistent id string and returns the
+referenced object.</p><p>Here&#8217;s a silly example that <em>might</em> shed more light:</p><pre>
+import pickle
+from cStringIO import StringIO
+
+src = StringIO()
+p = pickle.Pickler(src)
+
+def persistent_id(obj):
+    if hasattr(obj, 'x'):
+        return 'the value %d' % obj.x
+    else:
+        return None
+
+p.persistent_id = persistent_id
+
+class Integer:
+    def __init__(self, x):
+        self.x = x
+    def __str__(self):
+        return 'My name is integer %d' % self.x
+
+i = Integer(7)
+print i
+p.dump(i)
+
+datastream = src.getvalue()
+print repr(datastream)
+dst = StringIO(datastream)
+
+up = pickle.Unpickler(dst)
+
+class FancyInteger(Integer):
+    def __str__(self):
+        return 'I am the integer %d' % self.x
+
+def persistent_load(persid):
+    if persid.startswith('the value '):
+        value = int(persid.split()[2])
+        return FancyInteger(value)
+    else:
+        raise pickle.UnpicklingError, 'Invalid persistent id'
+
+up.persistent_load = persistent_load
+
+j = up.load()
+print j
+</pre><p>In the <a class="link" href="cPickle.htm#cPickle">cPickle</a> module,
+the unpickler&#8217;s <a class="link" href="persistent_load.htm#persistent_load">
+persistent_load</a> attribute can also be set to a Python list, in
+which case, when the unpickler reaches a persistent id, the
+persistent id string will simply be appended to this list. This
+functionality exists so that a pickle data stream can be
+&#8220;sniffed&#8221; for object references without actually
+instantiating all the objects in a pickle.<a class="link" href="footnote:8892.htm#footnote:8892">footnote:8892</a> Setting <a class="link" href="persistent_load.htm#persistent_load">persistent_load</a> to a list is
+usually used in conjunction with the <a class="link" href="noload.htm#noload">noload</a> method on the Unpickler.</p><h4>Footnotes</h4></div><dl><dt class="variable"><b>&#8230; pickle.3.9</b> </dt><dd class="variable">
+<p>We&#8217;ll leave you with the image of Guido and Jim sitting around
+sniffing pickles in their living rooms.</p></dd>
+</dl><div class="text"><h2 id="subclassing-unpicklers">Subclassing Unpicklers&#160;<a class="nav" href="#subclassing-unpicklers" title="bookmark!">#</a></h2><p>By default, unpickling will import any class that it finds in
+the pickle data. You can control exactly what gets unpickled and
+what gets called by customizing your unpickler. Unfortunately,
+exactly how you do this is different depending on whether you&#8217;re
+using <a class="link" href="pickle.htm#pickle">pickle</a> or <a class="link" href="cPickle.htm#cPickle">cPickle</a>.<a class="link" href="footnote:8987.htm#footnote:8987">footnote:8987</a></p><p>In the <a class="link" href="pickle.htm#pickle">pickle</a> module, you
+need to derive a subclass from <a class="link" href="pickle.htm#pickle.Unpickler">Unpickler</a>, overriding the <a class="link" href="load_global.htm#load_global">load_global</a> method. <a class="link" href="load_global.htm#load_global">load_global</a> should read two lines from
+the pickle data stream where the first line will the name of the
+module containing the class and the second line will be the name of
+the instance&#8217;s class. It then looks up the class, possibly
+importing the module and digging out the attribute, then it appends
+what it finds to the unpickler&#8217;s stack. Later on, this class will
+be assigned to the <a class="link" href="/pyref/__class__">
+__class__</a> attribute of an empty class, as a way of magically
+creating an instance without calling its class&#8217;s <a class="link" href="/pyref/__init__">__init__</a>. Your job (should you choose to
+accept it), would be to have <a class="link" href="load_global.htm#load_global">load_global</a> push onto the unpickler&#8217;s
+stack, a known safe version of any class you deem safe to unpickle.
+It is up to you to produce such a class. Or you could raise an
+error if you want to disallow all unpickling of instances. If this
+sounds like a hack, you&#8217;re right. Refer to the source code to make
+this work.</p><p>Things are a little cleaner with <a class="link" href="cPickle.htm#cPickle">cPickle</a>, but not by much. To control what
+gets unpickled, you can set the unpickler&#8217;s <a class="link" href="find_global.htm#find_global">find_global</a> attribute to a function or
+<a class="link" href="/pyref/None">None</a>. If it is <code>
+None</code> then any attempts to unpickle instances will raise an
+<a class="link" href="pickle.htm#pickle.UnpicklingError">UnpicklingError</a>. If
+it is a function, then it should accept a module name and a class
+name, and return the corresponding class object. It is responsible
+for looking up the class and performing any necessary imports, and
+it may raise an error to prevent instances of the class from being
+unpickled.</p><p>The moral of the story is that you should be really careful
+about the source of the strings your application unpickles.</p><h4>Footnotes</h4></div><dl><dt class="variable" id="pickle....cPickle.3.10"><b>&#8230;cPickle.3.10</b> <tt class="mark"><a href="#pickle....cPickle.3.10" title="bookmark">#</a>|<a href="/comment/pylib/pickle.htm%23pickle....cPickle.3.10" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="variable">
+<p>A word of caution: the mechanisms described here use internal
+attributes and methods, which are subject to change in future
+versions of Python. We intend to someday provide a common interface
+for controlling this behavior, which will work in either <a class="link" href="pickle.htm#pickle">pickle</a> or <a class="link" href="cPickle.htm#cPickle">cPickle</a>.</p></dd>
+</dl></div><div class="yui-u">&#160;</div></div><div class="yui-g"><div class="text wide"><h2 id="example">Example&#160;<a class="nav" href="#example" title="bookmark!">#</a></h2><p>Here&#8217;s a simple example of how to modify pickling behavior for a
+class. The <a class="link" href="TextReader.htm#TextReader">TextReader</a>
+class opens a text file, and returns the line number and line
+contents each time its <a class="link" href="readline.htm#readline">
+readline</a> method is called. If a <a class="link" href="TextReader.htm#TextReader">TextReader</a> instance is pickled, all
+attributes <em>except</em> the file object member are saved. When
+the instance is unpickled, the file is reopened, and reading
+resumes from the last location. The <a class="link" href="__setstate__.htm#__setstate__">__setstate__</a> and <a class="link" href="__getstate__.htm#__getstate__">__getstate__</a> methods are used to
+implement this behavior.</p><pre class="wide">
+class TextReader:
+    """Print and number lines in a text file."""
+    def __init__(self, file):
+        self.file = file
+        self.fh = open(file)
+        self.lineno = 0
+
+    def readline(self):
+        self.lineno = self.lineno + 1
+        line = self.fh.readline()
+        if not line:
+            return None
+        if line.endswith("\n"):
+            line = line[:-1]
+        return "%d: %s" % (self.lineno, line)
+
+    def __getstate__(self):
+        odict = self.__dict__.copy() # copy the dict since we change it
+        del odict['fh']              # remove filehandle entry
+        return odict
+
+    def __setstate__(self,dict):
+        fh = open(dict['file'])      # reopen file
+        count = dict['lineno']       # read from file...
+        while count:                 # until line count is restored
+            fh.readline()
+            count = count - 1
+        self.__dict__.update(dict)   # update attributes
+        self.fh = fh                 # save the file object
+</pre><p>A sample usage might be something like this:</p><pre class="wide">
+&gt;&gt;&gt; import TextReader
+&gt;&gt;&gt; obj = TextReader.TextReader("TextReader.py")
+&gt;&gt;&gt; obj.readline()
+'1: #!/usr/local/bin/python'
+&gt;&gt;&gt; # (more invocations of obj.readline() here)
+... obj.readline()
+'7: class TextReader:'
+&gt;&gt;&gt; import pickle
+&gt;&gt;&gt; pickle.dump(obj,open('save.p','w'))
+</pre><p>If you want to see that <a class="link" href="pickle.htm#pickle">
+pickle</a> works across Python processes, start another Python
+session, before continuing. What follows can happen from either the
+same process or a new process.</p><pre class="wide">
+&gt;&gt;&gt; import pickle
+&gt;&gt;&gt; reader = pickle.load(open('save.p'))
+&gt;&gt;&gt; reader.readline()
+'8:     "Print and number lines in a text file."'
+</pre><span class="mark">@see</span> <a class="link" href="copyreg.htm#copyreg">
+Module copy_reg</a> Pickle interface constructor registration for
+extension types. <span class="mark">@see</span> <a class="link" href="shelve.htm#shelve">Module shelve</a> Indexed databases of objects;
+uses pickle. <span class="mark">@see</span> <a class="link" href="copy.htm#copy">Module copy</a> Shallow and deep object copying.
+<span class="mark">@see</span> <a class="link" href="marshal.htm#marshal">
+Module marshal</a> High-performance serialization of built-in
+types.</div></div><div class="yui-g"></div> <!-- yui-g --></div> <!-- content --> </div> <!-- yui-b --> </div> <!-- yui-main --> <div class="yui-b"> <div id='menu'> <ul> <li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li> <li><b><a href="." title="Go to pylib index page.">::: pylib :::</a></b></li> </ul> <ul><li><b>::: contents</b></li></ul> <ul><li><ul><li><a href="#relationship-to-other-python-modules">Relationship to other Python modules</a></li><li><a href="#data-stream-format">Data stream format</a></li><li><a href="#usage">Usage</a></li><li><a href="#what-can-be-pickled-and-unpickled">What can be pickled and unpickled?</a></li><li><a href="#the-pickle-protocol">The pickle protocol</a></li><li><ul><li><a href="#pickling-and-unpickling-normal-class-instances">Pickling and unpickling normal class instances</a></li><li><a href="#pickling-and-unpickling-extension-types">Pickling and unpickling extension types</a></li><li><a href="#pickling-and-unpickling-external-objects">Pickling and unpickling external objects</a></li></ul></li><li><a href="#subclassing-unpicklers">Subclassing Unpicklers</a></li><li><a href="#example">Example</a></li></ul></li></ul> </div> <!-- menu --> </div> <!-- yui-b --> </div> <!-- bd --> <div id="ft"> <!-- footer --> <p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;"></a>
+this page was rendered by a <a href="http://www.djangoproject.com/">django</a> application in 0.08s 2011-08-28 12:45:17.914810.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p> </div> <!-- ft --> </div> <!-- doc --> <script src="/media/js/effbot-min.js" type="text/javascript"> </script> </body> </html>

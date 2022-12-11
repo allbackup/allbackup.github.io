@@ -1,0 +1,66 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>The Tkinter Radiobutton&nbsp;Widget</title> <script type="text/javascript">effbot_page_id=1959;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> <!--
+<p style='color: #8f8f8f; background: #fff5bf; padding: 5px 10px;'> <b>2008-07-15:</b> Selected articles
+ (including this one) 
+now have experimental "comment" links in the left column and at the bottom.
+You're welcome to use them for commenting and voting on articles.
+For a bit more on this, see <a
+href="http://effbot.slinkset.com/links/Welcome_to_discuss_effbot_org">this
+page</a>. /F
+</p>
+--> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <p><a href="panedwindow.htm">back</a> <a href="scale.htm">next</a></p> <h1 class="maintitle">The Tkinter Radiobutton&nbsp;Widget</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p>The <b>Radiobutton</b> is a standard Tkinter widget used to
+implement one-of-many selections. Radiobuttons can contain text or
+images, and you can associate a Python function or method with each
+button. When the button is pressed, Tkinter automatically calls
+that function or method.</p><p>The button can only display text in a single font, but the text
+may span more than one line. In addition, one of the characters can
+be underlined, for example to mark a keyboard shortcut. By default,
+the <b>Tab</b> key can be used to move to a button widget.</p><p>Each group of <b>Radiobutton</b> widgets should be associated
+with single variable. Each button then represents a single value
+for that variable.</p><h2>When to use the Radiobutton Widget</h2><p>The radiobutton widget is used to implement one-of-many
+selections. It&#8217;s almost always used in groups, where all group
+members use the same variable.</p><h2 id="patterns">Patterns&#160;<a class="nav" href="#patterns" title="bookmark!">#</a></h2><p>The <b>Radiobutton</b> widget is very similar to the check
+button. To get a proper radio behavior, make sure to have all
+buttons in a group point to the same variable, and use the
+<b>value</b> option to specify what value each button
+represents:</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><pre class="python wide wide">
+<span class="pykeyword">from</span> Tkinter <span class="pykeyword">import</span> *
+
+master = Tk()
+
+v = IntVar()
+
+Radiobutton(master, text=<span class="pystring">"One"</span>, variable=v, value=1).pack(anchor=W)
+Radiobutton(master, text=<span class="pystring">"Two"</span>, variable=v, value=2).pack(anchor=W)
+
+mainloop()</pre></div><div class="yui-ge"><div class="yui-u first"><p>If you need to get notified when the value changes, attach a
+<b>command</b> callback to each button.</p><p>To create a large number of buttons, use a loop:</p><pre class="python">
+    MODES = [
+        (<span class="pystring">"Monochrome"</span>, <span class="pystring">"1"</span>),
+        (<span class="pystring">"Grayscale"</span>, <span class="pystring">"L"</span>),
+        (<span class="pystring">"True color"</span>, <span class="pystring">"RGB"</span>),
+        (<span class="pystring">"Color separation"</span>, <span class="pystring">"CMYK"</span>),
+    ]
+
+    v = StringVar()
+    v.set(<span class="pystring">"L"</span>) <span class="pycomment"># initialize</span>
+
+    <span class="pykeyword">for</span> text, mode <span class="pykeyword">in</span> MODES:
+        b = Radiobutton(master, text=text,
+                        variable=v, value=mode)
+        b.pack(anchor=W)</pre><h3>Figure: Standard radiobuttons</h3><p>
+<img alt="" height="138" src="/media/cache/2e32dd70a1c9fa23a249f84c4786c859.png" width="132" />
+</p><p>To turn the above example into a &#8220;button box&#8221; rather than a set
+of radio buttons, set the <b>indicatoron</b> option to 0. In this
+case, there&#8217;s no separate radio button indicator, and the selected
+button is drawn as <b>SUNKEN</b> instead of <b>RAISED</b>:</p><h3>Figure: Using indicatoron=0</h3><p>
+<img alt="" height="142" src="/media/cache/89b28848a5ddd25257113e7705e192f8.png" width="132" />
+</p><h2>Reference</h2><div class="zone:include"><dl><dt><b>Radiobutton(master=None, **options)</b> (class) [<a href="#Tkinter.Radiobutton-class">#</a>]</dt><dd>
+<p>A radio button.  Radio buttons are usually used in groups, where
+all buttons in the group share a common <b>variable</b>.
+</p></dd>
+<dt><a id="Tkinter.Radiobutton.__init__-method" name="Tkinter.Radiobutton.__init__-method"><b>__init__(master=None, **options)</b></a> [<a href="#Tkinter.Radiobutton.__init__-method">#</a>]</dt><dd>
+<p>Create a radiobutton widget.</p><dl><dt><i>master</i></dt><dd>
+Parent widget.</dd>
+<dt><i>**options</i></dt><dd>

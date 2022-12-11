@@ -1,0 +1,129 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>test.test_support</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-test.test_support.html'>original</a> :::
+<a href='test.test_support.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>test.test_support&#8212;Utility functions for tests</h1>
+
+<p>The <code>
+test.test_support</code> module provides support for Python's
+regression tests.</p>
+
+<p>This module defines the following exceptions:</p>
+</div>
+<dl><dt class="exception" id="TestFailed"><b>exception TestFailed</b> <tt class="nav"><a class="nav" href="test.test_support.TestFailed" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="exception">
+<p>Exception to be raised when a test fails.</p>
+</dd>
+<dt class="exception" id="TestSkipped"><b>exception TestSkipped</b> <tt class="nav"><a class="nav" href="test.test_support.TestSkipped" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="exception">
+<p>Subclass of <a class="link" href="#TestFailed"><code>
+TestFailed</code></a>. Raised when a test is skipped. This occurs when a
+needed resource (such as a network connection) is not available at
+the time of testing.</p>
+</dd>
+<dt class="exception" id="ResourceDenied"><b>exception ResourceDenied</b> <tt class="nav"><a class="nav" href="test.test_support.ResourceDenied" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="exception">
+<p>Subclass of <a class="link" href="#TestSkipped"><code>
+TestSkipped</code></a>. Raised when a resource (such as a network
+connection) is not available. Raised by the <a class="link" href="#requires"><code>requires</code></a> function.</p>
+</dd>
+</dl><div class="text">
+<p>The <code>
+test.test_support</code> module defines the following constants:</p>
+</div>
+<dl><dt class="variable" id="verbose"><b>verbose</b> <tt class="nav"><a class="nav" href="test.test_support.verbose" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p><code>True</code> when verbose output is enabled. Should be
+checked when more detailed information is desired about a running
+test. <var>verbose</var> is set by <code>test.regrtest</code>.</p>
+</dd>
+<dt class="variable" id="have_unicode"><b>have_unicode</b> <tt class="nav"><a class="nav" href="test.test_support.have_unicode" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p><code>True</code> when Unicode support is available.</p>
+</dd>
+<dt class="variable" id="is_jython"><b>is_jython</b> <tt class="nav"><a class="nav" href="test.test_support.is_jython" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p><code>True</code> if the running interpreter is Jython.</p>
+</dd>
+<dt class="variable" id="TESTFN"><b>TESTFN</b> <tt class="nav"><a class="nav" href="test.test_support.TESTFN" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>Set to the path that a temporary file may be created at. Any
+temporary that is created should be closed and unlinked
+(removed).</p>
+</dd>
+</dl><div class="text">
+<p>The <code>
+test.test_support</code> module defines the following functions:</p>
+</div>
+<dl><dt class="function" id="forget"><b>forget(module_name)</b> <tt class="nav"><a class="nav" href="test.test_support.forget" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Removes the module named <var>module_name</var> from <code>
+sys.modules</code> and deletes any byte-compiled files of the
+module.</p>
+</dd>
+<dt class="function" id="is_resource_enabled"><b>is_resource_enabled(resource)</b> <tt class="nav"><a class="nav" href="test.test_support.is_resource_enabled" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Returns <code>True</code> if <var>resource</var> is enabled and
+available. The list of available resources is only set when <code>test.regrtest</code> is
+executing the tests.</p>
+</dd>
+<dt class="function" id="requires"><b>requires(resource[, msg])</b> <tt class="nav"><a class="nav" href="test.test_support.requires" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Raises <a class="link" href="#ResourceDenied"><code>
+ResourceDenied</code></a> if <var>resource</var> is not available. <var>
+msg</var> is the argument to <a class="link" href="#ResourceDenied"><code>ResourceDenied</code></a> if it is raised.
+Always returns true if called by a function whose <code>
+__name__</code> is <code>'__main__'</code>. Used when tests are
+executed by <code>
+test.regrtest</code>.</p>
+</dd>
+<dt class="function" id="findfile"><b>findfile(filename)</b> <tt class="nav"><a class="nav" href="test.test_support.findfile" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return the path to the file named <var>filename</var>. If no
+match is found <var>filename</var> is returned. This does not equal
+a failure since it could be the path to the file.</p>
+</dd>
+<dt class="function" id="run_unittest"><b>run_unittest(*classes)</b> <tt class="nav"><a class="nav" href="test.test_support.run_unittest" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Execute <code>
+unittest.TestCase</code> subclasses passed to the function. The
+function scans the classes for methods starting with the prefix
+"<code>test_</code>" and executes the tests individually. This is
+the preferred way to execute tests.</p>
+</dd>
+<dt class="function" id="run_suite"><b>run_suite(suite[, testclass])</b> <tt class="nav"><a class="nav" href="test.test_support.run_suite" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Execute the <code>
+unittest.TestSuite</code> instance <var>suite</var>. The optional
+argument <var>testclass</var> accepts one of the test classes in
+the suite so as to print out more detailed information on where the
+testing suite originated from.</p>
+</dd>
+</dl></div></body></html>

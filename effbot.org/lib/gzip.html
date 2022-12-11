@@ -1,0 +1,94 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>gzip</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-gzip.html'>original</a> :::
+<a href='gzip.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>gzip&#8212;Support for gzip files</h1>
+
+<p>The data compression provided by the <code>zlib</code> module is
+compatible with that used by the GNU compression program gzip.
+Accordingly, the <code>gzip</code> module
+provides the <a class="link" href="#GzipFile"><code>GzipFile</code></a>
+class to read and write gzip-format files, automatically
+compressing or decompressing the data so it looks like an ordinary
+file object. Note that additional file formats which can be
+decompressed by the gzip and gunzip programs, such as those
+produced by compress and pack, are not supported by this
+module.</p>
+
+<p>The module defines the following items:</p>
+</div>
+<dl><dt class="class" id="GzipFile"><b>class GzipFile([filename[, mode[, compresslevel[,
+fileobj]]]])</b> <tt class="nav"><a class="nav" href="gzip.GzipFile" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>Constructor for the <a class="link" href="#GzipFile"><code>
+GzipFile</code></a> class, which simulates most of the methods of a file
+object, with the exception of the <code>readinto</code> and <code>truncate</code> methods. At least one of <var>
+fileobj</var> and <var>filename</var> must be given a non-trivial
+value.</p>
+
+<p>The new class instance is based on <var>fileobj</var>, which can
+be a regular file, a <code>
+StringIO</code> object, or any other object which simulates a file. It
+defaults to <code>None</code>, in which case <var>filename</var> is
+opened to provide a file object.</p>
+
+<p>When <var>fileobj</var> is not <code>
+None</code>, the <var>filename</var> argument is only used to be
+included in the gzip file header, which may includes the original
+filename of the uncompressed file. It defaults to the filename of
+<var>fileobj</var>, if discernible; otherwise, it defaults to the
+empty string, and in this case the original filename is not
+included in the header.</p>
+
+<p>The <var>mode</var> argument can be any of <code>'r'</code>,
+<code>'rb'</code>, <code>'a'</code>, <code>'ab'</code>, <code>
+'w'</code>, or <code>'wb'</code>, depending on whether the file
+will be read or written. The default is the mode of <var>
+fileobj</var> if discernible; otherwise, the default is <code>
+'rb'</code>. If not given, the 'b' flag will be added to the mode
+to ensure the file is opened in binary mode for cross-platform
+portability.</p>
+
+<p>The <var>compresslevel</var> argument is an integer from <code>
+1</code> to <code>9</code> controlling the level of compression;
+<code>1</code> is fastest and produces the least compression, and
+<code>9</code> is slowest and produces the most compression. The
+default is <code>9</code>.</p>
+
+<p>Calling a <a class="link" href="#GzipFile"><code>GzipFile</code></a>
+object's <code>close</code> method does
+not close <var>fileobj</var>, since you might wish to append more
+material after the compressed data. This also allows you to pass a
+<code>StringIO</code> object opened for
+writing as <var>fileobj</var>, and retrieve the resulting memory
+buffer using the <code>StringIO</code>
+object's <code>getvalue</code>
+method.</p>
+</dd>
+<dt class="function" id="open"><b>open(filename[, mode[, compresslevel]])</b> <tt class="nav"><a class="nav" href="gzip.open" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>This is a shorthand for <code>
+GzipFile(</code><var>filename</var>, <var>mode</var>, <var>
+compresslevel</var>). The <var>filename</var> argument is required;
+<var>mode</var> defaults to <code>'rb'</code> and <var>
+compresslevel</var> defaults to <code>9</code>.</p>
+</dd>
+</dl><div class="text"><span class="mark">@see</span> <code>Module zlib</code> The basic data compression module
+needed to support the gzip file format.</div>
+</div></body></html>

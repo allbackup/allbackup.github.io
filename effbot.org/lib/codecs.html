@@ -1,0 +1,2080 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>codecs</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-codecs.html'>original</a> :::
+<a href='codecs.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>codecs&#8212;Codec registry and base classes</h1>
+
+<div class="toc"><dl><dt>On this page:</dt><dd><a href="#codec-base-classes">Codec Base Classes</a></dd><dd><a href="#standard-encodings">Standard Encodings</a></dd><dd><a href="#encodings-idna-internationalized-domain-names-in-applications">encodings.idna&#8212;Internationalized Domain Names in
+Applications</a></dd></dl></div><p>This module defines base classes for standard Python codecs
+(encoders and decoders) and provides access to the internal Python
+codec registry which manages the codec and error handling lookup
+process.</p>
+
+<p>It defines the following functions:</p>
+</div>
+<dl><dt class="function" id="register"><b>register(search_function)</b> <tt class="nav"><a class="nav" href="codecs.register" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Register a codec search function. Search functions are expected
+to take one argument, the encoding name in all lower case letters,
+and return a tuple of functions <code>(</code><var>encoder</var>,
+<var>decoder</var>, <var>stream_reader</var>, <var>
+stream_writer</var>) taking the following arguments:</p>
+
+<p><var>encoder</var> and <var>decoder</var>: These must be
+functions or methods which have the same interface as the <code>encode</code>/<code>decode</code> methods of Codec instances (see Codec
+Interface). The functions/methods are expected to work in a
+stateless mode.</p>
+
+<p><var>stream_reader</var> and <var>stream_writer</var>: These
+have to be factory functions providing the following interface:</p>
+
+<p><code>factory(</code><var>stream</var>, <var>
+errors</var>='strict')</p>
+
+<p>The factory functions must return objects providing the
+interfaces defined by the base classes <a class="link" href="#StreamWriter"><code>StreamWriter</code></a> and <a class="link" href="#StreamReader"><code>StreamReader</code></a>, respectively. Stream
+codecs can maintain state.</p>
+
+<p>Possible values for errors are <code>'strict'</code> (raise an
+exception in case of an encoding error), <code>'replace'</code>
+(replace malformed data with a suitable replacement marker, such as
+"<code>?</code>"), <code>'ignore'</code> (ignore malformed data and
+continue without further notice), <code>'xmlcharrefreplace'</code>
+(replace with the appropriate XML character reference (for encoding
+only)) and <code>'backslashreplace'</code> (replace with
+backslashed escape sequences (for encoding only)) as well as any
+other error handling name defined via <a class="link" href="#register_error"><code>register_error</code></a>.</p>
+
+<p>In case a search function cannot find a given encoding, it
+should return <code>None</code>.</p>
+</dd>
+<dt class="function" id="lookup"><b>lookup(encoding)</b> <tt class="nav"><a class="nav" href="codecs.lookup" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Looks up a codec tuple in the Python codec registry and returns
+the function tuple as defined above.</p>
+
+<p>Encodings are first looked up in the registry's cache. If not
+found, the list of registered search functions is scanned. If no
+codecs tuple is found, a <code>exceptions.LookupError</code> is
+raised. Otherwise, the codecs tuple is stored in the cache and
+returned to the caller.</p>
+</dd>
+</dl><div class="text">
+<p>To simplify access to the various codecs, the module provides
+these additional functions which use <a class="link" href="#lookup"><code>lookup</code></a> for the codec lookup:</p>
+</div>
+<dl><dt class="function" id="getencoder"><b>getencoder(encoding)</b> <tt class="nav"><a class="nav" href="codecs.getencoder" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Lookup up the codec for the given encoding and return its
+encoder function.</p>
+
+<p>Raises a <code>
+exceptions.LookupError</code> in case the encoding cannot be
+found.</p>
+</dd>
+<dt class="function" id="getdecoder"><b>getdecoder(encoding)</b> <tt class="nav"><a class="nav" href="codecs.getdecoder" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Lookup up the codec for the given encoding and return its
+decoder function.</p>
+
+<p>Raises a <code>
+exceptions.LookupError</code> in case the encoding cannot be
+found.</p>
+</dd>
+<dt class="function" id="getreader"><b>getreader(encoding)</b> <tt class="nav"><a class="nav" href="codecs.getreader" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Lookup up the codec for the given encoding and return its
+StreamReader class or factory function.</p>
+
+<p>Raises a <code>
+exceptions.LookupError</code> in case the encoding cannot be
+found.</p>
+</dd>
+<dt class="function" id="getwriter"><b>getwriter(encoding)</b> <tt class="nav"><a class="nav" href="codecs.getwriter" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Lookup up the codec for the given encoding and return its
+StreamWriter class or factory function.</p>
+
+<p>Raises a <code>
+exceptions.LookupError</code> in case the encoding cannot be
+found.</p>
+</dd>
+<dt class="function" id="register_error"><b>register_error(name, error_handler)</b> <tt class="nav"><a class="nav" href="codecs.register_error" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Register the error handling function <var>error_handler</var>
+under the name <var>name</var>. <var>error_handler</var> will be
+called during encoding and decoding in case of an error, when <var>
+name</var> is specified as the errors parameter.</p>
+
+<p>For encoding <var>error_handler</var> will be called with a <code>
+exceptions.UnicodeEncodeError</code> instance, which contains
+information about the location of the error. The error handler must
+either raise this or a different exception or return a tuple with a
+replacement for the unencodable part of the input and a position
+where encoding should continue. The encoder will encode the
+replacement and continue encoding the original input at the
+specified position. Negative position values will be treated as
+being relative to the end of the input string. If the resulting
+position is out of bound an IndexError will be raised.</p>
+
+<p>Decoding and translating works similar, except <code>
+exceptions.UnicodeDecodeError</code> or <code>
+exceptions.UnicodeTranslateError</code> will be passed to the handler
+and that the replacement from the error handler will be put into
+the output directly.</p>
+</dd>
+<dt class="function" id="lookup_error"><b>lookup_error(name)</b> <tt class="nav"><a class="nav" href="codecs.lookup_error" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return the error handler previously register under the name
+<var>name</var>.</p>
+
+<p>Raises a <code>
+exceptions.LookupError</code> in case the handler cannot be found.</p>
+</dd>
+<dt class="function" id="strict_errors"><b>strict_errors(exception)</b> <tt class="nav"><a class="nav" href="codecs.strict_errors" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Implements the <code>strict</code> error handling.</p>
+</dd>
+<dt class="function" id="replace_errors"><b>replace_errors(exception)</b> <tt class="nav"><a class="nav" href="codecs.replace_errors" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Implements the <code>replace</code> error handling.</p>
+</dd>
+<dt class="function" id="ignore_errors"><b>ignore_errors(exception)</b> <tt class="nav"><a class="nav" href="codecs.ignore_errors" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Implements the <code>ignore</code> error handling.</p>
+</dd>
+<dt class="function" id="xmlcharrefreplace_errors_errors"><b>xmlcharrefreplace_errors_errors(exception)</b> <tt class="nav"><a class="nav" href="codecs.xmlcharrefreplace_errors_errors" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Implements the <code>xmlcharrefreplace</code> error
+handling.</p>
+</dd>
+<dt class="function" id="backslashreplace_errors_errors"><b>backslashreplace_errors_errors(exception)</b> <tt class="nav"><a class="nav" href="codecs.backslashreplace_errors_errors" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Implements the <code>backslashreplace</code> error handling.</p>
+</dd>
+</dl><div class="text">
+<p>To simplify working with encoded files or stream, the module
+also defines these utility functions:</p>
+</div>
+<dl><dt class="function" id="open"><b>open(filename, mode[, encoding[, errors[,
+buffering]]])</b> <tt class="nav"><a class="nav" href="codecs.open" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Open an encoded file using the given <var>mode</var> and return
+a wrapped version providing transparent encoding/decoding.</p>
+
+<p class="note"><b>Note:</b> The wrapped version will only accept
+the object format defined by the codecs, i.e. Unicode objects for
+most built-in codecs. Output is also codec-dependent and will
+usually be Unicode as well.</p>
+
+<p><var>encoding</var> specifies the encoding which is to be used
+for the file.</p>
+
+<p><var>errors</var> may be given to define the error handling. It
+defaults to <code>'strict'</code> which causes a <code>exceptions.ValueError</code> to be
+raised in case an encoding error occurs.</p>
+
+<p><var>buffering</var> has the same meaning as for the built-in <a class="link" href="#open"><code>open</code></a> function. It defaults to
+line buffered.</p>
+</dd>
+<dt class="function" id="EncodedFile"><b>EncodedFile(file, input[, output[, errors]])</b> <tt class="nav"><a class="nav" href="codecs.EncodedFile" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return a wrapped version of file which provides transparent
+encoding translation.</p>
+
+<p>Strings written to the wrapped file are interpreted according to
+the given <var>input</var> encoding and then written to the
+original file as strings using the <var>output</var> encoding. The
+intermediate encoding will usually be Unicode but depends on the
+specified codecs.</p>
+
+<p>If <var>output</var> is not given, it defaults to <var>
+input</var>.</p>
+
+<p><var>errors</var> may be given to define the error handling. It
+defaults to <code>'strict'</code>, which causes <code>exceptions.ValueError</code> to be
+raised in case an encoding error occurs.</p>
+</dd>
+</dl><div class="text">
+<p>The module also provides the following constants which are
+useful for reading and writing to platform dependent files:</p>
+</div>
+<dl><dt class="variable" id="BOM_UTF32_LE"><b>BOM_UTF32_LE</b> <tt class="nav"><a class="nav" href="codecs.BOM_UTF32_LE" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>These constants define various encodings of the Unicode byte
+order mark (BOM) used in UTF-16 and UTF-32 data streams to indicate
+the byte order used in the stream or file and in UTF-8 as a Unicode
+signature. <code>BOM_UTF16</code> is either <code>
+BOM_UTF16_BE</code> or <code>BOM_UTF16_LE</code> depending on the
+platform's native byte order, <code>BOM</code> is an alias for
+<code>BOM_UTF16</code>, <code>BOM_LE</code> for <code>
+BOM_UTF16_LE</code> and <code>BOM_BE</code> for <code>
+BOM_UTF16_BE</code>. The others represent the BOM in UTF-8 and
+UTF-32 encodings.</p>
+</dd>
+</dl><div class="text">
+<h2 id="codec-base-classes">Codec Base Classes <a class="nav" href="#codec-base-classes">#</a></h2>
+
+<p>The <code>codecs</code> defines a set
+of base classes which define the interface and can also be used to
+easily write you own codecs for use in Python.</p>
+
+<p>Each codec has to define four interfaces to make it usable as
+codec in Python: stateless encoder, stateless decoder, stream
+reader and stream writer. The stream reader and writers typically
+reuse the stateless encoder/decoder to implement the file
+protocols.</p>
+
+<p>The <code>Codec</code> class defines
+the interface for stateless encoders/decoders.</p>
+
+<p>To simplify and standardize error handling, the <code>encode</code> and <code>decode</code> methods may implement different error
+handling schemes by providing the <var>errors</var> string
+argument. The following string values are defined and implemented
+by all standard Python codecs:</p>
+
+<table border="1">
+<tr>
+<th>
+<p>Value</p>
+</th>
+<th>
+<p>Meaning</p>
+</th>
+</tr>
+
+<tr>
+<td>
+<p><code>'strict'</code></p>
+</td>
+<td>
+<p>Raise <code>
+exceptions.UnicodeError</code> (or a subclass); this is the
+default.</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>'ignore'</code></p>
+</td>
+<td>
+<p>Ignore the character and continue with the next.</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>'replace'</code></p>
+</td>
+<td>
+<p>Replace with a suitable replacement character; Python will use
+the official U+FFFD REPLACEMENT CHARACTER for the built-in Unicode
+codecs on decoding and '?' on encoding.</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>'xmlcharrefreplace'</code></p>
+</td>
+<td>
+<p>Replace with the appropriate XML character reference (only for
+encoding).</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>'backslashreplace'</code></p>
+</td>
+<td>
+<p>Replace with backslashed escape sequences (only for
+encoding).</p>
+</td>
+</tr>
+</table>
+
+<br />
+<br />
+ 
+
+<p>The set of allowed values can be extended via <a class="link" href="#register_error"><code>register_error</code></a>.</p>
+</div>
+<div class="error">
+<h3>Codec Objects</h3>
+
+<p>The <code>Codec</code> class defines
+these methods which also define the function interfaces of the
+stateless encoder and decoder:</p>
+</div>
+<dl><dt class="method" id="Codec.encode"><b>encode(input[, errors])</b> <tt class="nav"><a class="nav" href="codecs.Codec.encode" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Encodes the object <var>input</var> and returns a tuple (output
+object, length consumed). While codecs are not restricted to use
+with Unicode, in a Unicode context, encoding converts a Unicode
+object to a plain string using a particular character set encoding
+(e.g., <code>cp1252</code> or <code>iso-8859-1</code>).</p>
+
+<p><var>errors</var> defines the error handling to apply. It
+defaults to <code>'strict'</code> handling.</p>
+
+<p>The method may not store state in the <code>Codec</code> instance. Use <code>StreamCodec</code> for codecs which have to
+keep state in order to make encoding/decoding efficient.</p>
+
+<p>The encoder must be able to handle zero length input and return
+an empty object of the output object type in this situation.</p>
+</dd>
+<dt class="method" id="Codec.decode"><b>decode(input[, errors])</b> <tt class="nav"><a class="nav" href="codecs.Codec.decode" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Decodes the object <var>input</var> and returns a tuple (output
+object, length consumed). In a Unicode context, decoding converts a
+plain string encoded using a particular character set encoding to a
+Unicode object.</p>
+
+<p><var>input</var> must be an object which provides the <code>
+bf_getreadbuf</code> buffer slot. Python strings, buffer objects
+and memory mapped files are examples of objects providing this
+slot.</p>
+
+<p><var>errors</var> defines the error handling to apply. It
+defaults to <code>'strict'</code> handling.</p>
+
+<p>The method may not store state in the <code>Codec</code> instance. Use <code>StreamCodec</code> for codecs which have to
+keep state in order to make encoding/decoding efficient.</p>
+
+<p>The decoder must be able to handle zero length input and return
+an empty object of the output object type in this situation.</p>
+</dd>
+</dl><div class="text">
+<p>The <a class="link" href="#StreamWriter"><code>StreamWriter</code></a>
+and <a class="link" href="#StreamReader"><code>StreamReader</code></a>
+classes provide generic working interfaces which can be used to
+implement new encodings submodules very easily. See <code>encodings.utf_8</code> for an example on
+how this is done.</p>
+
+<h3>StreamWriter Objects</h3>
+
+<p>The <a class="link" href="#StreamWriter"><code>StreamWriter</code></a>
+class is a subclass of <code>Codec</code>
+and defines the following methods which every stream writer must
+define in order to be compatible to the Python codec registry.</p>
+</div>
+<dl><dt class="class" id="StreamWriter"><b>class StreamWriter(stream[, errors])</b> <tt class="nav"><a class="nav" href="codecs.StreamWriter" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>Constructor for a <a class="link" href="#StreamWriter"><code>
+StreamWriter</code></a> instance.</p>
+
+<p>All stream writers must provide this constructor interface. They
+are free to add additional keyword arguments, but only the ones
+defined here are used by the Python codec registry.</p>
+
+<p><var>stream</var> must be a file-like object open for writing
+(binary) data.</p>
+
+<p>The <a class="link" href="#StreamWriter"><code>StreamWriter</code></a>
+may implement different error handling schemes by providing the
+<var>errors</var> keyword argument. These parameters are
+predefined:</p>
+
+<ul>
+<li>
+<p><code>'strict'</code> Raise <code>exceptions.ValueError</code> (or a
+subclass); this is the default.</p>
+</li>
+
+<li>
+<p><code>'ignore'</code> Ignore the character and continue with the
+next.</p>
+</li>
+
+<li>
+<p><code>'replace'</code> Replace with a suitable replacement
+character</p>
+</li>
+
+<li>
+<p><code>'xmlcharrefreplace'</code> Replace with the appropriate
+XML character reference</p>
+</li>
+
+<li>
+<p><code>'backslashreplace'</code> Replace with backslashed escape
+sequences.</p>
+</li>
+</ul>
+
+<p>The <var>errors</var> argument will be assigned to an attribute
+of the same name. Assigning to this attribute makes it possible to
+switch between different error handling strategies during the
+lifetime of the <a class="link" href="#StreamWriter"><code>
+StreamWriter</code></a> object.</p>
+
+<p>The set of allowed values for the <var>errors</var> argument can
+be extended with <a class="link" href="#register_error"><code>
+register_error</code></a>.</p>
+</dd>
+<dt class="method" id="StreamWriter.write"><b>write(object)</b> <tt class="nav"><a class="nav" href="codecs.StreamWriter.write" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Writes the object's contents encoded to the stream.</p>
+</dd>
+<dt class="method" id="StreamWriter.writelines"><b>writelines(list)</b> <tt class="nav"><a class="nav" href="codecs.StreamWriter.writelines" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Writes the concatenated list of strings to the stream (possibly
+by reusing the <code>write</code>
+method).</p>
+</dd>
+<dt class="method" id="StreamWriter.reset"><b>reset()</b> <tt class="nav"><a class="nav" href="codecs.StreamWriter.reset" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Flushes and resets the codec buffers used for keeping state.</p>
+
+<p>Calling this method should ensure that the data on the output is
+put into a clean state, that allows appending of new fresh data
+without having to rescan the whole stream to recover state.</p>
+</dd>
+</dl><div class="text">
+<p>In addition to the above methods, the <a class="link" href="#StreamWriter"><code>StreamWriter</code></a> must also inherit all
+other methods and attribute from the underlying stream.</p>
+
+<h3>StreamReader Objects</h3>
+
+<p>The <a class="link" href="#StreamReader"><code>StreamReader</code></a>
+class is a subclass of <code>Codec</code>
+and defines the following methods which every stream reader must
+define in order to be compatible to the Python codec registry.</p>
+</div>
+<dl><dt class="class" id="StreamReader"><b>class StreamReader(stream[, errors])</b> <tt class="nav"><a class="nav" href="codecs.StreamReader" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>Constructor for a <a class="link" href="#StreamReader"><code>
+StreamReader</code></a> instance.</p>
+
+<p>All stream readers must provide this constructor interface. They
+are free to add additional keyword arguments, but only the ones
+defined here are used by the Python codec registry.</p>
+
+<p><var>stream</var> must be a file-like object open for reading
+(binary) data.</p>
+
+<p>The <a class="link" href="#StreamReader"><code>StreamReader</code></a>
+may implement different error handling schemes by providing the
+<var>errors</var> keyword argument. These parameters are
+defined:</p>
+
+<ul>
+<li>
+<p><code>'strict'</code> Raise <code>exceptions.ValueError</code> (or a
+subclass); this is the default.</p>
+</li>
+
+<li>
+<p><code>'ignore'</code> Ignore the character and continue with the
+next.</p>
+</li>
+
+<li>
+<p><code>'replace'</code> Replace with a suitable replacement
+character.</p>
+</li>
+</ul>
+
+<p>The <var>errors</var> argument will be assigned to an attribute
+of the same name. Assigning to this attribute makes it possible to
+switch between different error handling strategies during the
+lifetime of the <a class="link" href="#StreamReader"><code>
+StreamReader</code></a> object.</p>
+
+<p>The set of allowed values for the <var>errors</var> argument can
+be extended with <a class="link" href="#register_error"><code>
+register_error</code></a>.</p>
+</dd>
+<dt class="method" id="StreamReader.read"><b>read([size[, chars,
+[firstline]]])</b> <tt class="nav"><a class="nav" href="codecs.StreamReader.read" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Decodes data from the stream and returns the resulting
+object.</p>
+
+<p><var>chars</var> indicates the number of characters to read from
+the stream. <code>read</code> will never
+return more than <var>chars</var> characters, but it might return
+less, if there are not enough characters available.</p>
+
+<p><var>size</var> indicates the approximate maximum number of
+bytes to read from the stream for decoding purposes. The decoder
+can modify this setting as appropriate. The default value -1
+indicates to read and decode as much as possible. <var>size</var>
+is intended to prevent having to decode huge files in one step.</p>
+
+<p><var>firstline</var> indicates that it would be sufficient to
+only return the first line, if there are decoding errors on later
+lines.</p>
+
+<p>The method should use a greedy read strategy meaning that it
+should read as much data as is allowed within the definition of the
+encoding and the given size, e.g. if optional encoding endings or
+state markers are available on the stream, these should be read
+too.</p>
+
+<p>Changed in version 2.4.2: <var>firstline</var> argument
+added.</p>
+
+<blockquote><span class="mark">@since</span> Changed in version
+2.4: chars argument added.<br />
+</blockquote>
+</dd>
+<dt class="method" id="StreamReader.readline"><b>readline([size[, keepends]])</b> <tt class="nav"><a class="nav" href="codecs.StreamReader.readline" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Read one line from the input stream and return the decoded
+data.</p>
+
+<p><var>size</var>, if given, is passed as size argument to the
+stream's <code>readline</code>
+method.</p>
+
+<p>If <var>keepends</var> is false lineends will be stripped from
+the lines returned.</p>
+
+<blockquote><span class="mark">@since</span> Changed in version
+2.4: keepends argument added.<br />
+</blockquote>
+</dd>
+<dt class="method" id="StreamReader.readlines"><b>readlines([sizehint[,
+keepends]])</b> <tt class="nav"><a class="nav" href="codecs.StreamReader.readlines" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Read all lines available on the input stream and return them as
+list of lines.</p>
+
+<p>Line breaks are implemented using the codec's decoder method and
+are included in the list entries if <var>keepends</var> is
+true.</p>
+
+<p><var>sizehint</var>, if given, is passed as <var>size</var>
+argument to the stream's <code>read</code>
+method.</p>
+</dd>
+<dt class="method" id="StreamReader.reset"><b>reset()</b> <tt class="nav"><a class="nav" href="codecs.StreamReader.reset" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Resets the codec buffers used for keeping state.</p>
+
+<p>Note that no stream repositioning should take place. This method
+is primarily intended to be able to recover from decoding
+errors.</p>
+</dd>
+</dl><div class="text">
+<p>In addition to the above methods, the <a class="link" href="#StreamReader"><code>StreamReader</code></a> must also inherit all
+other methods and attribute from the underlying stream.</p>
+
+<p>The next two base classes are included for convenience. They are
+not needed by the codec registry, but may provide useful in
+practice.</p>
+
+<h3>StreamReaderWriter Objects</h3>
+
+<p>The <a class="link" href="#StreamReaderWriter"><code>
+StreamReaderWriter</code></a> allows wrapping streams which work in both
+read and write modes.</p>
+
+<p>The design is such that one can use the factory functions
+returned by the <a class="link" href="#lookup"><code>lookup</code></a>
+function to construct the instance.</p>
+</div>
+<dl><dt class="class" id="StreamReaderWriter"><b>class StreamReaderWriter(stream, Reader, Writer,
+errors)</b> <tt class="nav"><a class="nav" href="codecs.StreamReaderWriter" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>Creates a <a class="link" href="#StreamReaderWriter"><code>
+StreamReaderWriter</code></a> instance. <var>stream</var> must be a
+file-like object. <var>Reader</var> and <var>Writer</var> must be
+factory functions or classes providing the <a class="link" href="#StreamReader"><code>StreamReader</code></a> and <a class="link" href="#StreamWriter"><code>StreamWriter</code></a> interface resp. Error
+handling is done in the same way as defined for the stream readers
+and writers.</p>
+</dd>
+</dl><div class="text">
+<p><a class="link" href="#StreamReaderWriter"><code>
+StreamReaderWriter</code></a> instances define the combined interfaces of
+<a class="link" href="#StreamReader"><code>StreamReader</code></a> and <a class="link" href="#StreamWriter"><code>StreamWriter</code></a> classes.
+They inherit all other methods and attribute from the underlying
+stream.</p>
+
+<h3>StreamRecoder Objects</h3>
+
+<p>The <a class="link" href="#StreamRecoder"><code>StreamRecoder</code></a>
+provide a frontend - backend view of encoding data which is
+sometimes useful when dealing with different encoding
+environments.</p>
+
+<p>The design is such that one can use the factory functions
+returned by the <a class="link" href="#lookup"><code>lookup</code></a>
+function to construct the instance.</p>
+</div>
+<dl><dt class="class" id="StreamRecoder"><b>class StreamRecoder(stream, encode, decode, Reader,
+Writer, errors)</b> <tt class="nav"><a class="nav" href="codecs.StreamRecoder" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>Creates a <a class="link" href="#StreamRecoder"><code>
+StreamRecoder</code></a> instance which implements a two-way conversion:
+<var>encode</var> and <var>decode</var> work on the frontend (the
+input to <code>read</code> and output of <code>write</code>) while <var>Reader</var>
+and <var>Writer</var> work on the backend (reading and writing to
+the stream).</p>
+
+<p>You can use these objects to do transparent direct recodings
+from e.g. Latin-1 to UTF-8 and back.</p>
+
+<p><var>stream</var> must be a file-like object.</p>
+
+<p><var>encode</var>, <var>decode</var> must adhere to the <code>Codec</code> interface, <var>
+Reader</var>, <var>Writer</var> must be factory functions or
+classes providing objects of the <a class="link" href="#StreamReader"><code>StreamReader</code></a> and <a class="link" href="#StreamWriter"><code>StreamWriter</code></a> interface
+respectively.</p>
+
+<p><var>encode</var> and <var>decode</var> are needed for the
+frontend translation, <var>Reader</var> and <var>Writer</var> for
+the backend translation. The intermediate format used is determined
+by the two sets of codecs, e.g. the Unicode codecs will use Unicode
+as intermediate encoding.</p>
+
+<p>Error handling is done in the same way as defined for the stream
+readers and writers.</p>
+</dd>
+</dl><div class="text">
+<p><a class="link" href="#StreamRecoder"><code>StreamRecoder</code></a>
+instances define the combined interfaces of <a class="link" href="#StreamReader"><code>StreamReader</code></a> and <a class="link" href="#StreamWriter"><code>StreamWriter</code></a> classes. They inherit all
+other methods and attribute from the underlying stream.</p>
+
+<h2 id="standard-encodings">Standard Encodings <a class="nav" href="#standard-encodings">#</a></h2>
+
+<p>Python comes with a number of codecs builtin, either implemented
+as C functions, or with dictionaries as mapping tables. The
+following table lists the codecs by name, together with a few
+common aliases, and the languages for which the encoding is likely
+used. Neither the list of aliases nor the list of languages is
+meant to be exhaustive. Notice that spelling alternatives that only
+differ in case or use a hyphen instead of an underscore are also
+valid aliases.</p>
+
+<p>Many of the character sets support the same languages. They vary
+in individual characters (e.g. whether the EURO SIGN is supported
+or not), and in the assignment of characters to code positions. For
+the European languages in particular, the following variants
+typically exist:</p>
+
+<ul>
+<li>
+<p>an ISO 8859 codeset</p>
+</li>
+
+<li>
+<p>a Microsoft Windows code page, which is typically derived from a
+8859 codeset, but replaces control characters with additional
+graphic characters</p>
+</li>
+
+<li>
+<p>an IBM EBCDIC code page</p>
+</li>
+
+<li>
+<p>an IBM PC code page, which is ASCII compatible</p>
+</li>
+</ul>
+
+<table border="1">
+<tr>
+<th>
+<p>Codec</p>
+</th>
+<th>
+<p>Aliases</p>
+</th>
+<th>
+<p>Languages</p>
+</th>
+</tr>
+
+<tr>
+<td>
+<p>ascii</p>
+</td>
+<td>
+<p>646, us-ascii</p>
+</td>
+<td>
+<p>English</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>big5</p>
+</td>
+<td>
+<p>big5-tw, csbig5</p>
+</td>
+<td>
+<p>Traditional Chinese</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>big5hkscs</p>
+</td>
+<td>
+<p>big5-hkscs, hkscs</p>
+</td>
+<td>
+<p>Traditional Chinese</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>cp037</p>
+</td>
+<td>
+<p>IBM037, IBM039</p>
+</td>
+<td>
+<p>English</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>cp424</p>
+</td>
+<td>
+<p>EBCDIC-CP-HE, IBM424</p>
+</td>
+<td>
+<p>Hebrew</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>cp437</p>
+</td>
+<td>
+<p>437, IBM437</p>
+</td>
+<td>
+<p>English</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>cp500</p>
+</td>
+<td>
+<p>EBCDIC-CP-BE, EBCDIC-CP-CH, IBM500</p>
+</td>
+<td>
+<p>Western Europe</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>cp737</p>
+</td>
+<td />
+<td>
+<p>Greek</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>cp775</p>
+</td>
+<td>
+<p>IBM775</p>
+</td>
+<td>
+<p>Baltic languages</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>cp850</p>
+</td>
+<td>
+<p>850, IBM850</p>
+</td>
+<td>
+<p>Western Europe</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>cp852</p>
+</td>
+<td>
+<p>852, IBM852</p>
+</td>
+<td>
+<p>Central and Eastern Europe</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>cp855</p>
+</td>
+<td>
+<p>855, IBM855</p>
+</td>
+<td>
+<p>Bulgarian, Byelorussian, Macedonian, Russian, Serbian</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>cp856</p>
+</td>
+<td />
+<td>
+<p>Hebrew</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>cp857</p>
+</td>
+<td>
+<p>857, IBM857</p>
+</td>
+<td>
+<p>Turkish</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>cp860</p>
+</td>
+<td>
+<p>860, IBM860</p>
+</td>
+<td>
+<p>Portuguese</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>cp861</p>
+</td>
+<td>
+<p>861, CP-IS, IBM861</p>
+</td>
+<td>
+<p>Icelandic</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>cp862</p>
+</td>
+<td>
+<p>862, IBM862</p>
+</td>
+<td>
+<p>Hebrew</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>cp863</p>
+</td>
+<td>
+<p>863, IBM863</p>
+</td>
+<td>
+<p>Canadian</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>cp864</p>
+</td>
+<td>
+<p>IBM864</p>
+</td>
+<td>
+<p>Arabic</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>cp865</p>
+</td>
+<td>
+<p>865, IBM865</p>
+</td>
+<td>
+<p>Danish, Norwegian</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>cp866</p>
+</td>
+<td>
+<p>866, IBM866</p>
+</td>
+<td>
+<p>Russian</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>cp869</p>
+</td>
+<td>
+<p>869, CP-GR, IBM869</p>
+</td>
+<td>
+<p>Greek</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>cp874</p>
+</td>
+<td />
+<td>
+<p>Thai</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>cp875</p>
+</td>
+<td />
+<td>
+<p>Greek</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>cp932</p>
+</td>
+<td>
+<p>932, ms932, mskanji, ms-kanji</p>
+</td>
+<td>
+<p>Japanese</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>cp949</p>
+</td>
+<td>
+<p>949, ms949, uhc</p>
+</td>
+<td>
+<p>Korean</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>cp950</p>
+</td>
+<td>
+<p>950, ms950</p>
+</td>
+<td>
+<p>Traditional Chinese</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>cp1006</p>
+</td>
+<td />
+<td>
+<p>Urdu</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>cp1026</p>
+</td>
+<td>
+<p>ibm1026</p>
+</td>
+<td>
+<p>Turkish</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>cp1140</p>
+</td>
+<td>
+<p>ibm1140</p>
+</td>
+<td>
+<p>Western Europe</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>cp1250</p>
+</td>
+<td>
+<p>windows-1250</p>
+</td>
+<td>
+<p>Central and Eastern Europe</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>cp1251</p>
+</td>
+<td>
+<p>windows-1251</p>
+</td>
+<td>
+<p>Bulgarian, Byelorussian, Macedonian, Russian, Serbian</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>cp1252</p>
+</td>
+<td>
+<p>windows-1252</p>
+</td>
+<td>
+<p>Western Europe</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>cp1253</p>
+</td>
+<td>
+<p>windows-1253</p>
+</td>
+<td>
+<p>Greek</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>cp1254</p>
+</td>
+<td>
+<p>windows-1254</p>
+</td>
+<td>
+<p>Turkish</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>cp1255</p>
+</td>
+<td>
+<p>windows-1255</p>
+</td>
+<td>
+<p>Hebrew</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>cp1256</p>
+</td>
+<td>
+<p>windows1256</p>
+</td>
+<td>
+<p>Arabic</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>cp1257</p>
+</td>
+<td>
+<p>windows-1257</p>
+</td>
+<td>
+<p>Baltic languages</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>cp1258</p>
+</td>
+<td>
+<p>windows-1258</p>
+</td>
+<td>
+<p>Vietnamese</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>euc_jp</p>
+</td>
+<td>
+<p>eucjp, ujis, u-jis</p>
+</td>
+<td>
+<p>Japanese</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>euc_jis_2004</p>
+</td>
+<td>
+<p>jisx0213, eucjis2004</p>
+</td>
+<td>
+<p>Japanese</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>euc_jisx0213</p>
+</td>
+<td>
+<p>eucjisx0213</p>
+</td>
+<td>
+<p>Japanese</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>euc_kr</p>
+</td>
+<td>
+<p>euckr, korean, ksc5601, ks_c-5601, ks_c-5601-1987, ksx1001,
+ks_x-1001</p>
+</td>
+<td>
+<p>Korean</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>gb2312</p>
+</td>
+<td>
+<p>chinese, csiso58gb231280, euc-cn, euccn, eucgb2312-cn,
+gb2312-1980, gb2312-80, iso-ir-58</p>
+</td>
+<td>
+<p>Simplified Chinese</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>gbk</p>
+</td>
+<td>
+<p>936, cp936, ms936</p>
+</td>
+<td>
+<p>Unified Chinese</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>gb18030</p>
+</td>
+<td>
+<p>gb18030-2000</p>
+</td>
+<td>
+<p>Unified Chinese</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>hz</p>
+</td>
+<td>
+<p>hzgb, hz-gb, hz-gb-2312</p>
+</td>
+<td>
+<p>Simplified Chinese</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>iso2022_jp</p>
+</td>
+<td>
+<p>csiso2022jp, iso2022jp, iso-2022-jp</p>
+</td>
+<td>
+<p>Japanese</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>iso2022_jp_1</p>
+</td>
+<td>
+<p>iso2022jp-1, iso-2022-jp-1</p>
+</td>
+<td>
+<p>Japanese</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>iso2022_jp_2</p>
+</td>
+<td>
+<p>iso2022jp-2, iso-2022-jp-2</p>
+</td>
+<td>
+<p>Japanese, Korean, Simplified Chinese, Western Europe, Greek</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>iso2022_jp_2004</p>
+</td>
+<td>
+<p>iso2022jp-2004, iso-2022-jp-2004</p>
+</td>
+<td>
+<p>Japanese</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>iso2022_jp_3</p>
+</td>
+<td>
+<p>iso2022jp-3, iso-2022-jp-3</p>
+</td>
+<td>
+<p>Japanese</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>iso2022_jp_ext</p>
+</td>
+<td>
+<p>iso2022jp-ext, iso-2022-jp-ext</p>
+</td>
+<td>
+<p>Japanese</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>iso2022_kr</p>
+</td>
+<td>
+<p>csiso2022kr, iso2022kr, iso-2022-kr</p>
+</td>
+<td>
+<p>Korean</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>latin_1</p>
+</td>
+<td>
+<p>iso-8859-1, iso8859-1, 8859, cp819, latin, latin1, L1</p>
+</td>
+<td>
+<p>West Europe</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>iso8859_2</p>
+</td>
+<td>
+<p>iso-8859-2, latin2, L2</p>
+</td>
+<td>
+<p>Central and Eastern Europe</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>iso8859_3</p>
+</td>
+<td>
+<p>iso-8859-3, latin3, L3</p>
+</td>
+<td>
+<p>Esperanto, Maltese</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>iso8859_4</p>
+</td>
+<td>
+<p>iso-8859-4, latin4, L4</p>
+</td>
+<td>
+<p>Baltic languagues</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>iso8859_5</p>
+</td>
+<td>
+<p>iso-8859-5, cyrillic</p>
+</td>
+<td>
+<p>Bulgarian, Byelorussian, Macedonian, Russian, Serbian</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>iso8859_6</p>
+</td>
+<td>
+<p>iso-8859-6, arabic</p>
+</td>
+<td>
+<p>Arabic</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>iso8859_7</p>
+</td>
+<td>
+<p>iso-8859-7, greek, greek8</p>
+</td>
+<td>
+<p>Greek</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>iso8859_8</p>
+</td>
+<td>
+<p>iso-8859-8, hebrew</p>
+</td>
+<td>
+<p>Hebrew</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>iso8859_9</p>
+</td>
+<td>
+<p>iso-8859-9, latin5, L5</p>
+</td>
+<td>
+<p>Turkish</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>iso8859_10</p>
+</td>
+<td>
+<p>iso-8859-10, latin6, L6</p>
+</td>
+<td>
+<p>Nordic languages</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>iso8859_13</p>
+</td>
+<td>
+<p>iso-8859-13</p>
+</td>
+<td>
+<p>Baltic languages</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>iso8859_14</p>
+</td>
+<td>
+<p>iso-8859-14, latin8, L8</p>
+</td>
+<td>
+<p>Celtic languages</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>iso8859_15</p>
+</td>
+<td>
+<p>iso-8859-15</p>
+</td>
+<td>
+<p>Western Europe</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>johab</p>
+</td>
+<td>
+<p>cp1361, ms1361</p>
+</td>
+<td>
+<p>Korean</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>koi8_r</p>
+</td>
+<td />
+<td>
+<p>Russian</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>koi8_u</p>
+</td>
+<td />
+<td>
+<p>Ukrainian</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>mac_cyrillic</p>
+</td>
+<td>
+<p>maccyrillic</p>
+</td>
+<td>
+<p>Bulgarian, Byelorussian, Macedonian, Russian, Serbian</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>mac_greek</p>
+</td>
+<td>
+<p>macgreek</p>
+</td>
+<td>
+<p>Greek</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>mac_iceland</p>
+</td>
+<td>
+<p>maciceland</p>
+</td>
+<td>
+<p>Icelandic</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>mac_latin2</p>
+</td>
+<td>
+<p>maclatin2, maccentraleurope</p>
+</td>
+<td>
+<p>Central and Eastern Europe</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>mac_roman</p>
+</td>
+<td>
+<p>macroman</p>
+</td>
+<td>
+<p>Western Europe</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>mac_turkish</p>
+</td>
+<td>
+<p>macturkish</p>
+</td>
+<td>
+<p>Turkish</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>ptcp154</p>
+</td>
+<td>
+<p>csptcp154, pt154, cp154, cyrillic-asian</p>
+</td>
+<td>
+<p>Kazakh</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>shift_jis</p>
+</td>
+<td>
+<p>csshiftjis, shiftjis, sjis, s_jis</p>
+</td>
+<td>
+<p>Japanese</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>shift_jis_2004</p>
+</td>
+<td>
+<p>shiftjis2004, sjis_2004, sjis2004</p>
+</td>
+<td>
+<p>Japanese</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>shift_jisx0213</p>
+</td>
+<td>
+<p>shiftjisx0213, sjisx0213, s_jisx0213</p>
+</td>
+<td>
+<p>Japanese</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>utf_16</p>
+</td>
+<td>
+<p>U16, utf16</p>
+</td>
+<td>
+<p>all languages</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>utf_16_be</p>
+</td>
+<td>
+<p>UTF-16BE</p>
+</td>
+<td>
+<p>all languages (BMP only)</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>utf_16_le</p>
+</td>
+<td>
+<p>UTF-16LE</p>
+</td>
+<td>
+<p>all languages (BMP only)</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>utf_7</p>
+</td>
+<td>
+<p>U7</p>
+</td>
+<td>
+<p>all languages</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>utf_8</p>
+</td>
+<td>
+<p>U8, UTF, utf8</p>
+</td>
+<td>
+<p>all languages</p>
+</td>
+</tr>
+</table>
+
+<br />
+<br />
+ 
+
+<p>A number of codecs are specific to Python, so their codec names
+have no meaning outside Python. Some of them don't convert from
+Unicode strings to byte strings, but instead use the property of
+the Python codecs machinery that any bijective function with one
+argument can be considered as an encoding.</p>
+
+<p>For the codecs listed below, the result in the
+&#8220;encoding&#8221; direction is always a byte string. The
+result of the &#8220;decoding&#8221; direction is listed as operand
+type in the table.</p>
+
+<table border="1">
+<tr>
+<th>
+<p>Codec</p>
+</th>
+<th>
+<p>Aliases</p>
+</th>
+<th>
+<p>Operand type</p>
+</th>
+<th>
+<p>Purpose</p>
+</th>
+</tr>
+
+<tr>
+<td>
+<p>base64_codec</p>
+</td>
+<td>
+<p>base64, base-64</p>
+</td>
+<td>
+<p>byte string</p>
+</td>
+<td>
+<p>Convert operand to MIME base64</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>bz2_codec</p>
+</td>
+<td>
+<p>bz2</p>
+</td>
+<td>
+<p>byte string</p>
+</td>
+<td>
+<p>Compress the operand using bz2</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>hex_codec</p>
+</td>
+<td>
+<p>hex</p>
+</td>
+<td>
+<p>byte string</p>
+</td>
+<td>
+<p>Convert operand to hexadecimal representation, with two digits
+per byte</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>idna</p>
+</td>
+<td />
+<td>
+<p>Unicode string</p>
+</td>
+<td>
+<p>Implements <a class="link" href="http://www.faqs.org/rfcs/rfc3490.html">RFC 3490</a>. New in
+version 2.3. See also <code>
+encodings.idna</code></p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>mbcs</p>
+</td>
+<td>
+<p>dbcs</p>
+</td>
+<td>
+<p>Unicode string</p>
+</td>
+<td>
+<p>Windows only: Encode operand according to the ANSI codepage
+(CP_ACP)</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>palmos</p>
+</td>
+<td />
+<td>
+<p>Unicode string</p>
+</td>
+<td>
+<p>Encoding of PalmOS 3.5</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>punycode</p>
+</td>
+<td />
+<td>
+<p>Unicode string</p>
+</td>
+<td>
+<p>Implements <a class="link" href="http://www.faqs.org/rfcs/rfc3492.html">RFC 3492</a>. New in
+version 2.3.</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>quopri_codec</p>
+</td>
+<td>
+<p>quopri, quoted-printable, quotedprintable</p>
+</td>
+<td>
+<p>byte string</p>
+</td>
+<td>
+<p>Convert operand to MIME quoted printable</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>raw_unicode_escape</p>
+</td>
+<td />
+<td>
+<p>Unicode string</p>
+</td>
+<td>
+<p>Produce a string that is suitable as raw Unicode literal in
+Python source code</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>rot_13</p>
+</td>
+<td>
+<p>rot13</p>
+</td>
+<td>
+<p>byte string</p>
+</td>
+<td>
+<p>Returns the Caesar-cypher encryption of the operand</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>string_escape</p>
+</td>
+<td />
+<td>
+<p>byte string</p>
+</td>
+<td>
+<p>Produce a string that is suitable as string literal in Python
+source code</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>undefined</p>
+</td>
+<td />
+<td>
+<p>any</p>
+</td>
+<td>
+<p>Raise an exception for all conversion. Can be used as the system
+encoding if no automatic coercion between byte and Unicode strings
+is desired.</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>unicode_escape</p>
+</td>
+<td />
+<td>
+<p>Unicode string</p>
+</td>
+<td>
+<p>Produce a string that is suitable as Unicode literal in Python
+source code</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>unicode_internal</p>
+</td>
+<td />
+<td>
+<p>Unicode string</p>
+</td>
+<td>
+<p>Return the internal representation of the operand</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>uu_codec</p>
+</td>
+<td>
+<p>uu</p>
+</td>
+<td>
+<p>byte string</p>
+</td>
+<td>
+<p>Convert the operand using uuencode</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>zlib_codec</p>
+</td>
+<td>
+<p>zip, zlib</p>
+</td>
+<td>
+<p>byte string</p>
+</td>
+<td>
+<p>Compress the operand using gzip</p>
+</td>
+</tr>
+</table>
+
+<br />
+<br />
+ 
+
+<h2 id="encodings-idna-internationalized-domain-names-in-applications">encodings.idna&#8212;Internationalized Domain Names in
+Applications <a class="nav" href="#encodings-idna-internationalized-domain-names-in-applications">#</a></h2>
+
+<p>New in version 2.3.</p>
+
+<p>This module implements <a class="link" href="http://www.faqs.org/rfcs/rfc3490.html">RFC 3490</a>
+(Internationalized Domain Names in Applications) and <a class="link" href="http://www.faqs.org/rfcs/rfc3492.html">RFC
+3492</a> (Nameprep: A Stringprep Profile for Internationalized
+Domain Names (IDN)). It builds upon the <code>punycode</code>
+encoding and <code>
+stringprep</code>.</p>
+
+<p>These RFCs together define a protocol to support non-ASCII
+characters in domain names. A domain name containing non-ASCII
+characters (such as &#8220;www.Alliancefran&#231;aise.nu&#8221;) is
+converted into an ASCII-compatible encoding (ACE, such as
+&#8220;www.xn-alliancefranaise-npb.nu&#8221;). The ACE form of the
+domain name is then used in all places where arbitrary characters
+are not allowed by the protocol, such as DNS queries, HTTP Host:
+fields, and so on. This conversion is carried out in the
+application; if possible invisible to the user: The application
+should transparently convert Unicode domain labels to IDNA on the
+wire, and convert back ACE labels to Unicode before presenting them
+to the user.</p>
+
+<p>Python supports this conversion in several ways: The <code>
+idna</code> codec allows to convert between Unicode and the ACE.
+Furthermore, the <code>socket</code>
+module transparently converts Unicode host names to ACE, so that
+applications need not be concerned about converting host names
+themselves when they pass them to the socket module. On top of
+that, modules that have host names as function parameters, such as
+<code>httplib</code> and <code>ftplib</code>, accept Unicode host names (<code>httplib</code> then also
+transparently sends an IDNA hostname in the Host: field if it sends
+that field at all).</p>
+
+<p>When receiving host names from the wire (such as in reverse name
+lookup), no automatic conversion to Unicode is performed:
+Applications wishing to present such host names to the user should
+decode them to Unicode.</p>
+
+<p>The module <code>
+encodings.idna</code> also implements the nameprep procedure, which
+performs certain normalizations on host names, to achieve
+case-insensitivity of international domain names, and to unify
+similar characters. The nameprep functions can be used directly if
+desired.</p>
+</div>
+<dl><dt class="function" id="nameprep"><b>nameprep(label)</b> <tt class="nav"><a class="nav" href="codecs.nameprep" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return the nameprepped version of <var>label</var>. The
+implementation currently assumes query strings, so <code>
+AllowUnassigned</code> is true.</p>
+</dd>
+<dt class="function" id="ToASCII"><b>ToASCII(label)</b> <tt class="nav"><a class="nav" href="codecs.ToASCII" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Convert a label to ASCII, as specified in <a class="link" href="http://www.faqs.org/rfcs/rfc3490.html">RFC 3490</a>. <code>
+UseSTD3ASCIIRules</code> is assumed to be false.</p>
+</dd>
+<dt class="function" id="ToUnicode"><b>ToUnicode(label)</b> <tt class="nav"><a class="nav" href="codecs.ToUnicode" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Convert a label to Unicode, as specified in <a class="link" href="http://www.faqs.org/rfcs/rfc3490.html">RFC 3490</a>.</p>
+</dd>
+</dl></div></body></html>

@@ -1,0 +1,36 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>How do I create a .pyc&nbsp;file?</title></head><body data-page-id="787"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><p class="note" style="text-align: center"><strong>
+This is an old copy of the Python FAQ.  The information here may be
+outdated.
+</strong></p><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">How do I create a .pyc&nbsp;file?</h1></div><div class="yui-ge"><div class="yui-u first"><p>Python automatically compiles your script to compiled code, so called byte code, before running it.</p><p>When a module is imported for the first time, or when the source is
+more recent than the current compiled file, a .pyc file containing the
+compiled code will usually be created in the same directory as the .py
+file.  When you run the program next time, Python uses this file to skip the compilation step.</p><p>One reason that a .pyc file may not be created is permissions problems
+with the directory.  This can happen, for example, if you develop as
+one user but run as another, such as if you are testing with a web
+server.  Creation of a .pyc file is automatic if you&#8217;re importing a
+module and Python has the ability (permissions, free space, etc.) to
+write the compiled module back to the directory.</p><p>Running a script is not considered an import and no .pyc will be
+created.  For example, if you have a script file abc.py that imports
+another module xyz.py, when you run abc, xyz.pyc will be created since
+xyz is imported, but no abc.pyc file will be created since abc.py
+isn&#8217;t being imported.</p><p>If you need to create a .pyc file for a module that is not imported,
+you can use the <a href="/pyref/py_compile.htm"><strong>py_compile</strong></a> and <a href="/pyref/compileall.htm"><strong>compileall</strong></a>
+modules.</p><p>The <a href="/pyref/py_compile.htm"><strong>py_compile</strong></a> module can manually compile any module.  One
+way is to use the <a href="/pyref/py_compile.compile.htm"><strong>py_compile.compile</strong></a> function in that
+module interactively:</p><pre class="python">&gt;&gt;&gt; <span class="pykeyword">import</span> py_compile
+&gt;&gt;&gt; py_compile.compile(<span class="pystring">'abc.py'</span>)</pre><p>This will write the .pyc to the same location as abc.py (you can
+override that with the optional parameter <em>cfile</em>).</p><p>You can also automatically compile all files in a directory or
+directories using the <a href="/pyref/compileall.htm"><strong>compileall</strong></a> module.</p><pre><code>python -m compileall .
+</code></pre><p>If the directory name (the current directory in this example) is
+omitted, the module compiles everything found on <a href="/pyref/sys.path.htm"><strong>sys.path</strong></a>.</p><p>If you&#8217;re curious, you can look at the byte code using the dis module:</p><pre><code>&gt;&gt;&gt; def hello():
+...     print "hello!"
+...
+&gt;&gt;&gt; dis.dis(hello)
+  2           0 LOAD_CONST               1 ('hello!')
+              3 PRINT_ITEM
+              4 PRINT_NEWLINE
+              5 LOAD_CONST               0 (None)
+              8 RETURN_VALUE
+</code></pre></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to pyfaq index page.">::: pyfaq :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

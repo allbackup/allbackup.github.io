@@ -1,0 +1,166 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>calendar</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-calendar.html'>original</a> :::
+<a href='calendar.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>calendar&#8212;General calendar-related functions</h1>
+
+<p>This module allows you to output calendars like the Unix cal
+program, and provides additional useful functions related to the
+calendar. By default, these calendars have Monday as the first day
+of the week, and Sunday as the last (the European convention). Use
+<a class="link" href="#setfirstweekday"><code>setfirstweekday</code></a> to
+set the first day of the week to Sunday (6) or to any other
+weekday. Parameters that specify dates are given as integers.</p>
+
+<p>Most of these functions rely on the <code>datetime</code> module which uses an idealized
+calendar, the current Gregorian calendar indefinitely extended in
+both directions. This matches the definition of the "proleptic
+Gregorian" calendar in Dershowitz and Reingold's book "Calendrical
+Calculations", where it's the base calendar for all
+computations.</p>
+</div>
+<dl><dt class="function" id="setfirstweekday"><b>setfirstweekday(weekday)</b> <tt class="nav"><a class="nav" href="calendar.setfirstweekday" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Sets the weekday (<code>0</code> is Monday, <code>6</code> is
+Sunday) to start each week. The values <code>MONDAY</code>, <code>
+TUESDAY</code>, <code>WEDNESDAY</code>, <code>THURSDAY</code>,
+<code>FRIDAY</code>, <code>SATURDAY</code>, and <code>SUNDAY</code>
+are provided for convenience. For example, to set the first weekday
+to Sunday:</p>
+
+<pre>
+import calendar
+calendar.setfirstweekday(calendar.SUNDAY)
+</pre>
+
+<blockquote><span class="mark">@since</span> New in version
+2.0.<br />
+</blockquote>
+</dd>
+<dt class="function" id="firstweekday"><b>firstweekday()</b> <tt class="nav"><a class="nav" href="calendar.firstweekday" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Returns the current setting for the weekday to start each
+week.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.0.<br />
+</blockquote>
+</dd>
+<dt class="function" id="isleap"><b>isleap(year)</b> <tt class="nav"><a class="nav" href="calendar.isleap" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Returns <code>True</code> if <var>year</var> is a leap year,
+otherwise <code>False</code>.</p>
+</dd>
+<dt class="function" id="leapdays"><b>leapdays(y1, y2)</b> <tt class="nav"><a class="nav" href="calendar.leapdays" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Returns the number of leap years in the range
+[<var>y1</var>...<var>y2</var>), where <var>y1</var> and <var>
+y2</var> are years.</p>
+
+<blockquote><span class="mark">@since</span> Changed in version
+2.0: This function didn't work for ranges spanning a century change
+in Python 1.5.2.<br />
+</blockquote>
+</dd>
+<dt class="function" id="weekday"><b>weekday(year, month, day)</b> <tt class="nav"><a class="nav" href="calendar.weekday" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Returns the day of the week (<code>0</code> is Monday) for <var>
+year</var> (<code>1970</code>-...), <var>month</var>
+(<code>1</code>-<code>12</code>), <var>day</var>
+(<code>1</code>-<code>31</code>).</p>
+</dd>
+<dt class="function" id="weekheader"><b>weekheader(n)</b> <tt class="nav"><a class="nav" href="calendar.weekheader" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return a header containing abbreviated weekday names. <var>
+n</var> specifies the width in characters for one weekday.</p>
+</dd>
+<dt class="function" id="monthrange"><b>monthrange(year, month)</b> <tt class="nav"><a class="nav" href="calendar.monthrange" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Returns weekday of first day of the month and number of days in
+month, for the specified <var>year</var> and <var>month</var>.</p>
+</dd>
+<dt class="function" id="monthcalendar"><b>monthcalendar(year, month)</b> <tt class="nav"><a class="nav" href="calendar.monthcalendar" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Returns a matrix representing a month's calendar. Each row
+represents a week; days outside of the month a represented by
+zeros. Each week begins with Monday unless set by <a class="link" href="#setfirstweekday"><code>setfirstweekday</code></a>.</p>
+</dd>
+<dt class="function" id="prmonth"><b>prmonth(theyear, themonth[, w[, l]])</b> <tt class="nav"><a class="nav" href="calendar.prmonth" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Prints a month's calendar as returned by <a class="link" href="#month"><code>month</code></a>.</p>
+</dd>
+<dt class="function" id="month"><b>month(theyear, themonth[, w[, l]])</b> <tt class="nav"><a class="nav" href="calendar.month" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Returns a month's calendar in a multi-line string. If <var>
+w</var> is provided, it specifies the width of the date columns,
+which are centered. If <var>l</var> is given, it specifies the
+number of lines that each week will use. Depends on the first
+weekday as set by <a class="link" href="#setfirstweekday"><code>
+setfirstweekday</code></a>.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.0.<br />
+</blockquote>
+</dd>
+<dt class="function" id="prcal"><b>prcal(year[, w[, l[c]]])</b> <tt class="nav"><a class="nav" href="calendar.prcal" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Prints the calendar for an entire year as returned by <a class="link" href="#calendar"><code>calendar</code></a>.</p>
+</dd>
+<dt class="function" id="calendar"><b>calendar(year[, w[, l[c]]])</b> <tt class="nav"><a class="nav" href="calendar.calendar" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Returns a 3-column calendar for an entire year as a multi-line
+string. Optional parameters <var>w</var>, <var>l</var>, and <var>
+c</var> are for date column width, lines per week, and number of
+spaces between month columns, respectively. Depends on the first
+weekday as set by <a class="link" href="#setfirstweekday"><code>
+setfirstweekday</code></a>. The earliest year for which a calendar can be
+generated is platform-dependent.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.0.<br />
+</blockquote>
+</dd>
+<dt class="function" id="timegm"><b>timegm(tuple)</b> <tt class="nav"><a class="nav" href="calendar.timegm" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>An unrelated but handy function that takes a time tuple such as
+returned by the <code>gmtime</code>
+function in the <code>time</code> module,
+and returns the corresponding Unix timestamp value, assuming an
+epoch of 1970, and the POSIX encoding. In fact, <code>time.gmtime</code> and <a class="link" href="#timegm"><code>timegm</code></a> are each others' inverse.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.0.<br />
+</blockquote>
+</dd>
+</dl><div class="text"><span class="mark">@see</span> <code>Module datetime</code> Object-oriented interface
+to dates and times with similar functionality to the time module.
+<span class="mark">@see</span> <code>
+Module time</code> Low-level time related functions.</div>
+</div></body></html>

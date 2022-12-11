@@ -1,0 +1,61 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>The timing&nbsp;module</title></head><body data-page-id="691"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">The timing&nbsp;module</h1></div><div class="yui-ge"><div class="yui-u first"><p>(Obsolete, Unix-only). This module can be used to time the
+execution of a Python program.</p><div class="example">
+<b style="example">Example: Using the timing
+module</b>
+<pre>
+# File: <a href="timing/timing-example-1.py">timing-example-1.py</a>
+
+import timing
+import time
+
+def procedure():
+    time.sleep(1.234)
+
+timing.start()
+procedure()
+timing.finish()
+
+print "seconds:", timing.seconds()
+print "milliseconds:", timing.milli()
+print "microseconds:", timing.micro()
+
+</pre><pre class="computeroutput" moreinfo="NONE">
+seconds: 1
+milliseconds: 1239
+microseconds: 1239999
+</pre></div><p>The following script shows how you can emulate this module using
+functions in the standard <b><a href="time.htm">time</a></b> module.</p><div class="example">
+<b style="example">Example: Emulating the
+timing module</b>
+<pre>
+# File: <a href="timing/timing-example-2.py">timing-example-2.py</a>
+
+import time, sys
+
+if sys.platform == "win32":
+    timer = time.clock
+else:
+    timer = time.time
+
+t0 = t1 = 0
+
+def start():
+    global t0
+    t0 = timer()
+
+def finish():
+    global t1
+    t1 = timer()
+
+def seconds():
+    return int(t1 - t0)
+
+def milli():
+    return int((t1 - t0) * 1000)
+
+def micro():
+    return int((t1 - t0) * 1000000)
+</pre></div><p>Note that the script uses <b>time.clock()</b> on Windows, since it has a much higher resolution than the ordinary <b>time()</b> function on that platform.  On other platforms,
+you should only use <b>clock</b> to get CPU time.</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to librarybook index page.">::: librarybook :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

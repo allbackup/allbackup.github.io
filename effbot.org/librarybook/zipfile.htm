@@ -1,0 +1,126 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>The zipfile&nbsp;module</title></head><body data-page-id="727"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">The zipfile&nbsp;module</h1></div><div class="yui-ge"><div class="yui-u first"><p>(New in 2.0) This module allows you to read and write files in
+the popular ZIP archive format.</p><h3 style="sect2">Listing the contents</h3><p>To list the contents of an existing archive, you can use the
+<b>namelist</b> and <b>infolist</b> methods. The former returns
+a list of filenames, the latter a list of <b>ZipInfo</b>
+instances.</p><div class="example">
+<b style="example">Example: Using the zipfile
+module to list files in a ZIP file</b>
+<pre>
+# File: <a href="zipfile/zipfile-example-1.py">zipfile-example-1.py</a>
+
+import zipfile
+
+file = zipfile.ZipFile("samples/sample.zip", "r")
+
+# <i>list filenames</i>
+for name in file.namelist():
+    print name,
+print
+
+# <i>list file information</i>
+for info in file.infolist():
+    print info.filename, info.date_time, info.file_size
+
+</pre><pre class="computeroutput" moreinfo="NONE">
+$ python zipfile-example-1.py
+sample.txt sample.jpg
+sample.txt (1999, 9, 11, 20, 11, 8) 302
+sample.jpg (1999, 9, 18, 16, 9, 44) 4762
+</pre></div><h3 style="sect2">Reading data from a ZIP file</h3><p>To read data from an archive, simply use the <b>read</b>
+method. It takes a filename as an argument, and returns the data as
+a string.</p><div class="example">
+<b style="example">Example: Using the zipfile
+module to read data from a ZIP file</b>
+<pre>
+# File: <a href="zipfile/zipfile-example-2.py">zipfile-example-2.py</a>
+
+import zipfile
+
+file = zipfile.ZipFile("samples/sample.zip", "r")
+
+for name in file.namelist():
+    data = file.read(name)
+    print name, len(data), repr(data[:10])
+
+</pre><pre class="computeroutput" moreinfo="NONE">
+$ python zipfile-example-2.py
+sample.txt 302 'We will pe'
+sample.jpg 4762 '\377\330\377\340\000\020JFIF'
+</pre></div><h3 style="sect2">Writing data to a ZIP file</h3><p>Adding files to an archive is easy. Just pass the file name, and
+the name you want that file to have in the archive, to the
+<b>write</b> method.</p><p>The following script creates a ZIP file containing all files in
+the <b>samples</b> directory.</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><div class="example wide">
+<b style="example">Example: Using the zipfile
+module to store files in a ZIP file</b>
+<pre class="wide">
+# File: <a href="zipfile/zipfile-example-3.py">zipfile-example-3.py</a>
+
+import zipfile
+import glob, os
+
+# <i>open the zip file for writing, and write stuff to it</i>
+
+file = zipfile.ZipFile("test.zip", "w")
+
+for name in glob.glob("samples/*"):
+    file.write(name, os.path.basename(name), zipfile.ZIP_DEFLATED)
+
+file.close()
+
+# <i>open the file again, to see what's in it</i>
+
+file = zipfile.ZipFile("test.zip", "r")
+for info in file.infolist():
+    print info.filename, info.date_time, info.file_size, info.compress_size
+
+</pre><pre class="computeroutput wide" moreinfo="NONE">
+$ python zipfile-example-3.py
+sample.wav (1999, 8, 15, 21, 26, 46) 13260 10985
+sample.jpg (1999, 9, 18, 16, 9, 44) 4762 4626
+sample.au (1999, 7, 18, 20, 57, 34) 1676 1103
+...
+</pre></div></div><div class="yui-ge"><div class="yui-u first"><p>The third, optional argument to the <b>write</b> method
+controls what compression method to use.  Or rather, it controls
+whether data should be compressed at all.  The default is
+<b>zipfile.ZIP_STORED</b>, which stores the data in the archive
+without any compression at all. If the <b><a href="zlib.htm">zlib</a></b> module is installed, you can also use <b>zipfile.ZIP_DEFLATED</b>, which
+gives you <span>&#8220;deflate&#8221;</span> compression.</p><p>The <b>zipfile</b> module also allows you to add strings to
+the archive. However, adding data from a string is a bit tricky;
+instead of just passing in the archive name and the data, you have
+to create a <b>ZipInfo</b> instance and configure it correctly.
+Here&#8217;s a simple example:</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><div class="example wide">
+<b style="example">Example: Using the zipfile
+module to store strings in a ZIP file</b>
+<pre class="wide">
+# File: <a href="zipfile/zipfile-example-4.py">zipfile-example-4.py</a>
+
+import zipfile
+import glob, os, time
+
+file = zipfile.ZipFile("test.zip", "w")
+
+now = time.localtime(time.time())[:6]
+
+for name in ("life", "of", "brian"):
+    info = zipfile.ZipInfo(name)
+    info.date_time = now
+    info.compress_type = zipfile.ZIP_DEFLATED
+    file.writestr(info, name*1000)
+
+file.close()
+
+# <i>open the file again, to see what's in it</i>
+
+file = zipfile.ZipFile("test.zip", "r")
+
+for info in file.infolist():
+    print info.filename, info.date_time, info.file_size, info.compress_size
+
+</pre><pre class="computeroutput wide" moreinfo="NONE">
+$ python zipfile-example-4.py
+life (2000, 12, 1, 0, 12, 1) 4000 26
+of (2000, 12, 1, 0, 12, 1) 2000 18
+brian (2000, 12, 1, 0, 12, 1) 5000 31
+</pre></div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to librarybook index page.">::: librarybook :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

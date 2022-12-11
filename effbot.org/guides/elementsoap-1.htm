@@ -1,0 +1,42 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>Using the ElementTree Module to Generate SOAP Messages, Part 1: Talking to a Stock Quote&nbsp;Server</title> <script type="text/javascript">effbot_page_id=101;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> <!--
+<p style='color: #8f8f8f; background: #fff5bf; padding: 5px 10px;'> <b>2008-07-15:</b> Selected articles
+
+now have experimental "comment" links in the left column and at the bottom.
+You're welcome to use them for commenting and voting on articles.
+For a bit more on this, see <a
+href="http://effbot.slinkset.com/links/Welcome_to_discuss_effbot_org">this
+page</a>. /F
+</p>
+--> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <p><a href="element-soap.htm">back</a> <a href="elementsoap-2.htm">next</a></p> <h1 class="maintitle">Using the ElementTree Module to Generate SOAP Messages, Part 1: Talking to a Stock Quote&nbsp;Server</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p class="info">November 16, 2003 | Fredrik Lundh</p><p class="note"><b>Note:</b>
+A distribution kit containing the source code for this article is
+available from <a href="http://effbot.org/downloads#elementsoap">the
+effbot.org downloads site</a> (look for ElementSOAP).</p><p>The <a href="http://www.w3.org/TR/SOAP/">Simple Object Access
+Protocol</a> (SOAP) is an XML-based protocol for &#8220;information exchange
+in distributed environments&#8221;.  SOAP can be used in many different ways,
+but the most common approach is to use it for RPC requests over HTTP,
+where a client application sends a SOAP request message to a remote
+server, and the server returns a SOAP response message to the
+client.</p><p>A simple SOAP request can look something like this (somewhat
+simplified; namespace definitions not shown):</p><pre class="xml">
+&lt;<span class="pyfunction">soap:Envelope</span>&gt;
+  &lt;<span class="pyfunction">soap:Body</span>&gt;
+    &lt;<span class="pyfunction">this:method</span> soap:encodingStyle="..."&gt;
+      &lt;<span class="pyfunction">argument</span> xsd:type="xsi:string"&gt;value&lt;/<span class="pyfunction">argument</span>&gt;
+      ...
+    &lt;/<span class="pyfunction">this:method</span>&gt;
+  &lt;/<span class="pyfunction">soap:Body</span>&gt;
+&lt;/<span class="pyfunction">soap:Envelope</span>&gt;</pre><p>The above request refers to a method named <b>this:method</b>
+(where the <b>this</b> prefix represents some namespace), and passes
+in a single string argument.  The server might return a SOAP response
+looking something like:</p><pre class="xml">
+&lt;<span class="pyfunction">soap:Envelope</span>&gt;
+  &lt;<span class="pyfunction">soap:Body</span>&gt;
+    &lt;<span class="pyfunction">this:methodResponse</span> soap:encodingStyle="..."&gt;
+      &lt;<span class="pyfunction">value</span> xsd:type="xsi:float"&gt;result&lt;/<span class="pyfunction">value</span>&gt;
+    &lt;/<span class="pyfunction">this:methodResponse</span>&gt;
+  &lt;/<span class="pyfunction">soap:Body</span>&gt;
+&lt;/<span class="pyfunction">soap:Envelope</span>&gt;</pre><h2 id="talking-to-a-stock-quote-server">Talking to a Stock Quote Server&#160;<a class="nav" href="#talking-to-a-stock-quote-server" title="bookmark!">#</a></h2><p>In this element article, I&#8217;m going to use the <a href="http://effbot.org/zone/element.htm">ElementTree</a> module to
+talk to a public SOAP service; the <a href="http://www.xmethods.com/ve2/ViewListing.po?serviceid=2">Delayed
+Stock Quote</a> servi

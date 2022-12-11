@@ -1,0 +1,32 @@
+
+@@module ScrolledText
+
+<h1>ScrolledText&#8212;Scrolled Text Widget</h1>
+
+<p>Availability: Tk.
+
+<p>The {@link ScrolledText} module provides a class of the same name
+which implements a basic text widget which has a vertical scroll bar
+configured to do the &#8220;right thing.&#8221; Using the {@link
+ScrolledText} class is a lot easier than setting up a text widget and
+scroll bar directly. The constructor is the same as that of the {@link
+Tkinter.Text} class.
+
+<p>The text widget and scrollbar are packed together in a {@link Frame},
+and the methods of the {@link Grid} and {@link Pack} geometry managers
+are acquired from the {@link Frame} object. This allows the {@link
+ScrolledText} widget to be used directly to achieve most normal geometry
+management behavior.
+
+<p>Should more specific control be necessary, the following attributes
+are available:
+
+@@attribute frame
+
+<p>The frame which surrounds the text and scroll bar widgets.
+
+@@attribute vbar
+
+<p>The scroll bar widget.
+
+@@text 

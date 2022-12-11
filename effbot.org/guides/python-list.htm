@@ -1,0 +1,135 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>An Introduction to Python&nbsp;Lists</title> <script type="text/javascript">effbot_page_id=219;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> <!--
+<p style='color: #8f8f8f; background: #fff5bf; padding: 5px 10px;'> <b>2008-07-15:</b> Selected articles
+ (including this one) 
+now have experimental "comment" links in the left column and at the bottom.
+You're welcome to use them for commenting and voting on articles.
+For a bit more on this, see <a
+href="http://effbot.slinkset.com/links/Welcome_to_discuss_effbot_org">this
+page</a>. /F
+</p>
+--> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <h1 class="maintitle">An Introduction to Python&nbsp;Lists</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p class="info">Fredrik Lundh | August 2006</p><h2 id="overview">Overview&#160;<a class="nav" href="#overview" title="bookmark!">#</a></h2><p>The list type is a container that holds a number of other objects,
+in a given order.  The list type implements the sequence protocol, and
+also allows you to add and remove objects from the sequence.
+
+<h2 id="creating">Creating Lists&#160;<a class="nav" href="#creating" title="bookmark!">#</a></h2></p><p>To create a list, put a number of expressions in square brackets:
+
+<pre class="python">
+    L = []
+    L = [expression, ...]</pre></p><p>This construct is known as a &#8220;list display&#8221;.  Python also supports
+computed lists, called &#8220;list comprehensions&#8221;.  In its simplest form, a
+list comprehension has the following syntax:</p><pre class="python">
+    L = [expression <span class="pykeyword">for</span> variable <span class="pykeyword">in</span> sequence]</pre><p>where the expression is evaluated once, for every item in the
+sequence.</p><p>The expressions can be anything; you can put all kinds of objects
+in lists, including other lists, and multiple references to a single
+object.</p><p>You can also use the built-in <b>list</b> type object to create
+lists:</p><pre class="python">
+    L = list() <span class="pycomment"># empty list</span>
+    L = list(sequence)
+    L = list(expression <span class="pykeyword">for</span> variable <span class="pykeyword">in</span> sequence)</pre><p>The sequence can be any kind of sequence object or iterable,
+including tuples and generators.  If you pass in another list, the
+<b>list</b> function makes a copy.
+
+</p><p>Note that Python creates a single new list every time you
+<i>execute</i> the [] expression.  No more, no less.  And Python
+never creates a new list if you assign a list to a variable.
+
+<pre class="python">
+A = B = [] <span class="pycomment"># both names will point to the same list</span>
+
+A = []
+B = A <span class="pycomment"># both names will point to the same list</span>
+
+A = []; B = [] <span class="pycomment"># independent lists</span></pre></p><p>For information on how to add items to a list once you&#8217;ve
+created it, see <a href="#modifying"><cite>Modifying Lists</cite></a>
+below.
+
+<h2 id="accessing">Accessing Lists&#160;<a class="nav" href="#accessing" title="bookmark!">#</a></h2></p><p>Lists implement the standard sequence interface; <b>len(L)</b>
+returns the number of items in the list, <b>L[i]</b> returns the item
+at index <i>i</i> (the first item has index 0), and <b>L[i:j]</b>
+returns a new list, containing the objects between <i>i</i> and
+<i>j</i>.
+
+<pre class="python">
+    n = len(L)
+
+    item = L[index]
+
+    seq = L[start:stop]</pre></p><p>If you pass in a negative index, Python adds the length of the list
+to the index.  L[-1] can be used to access the last item in a list.
+
+</p><p>For normal indexing, if the resulting index is outside the list,
+Python raises an <b>IndexError</b> exception.  Slices are treated as
+boundaries instead, and the result will simply contain all items
+between the boundaries.</p><p>Lists also support slice steps:</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><pre class="python wide wide">
+    seq = L[start:stop:step]
+
+    seq = L[::2] <span class="pycomment"># get every other item, starting with the first</span>
+    seq = L[1::2] <span class="pycomment"># get every other item, starting with the second</span></pre></div><div class="yui-ge"><div class="yui-u first"><h2 id="looping">Looping Over Lists&#160;<a class="nav" href="#looping" title="bookmark!">#</a></h2><p>The <b>for-in</b> statement makes it easy to loop over the items in
+a list:
+
+<pre class="python">
+    <span class="pykeyword">for</span> item <span class="pykeyword">in</span> L:
+        <span class="pykeyword">print</span> item</pre></p><p>If you need both the index and the item, use the <b>enumerate</b>
+function:</p><pre class="python">
+    <span class="pykeyword">for</span> index, item <span class="pykeyword">in</span> enumerate(L):
+        <span class="pykeyword">print</span> index, item</pre><p>If you need only the index, use <b>range</b> and <b>len</b>:
+
+<pre class="python">
+    <span class="pykeyword">for</span> index <span class="pykeyword">in</span> range(len(L)):
+        <span class="pykeyword">print</span> index</pre></p><p>The list object supports the iterator protocol.  To explicitly
+create an iterator, use the built-in <b>iter</b> function:
+
+<pre class="python">
+    i = iter(L)
+    item = i.next() <span class="pycomment"># fetch first value</span>
+    item = i.next() <span class="pycomment"># fetch second value</span></pre></p><p>Python provides various shortcuts for common list operations.
+For example, if a list contains numbers, the built-in <b>sum</b> function
+gives you the sum:</p><pre class="python">
+    v = sum(L)
+
+    total = sum(L, subtotal)
+
+    average = float(sum(L)) / len(L)</pre><p>If a list contains strings, you can combine the string into a single
+long string using the <b>join</b> string method:</p><pre class="python">
+    s = <span class="pystring">''</span>.join(L)</pre><p>Python also provides built-in operations to search for items,
+and to sort the list.  These operations are described below.
+
+<h2 id="modifying">Modifying Lists&#160;<a class="nav" href="#modifying" title="bookmark!">#</a></h2></p><p>The list type also allows you to assign to individual items or
+slices, and to delete them.</p><pre class="python">
+    L[i] = obj
+    L[i:j] = sequence</pre><p>Note that operations that modify the list will modify it in place.
+This means that if you have multiple variables that point to the same
+list, all variables will be updated at the same time.
+
+<pre class="python">
+    L = []
+    M = L
+
+    <span class="pycomment"># modify both lists</span>
+    L.append(obj)</pre></p><p>To create a separate list, you can use slicing or the <b>list</b>
+function to quickly create a copy:</p><pre class="python">
+    L = []
+    M = L[:] <span class="pycomment"># create a copy</span>
+
+    <span class="pycomment"># modify L only</span>
+    L.append(obj)</pre><p>You can also add items to an existing sequence.  The <b>append</b>
+method adds a single item to the end of the list, the <b>extend</b> method
+adds items from another list (or any sequence) to the end, and <b>insert</b>
+inserts an item at a given index, and move the remaining items to the right.</p><pre class="python">
+    L.append(item)
+    L.extend(sequence)
+    L.insert(index, item)</pre><p>To insert items from another list or sequence at some other location,
+use slicing syntax:</p><pre class="python">
+    L[index:index] = sequence</pre><p>You can also remove items.  The <b>del</b> statement can be used to
+remove an individual item, or to remove all items identified by a slice.
+The <b>pop</b> method removes an individual item and returns it, while
+<b>remove</b> searches for an item, and removes the first matching item
+from the list.</p><pre class="python">
+    <span class="pykeyword">del</span> L[i]
+    <span class="pykeyword">del</span> L[i:j]
+    item = L.pop() <span class="pycomment"># last item</span>
+    item = L.pop(0) <span class="pycomment"># first item</span>
+    item = L.pop(index)
+   

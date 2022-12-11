@@ -1,0 +1,68 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>dircache</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-dircache.html'>original</a> :::
+<a href='dircache.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>dircache&#8212;Cached directory listings</h1>
+
+<p>The <code>dircache</code> module
+defines a function for reading directory listing using a cache, and
+cache invalidation using the <var>mtime</var> of the directory.
+Additionally, it defines a function to annotate directories by
+appending a slash.</p>
+
+<p>The <code>dircache</code> module
+defines the following functions:</p>
+</div>
+<dl><dt class="function" id="listdir"><b>listdir(path)</b> <tt class="nav"><a class="nav" href="dircache.listdir" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return a directory listing of <var>path</var>, as gotten from <code>os.listdir</code>. Note that
+unless <var>path</var> changes, further call to <a class="link" href="#listdir"><code>listdir</code></a> will not re-read the directory
+structure.</p>
+
+<p>Note that the list returned should be regarded as read-only.
+(Perhaps a future version should change it to return a tuple?)</p>
+</dd>
+<dt class="function" id="opendir"><b>opendir(path)</b> <tt class="nav"><a class="nav" href="dircache.opendir" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Same as <a class="link" href="#listdir"><code>listdir</code></a>. Defined
+for backwards compatibility.</p>
+</dd>
+<dt class="function" id="annotate"><b>annotate(head, list)</b> <tt class="nav"><a class="nav" href="dircache.annotate" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Assume <var>list</var> is a list of paths relative to <var>
+head</var>, and append, in place, a "<code>/</code>" to each path
+which points to a directory.</p>
+</dd>
+</dl><div class="text">
+<pre>
+&gt;&gt;&gt; import dircache
+&gt;&gt;&gt; a = dircache.listdir('/')
+&gt;&gt;&gt; a = a[:] # Copy the return value so we can change 'a'
+&gt;&gt;&gt; a
+['bin', 'boot', 'cdrom', 'dev', 'etc', 'floppy', 'home', 'initrd', 'lib', 'lost+
+found', 'mnt', 'proc', 'root', 'sbin', 'tmp', 'usr', 'var', 'vmlinuz']
+&gt;&gt;&gt; dircache.annotate('/', a)
+&gt;&gt;&gt; a
+['bin/', 'boot/', 'cdrom/', 'dev/', 'etc/', 'floppy/', 'home/', 'initrd/', 'lib/
+', 'lost+found/', 'mnt/', 'proc/', 'root/', 'sbin/', 'tmp/', 'usr/', 'var/', 'vm
+linuz']
+</pre>
+</div>
+</div></body></html>

@@ -1,0 +1,76 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>File&nbsp;Formats</title></head><body data-page-id="533"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">File&nbsp;Formats</h1></div><div class="yui-ge"><div class="yui-u first"><h2>Overview</h2><p>This chapter describes a number of modules that are used to
+parse different file formats.</p><h3 style="sect2">Markup Languages</h3><p>Python comes with extensive support for the <i>Extensible Markup
+Language</i> XML and <i>Hypertext Markup Language</i> (HTML) file
+formats. Python also provides basic support for <i>Standard
+Generalized Markup Language</i> (SGML).</p><p>All these formats share the same basic structure (this isn&#8217;t so
+strange, since both HTML and XML are derived from SGML). Each
+document contains a mix of <i>start tags</i>, <i>end tags</i>,
+plain text (also called character data), and <i>entity
+references</i>.</p><pre>
+&lt;document name="sample.xml"&gt;
+    &lt;header&gt;This is a header&lt;/header&gt;
+    &lt;body&gt;This is the body text.  The text can contain
+    plain text (&amp;quot;character data&amp;quot;), tags, and
+    entities.
+    &lt;/body&gt;
+&lt;/document&gt;
+</pre><p>In the above example, <b>&lt;document&gt;</b>,
+<b>&lt;header&gt;</b>, and <b>&lt;body&gt;</b> are start tags.
+For each start tag, there&#8217;s a corresponding end tag which looks
+similar, but has a slash before the tag name. The start tag can
+also contain one or more <i>attributes</i>, like the <b>name</b>
+attribute in this example.</p><p>Everything between a start tag and its matching end tag is
+called an <i>element</i>. In the above example, the
+<b>document</b> element contains two other elements,
+<b>header</b> and <b>body</b>.</p><p>Finally, <b>&amp;quot;</b> is a character entity. It is used
+to represent reserved characters in the text sections (in this
+case, it&#8217;s an ampersand (<b>&amp;</b>) which is used to start the
+entity itself. Other common entities include <b>&amp;lt;</b> for
+<span>&#8220;less than&#8221;</span> (<b>&lt;</b>), and <b>&amp;gt;</b> for
+<span>&#8220;greater than&#8221;</span> (<b>&gt;</b>).</p><p>While XML, HTML, and SGML all share the same building blocks,
+there are important differences between them. In XML, all elements
+must have both start tags and end tags, and the tags must be
+properly nested (if they are, the document is said to be
+<i>well-formed</i>). In addition, XML is case-sensitive, so
+<b>&lt;document&gt;</b> and <b>&lt;Document&gt;</b> are two
+different element types.</p><p>HTML, in contrast, is much more flexible. The HTML parser can
+often fill in missing tags; for example, if you open a new
+paragraph in HTML using the <b>&lt;P&gt;</b> tag without closing
+the previous paragraph, the parser automatically adds a
+<b>&lt;/P&gt;</b> end tag. HTML is also case-insensitive. On the
+other hand, XML allows you to define your own elements, while HTML
+uses a fixed element set, as defined by the HTML
+specifications.</p><p>SGML is even more flexible. In its full incarnation, you can use
+a custom <i>declaration</i> to define how to translate the source
+text into an element structure, and a <i>document type
+description</i> (DTD) to validate the structure, and fill in
+missing tags. Technically, both HTML and XML are <i>SGML
+applications</i>; they both have their own SGML declaration, and
+HTML also has a standard DTD.</p><p>Python comes with parsers for all markup flavors. While SGML is
+the most flexible of the formats, Python&#8217;s <b><a href="sgmllib.htm">sgmllib</a></b> parser is
+actually pretty simple. It avoids most of the problems by only
+understanding enough of the SGML standard to be able to deal with
+HTML. It doesn&#8217;t handle document type descriptions either; instead,
+you can customize the parser via subclassing.</p><p>The HTML support is built on top of the SGML parser. The
+<b><a href="htmllib.htm">htmllib</a></b> parser delegates the actual
+rendering to a formatter object. The
+<b><a href="formatter.htm">formatter</a></b>
+module contains a couple of standard formatters.</p><p>The XML support is most complex. In Python 1.5.2, the built-in
+support was limited to the <b><a href="xmllib.htm">xmllib</a></b>
+parser, which is pretty similar to the <b>sgmllib</b> module (with
+one important difference; <b>xmllib</b> actually tries to support
+the entire XML standard).</p><p>Python 2.0 comes with more advanced XML tools, based on the
+optional <b><a href="xml-parsers-expat.htm">expat</a></b>
+parser.</p><h3 style="sect2">Configuration Files</h3><p>The <b><a href="configparser.htm">ConfigParser</a></b> module
+reads and writes a simple configuration file format, similar to
+Windows INI files.</p><p>The <b><a href="netrc.htm">netrc</a></b>
+module reads <b>.netrc</b> configuration files, and the
+<b><a href="shlex.htm">shlex</a></b> module
+can be used to read any configuration file using a shell
+script-like syntax.</p><h3 style="sect2">Archive Formats</h3><p>Python&#8217;s standard library also provides support for the popular
+GZIP and ZIP (2.0 only) formats. The <a href="gzip.htm"><b>gzip</b></a> module can read
+and write GZIP files, and the <a href="zipfile.htm"><b>zipfile</b></a> reads and
+writes ZIP files. Both modules depend on the <a href="zlib.htm"><b>zlib</b></a> data
+compression module.</p><h3>Contents</h3><p><a href="xmllib.htm">The xmllib module</a></p><p><a href="xml-parsers-expat.htm">The xml.parsers.expat module</a></p><p><a href="sgmllib.htm">The sgmllib module</a></p><p><a href="htmllib.htm">The htmllib module</a></p><p><a href="htmlentitydefs.htm">The htmlentitydefs module</a></p><p><a href="formatter.htm">The formatter module</a></p><p><a href="configparser.htm">The ConfigParser module</a></p><p><a href="netrc.htm">The netrc module</a></p><p><a href="shlex.htm">The shlex module</a></p><p><a href="zipfile.htm">The zipfile module</a></p><p><a href="gzip.htm">The gzip module</a></p></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to librarybook index page.">::: librarybook :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

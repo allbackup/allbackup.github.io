@@ -1,0 +1,52 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>Suggestions</title> <script type="text/javascript">effbot_page_id=876;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> <!--
+<p style='color: #8f8f8f; background: #fff5bf; padding: 5px 10px;'> <b>2008-07-15:</b> Selected articles
+
+now have experimental "comment" links in the left column and at the bottom.
+You're welcome to use them for commenting and voting on articles.
+For a bit more on this, see <a
+href="http://effbot.slinkset.com/links/Welcome_to_discuss_effbot_org">this
+page</a>. /F
+</p>
+--> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <h1 class="maintitle">Suggestions</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p>Post suggestions for new articles as comments to this page:</p><blockquote><p><strong><a href="http://www.effbot.org/comment/pyfaq/suggest.htm">Add a suggestion!</a></strong></p></blockquote><p>If you can, format your suggestion as an article stub, so the editors can just cut and paste when creating the actual article page.   Complete articles are of course even better.  For some tips on formatting, see the example on <a href="suggest-tutor">this page</a>.</p><p>If you have other suggestions, feel free to post them here as well.</p><p><strong>Note:</strong> Suggestions for the Tutor FAQ should be posted to <a href="suggest-tutor">this page</a>.</p><p><strong>Note:</strong> Comments on the Python documentation should be posted to the
+relevant bug tracker.  See the <q>Comments and Questions</q> section on
+<a href="http://docs.python.org/tut/about.html">this page</a> for details.</p><p><strong>Note:</strong> The comment section below is not properly formatted.  Don&#8217;t
+worry about how things look on this page; the formatting will be fixed
+if the page is published.</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><div class='comment'>
+<p><b>Comment:</b></p>
+<p>
+The "Python's Design" questions should probably be broken out into a FAQ of their own.</p>
+<p>Posted by <b class='author'><a href='http://pyfaq.infogami.com/suggest/_comments/4e9b'>amk</a></b></p>
+<p><i>I've started tagging such entries with "<a href="design-index.htm">CATEGORY: design</a>" /F</i></p>
+</div>
+
+<div class='comment' timestamp='1162136293.86'>
+ <p><b>Comment:</b></p>
+ <p>An article about escaping and "unescaping" HTML/XML would be nice, I think.
+
+Stuff to look at: cgi.escape, xml.sax.saxutils, HTML and XML parsers, htmlentitydefs, my re.sub examples, etc.</p>
+ <p>Posted by <b class='author'>Fredrik</b> <span class='mark'>(2006-10-29)</span></p>
+</div>
+
+<div class='comment' timestamp='1162766431.93'>
+ <p><b>Comment (moved from 'How do I share global variables across modules?'):</b></p>
+ <p>For clarity, the sentence "Note that using a module is also the basis for implementing the Singleton design pattern, for the same reason." should link to a FAQ "How to implement the Singleton design pattern".</p>
+ <p>Posted by <b class='author'>Ikipou</b> <span class='mark'>(2006-11-05)</span></p>
+</div>
+
+<div class='comment' timestamp='1163164707.58'>
+ <p><b>Comment:</b></p>
+ <p>Q: How do I calculate what quoted strings and numbers mean?
+ <p>
+A: eval(source, {'builtins': {}})
+works, without also accidentally accepting OS commands as input.
+ <p>
+Note: Eval might surprise you if you mistype this idiom as: eval(source, {}).
+ <p>
+Note: This idiom makes sense of ordinary Python literals (such as 010, 0x8, 8.125e+0, and "\x45ight").  This idiom also correctly interprets simple literal expressions, such as 64**0.5.</p>
+ <p>Posted by <b class='author'>Pat LaVarre</b> <span class='mark'>(2006-11-10)</span></p>
+
+ <p><i>I'm afraid "eval" is never a good choice if you cannot trust the
+source; it's trivial to do various denial-of-service attacks.  See <a href="http://effbot.org/zone/librarybook-core-eval.htm">this page</a> for
+an example.  A FAQ entry that discusses sa

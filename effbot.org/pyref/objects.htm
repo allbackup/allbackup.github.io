@@ -1,0 +1,71 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>Objects, values and&nbsp;types</title> <script type="text/javascript">effbot_page_id=1487;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <h1 class="maintitle">Objects, values and&nbsp;types</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p><em>Objects</em> are Python&#8217;s abstraction for data. All data in a Python
+program is represented by objects or by relations between objects. (In
+a sense, and in conformance to Von Neumann&#8217;s model of a <q>stored
+program computer,</q> code is also represented by objects.)</p><p>Every object has an identity, a type and a value. An object&#8217;s
+<em>identity</em> never changes once it has been created; you may think of it
+as the object&#8217;s address in memory. The <a href="is.htm"><strong>is</strong></a> operator compares the
+identity of two objects; the <a href="id.htm"><strong>id</strong></a> function returns an integer
+representing its identity (currently implemented as its address). An
+object&#8217;s <em>type</em> is also unchangeable.</p><p>(However, since Python 2.2, a gradual merging of types and classes has
+been started that makes this and a few other assertions made in this
+manual not 100% accurate and complete: for example, it <em>is</em> now
+possible in some cases to change an object&#8217;s type, under certain
+controlled conditions. Until this manual undergoes extensive revision,
+it must now be taken as authoritative only regarding <q>classic
+classes</q>, that are still the default, for compatibility purposes, in
+Python 2.2 and 2.3. For more information, see
+<a href="http://www.python.org/doc/newstyle.html">http://www.python.org/doc/newstyle.html</a>).</p><p>An object&#8217;s type determines the operations that the object supports
+(e.g., <q>does it have a length?</q>) and also defines the possible
+values for objects of that type. The <a href="type.htm"><strong>type</strong></a> function returns an
+object&#8217;s type (which is an object itself). The <em>value</em> of some objects
+can change. Objects whose value can change are said to be <em>mutable</em>;
+objects whose value is unchangeable once they are created are called
+<em>immutable</em>. (The value of an immutable container object that contains
+a reference to a mutable object can change when the latter&#8217;s value is
+changed; however the container is still considered immutable, because
+the collection of objects it contains cannot be changed. So,
+immutability is not strictly the same as having an unchangeable value,
+it is more subtle.)  An object&#8217;s mutability is determined by its type;
+for instance, numbers, strings and tuples are immutable, while
+dictionaries and lists are mutable.</p><p>Objects are never explicitly destroyed; however, when they become
+unreachable they may be garbage-collected.  An implementation is
+allowed to postpone garbage collection or omit it altogether &#8212; it is
+a matter of implementation quality how garbage collection is
+implemented, as long as no objects are collected that are still
+reachable. (Implementation note: the current implementation uses a
+reference-counting scheme with (optional) delayed detection of
+cyclically linked garbage, which collects most objects as soon as they
+become unreachable, but is not guaranteed to collect garbage
+containing circular references. See the <em>[Python Library
+Reference]</em> for information on controlling the collection of cyclic
+garbage.)</p><p>Note that the use of the implementation&#8217;s tracing or debugging
+facilities may keep objects alive that would normally be
+collectable. Also note that catching an exception with a
+try-except statement may keep objects alive.</p><p>Some objects contain references to <q>external</q> resources such as open
+files or windows. It is understood that these resources are freed when
+the object is garbage-collected, but since garbage collection is not
+guaranteed to happen, such objects also provide an explicit way to
+release the external resource, usually a close() method. Programs are
+strongly recommended to explicitly close such objects. The
+<a href="try.htm"><strong>try</strong></a>-<a href="finally.htm"><strong>finally</strong></a> statement provides a convenient way to do this.</p><p>Some objects contain references to other objects; these are called
+<em>containers</em>. Examples of containers are <a href="type-tuple">tuples</a>,
+<a href="type-list">lists</a> and <a href="type-dict">dictionaries</a>.
+The references are part of a container&#8217;s value. In most
+cases, when we talk about the value of a container, we imply the
+values, not the identities of the contained objects; however, when we
+talk about the mutability of a container, only the identities of the
+immediately contained objects are implied. So, if an immutable
+container (like a tuple) contains a reference to a mutable object, its
+value changes if that mutable object is changed.</p><p>Types affect almost all aspects of object behavior. Even the
+importance of object identity is affected in some sense: for immutable
+types, operations that compute new values may actually return a
+reference to any existing object with the same type and value, while
+for mutable objects this is not allowed. E.g., after &#8220;a = 1; b = 1&#8221;,
+<code>a</code> and <code>b</code> may or may not refer to the same object with the value
+one, depending on the implementation, but after &#8220;c = []; d = []&#8221;, <code>c</code>
+and <code>d</code> are guaranteed to refer to two different, unique, newly
+created empty lists. (Note that &#8220;c = d = []&#8221; assigns the same object
+to both <code>c</code> and <code>d</code>.)</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div> <!-- yui-g --></div> <!-- content --> </div> <!-- yui-b --> </div> <!-- yui-main --> <div class="yui-b"> <div id='menu'> <ul> <li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li> <li><b><a href="." title="Go to pyref index page.">::: pyref :::</a></b></li> </ul> </div> <!-- menu --> </div> <!-- yui-b --> </div> <!-- bd --> <div id="ft"> <!-- footer --> <p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;"></a>
+this page was rendered by a <a href="http://www.djangoproject.com/">django</a> application in 0.01s 2013-01-16 06:38:23.537452.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p> </div> <!-- ft --> </div> <!-- doc --> <script src="/media/js/effbot-min.js" type="text/javascript"> </script> </body> </html>

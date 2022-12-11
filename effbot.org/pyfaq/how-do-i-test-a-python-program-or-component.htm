@@ -1,0 +1,30 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>How do I test a Python program or&nbsp;component?</title></head><body data-page-id="823"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><p class="note" style="text-align: center"><strong>
+This is an old copy of the Python FAQ.  The information here may be
+outdated.
+</strong></p><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">How do I test a Python program or&nbsp;component?</h1></div><div class="yui-ge"><div class="yui-u first"><p>Python comes with two testing frameworks.</p><p>The <a href="/pyref/doctest.htm"><strong>doctest</strong></a> module finds examples in the docstrings for a module
+and runs them, comparing the output with the expected output given in the docstring.  You can use this for more extensive testing either by writing
+separate test programs, and using <a href="/pyref/doctest.htm"><strong>doctest</strong></a> to verify that the test
+programs behave properly, or by putting the tests in separate text files.</p><p>The <a href="/pyref/unittest.htm"><strong>unittest</strong></a> module is more traditional testing framework modelled
+on Java and Smalltalk testing frameworks.</p><p>Additional tools include <a href="http://somethingaboutorange.com/mrl/projects/nose/">Nose</a> and
+<s><a href="http://codespeak.net/py/current/doc/test.html">py.test</a></s> (dead link).</p><p>For testing, it helps to write the program so that it may be easily
+tested by using good modular design. Your program should have almost
+all functionality encapsulated in either functions or class methods &#8212;
+and this sometimes has the surprising and delightful effect of making
+the program run faster (because local variable accesses are faster
+than global accesses). Furthermore the program should avoid depending
+on mutating global variables, since this makes testing much more
+difficult to do.</p><p>The &#8220;global main logic&#8221; of your program may be as simple as</p><pre class="python"><span class="pykeyword">if</span> __name__==<span class="pystring">"__main__"</span>:
+     main_logic()</pre><p>at the bottom of the main module of your program.</p><p>Once your program is organized as a tractable collection of functions
+and class behaviours you should write test functions that exercise the
+behaviours. A test suite can be associated with each module which
+automates a sequence of tests. This sounds like a lot of work, but
+since Python is so terse and flexible it&#8217;s surprisingly easy. You can
+make coding much more pleasant and fun by writing your test functions
+in parallel with the &#8220;production code&#8221;, since this makes it easy to
+find bugs and even design flaws earlier.</p><p>&#8220;Support modules&#8221; that are not intended to be the main module of a
+program may include a self-test of the module.</p><pre class="python"><span class="pykeyword">if</span> __name__ == <span class="pystring">"__main__"</span>:
+   self_test()</pre><p>Even programs that interact with complex external interfaces may be
+tested when the external interfaces are unavailable by using &#8220;fake&#8221;
+interfaces implemented in Python.</p><p>CATEGORY: library</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to pyfaq index page.">::: pyfaq :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

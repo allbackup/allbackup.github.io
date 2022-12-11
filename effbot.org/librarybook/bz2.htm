@@ -1,0 +1,77 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>The bz2&nbsp;Module</title></head><body data-page-id="481"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">The bz2&nbsp;Module</h1></div><div class="yui-ge"><div class="yui-u first"><p>(New in 2.3)
+
+The <b>bz2</b> module provides tools for <b>bzip2</b> compression, known
+from the tool with the same name.  This compression format is based on the
+Burrows-Wheeler block sorting algorithm, combined with Huffman coding.
+The bzip2 algorithm is usually a bit more efficient than the more commonly
+used <b>zlib/deflate</b> format (usually around 10%).</p><p>To compress data in a string, use the <b>compress</b> function.  It
+returns an 8-bit string containing compressed data.  To get the original
+data back, use the <b>decompress</b> function:</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><div class="example wide">
+<b>Example: Using the bz2 module</b>
+<pre class="wide">
+# File: bz2-example-1.py
+
+import bz2
+
+MESSAGE = "the meaning of life"
+
+compressed_message = bz2.compress(MESSAGE)
+decompressed_message = bz2.decompress(compressed_message)
+
+print "original:", repr(MESSAGE)
+print "compressed message:", repr(compressed_message)
+print "decompressed message:", repr(decompressed_message)
+</pre><pre class="wide">
+$ python bz2-example-1.py
+original: 'the meaning of life'
+compressed message: 'BZh91AY&amp;SY\xcb\x18\xf4\x9e\x00\x00\t\x11
+\x80@\x00#\xe7\x84\x00 \x00"\x8d\x94\xc3!\x03@\xd0\x00\xfb\xf6
+U\xa6\xe1p\xb8Z.\xe4\x8ap\xa1!\x961\xe9&lt;'
+decompressed message: 'the meaning of life'
+</pre></div></div><div class="yui-ge"><div class="yui-u first"><p>(Note that for very short strings like this, the compressed byte
+stream is actually larger than the original string.)</p><p>The module also provides <b>BZ2Compressor</b> and <b>BZ2Decompressor</b>
+classes, which support incremental compression and decompression.  In the
+following example, the string is compressed word by word, and then decompressed
+by a single call to the <b>decompress</b> function:</p><div class="example">
+<b>Example: Using the bz2 module for incremental compression</b>
+<pre>
+# File: bz2-example-2.py
+
+import bz2
+
+text = "the meaning of life"
+data = ""
+
+comp = bz2.BZ2Compressor()
+
+for word in text.split():
+    data += comp.compress(word + " ")
+
+data += comp.flush()
+
+print repr(bz2.decompress(data))
+</pre><pre>
+$ python bz2-example-2.py
+'the meaning of life '
+</pre></div><p>The module also makes it easy to read and write compressed files.
+The <b>BZ2File</b> function is similar to <b>open</b>, but automatically
+compresses data on the way in (or out).</p><div class="example">
+<b>Example: Using the bz2 module for stream compression</b>
+<pre>
+# File: bz2-example-3.py
+
+import bz2
+
+file = bz2.BZ2File("samples/sample.bz2", "r")
+
+for line in file:
+    print repr(line)
+</pre><pre>
+$ python bz2-example-3.py
+'We will perhaps eventually be writing only small\n'
+'modules which are identified by name as they are\n'
+'used to build larger ones, so that devices like\n'
+...
+</pre></div></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to librarybook index page.">::: librarybook :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

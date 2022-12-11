@@ -1,0 +1,324 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>rexec</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-rexec.html'>original</a> :::
+<a href='rexec.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>rexec&#8212;Restricted execution framework</h1>
+
+<div class="toc"><dl><dt>On this page:</dt><dd><a href="#rexec-objects">RExec Objects</a></dd><dd><a href="#defining-restricted-environments">Defining restricted environments</a></dd><dd><a href="#an-example">An example</a></dd></dl></div><p>Changed in version 2.3: Disabled module.</p>
+
+<p class="warning"><b>Warning:</b> The documentation has been left
+in place to help in reading old code that uses the module.</p>
+
+<p>This module contains the <a class="link" href="#RExec"><code>
+RExec</code></a> class, which supports <code>
+r_eval</code>, <code>r_execfile</code>,
+<code>r_exec</code>, and <code>r_import</code> methods, which are restricted
+versions of the standard Python functions <code>eval</code>, <code>
+execfile</code> and the <code>exec</code> and
+<code>import</code> statements. Code
+executed in this restricted environment will only have access to
+modules and functions that are deemed safe; you can subclass <a class="link" href="#RExec"><code>RExec</code></a> to add or remove
+capabilities as desired.</p>
+
+<p class="warning"><b>Warning:</b> While the <code>rexec</code> module is designed to perform as
+described below, it does have a few known vulnerabilities which
+could be exploited by carefully written code. Thus it should not be
+relied upon in situations requiring &#8220;production ready&#8221;
+security. In such situations, execution via sub-processes or very
+careful &#8220;cleansing&#8221; of both code and data to be
+processed may be necessary. Alternatively, help in patching known
+<code>rexec</code> vulnerabilities would
+be welcomed.</p>
+
+<p class="note"><b>Note:</b> The <a class="link" href="#RExec"><code>
+RExec</code></a> class can prevent code from performing unsafe operations
+like reading or writing disk files, or using TCP/IP sockets.
+However, it does not protect against code using extremely large
+amounts of memory or processor time.</p>
+</div>
+<dl><dt class="class" id="RExec"><b>class RExec([hooks[, verbose]])</b> <tt class="nav"><a class="nav" href="rexec.RExec" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>Returns an instance of the <a class="link" href="#RExec"><code>
+RExec</code></a> class.</p>
+
+<p><var>hooks</var> is an instance of the <code>RHooks</code> class or a subclass of it. If it is
+omitted or <code>None</code>, the default <code>RHooks</code> class is instantiated. Whenever the
+<code>rexec</code> module searches for a
+module (even a built-in one) or reads a module's code, it doesn't
+actually go out to the file system itself. Rather, it calls methods
+of an <code>RHooks</code> instance that
+was passed to or created by its constructor. (Actually, the <a class="link" href="#RExec"><code>RExec</code></a> object doesn't make these
+calls -- they are made by a module loader object that's part of the
+<a class="link" href="#RExec"><code>RExec</code></a> object. This allows
+another level of flexibility, which can be useful when changing the
+mechanics of <code>import</code> within
+the restricted environment.)</p>
+
+<p>By providing an alternate <code>
+RHooks</code> object, we can control the file system accesses made to
+import a module, without changing the actual algorithm that
+controls the order in which those accesses are made. For instance,
+we could substitute an <code>
+RHooks</code> object that passes all filesystem requests to a file
+server elsewhere, via some RPC mechanism such as ILU. Grail's
+applet loader uses this to support importing applets from a URL for
+a directory.</p>
+
+<p>If <var>verbose</var> is true, additional debugging output may
+be sent to standard output.</p>
+</dd>
+</dl><div class="text">
+<p>It is important to be aware that code running in a restricted
+environment can still call the <code>sys.exit</code> function. To disallow restricted
+code from exiting the interpreter, always protect calls that cause
+restricted code to run with a <code>
+try</code>/<code>except</code> statement
+that catches the <code>
+exceptions.SystemExit</code> exception. Removing the <code>sys.exit</code> function from the restricted
+environment is not sufficient -- the restricted code could still
+use <code>raise SystemExit</code>. Removing <code>exceptions.SystemExit</code> is not
+a reasonable option; some library code makes use of this and would
+break were it not available. <span class="mark">@see</span> <a class="link" href="http://grail.sourceforge.net/">Grail Home
+Page</a> Grail is a Web browser written entirely in Python. It uses
+the rexec module as a foundation for supporting Python applets, and
+can be used as an example usage of this module.</p>
+
+<h2 id="rexec-objects">RExec Objects <a class="nav" href="#rexec-objects">#</a></h2>
+
+<p><a class="link" href="#RExec"><code>RExec</code></a> instances support
+the following methods:</p>
+</div>
+<dl><dt class="method" id="RExec.r_eval"><b>r_eval(code)</b> <tt class="nav"><a class="nav" href="rexec.RExec.r_eval" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p><var>code</var> must either be a string containing a Python
+expression, or a compiled code object, which will be evaluated in
+the restricted environment's <code>
+__main__</code> module. The value of the expression or code object
+will be returned.</p>
+</dd>
+<dt class="method" id="RExec.r_exec"><b>r_exec(code)</b> <tt class="nav"><a class="nav" href="rexec.RExec.r_exec" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p><var>code</var> must either be a string containing one or more
+lines of Python code, or a compiled code object, which will be
+executed in the restricted environment's <code>__main__</code> module.</p>
+</dd>
+<dt class="method" id="RExec.r_execfile"><b>r_execfile(filename)</b> <tt class="nav"><a class="nav" href="rexec.RExec.r_execfile" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Execute the Python code contained in the file <var>
+filename</var> in the restricted environment's <code>__main__</code> module.</p>
+</dd>
+</dl><div class="text">
+<p>Methods whose names begin with "<code>s_</code>" are similar to
+the functions beginning with "<code>r_</code>", but the code will
+be granted access to restricted versions of the standard I/O
+streams <code>sys.stdin</code>, <code>sys.stderr</code>, and <code>
+sys.stdout</code>.</p>
+</div>
+<dl><dt class="method" id="RExec.s_eval"><b>s_eval(code)</b> <tt class="nav"><a class="nav" href="rexec.RExec.s_eval" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p><var>code</var> must be a string containing a Python expression,
+which will be evaluated in the restricted environment.</p>
+</dd>
+<dt class="method" id="RExec.s_exec"><b>s_exec(code)</b> <tt class="nav"><a class="nav" href="rexec.RExec.s_exec" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p><var>code</var> must be a string containing one or more lines of
+Python code, which will be executed in the restricted
+environment.</p>
+</dd>
+<dt class="method" id="RExec.s_execfile"><b>s_execfile(code)</b> <tt class="nav"><a class="nav" href="rexec.RExec.s_execfile" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Execute the Python code contained in the file <var>
+filename</var> in the restricted environment.</p>
+</dd>
+</dl><div class="text">
+<p><a class="link" href="#RExec"><code>RExec</code></a> objects must also
+support various methods which will be implicitly called by code
+executing in the restricted environment. Overriding these methods
+in a subclass is used to change the policies enforced by a
+restricted environment.</p>
+</div>
+<dl><dt class="method" id="RExec.r_import"><b>r_import(modulename[, globals[, locals[,
+fromlist]]])</b> <tt class="nav"><a class="nav" href="rexec.RExec.r_import" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Import the module <var>modulename</var>, raising an <code>
+exceptions.ImportError</code> exception if the module is considered
+unsafe.</p>
+</dd>
+<dt class="method" id="RExec.r_open"><b>r_open(filename[, mode[, bufsize]])</b> <tt class="nav"><a class="nav" href="rexec.RExec.r_open" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Method called when <code>open</code> is
+called in the restricted environment. The arguments are identical
+to those of <code>open</code>, and a file
+object (or a class instance compatible with file objects) should be
+returned. <a class="link" href="#RExec"><code>RExec</code></a>'s default
+behaviour is allow opening any file for reading, but forbidding any
+attempt to write a file. See the example below for an
+implementation of a less restrictive <code>r_open</code>.</p>
+</dd>
+<dt class="method" id="RExec.r_reload"><b>r_reload(module)</b> <tt class="nav"><a class="nav" href="rexec.RExec.r_reload" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Reload the module object <var>module</var>, re-parsing and
+re-initializing it.</p>
+</dd>
+<dt class="method" id="RExec.r_unload"><b>r_unload(module)</b> <tt class="nav"><a class="nav" href="rexec.RExec.r_unload" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Unload the module object <var>module</var> (remove it from the
+restricted environment's <code>sys.modules</code> dictionary).</p>
+</dd>
+</dl><div class="text">
+<p>And their equivalents with access to restricted standard I/O
+streams:</p>
+</div>
+<dl><dt class="method" id="RExec.s_import"><b>s_import(modulename[, globals[, locals[,
+fromlist]]])</b> <tt class="nav"><a class="nav" href="rexec.RExec.s_import" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Import the module <var>modulename</var>, raising an <code>
+exceptions.ImportError</code> exception if the module is considered
+unsafe.</p>
+</dd>
+<dt class="method" id="RExec.s_reload"><b>s_reload(module)</b> <tt class="nav"><a class="nav" href="rexec.RExec.s_reload" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Reload the module object <var>module</var>, re-parsing and
+re-initializing it.</p>
+</dd>
+<dt class="method" id="RExec.s_unload"><b>s_unload(module)</b> <tt class="nav"><a class="nav" href="rexec.RExec.s_unload" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Unload the module object <var>module</var>.</p>
+</dd>
+</dl><div class="text">
+<h2 id="defining-restricted-environments">Defining restricted environments <a class="nav" href="#defining-restricted-environments">#</a></h2>
+
+<p>The <a class="link" href="#RExec"><code>RExec</code></a> class has the
+following class attributes, which are used by the <code>__init__</code> method. Changing them on an
+existing instance won't have any effect; instead, create a subclass
+of <a class="link" href="#RExec"><code>RExec</code></a> and assign them new
+values in the class definition. Instances of the new class will
+then use those new values. All these attributes are tuples of
+strings.</p>
+</div>
+<dl><dt class="attribute" id="RExec.nok_builtin_names"><b>nok_builtin_names</b> <tt class="nav"><a class="nav" href="rexec.RExec.nok_builtin_names" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>Contains the names of built-in functions which will <em>not</em>
+be available to programs running in the restricted environment. The
+value for <a class="link" href="#RExec"><code>RExec</code></a> is <code>
+('open', 'reload', '__import__')</code>. (This gives the
+exceptions, because by far the majority of built-in functions are
+harmless. A subclass that wants to override this variable should
+probably start with the value from the base class and concatenate
+additional forbidden functions -- when new dangerous built-in
+functions are added to Python, they will also be added to this
+module.)</p>
+</dd>
+<dt class="attribute" id="RExec.ok_builtin_modules"><b>ok_builtin_modules</b> <tt class="nav"><a class="nav" href="rexec.RExec.ok_builtin_modules" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>Contains the names of built-in modules which can be safely
+imported. The value for <a class="link" href="#RExec"><code>RExec</code></a>
+is <code>('audioop', 'array', 'binascii', 'cmath', 'errno',
+'imageop', 'marshal', 'math', 'md5', 'operator', 'parser', 'regex',
+'select', 'sha', '_sre', 'strop', 'struct', 'time')</code>. A
+similar remark about overriding this variable applies -- use the
+value from the base class as a starting point.</p>
+</dd>
+<dt class="attribute" id="RExec.ok_path"><b>ok_path</b> <tt class="nav"><a class="nav" href="rexec.RExec.ok_path" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>Contains the directories which will be searched when an <code>import</code> is performed in the
+restricted environment. The value for <a class="link" href="#RExec"><code>RExec</code></a> is the same as <code>sys.path</code>
+(at the time the module is loaded) for unrestricted code.</p>
+</dd>
+<dt class="attribute" id="RExec.ok_posix_names"><b>ok_posix_names</b> <tt class="nav"><a class="nav" href="rexec.RExec.ok_posix_names" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>Contains the names of the functions in the <code>os</code> module which will be available to programs
+running in the restricted environment. The value for <a class="link" href="#RExec"><code>RExec</code></a> is <code>('error',
+'fstat', 'listdir', 'lstat', 'readlink', 'stat', 'times', 'uname',
+'getpid', 'getppid', 'getcwd', 'getuid', 'getgid', 'geteuid',
+'getegid')</code>.</p>
+</dd>
+<dt class="attribute" id="RExec.ok_sys_names"><b>ok_sys_names</b> <tt class="nav"><a class="nav" href="rexec.RExec.ok_sys_names" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>Contains the names of the functions and variables in the <code>sys</code> module which will be available
+to programs running in the restricted environment. The value for <a class="link" href="#RExec"><code>RExec</code></a> is <code>('ps1', 'ps2',
+'copyright', 'version', 'platform', 'exit', 'maxint')</code>.</p>
+</dd>
+<dt class="attribute" id="RExec.ok_file_types"><b>ok_file_types</b> <tt class="nav"><a class="nav" href="rexec.RExec.ok_file_types" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>Contains the file types from which modules are allowed to be
+loaded. Each file type is an integer constant defined in the <code>imp</code> module. The meaningful values
+are <code>PY_SOURCE</code>, <code>PY_COMPILED</code>, and <code>
+C_EXTENSION</code>. The value for <a class="link" href="#RExec"><code>RExec</code></a> is <code>(C_EXTENSION,
+PY_SOURCE)</code>. Adding <code>PY_COMPILED</code> in subclasses is
+not recommended; an attacker could exit the restricted execution
+mode by putting a forged byte-compiled file (.pyc) anywhere in your
+file system, for example by writing it to /tmp or uploading it to
+the /incoming directory of your public FTP server.</p>
+</dd>
+</dl><div class="text">
+<h2 id="an-example">An example <a class="nav" href="#an-example">#</a></h2>
+
+<p>Let us say that we want a slightly more relaxed policy than the
+standard <a class="link" href="#RExec"><code>RExec</code></a> class. For
+example, if we're willing to allow files in /tmp to be written, we
+can subclass the <a class="link" href="#RExec"><code>RExec</code></a>
+class:</p>
+
+<pre>
+class TmpWriterRExec(rexec.RExec):
+    def r_open(self, file, mode='r', buf=-1):
+        if mode in ('r', 'rb'):
+            pass
+        elif mode in ('w', 'wb', 'a', 'ab'):
+            # check filename : must begin with /tmp/
+            if file[:5]!='/tmp/': 
+                raise IOError, "can't write outside /tmp"
+            elif (string.find(file, '/../') &gt;= 0 or
+                 file[:3] == '../' or file[-3:] == '/..'):
+                raise IOError, "'..' in filename forbidden"
+        else: raise IOError, "Illegal open() mode"
+        return open(file, mode, buf)
+</pre>
+
+<p>Notice that the above code will occasionally forbid a perfectly
+valid filename; for example, code in the restricted environment
+won't be able to open a file called /tmp/foo/../bar. To fix this,
+the <code>r_open</code> method would have
+to simplify the filename to /tmp/bar, which would require splitting
+apart the filename and performing various operations on it. In
+cases where security is at stake, it may be preferable to write
+simple code which is sometimes overly restrictive, instead of more
+general code that is also more complex and may harbor a subtle
+security hole.</p>
+</div>
+</div></body></html>

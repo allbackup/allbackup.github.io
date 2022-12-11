@@ -1,0 +1,172 @@
+<html>
+<head>
+<title>new ::: www.effbot.org</title>
+<link rel='stylesheet' href='/effbot.css' type='text/css' media='screen' />
+</head>
+<body bgcolor='#ccffcc'>
+<div>[<a href='new.htm'>back</a>]</div>
+<h3>Welcome to the effbot.org user editor!</h3>
+
+
+<p><b>Note: This is not a contact form!  Support questions, spam, and
+other off-topic stuff will be ignored.</b></p>
+
+<p>To suggest changes, edit the HTML fragment in the text box below.
+You can use the 'update preview' button to check your changes (the
+preview is displayed beneath the text box).  When done, fill in the
+name and address fields (optional) and click 'submit patch' to mail
+the patch to me.  (I reserve the right to decide which patches to
+include, of course.)  Thanks! /F</p>
+
+<form method='post' id='useredit'>
+<input type='hidden' name='name' value='new'/>
+<p>
+<input type='submit' name='preview' value='update preview' style='background:#084; color:white; width:200px; font-weight:bold;' >
+&nbsp;&nbsp;&nbsp;
+<input type='submit' name='submit' value='submit patch'  style='background:#084; color:white; width:200px; font-weight:bold;' >
+</p>
+<textarea name='text' rows='30' cols='80'>The new module
+
+&lt;!-- ADSENSE --&gt;
+&lt;p class='site'&gt;[&lt;a href='index.htm'&gt;contents&lt;/a&gt;]&lt;/p&gt;
+&lt;p class='site'&gt;[&lt;a href='index.htm'&gt;contents&lt;/a&gt;]&lt;/p&gt;
+
+&lt;p&gt;(Optional in 1.5.2). This is a low-level module which allows you
+to create various kinds of internal objects, such as class objects,
+function objects, and other stuff that is usually created by the
+Python runtime system.&lt;/p&gt;
+
+&lt;p&gt;Note that if you're using 1.5.2, you may have to rebuild Python
+to use this module; it isn't enabled by the default on all
+platforms. In 2.0 and later, it's always available.&lt;/p&gt;
+
+&lt;div class="example"&gt;
+
+&lt;b style="example"&gt;Example: Using the new module&lt;/b&gt;
+
+&lt;pre&gt;
+# File: &lt;a href="new-example-1.py"&gt;new-example-1.py&lt;/a&gt;
+
+import new
+
+class Sample:
+
+    a = "default"
+
+    def __init__(self):
+        self.a = "initialised"
+
+    def __repr__(self):
+        return self.a
+
+#
+# &lt;i&gt;create instances&lt;/i&gt;
+
+a = Sample()
+print "normal", "=&amp;gt;", a
+
+b = new.instance(Sample, {})
+print "new.instance", "=&amp;gt;", b
+
+b.__init__()
+print "after __init__", "=&amp;gt;", b
+
+c = new.instance(Sample, {"a": "assigned"})
+print "new.instance w. dictionary", "=&amp;gt;", c
+
+&lt;/pre&gt;
+
+&lt;pre class="computeroutput" moreinfo="NONE"&gt;
+$ python new-example-1.py
+normal =&amp;gt; initialised
+new.instance =&amp;gt; default
+after __init__ =&amp;gt; initialised
+new.instance w. dictionary =&amp;gt; assigned
+&lt;/pre&gt;
+
+&lt;/div&gt;</textarea>
+<table>
+<tr><td><label for='author'>Name:</label></td><td>
+<div><input name='author' value="" size=40></div>
+</td><td>(Optional)</td></tr>
+<tr><td><label for='email'>Mail:</label></td><td>
+<div><input name='email' value="" size=40></div>
+</td><td>(Optional)</td></tr>
+<tr><td><label for='note'>Comment:</label></td><td>
+<div><input name='note' value="" size=40></div>
+</td><td>(Optional)</td></tr>
+<tr><td><label for='password'>Password:</label></td><td>
+<div><input name='password' value="(replace with the sum of 7+4)" size=40></div>
+</td><td>(Required)</td></tr>
+</table>
+<p>
+<input type='submit' name='preview' value='update preview' style='background:#084; color:white; width:200px; font-weight:bold;' >
+&nbsp;&nbsp;&nbsp;
+<input type='submit' name='submit' value='submit patch'  style='background:#084; color:white; width:200px; font-weight:bold;' >
+</p>
+<p>&nbsp;</p>
+</form>
+<div style='background: white; border: 2px solid #084; padding: 0px 20px;'>
+<h2>The new module</h2>
+
+<!-- ADSENSE -->
+<p class='site'>[<a href='index.htm'>contents</a>]</p>
+<p class='site'>[<a href='index.htm'>contents</a>]</p>
+
+<p>(Optional in 1.5.2). This is a low-level module which allows you
+to create various kinds of internal objects, such as class objects,
+function objects, and other stuff that is usually created by the
+Python runtime system.</p>
+
+<p>Note that if you're using 1.5.2, you may have to rebuild Python
+to use this module; it isn't enabled by the default on all
+platforms. In 2.0 and later, it's always available.</p>
+
+<div class="example">
+
+<b style="example">Example: Using the new module</b>
+
+<pre>
+# File: <a href="new-example-1.py">new-example-1.py</a>
+
+import new
+
+class Sample:
+
+    a = "default"
+
+    def __init__(self):
+        self.a = "initialised"
+
+    def __repr__(self):
+        return self.a
+
+#
+# <i>create instances</i>
+
+a = Sample()
+print "normal", "=&gt;", a
+
+b = new.instance(Sample, {})
+print "new.instance", "=&gt;", b
+
+b.__init__()
+print "after __init__", "=&gt;", b
+
+c = new.instance(Sample, {"a": "assigned"})
+print "new.instance w. dictionary", "=&gt;", c
+
+</pre>
+
+<pre class="computeroutput" moreinfo="NONE">
+$ python new-example-1.py
+normal =&gt; initialised
+new.instance =&gt; default
+after __init__ =&gt; initialised
+new.instance w. dictionary =&gt; assigned
+</pre>
+
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,310 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>xdrlib</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-xdrlib.html'>original</a> :::
+<a href='xdrlib.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>xdrlib&#8212;Encode and decode XDR data</h1>
+
+<div class="toc"><dl><dt>On this page:</dt><dd><a href="#packer-objects">Packer Objects</a></dd><dd><a href="#unpacker-objects">Unpacker Objects</a></dd><dd><a href="#exceptions">Exceptions</a></dd></dl></div><p>The <code>xdrlib</code> module
+supports the External Data Representation Standard as described in
+<a class="link" href="http://www.faqs.org/rfcs/rfc1014.html">RFC
+1014</a>, written by Sun Microsystems, Inc. June 1987. It supports
+most of the data types described in the RFC.</p>
+
+<p>The <code>xdrlib</code> module defines
+two classes, one for packing variables into XDR representation, and
+another for unpacking from XDR representation. There are also two
+exception classes.</p>
+</div>
+<dl><dt class="class" id="Packer"><b>class Packer()</b> <tt class="nav"><a class="nav" href="xdrlib.Packer" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p><a class="link" href="#Packer"><code>Packer</code></a> is the class for
+packing data into XDR representation. The <a class="link" href="#Packer"><code>Packer</code></a> class is instantiated with no
+arguments.</p>
+</dd>
+<dt class="class" id="Unpacker"><b>class Unpacker(data)</b> <tt class="nav"><a class="nav" href="xdrlib.Unpacker" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p><code>Unpacker</code> is the complementary class which unpacks
+XDR data values from a string buffer. The input buffer is given as
+<var>data</var>.</p>
+</dd>
+</dl><div class="text"><span class="mark">@see</span> <a class="link" href="http://www.faqs.org/rfcs/rfc1014.html">RFC 1014, XDR:
+External Data Representation Standard</a> This RFC defined the
+encoding of data which was XDR at the time this module was
+originally written. It has apparently been obsoleted by RFC 1832.
+<span class="mark">@see</span> <a class="link" href="http://www.faqs.org/rfcs/rfc1832.html">RFC 1832, XDR:
+External Data Representation Standard</a> Newer RFC that provides a
+revised definition of XDR. 
+
+<h2 id="packer-objects">Packer Objects <a class="nav" href="#packer-objects">#</a></h2>
+
+<p><a class="link" href="#Packer"><code>Packer</code></a> instances have the
+following methods:</p>
+</div>
+<dl><dt class="method" id="Packer.get_buffer"><b>get_buffer()</b> <tt class="nav"><a class="nav" href="xdrlib.Packer.get_buffer" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Returns the current pack buffer as a string.</p>
+</dd>
+<dt class="method" id="Packer.reset"><b>reset()</b> <tt class="nav"><a class="nav" href="xdrlib.Packer.reset" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Resets the pack buffer to the empty string.</p>
+</dd>
+</dl><div class="text">
+<p>In general, you can pack any of the most common XDR data types
+by calling the appropriate <code>pack_</code><var>type</var>()
+method. Each method takes a single argument, the value to pack. The
+following simple data type packing methods are supported: <code>pack_uint</code>, <code>pack_int</code>, <code>pack_enum</code>, <code>pack_bool</code>, <code>pack_uhyper</code>, and <code>pack_hyper</code>.</p>
+</div>
+<dl><dt class="method" id="Packer.pack_float"><b>pack_float(value)</b> <tt class="nav"><a class="nav" href="xdrlib.Packer.pack_float" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Packs the single-precision floating point number <var>
+value</var>.</p>
+</dd>
+<dt class="method" id="Packer.pack_double"><b>pack_double(value)</b> <tt class="nav"><a class="nav" href="xdrlib.Packer.pack_double" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Packs the double-precision floating point number <var>
+value</var>.</p>
+</dd>
+</dl><div class="text">
+<p>The following methods support packing strings, bytes, and opaque
+data:</p>
+</div>
+<dl><dt class="method" id="Packer.pack_fstring"><b>pack_fstring(n, s)</b> <tt class="nav"><a class="nav" href="xdrlib.Packer.pack_fstring" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Packs a fixed length string, <var>s</var>. <var>n</var> is the
+length of the string but it is <em>not</em> packed into the data
+buffer. The string is padded with null bytes if necessary to
+guaranteed 4 byte alignment.</p>
+</dd>
+<dt class="method" id="Packer.pack_fopaque"><b>pack_fopaque(n, data)</b> <tt class="nav"><a class="nav" href="xdrlib.Packer.pack_fopaque" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Packs a fixed length opaque data stream, similarly to <code>pack_fstring</code>.</p>
+</dd>
+<dt class="method" id="Packer.pack_string"><b>pack_string(s)</b> <tt class="nav"><a class="nav" href="xdrlib.Packer.pack_string" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Packs a variable length string, <var>s</var>. The length of the
+string is first packed as an unsigned integer, then the string data
+is packed with <code>
+pack_fstring</code>.</p>
+</dd>
+<dt class="method" id="Packer.pack_opaque"><b>pack_opaque(data)</b> <tt class="nav"><a class="nav" href="xdrlib.Packer.pack_opaque" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Packs a variable length opaque data string, similarly to <code>pack_string</code>.</p>
+</dd>
+<dt class="method" id="Packer.pack_bytes"><b>pack_bytes(bytes)</b> <tt class="nav"><a class="nav" href="xdrlib.Packer.pack_bytes" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Packs a variable length byte stream, similarly to <code>pack_string</code>.</p>
+</dd>
+</dl><div class="text">
+<p>The following methods support packing arrays and lists:</p>
+</div>
+<dl><dt class="method" id="Packer.pack_list"><b>pack_list(list, pack_item)</b> <tt class="nav"><a class="nav" href="xdrlib.Packer.pack_list" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Packs a <var>list</var> of homogeneous items. This method is
+useful for lists with an indeterminate size; i.e. the size is not
+available until the entire list has been walked. For each item in
+the list, an unsigned integer <code>1</code> is packed first,
+followed by the data value from the list. <var>pack_item</var> is
+the function that is called to pack the individual item. At the end
+of the list, an unsigned integer <code>0</code> is packed.</p>
+
+<p>For example, to pack a list of integers, the code might appear
+like this:</p>
+
+<pre>
+import xdrlib
+p = xdrlib.Packer()
+p.pack_list([1, 2, 3], p.pack_int)
+</pre>
+</dd>
+<dt class="method" id="Packer.pack_farray"><b>pack_farray(n, array, pack_item)</b> <tt class="nav"><a class="nav" href="xdrlib.Packer.pack_farray" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Packs a fixed length list (<var>array</var>) of homogeneous
+items. <var>n</var> is the length of the list; it is <em>not</em>
+packed into the buffer, but a <code>exceptions.ValueError</code>
+exception is raised if <code>len(</code><var>array</var>) is not
+equal to <var>n</var>. As above, <var>pack_item</var> is the
+function used to pack each element.</p>
+</dd>
+<dt class="method" id="Packer.pack_array"><b>pack_array(list, pack_item)</b> <tt class="nav"><a class="nav" href="xdrlib.Packer.pack_array" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Packs a variable length <var>list</var> of homogeneous items.
+First, the length of the list is packed as an unsigned integer,
+then each element is packed as in <code>pack_farray</code> above.</p>
+</dd>
+</dl><div class="text">
+<h2 id="unpacker-objects">Unpacker Objects <a class="nav" href="#unpacker-objects">#</a></h2>
+
+<p>The <a class="link" href="#Unpacker"><code>Unpacker</code></a> class
+offers the following methods:</p>
+</div>
+<dl><dt class="method" id="Unpacker.reset"><b>reset(data)</b> <tt class="nav"><a class="nav" href="xdrlib.Unpacker.reset" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Resets the string buffer with the given <var>data</var>.</p>
+</dd>
+<dt class="method" id="Unpacker.get_position"><b>get_position()</b> <tt class="nav"><a class="nav" href="xdrlib.Unpacker.get_position" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Returns the current unpack position in the data buffer.</p>
+</dd>
+<dt class="method" id="Unpacker.set_position"><b>set_position(position)</b> <tt class="nav"><a class="nav" href="xdrlib.Unpacker.set_position" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Sets the data buffer unpack position to <var>position</var>. You
+should be careful about using <code>get_position</code> and <code>set_position</code>.</p>
+</dd>
+<dt class="method" id="Unpacker.get_buffer"><b>get_buffer()</b> <tt class="nav"><a class="nav" href="xdrlib.Unpacker.get_buffer" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Returns the current unpack data buffer as a string.</p>
+</dd>
+<dt class="method" id="Unpacker.done"><b>done()</b> <tt class="nav"><a class="nav" href="xdrlib.Unpacker.done" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Indicates unpack completion. Raises an <a class="link" href="#Error"><code>Error</code></a> exception if all of the data has not
+been unpacked.</p>
+</dd>
+</dl><div class="text">
+<p>In addition, every data type that can be packed with a <a class="link" href="#Packer"><code>Packer</code></a>, can be unpacked with an
+<a class="link" href="#Unpacker"><code>Unpacker</code></a>. Unpacking
+methods are of the form <code>unpack_</code><var>type</var>(), and
+take no arguments. They return the unpacked object.</p>
+</div>
+<dl><dt class="method" id="Unpacker.unpack_float"><b>unpack_float()</b> <tt class="nav"><a class="nav" href="xdrlib.Unpacker.unpack_float" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Unpacks a single-precision floating point number.</p>
+</dd>
+<dt class="method" id="Unpacker.unpack_double"><b>unpack_double()</b> <tt class="nav"><a class="nav" href="xdrlib.Unpacker.unpack_double" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Unpacks a double-precision floating point number, similarly to
+<code>unpack_float</code>.</p>
+</dd>
+</dl><div class="text">
+<p>In addition, the following methods unpack strings, bytes, and
+opaque data:</p>
+</div>
+<dl><dt class="method" id="Unpacker.unpack_fstring"><b>unpack_fstring(n)</b> <tt class="nav"><a class="nav" href="xdrlib.Unpacker.unpack_fstring" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Unpacks and returns a fixed length string. <var>n</var> is the
+number of characters expected. Padding with null bytes to
+guaranteed 4 byte alignment is assumed.</p>
+</dd>
+<dt class="method" id="Unpacker.unpack_fopaque"><b>unpack_fopaque(n)</b> <tt class="nav"><a class="nav" href="xdrlib.Unpacker.unpack_fopaque" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Unpacks and returns a fixed length opaque data stream, similarly
+to <code>
+unpack_fstring</code>.</p>
+</dd>
+<dt class="method" id="Unpacker.unpack_string"><b>unpack_string()</b> <tt class="nav"><a class="nav" href="xdrlib.Unpacker.unpack_string" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Unpacks and returns a variable length string. The length of the
+string is first unpacked as an unsigned integer, then the string
+data is unpacked with <code>
+unpack_fstring</code>.</p>
+</dd>
+<dt class="method" id="Unpacker.unpack_opaque"><b>unpack_opaque()</b> <tt class="nav"><a class="nav" href="xdrlib.Unpacker.unpack_opaque" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Unpacks and returns a variable length opaque data string,
+similarly to <code>
+unpack_string</code>.</p>
+</dd>
+<dt class="method" id="Unpacker.unpack_bytes"><b>unpack_bytes()</b> <tt class="nav"><a class="nav" href="xdrlib.Unpacker.unpack_bytes" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Unpacks and returns a variable length byte stream, similarly to
+<code>unpack_string</code>.</p>
+</dd>
+</dl><div class="text">
+<p>The following methods support unpacking arrays and lists:</p>
+</div>
+<dl><dt class="method" id="Unpacker.unpack_list"><b>unpack_list(unpack_item)</b> <tt class="nav"><a class="nav" href="xdrlib.Unpacker.unpack_list" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Unpacks and returns a list of homogeneous items. The list is
+unpacked one element at a time by first unpacking an unsigned
+integer flag. If the flag is <code>1</code>, then the item is
+unpacked and appended to the list. A flag of <code>0</code>
+indicates the end of the list. <var>unpack_item</var> is the
+function that is called to unpack the items.</p>
+</dd>
+<dt class="method" id="Unpacker.unpack_farray"><b>unpack_farray(n, unpack_item)</b> <tt class="nav"><a class="nav" href="xdrlib.Unpacker.unpack_farray" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Unpacks and returns (as a list) a fixed length array of
+homogeneous items. <var>n</var> is number of list elements to
+expect in the buffer. As above, <var>unpack_item</var> is the
+function used to unpack each element.</p>
+</dd>
+<dt class="method" id="Unpacker.unpack_array"><b>unpack_array(unpack_item)</b> <tt class="nav"><a class="nav" href="xdrlib.Unpacker.unpack_array" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Unpacks and returns a variable length <var>list</var> of
+homogeneous items. First, the length of the list is unpacked as an
+unsigned integer, then each element is unpacked as in <code>unpack_farray</code> above.</p>
+</dd>
+</dl><div class="text">
+<h2 id="exceptions">Exceptions <a class="nav" href="#exceptions">#</a></h2>
+
+<p>Exceptions in this module are coded as class instances:</p>
+</div>
+<dl><dt class="exception" id="Error"><b>exception Error</b> <tt class="nav"><a class="nav" href="xdrlib.Error" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="exception">
+<p>The base exception class. <a class="link" href="#Error"><code>
+Error</code></a> has a single public data member <code>msg</code> containing the description of the
+error.</p>
+</dd>
+<dt class="exception" id="ConversionError"><b>exception ConversionError</b> <tt class="nav"><a class="nav" href="xdrlib.ConversionError" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="exception">
+<p>Class derived from <a class="link" href="#Error"><code>Error</code></a>.
+Contains no additional instance variables.</p>
+</dd>
+</dl><div class="text">
+<p>Here is an example of how you would catch one of these
+exceptions:</p>
+
+<pre>
+import xdrlib
+p = xdrlib.Packer()
+try:
+    p.pack_double(8.01)
+except xdrlib.ConversionError, instance:
+    print 'packing the double failed:', instance.msg
+</pre>
+</div>
+</div></body></html>

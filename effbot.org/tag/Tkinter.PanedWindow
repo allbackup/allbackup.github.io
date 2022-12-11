@@ -1,0 +1,58 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>The Tkinter PanedWindow&nbsp;Widget</title> <script type="text/javascript">effbot_page_id=1933;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> <!--
+<p style='color: #8f8f8f; background: #fff5bf; padding: 5px 10px;'> <b>2008-07-15:</b> Selected articles
+ (including this one) 
+now have experimental "comment" links in the left column and at the bottom.
+You're welcome to use them for commenting and voting on articles.
+For a bit more on this, see <a
+href="http://effbot.slinkset.com/links/Welcome_to_discuss_effbot_org">this
+page</a>. /F
+</p>
+--> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <p><a href="optionmenu.htm">back</a> <a href="radiobutton.htm">next</a></p> <h1 class="maintitle">The Tkinter PanedWindow&nbsp;Widget</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p>(new in Tk 8.4) The <b>PanedWindow</b> widget is a geometry
+manager widget, which can contain one or more child widgets
+(&#8220;panes&#8221;). The child widgets can be resized by the user, by moving
+separator lines (&#8220;sashes&#8221;) using the mouse.</p><h2>When to use the PanedWindow Widget</h2><p>The PanedWindow widget can be used to implement common 2-pane
+and 3-pane layouts.</p><h2 id="patterns">Patterns&#160;<a class="nav" href="#patterns" title="bookmark!">#</a></h2><p>Here&#8217;s how to create a 2-pane widget:</p><pre class="python">
+<span class="pykeyword">from</span> Tkinter <span class="pykeyword">import</span> *
+
+m = PanedWindow(orient=VERTICAL)
+m.pack(fill=BOTH, expand=1)
+
+top = Label(m, text=<span class="pystring">"top pane"</span>)
+m.add(top)
+
+bottom = Label(m, text=<span class="pystring">"bottom pane"</span>)
+m.add(bottom)
+
+mainloop()</pre><p>Here&#8217;s how to create a 3-pane widget:</p><pre class="python">
+<span class="pykeyword">from</span> Tkinter <span class="pykeyword">import</span> *
+
+m1 = PanedWindow()
+m1.pack(fill=BOTH, expand=1)
+
+left = Label(m1, text=<span class="pystring">"left pane"</span>)
+m1.add(left)
+
+m2 = PanedWindow(m1, orient=VERTICAL)
+m1.add(m2)
+
+top = Label(m2, text=<span class="pystring">"top pane"</span>)
+m2.add(top)
+
+bottom = Label(m2, text=<span class="pystring">"bottom pane"</span>)
+m2.add(bottom)
+
+mainloop()</pre><h2 id="reference">Reference&#160;<a class="nav" href="#reference" title="bookmark!">#</a></h2><div class="zone:include"><dl><dt><b>PanedWindow(master=None, **options)</b> (class) [<a href="#Tkinter.PanedWindow-class">#</a>]</dt><dd>
+<p>A paned window manager widget.  This widget manages one or more
+child widgets, and allows the user to resize these widgets, by
+moving the separators between them.</p><dl><dt><i>master</i></dt><dd>
+Parent widget.</dd>
+<dt><i>**options</i></dt><dd>
+Widget options.  See the description of
+   the config method for a list of available options.</dd>
+</dl><br />
+</dd>
+<dt><a id="Tkinter.PanedWindow.add-method" name="Tkinter.PanedWindow.add-method"><b>add(child, **options)</b></a> [<a href="#Tkinter.PanedWindow.add-method">#</a>]</dt><dd>
+<p>Adds a child window to the paned window.</p></dd>
+<dt><a id="Tkinter.PanedWindow.config-method" name="Tkinter.PanedWind

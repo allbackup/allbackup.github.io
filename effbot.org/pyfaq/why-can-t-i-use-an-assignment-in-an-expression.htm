@@ -1,0 +1,54 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>Why can't I use an assignment in an&nbsp;expression?</title></head><body data-page-id="931"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><p class="note" style="text-align: center"><strong>
+This is an old copy of the Python FAQ.  The information here may be
+outdated.
+</strong></p><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">Why can't I use an assignment in an&nbsp;expression?</h1></div><div class="yui-ge"><div class="yui-u first"><p>In Python, assignment is a statement, not an expression, and can
+therefore not be used inside an arbitrary expression.  This means
+that common C idioms like:</p><pre><code>while (line = readline(file)) {
+    ...do something with line...
+}
+</code></pre><p>or</p><pre><code>if (match = search(target)) {
+    ...do something with match...
+}
+</code></pre><p>cannot be used as is in Python.  The first example is better
+written using an iterator:</p><pre class="python"><span class="pykeyword">for</span> line <span class="pykeyword">in</span> file:
+    ... do something <span class="pykeyword">with</span> line ...</pre><p>but the second example must be written as:</p><pre class="python">match = search(target)
+<span class="pykeyword">if</span> match:
+    ... do something <span class="pykeyword">with</span> match ...</pre><p>and loops where an iterator cannot be used have to be written as:</p><pre class="python"><span class="pykeyword">while</span> True:
+    line = file.readline()
+    <span class="pykeyword">if</span> <span class="pykeyword">not</span> line:
+        <span class="pykeyword">break</span>
+    ... do something <span class="pykeyword">with</span> line ...</pre><p>(this is often seen in older Python code, since earlier Python
+versions didn&#8217;t support iteration over file objects).</p><p>The reason for not allowing assignment in Python expressions is a
+common, hard-to-find bug in those other languages, caused by this
+construct:</p><pre><code>if (x = 0) {
+    ...error handling...
+}
+else {
+    ...code that only works for nonzero x...
+}
+</code></pre><p>The error is a simple typo: x = 0, which assigns 0 to the variable x,
+was written while the comparison x == 0 is certainly what was
+intended.</p><p>Many alternatives have been proposed.  Most are hacks that save some
+typing but use arbitrary or cryptic syntax or keywords, and fail the
+simple criterion for language change proposals: it should intuitively
+suggest the proper meaning to a human reader who has not yet been
+introduced to the construct.</p><p>An interesting phenomenon is that most experienced Python programmers
+recognize the <q>while True</q> idiom and don&#8217;t seem to be missing the
+assignment in expression construct much; it&#8217;s only newcomers who
+express a strong desire to add this to the language.</p><p>There&#8217;s an alternative way of spelling this that seems attractive, but
+is generally less robust than the <q>while True</q> solution.</p><pre class="python">line = f.readline()
+<span class="pykeyword">while</span> line:
+    ...do something <span class="pykeyword">with</span> line...
+    line = f.readline()</pre><p>This pattern is known as <q>read ahead</q>, and works well for simple
+cases, but if you change your mind about exactly how you get the next
+line (e.g. you want to change it into <a href="/pyref/sys.stdin.htm"><strong>sys.stdin.readline</strong></a>) you have to remember to change two places in
+your program &#8212; the second occurrence is hidden at the bottom of the loop.</p><p>In general, the best approach for looping is to use iterators, and
+loop through the objects using the <a href="/pyref/for.htm"><strong>for</strong></a> statement.  If you
+need to repeatedly call a function or method to get the next value,
+you can use the <a href="/pyref/iter.htm"><strong>iter</strong></a> wrapper function to turn the callable
+into an iterator:</p><pre class="python"><span class="pykeyword">for</span> line <span class="pykeyword">in</span> iter(f.readline, <span class="pystring">""</span>):
+    ... do something <span class="pykeyword">with</span> line ...</pre><p>Here, the loop will terminate when it reaches the end of the file
+(which causes <a href="/pyref/file.readline.htm"><strong>readline</strong></a> to return an empty
+string).</p><p>CATEGORY: general</p><p>CATEGORY: design</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to pyfaq index page.">::: pyfaq :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

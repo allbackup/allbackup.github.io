@@ -1,0 +1,24 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>unicode</title> <script type="text/javascript">effbot_page_id=1737;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <h1 class="maintitle">unicode</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p><strong>unicode</strong>([object[, encoding [, errors]]])</p><p>Return the Unicode string version of object using one of the following
+modes:</p><p>If <em>encoding</em> and/or <em>errors</em> are given, <strong>unicode</strong> will decode the
+object which can either be an 8-bit string or a character buffer using
+the codec for encoding. The <em>encoding</em> parameter is a string giving the
+name of an encoding; if the encoding is not known, <a href="LookupError.htm"><strong>LookupError</strong></a> is
+raised. Error handling is done according to <em>errors</em>; this specifies the
+treatment of characters which are invalid in the input encoding. If
+errors is <code>'strict'</code> (the default), a <a href="ValueError.htm"><strong>ValueError</strong></a> is raised on errors,
+while a value of <code>'ignore'</code> causes errors to be silently ignored, and
+a value of <code>'replace'</code> causes the official Unicode replacement
+character, <code>U+FFFD</code>, to be used to replace input characters which
+cannot be decoded. See also the [codecs][28] module.</p><p>If no optional parameters are given, <strong>unicode</strong> will mimic the
+behaviour of <a href="str.htm"><strong>str</strong></a> except that it returns Unicode strings instead of
+8-bit strings. More precisely, if object is a Unicode string or
+subclass it will return that Unicode string without any additional
+decoding applied.</p><p>For objects which provide a <a href="__unicode__.htm"><strong>__unicode__</strong></a> method,
+it will call this method without arguments to create a Unicode
+string. For all other objects, the 8-bit string version or
+representation is requested and then converted to a Unicode string
+using the codec for the default encoding in <q>strict</q> mode.</p><p>New in version 2.0. Changed in version 2.2: Support for
+<a href="__unicode__.htm"><strong>__unicode__</strong></a> added.</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div> <!-- yui-g --></div> <!-- content --> </div> <!-- yui-b --> </div> <!-- yui-main --> <div class="yui-b"> <div id='menu'> <ul> <li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li> <li><b><a href="." title="Go to pyref index page.">::: pyref :::</a></b></li> </ul> </div> <!-- menu --> </div> <!-- yui-b --> </div> <!-- bd --> <div id="ft"> <!-- footer --> <p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;"></a>
+this page was rendered by a <a href="http://www.djangoproject.com/">django</a> application in 0.01s 2011-06-21 21:22:31.409186.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p> </div> <!-- ft --> </div> <!-- doc --> <script src="/media/js/effbot-min.js" type="text/javascript"> </script> </body> </html>

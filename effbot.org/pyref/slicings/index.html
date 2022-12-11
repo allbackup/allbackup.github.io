@@ -1,0 +1,30 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>Slicings</title> <script type="text/javascript">effbot_page_id=1542;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> <!--
+<p style='color: #8f8f8f; background: #fff5bf; padding: 5px 10px;'> <b>2008-07-15:</b> Selected articles
+
+now have experimental "comment" links in the left column and at the bottom.
+You're welcome to use them for commenting and voting on articles.
+For a bit more on this, see <a
+href="http://effbot.slinkset.com/links/Welcome_to_discuss_effbot_org">this
+page</a>. /F
+</p>
+--> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <h1 class="maintitle">Slicings</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p>A slicing selects a range of items in a sequence object (e.g., a
+string, tuple or list). Slicings may be used as expressions or as
+targets in assignment or del statements. The syntax for a slicing:</p><p>Syntax:</p><blockquote><p><em><a href="syntax-primary">primary</a></em> <strong>[</strong> &#8230; <strong>]</strong></p></blockquote><p>slicing ::= [simple_slicing][1] | [ extended_slicing][2]
+simple_slicing ::= [ primary][3] &#8220;[&#8221; [short_slice][4] &#8220;]&#8221;
+extended_slicing ::= [ primary][3] &#8220;[&#8221; [slice_list][5] &#8220;]&#8221;
+slice_list ::= [ slice_item][6] (&#8220;,&#8221; [slice_item][6])* [&#8220;,&#8221;]
+slice_item ::= [ expression][7] | [proper_slice][8] | [ ellipsis][9]
+proper_slice ::= [ short_slice][4] | [long_slice][10]
+short_slice ::= [[lower_bound][11]] &#8220;:&#8221; [[upper_bound][12]]
+long_slice ::= [ short_slice][4] &#8220;:&#8221; [[stride][13]]
+lower_bound ::= [ expression][7]
+upper_bound ::= [ expression][7]
+stride ::= [ expression][7]
+ellipsis ::= &#8220;&#8230;&#8221;</p><p>There is ambiguity in the formal syntax here: anything that looks like
+an expression list also looks like a slice list, so any subscription
+can be interpreted as a slicing. Rather than further complicating the
+syntax, this is disambiguated by defining that in this case the
+interpretation as a subscription takes priority over the
+interpretation as a slicing (this is the case if t

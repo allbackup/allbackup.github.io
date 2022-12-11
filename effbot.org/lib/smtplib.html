@@ -1,0 +1,323 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>smtplib</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-smtplib.html'>original</a> :::
+<a href='smtplib.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>smtplib&#8212;SMTP protocol client</h1>
+
+<div class="toc"><dl><dt>On this page:</dt><dd><a href="#smtp-objects">SMTP Objects</a></dd><dd><a href="#smtp-example">SMTP Example</a></dd></dl></div><p>The <code>smtplib</code> module
+defines an SMTP client session object that can be used to send mail
+to any Internet machine with an SMTP or ESMTP listener daemon. For
+details of SMTP and ESMTP operation, consult <a class="link" href="http://www.faqs.org/rfcs/rfc821.html">RFC 821</a> (<em>Simple
+Mail Transfer Protocol</em>) and <a class="link" href="http://www.faqs.org/rfcs/rfc1869.html">RFC 1869</a> (<em>SMTP
+Service Extensions</em>).</p>
+</div>
+<dl><dt class="class" id="SMTP"><b>class SMTP([host[, port[, local_hostname]]])</b> <tt class="nav"><a class="nav" href="smtplib.SMTP" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>A <a class="link" href="#SMTP"><code>SMTP</code></a> instance
+encapsulates an SMTP connection. It has methods that support a full
+repertoire of SMTP and ESMTP operations. If the optional host and
+port parameters are given, the SMTP <code>connect</code> method is called with those
+parameters during initialization. An <a class="link" href="#SMTPConnectError"><code>SMTPConnectError</code></a> is raised if the
+specified host doesn't respond correctly.</p>
+
+<p>For normal use, you should only require the
+initialization/connect, <code>
+sendmail</code>, and <code>quit</code>
+methods. An example is included below.</p>
+</dd>
+</dl><div class="text">
+<p>A nice selection of exceptions is defined as well:</p>
+</div>
+<dl><dt class="exception" id="SMTPException"><b>exception SMTPException</b> <tt class="nav"><a class="nav" href="smtplib.SMTPException" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="exception">
+<p>Base exception class for all exceptions raised by this
+module.</p>
+</dd>
+<dt class="exception" id="SMTPServerDisconnected"><b>exception SMTPServerDisconnected</b> <tt class="nav"><a class="nav" href="smtplib.SMTPServerDisconnected" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="exception">
+<p>This exception is raised when the server unexpectedly
+disconnects, or when an attempt is made to use the <a class="link" href="#SMTP"><code>SMTP</code></a> instance before connecting it to a
+server.</p>
+</dd>
+<dt class="exception" id="SMTPResponseException"><b>exception SMTPResponseException</b> <tt class="nav"><a class="nav" href="smtplib.SMTPResponseException" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="exception">
+<p>Base class for all exceptions that include an SMTP error code.
+These exceptions are generated in some instances when the SMTP
+server returns an error code. The error code is stored in the <code>smtp_code</code> attribute of the
+error, and the <code>
+smtp_error</code> attribute is set to the error message.</p>
+</dd>
+<dt class="exception" id="SMTPSenderRefused"><b>exception SMTPSenderRefused</b> <tt class="nav"><a class="nav" href="smtplib.SMTPSenderRefused" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="exception">
+<p>Sender address refused. In addition to the attributes set by on
+all <a class="link" href="#SMTPResponseException"><code>
+SMTPResponseException</code></a> exceptions, this sets `sender' to the
+string that the SMTP server refused.</p>
+</dd>
+<dt class="exception" id="SMTPRecipientsRefused"><b>exception SMTPRecipientsRefused</b> <tt class="nav"><a class="nav" href="smtplib.SMTPRecipientsRefused" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="exception">
+<p>All recipient addresses refused. The errors for each recipient
+are accessible through the attribute <code>recipients</code>, which is a dictionary of
+exactly the same sort as <a class="link" href="#SMTP.sendmail"><code>
+SMTP.sendmail</code></a> returns.</p>
+</dd>
+<dt class="exception" id="SMTPDataError"><b>exception SMTPDataError</b> <tt class="nav"><a class="nav" href="smtplib.SMTPDataError" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="exception">
+<p>The SMTP server refused to accept the message data.</p>
+</dd>
+<dt class="exception" id="SMTPConnectError"><b>exception SMTPConnectError</b> <tt class="nav"><a class="nav" href="smtplib.SMTPConnectError" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="exception">
+<p>Error occurred during establishment of a connection with the
+server.</p>
+</dd>
+<dt class="exception" id="SMTPHeloError"><b>exception SMTPHeloError</b> <tt class="nav"><a class="nav" href="smtplib.SMTPHeloError" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="exception">
+<p>The server refused our "<code>HELO</code>" message.</p>
+</dd>
+</dl><div class="text"><span class="mark">@see</span> <a class="link" href="http://www.faqs.org/rfcs/rfc821.html">RFC 821, Simple Mail
+Transfer Protocol</a> Protocol definition for SMTP. This document
+covers the model, operating procedure, and protocol details for
+SMTP. <span class="mark">@see</span> <a class="link" href="http://www.faqs.org/rfcs/rfc1869.html">RFC 1869, SMTP Service
+Extensions</a> Definition of the ESMTP extensions for SMTP. This
+describes a framework for extending SMTP with new commands,
+supporting dynamic discovery of the commands provided by the
+server, and defines a few additional commands. 
+
+<h2 id="smtp-objects">SMTP Objects <a class="nav" href="#smtp-objects">#</a></h2>
+
+<p>An <a class="link" href="#SMTP"><code>SMTP</code></a> instance has the
+following methods:</p>
+</div>
+<dl><dt class="method" id="SMTP.set_debuglevel"><b>set_debuglevel(level)</b> <tt class="nav"><a class="nav" href="smtplib.SMTP.set_debuglevel" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Set the debug output level. A true value for <var>level</var>
+results in debug messages for connection and for all messages sent
+to and received from the server.</p>
+</dd>
+<dt class="method" id="SMTP.connect"><b>connect([host[, port]])</b> <tt class="nav"><a class="nav" href="smtplib.SMTP.connect" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Connect to a host on a given port. The defaults are to connect
+to the local host at the standard SMTP port (25). If the hostname
+ends with a colon ("<code>:</code>") followed by a number, that
+suffix will be stripped off and the number interpreted as the port
+number to use. This method is automatically invoked by the
+constructor if a host is specified during instantiation.</p>
+</dd>
+<dt class="method" id="SMTP.docmd"><b>docmd(cmd, [, argstring])</b> <tt class="nav"><a class="nav" href="smtplib.SMTP.docmd" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Send a command <var>cmd</var> to the server. The optional
+argument <var>argstring</var> is simply concatenated to the
+command, separated by a space.</p>
+
+<p>This returns a 2-tuple composed of a numeric response code and
+the actual response line (multiline responses are joined into one
+long line.)</p>
+
+<p>In normal operation it should not be necessary to call this
+method explicitly. It is used to implement other methods and may be
+useful for testing private extensions.</p>
+
+<p>If the connection to the server is lost while waiting for the
+reply, <a class="link" href="#SMTPServerDisconnected"><code>
+SMTPServerDisconnected</code></a> will be raised.</p>
+</dd>
+<dt class="method" id="SMTP.helo"><b>helo([hostname])</b> <tt class="nav"><a class="nav" href="smtplib.SMTP.helo" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Identify yourself to the SMTP server using "<code>HELO</code>".
+The hostname argument defaults to the fully qualified domain name
+of the local host.</p>
+
+<p>In normal operation it should not be necessary to call this
+method explicitly. It will be implicitly called by the <code>sendmail</code> when necessary.</p>
+</dd>
+<dt class="method" id="SMTP.ehlo"><b>ehlo([hostname])</b> <tt class="nav"><a class="nav" href="smtplib.SMTP.ehlo" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Identify yourself to an ESMTP server using "<code>EHLO</code>".
+The hostname argument defaults to the fully qualified domain name
+of the local host. Examine the response for ESMTP option and store
+them for use by <code>
+has_extn</code>.</p>
+
+<p>Unless you wish to use <code>
+has_extn</code> before sending mail, it should not be necessary to
+call this method explicitly. It will be implicitly called by <code>sendmail</code> when necessary.</p>
+</dd>
+<dt class="method" id="SMTP.has_extn"><b>has_extn(name)</b> <tt class="nav"><a class="nav" href="smtplib.SMTP.has_extn" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return <code>True</code> if <var>name</var> is in the set of
+SMTP service extensions returned by the server, <code>False</code>
+otherwise. Case is ignored.</p>
+</dd>
+<dt class="method" id="SMTP.verify"><b>verify(address)</b> <tt class="nav"><a class="nav" href="smtplib.SMTP.verify" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Check the validity of an address on this server using SMTP
+"<code>VRFY</code>". Returns a tuple consisting of code 250 and a
+full <a class="link" href="http://www.faqs.org/rfcs/rfc822.html">
+RFC 822</a> address (including human name) if the user address is
+valid. Otherwise returns an SMTP error code of 400 or greater and
+an error string.</p>
+
+<p class="note"><b>Note:</b> Many sites disable SMTP
+"<code>VRFY</code>" in order to foil spammers.</p>
+</dd>
+<dt class="method" id="SMTP.login"><b>login(user, password)</b> <tt class="nav"><a class="nav" href="smtplib.SMTP.login" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Log in on an SMTP server that requires authentication. The
+arguments are the username and the password to authenticate with.
+If there has been no previous "<code>EHLO</code>" or
+"<code>HELO</code>" command this session, this method tries ESMTP
+"<code>EHLO</code>" first. This method will return normally if the
+authentication was successful, or may raise the following
+exceptions:</p>
+</dd>
+<dt class="attribute" id="SMTPError"><b>SMTPError</b> <tt class="nav"><a class="nav" href="smtplib.SMTPError" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>No suitable authentication method was found.</p>
+</dd>
+<dt class="method" id="SMTP.starttls"><b>starttls([keyfile[, certfile]])</b> <tt class="nav"><a class="nav" href="smtplib.SMTP.starttls" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Put the SMTP connection in TLS (Transport Layer Security) mode.
+All SMTP commands that follow will be encrypted. You should then
+call <code>ehlo</code> again.</p>
+
+<p>If <var>keyfile</var> and <var>certfile</var> are provided,
+these are passed to the <code>
+socket</code> module's <code>ssl</code>
+function.</p>
+</dd>
+<dt class="method" id="SMTP.sendmail"><b>sendmail(from_addr, to_addrs, msg[,
+mail_options, rcpt_options])</b> <tt class="nav"><a class="nav" href="smtplib.SMTP.sendmail" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Send mail. The required arguments are an <a class="link" href="http://www.faqs.org/rfcs/rfc822.html">RFC 822</a>
+from-address string, a list of <a class="link" href="http://www.faqs.org/rfcs/rfc822.html">RFC 822</a> to-address
+strings (a bare string will be treated as a list with 1 address),
+and a message string. The caller may pass a list of ESMTP options
+(such as "<code>8bitmime</code>") to be used in "<code>MAIL
+FROM</code>" commands as <var>mail_options</var>. ESMTP options
+(such as "<code>DSN</code>" commands) that should be used with all
+"<code>RCPT</code>"commands can be passed as <var>
+rcpt_options</var>. (If you need to use different ESMTP options to
+different recipients you have to use the low-level methods such as
+<code>mail</code>, <code>rcpt</code> and <code>
+data</code> to send the message.)</p>
+
+<p class="note"><b>Note:</b> The <var>from_addr</var> and <var>
+to_addrs</var> parameters are used to construct the message
+envelope used by the transport agents. The <a class="link" href="#SMTP"><code>SMTP</code></a> does not modify the message headers in
+any way.</p>
+
+<p>If there has been no previous "<code>EHLO</code>" or
+"<code>HELO</code>" command this session, this method tries ESMTP
+"<code>EHLO</code>" first. If the server does ESMTP, message size
+and each of the specified options will be passed to it (if the
+option is in the feature set the server advertises). If
+"<code>EHLO</code>" fails, "<code>HELO</code>" will be tried and
+ESMTP options suppressed.</p>
+
+<p>This method will return normally if the mail is accepted for at
+least one recipient. Otherwise it will throw an exception. That is,
+if this method does not throw an exception, then someone should get
+your mail. If this method does not throw an exception, it returns a
+dictionary, with one entry for each recipient that was refused.
+Each entry contains a tuple of the SMTP error code and the
+accompanying error message sent by the server.</p>
+
+<p>This method may raise the following exceptions:</p>
+</dd>
+<dt class="attribute"><b>SMTPDataError</b> <tt class="nav"><a class="nav" href="smtplib.SMTPDataError" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>The server replied with an unexpected error code (other than a
+refusal of a recipient).</p>
+
+<p>Unless otherwise noted, the connection will be open even after
+an exception is raised.</p>
+</dd>
+<dt class="method" id="SMTP.quit"><b>quit()</b> <tt class="nav"><a class="nav" href="smtplib.SMTP.quit" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Terminate the SMTP session and close the connection.</p>
+</dd>
+</dl><div class="text">
+<p>Low-level methods corresponding to the standard SMTP/ESMTP
+commands "<code>HELP</code>", "<code>RSET</code>",
+"<code>NOOP</code>", "<code>MAIL</code>", "<code>RCPT</code>", and
+"<code>DATA</code>" are also supported. Normally these do not need
+to be called directly, so they are not documented here. For
+details, consult the module code.</p>
+
+<h2 id="smtp-example">SMTP Example <a class="nav" href="#smtp-example">#</a></h2>
+
+<p>This example prompts the user for addresses needed in the
+message envelope (`To' and `From' addresses), and the message to be
+delivered. Note that the headers to be included with the message
+must be included in the message as entered; this example doesn't do
+any processing of the <a class="link" href="http://www.faqs.org/rfcs/rfc822.html">RFC 822</a> headers. In
+particular, the `To' and `From' addresses must be included in the
+message headers explicitly.</p>
+
+<pre>
+import smtplib
+
+def prompt(prompt):
+    return raw_input(prompt).strip()
+
+fromaddr = prompt("From: ")
+toaddrs  = prompt("To: ").split()
+print "Enter message, end with ^D (Unix) or ^Z (Windows):"
+
+# Add the From: and To: headers at the start!
+msg = ("From: %s\r\nTo: %s\r\n\r\n"
+       % (fromaddr, ", ".join(toaddrs)))
+while 1:
+    try:
+        line = raw_input()
+    except EOFError:
+        break
+    if not line:
+        break
+    msg = msg + line
+
+print "Message length is " + repr(len(msg))
+
+server = smtplib.SMTP('localhost')
+server.set_debuglevel(1)
+server.sendmail(fromaddr, toaddrs, msg)
+server.quit()
+</pre>
+</div>
+</div></body></html>

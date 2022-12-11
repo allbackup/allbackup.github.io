@@ -1,0 +1,347 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>The sys&nbsp;module</title></head><body data-page-id="676"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">The sys&nbsp;module</h1></div><div class="yui-ge"><div class="yui-u first"><p>This module provides a number of functions and variables that
+can be used to manipulate different parts of the Python runtime
+environment.</p><div class="sect2"><h3 id="argv">Working with command-line arguments&#160;<a class="nav" href="#argv" title="bookmark!">#</a></h3><p>The <b>argv</b> list contains the arguments passed to the
+script, when the interpreter was started. The first item contains
+the name of the script itself.</p><div class="example">
+<b style="example">Example: Using the sys
+module to get script arguments</b>
+<pre>
+# File: <a href="sys/sys-argv-example-1.py">sys-argv-example-1.py</a>
+
+import sys
+
+print "script name is", sys.argv[0]
+
+if len(sys.argv) &gt; 1:
+    print "there are", len(sys.argv)-1, "arguments:"
+    for arg in sys.argv[1:]:
+        print arg
+else:
+    print "there are no arguments!"
+
+</pre><pre class="computeroutput" moreinfo="NONE">
+script name is sys-argv-example-1.py
+there are no arguments!
+</pre></div><p>If you read the script from standard input (like
+<span>&#8220;<b>python &lt; sys-argv-example-1.py</b>&#8221;</span>), the
+script name is set to an empty string. If you pass in the program
+as a string (using the <b>-c</b> option), the script name is set
+to <span>&#8220;<b>-c</b>&#8221;</span></p></div></div><div class="yui-u">&#160;</div></div><div class="yui-g"><div class="sect2 wide"><h3 id="path">Working with modules&#160;<a class="nav" href="#path" title="bookmark!">#</a></h3><p>The <b>path</b> list contains a list of directory names where
+Python looks for extension modules (Python source modules, compiled
+modules, or binary extensions). When you start Python, this list is
+initialized from a mixture of built-in rules, the contents of the
+<b>PYTHONPATH</b> environment variable, and the registry contents
+(on Windows). But since it&#8217;s an ordinary list, you can also
+manipulate it from within the program:</p><div class="example">
+<b style="example">Example: Using the sys
+module to manipulate the module search path</b>
+<pre class="wide">
+# File: <a href="sys/sys-path-example-1.py">sys-path-example-1.py</a>
+
+import sys
+
+print "path has", len(sys.path), "members"
+
+# add the sample directory to the path
+sys.path.insert(0, "samples")
+import sample
+
+# nuke the path
+sys.path = []
+import random # oops!
+
+</pre><pre class="computeroutput wide" moreinfo="NONE">
+path has 7 members
+this is the sample module!
+Traceback (innermost last):
+  File "sys-path-example-1.py", line 11, in ?
+    import random # oops!
+ImportError: No module named random
+</pre></div><p>The <b>builtin_module_names</b> list contains the names of all
+modules built into the Python interpreter.</p><div class="example">
+<b style="example">Example: Using the sys
+module to find built-in modules</b>
+<pre class="wide">
+# File: <a href="sys/sys-builtin-module-names-example-1.py">sys-builtin-module-names-example-1.py</a>
+
+import sys
+
+def dump(module):
+    print module, "=&gt;",
+    if module in sys.builtin_module_names:
+        print "&lt;BUILTIN&gt;"
+    else:
+        module = __import__(module)
+        print module.__file__
+
+dump("os")
+dump("sys")
+dump("string")
+dump("strop")
+dump("zlib")
+
+</pre><pre class="computeroutput wide" moreinfo="NONE">
+os =&gt; C:\python\lib\os.pyc
+sys =&gt; &lt;BUILTIN&gt;
+string =&gt; C:\python\lib\string.pyc
+strop =&gt; &lt;BUILTIN&gt;
+zlib =&gt; C:\python\zlib.pyd
+</pre></div><p>The <b>modules</b> dictionary contains all loaded modules. The
+<b>import</b> statement checks this dictionary before it actually
+loads something from disk.</p><p>As you can see from the following example, Python loads quite a
+bunch of modules before it hands control over to your script.</p><div class="example">
+<b style="example">Example: Using the sys
+module to find imported modules</b>
+<pre class="wide">
+# File: <a href="sys/sys-modules-example-1.py">sys-modules-example-1.py</a>
+
+import sys
+
+print sys.modules.keys()
+
+</pre><pre class="computeroutput wide" moreinfo="NONE">
+['os.path', 'os', 'exceptions', '__main__', 'ntpath', 'strop', 'nt',
+'sys', '__builtin__', 'site', 'signal', 'UserDict', 'string', 'stat']
+</pre></div><h3 id="getrefcount">Working with reference counts&#160;<a class="nav" href="#getrefcount" title="bookmark!">#</a></h3><p>The <b>getrefcount</b> function returns the reference count
+for a given object &#8212; that is, the number of places where this
+variable is used. Python keeps track of this value, and when it
+drops to zero, the object is destroyed.</p><div class="example">
+<b style="example">Example: Using the sys
+module to find the reference count</b>
+<pre class="wide">
+# File: <a href="sys/sys-getrefcount-example-1.py">sys-getrefcount-example-1.py</a>
+
+import sys
+
+variable = 1234
+
+print sys.getrefcount(0)
+print sys.getrefcount(variable)
+print sys.getrefcount(None)
+
+</pre><pre class="computeroutput wide" moreinfo="NONE">
+50
+3
+192
+</pre></div><p>Note that this value is always larger than the actual count,
+since the function itself hangs on to the object while determining
+the value.</p><h3 id="platform">Checking the host platform&#160;<a class="nav" href="#platform" title="bookmark!">#</a></h3><p>The <b>platform</b> variable contains the name of the host
+platform:</p><div class="example">
+<b style="example">Example: Using the sys
+module to find the current platform</b>
+<pre class="wide">
+# File: <a href="sys/sys-platform-example-1.py">sys-platform-example-1.py</a>
+
+import sys
+
+#
+# emulate "import os.path" (sort of)...
+
+if sys.platform == "win32":
+    import ntpath
+    pathmodule = ntpath
+elif sys.platform == "mac":
+    import macpath
+    pathmodule = macpath
+else:
+    # assume it's a posix platform
+    import posixpath
+    pathmodule = posixpath
+
+print pathmodule
+</pre></div><p>Typical platform names are <b>win32</b> for Windows 9X/NT and
+<b>mac</b> for Macintosh. For Unix systems, the platform name is
+usually derived from the output of the <span>&#8220;<b>uname
+-r</b>&#8221;</span> command, such as <b>irix6</b>, <b>linux2</b>,
+or <b>sunos5</b> (Solaris).</p><h3 id="setprofiler">Tracing the program&#160;<a class="nav" href="#setprofiler" title="bookmark!">#</a></h3><p>The <b>setprofiler</b> function allows you to install a
+profiling function. This is called every time a function or method
+is called, at every return (explicit or implied), and for each
+exception:</p><div class="example">
+<b style="example">Example: Using the sys
+module to install a profiler function</b>
+<pre class="wide">
+# File: <a href="sys/sys-setprofiler-example-1.py">sys-setprofiler-example-1.py</a>
+
+import sys
+
+def test(n):
+    j = 0
+    for i in range(n):
+        j = j + i
+    return n
+
+def profiler(frame, event, arg):
+    print event, frame.f_code.co_name, frame.f_lineno, "-&gt;", arg
+
+# profiler is activated on the next call, return, or exception
+sys.setprofile(profiler)
+
+# profile this function call
+test(1)
+
+# disable profiler
+sys.setprofile(None)
+
+# don't profile this call
+test(2)
+
+</pre><pre class="computeroutput wide" moreinfo="NONE">
+call test 3 -&gt; None
+return test 7 -&gt; 1
+</pre></div><p>The <a href="profile.htm"><b>profile</b></a>
+module provides a complete profiler framework, based on this
+function.</p><p>The <b>settrace</b> function is similar, but the trace
+function is called for each new line:</p><div class="example">
+<b style="example">Example: Using the sys
+module to install a trace function</b>
+<pre class="wide">
+# File: <a href="sys/sys-settrace-example-1.py">sys-settrace-example-1.py</a>
+
+import sys
+
+def test(n):
+    j = 0
+    for i in range(n):
+        j = j + i
+    return n
+
+def tracer(frame, event, arg):
+    print event, frame.f_code.co_name, frame.f_lineno, "-&gt;", arg
+    return tracer
+
+# tracer is activated on the next call, return, or exception
+sys.settrace(tracer)
+
+# trace this function call
+test(1)
+
+# disable tracing
+sys.settrace(None)
+
+# don't trace this call
+test(2)
+
+</pre><pre class="computeroutput wide" moreinfo="NONE">
+call test 3 -&gt; None
+line test 3 -&gt; None
+line test 4 -&gt; None
+line test 5 -&gt; None
+line test 5 -&gt; None
+line test 6 -&gt; None
+line test 5 -&gt; None
+line test 7 -&gt; None
+return test 7 -&gt; 1
+</pre></div><p>The <a href="pdb.htm"><b>pdb</b></a> module
+provides a complete debugger framework, based on the tracing
+facilities offered by this function.</p><h3 id="stdout">Working with standard input and output&#160;<a class="nav" href="#stdout" title="bookmark!">#</a></h3><p>The <b>stdin</b>, <b>stdout</b> and <b>stderr</b>
+variables contain stream objects corresponding to the standard I/O
+streams. You can access them directly if you need better control
+over the output than <b>print</b> can give you. You can also
+<i>replace</i> them, if you want to redirect output and input to
+some other device, or process them in some non-standard way:</p><div class="example">
+<b style="example">Example: Using the sys
+module to redirect output</b>
+<pre class="wide">
+# File: <a href="sys/sys-stdout-example-1.py">sys-stdout-example-1.py</a>
+
+import sys
+import string
+
+class Redirect:
+
+    def __init__(self, stdout):
+        self.stdout = stdout
+
+    def write(self, s):
+        self.stdout.write(string.lower(s))
+
+# redirect standard output (including the print statement)
+old_stdout = sys.stdout
+sys.stdout = Redirect(sys.stdout)
+
+print "HEJA SVERIGE",
+print "FRISKT HUM&#214;R"
+
+# restore standard output
+sys.stdout = old_stdout
+
+print "M&#197;&#197;&#197;&#197;L!"
+
+</pre><pre class="computeroutput wide" moreinfo="NONE">
+heja sverige friskt hum&#246;r
+M&#197;&#197;&#197;&#197;L!
+</pre></div><p>All it takes to redirect output is an object that implements the
+<b>write</b> method.</p><p>(Unless it&#8217;s a C type instance, that is: Python uses an integer
+attribute called <b>softspace</b> to control spacing, and adds it
+to the object if it isn&#8217;t there. You don&#8217;t have to bother if you&#8217;re
+using Python objects, but if you need to redirect to a C type, you
+should make sure that type supports the <b>softspace</b>
+attribute.)</p></div></div><div class="yui-ge"><div class="yui-u first"><div class="sect2"><h3 id="exit">Exiting the program&#160;<a class="nav" href="#exit" title="bookmark!">#</a></h3><p>When you reach the end of the main program, the interpreter is
+automatically terminated. If you need to exit in midflight, you can
+call the <b>sys.exit</b> function instead. This function takes an
+optional integer value, which is returned to the calling
+program.</p><div class="example">
+<b style="example">Example: Using the sys
+module to exit the program</b>
+<pre>
+# File: <a href="sys/sys-exit-example-1.py">sys-exit-example-1.py</a>
+
+import sys
+
+print "hello"
+
+sys.exit(1)
+
+print "there"
+
+</pre><pre class="computeroutput" moreinfo="NONE">
+hello
+</pre></div><p>It may not be obvious, but <b>sys.exit</b> doesn&#8217;t exit at
+once. Instead, it raises a <b>SystemExit</b> exception. This
+means that you can trap calls to <b>sys.exit</b> in your main
+program:</p><div class="example">
+<b style="example">Example: Catching the
+sys.exit call</b>
+<pre>
+# File: <a href="sys/sys-exit-example-2.py">sys-exit-example-2.py</a>
+
+import sys
+
+print "hello"
+
+try:
+    sys.exit(1)
+except SystemExit:
+    pass
+
+print "there"
+
+</pre><pre class="computeroutput" moreinfo="NONE">
+hello
+there
+</pre></div><p>If you want to clean things up after you, you can install an
+&#8220;exit handler&#8221;, which is a function that is automatically called on
+the way out.</p><div class="example">
+<b style="example">Example: Catching the
+sys.exit call</b>
+<pre>
+# File: <a href="sys/sys-exitfunc-example-1.py">sys-exitfunc-example-1.py</a>
+
+import sys
+
+def exitfunc():
+    print "world"
+
+sys.exitfunc = exitfunc
+
+print "hello"
+sys.exit(1)
+print "there" # never printed
+
+</pre><pre class="computeroutput" moreinfo="NONE">
+hello
+world
+</pre></div><p>In Python 2.0, you can use the <a href="atexit.htm"><b>atexit</b></a> module to
+register more than one exit handler.</p></div></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to librarybook index page.">::: librarybook :::</a></b></li></ul><ul><li><b>::: contents</b></li></ul><ul><li><ul><li><ul><li><a href="#argv">Working with command-line arguments</a></li><li><a href="#path">Working with modules</a></li><li><a href="#getrefcount">Working with reference counts</a></li><li><a href="#platform">Checking the host platform</a></li><li><a href="#setprofiler">Tracing the program</a></li><li><a href="#stdout">Working with standard input and output</a></li><li><a href="#exit">Exiting the program</a></li></ul></li></ul></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

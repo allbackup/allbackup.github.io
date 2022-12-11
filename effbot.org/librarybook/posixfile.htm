@@ -1,0 +1,31 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>The posixfile&nbsp;module</title></head><body data-page-id="618"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">The posixfile&nbsp;module</h1></div><div class="yui-ge"><div class="yui-u first"><p>(Obsolete, Unix only). This module provides a file-like object
+with support for file locking. New programs should use the
+<b>fcntl</b> module instead.</p><div class="example">
+<b style="example">Example: Using the
+posixfile module</b>
+<pre>
+# File: <a href="posixfile/posixfile-example-1.py">posixfile-example-1.py</a>
+
+import posixfile
+import string
+
+filename = "counter.txt"
+
+try:
+    # open for update
+    file = posixfile.open(filename, "r+")
+    counter = int(file.read(6)) + 1
+except IOError:
+    # create it
+    file = posixfile.open(filename, "w")
+    counter = 0
+
+file.lock("w|", 6)
+
+file.seek(0) # rewind
+file.write("%06d" % counter)
+
+file.close() # releases lock
+</pre></div></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to librarybook index page.">::: librarybook :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

@@ -1,0 +1,71 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>modulefinder</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-modulefinder.html'>original</a> :::
+<a href='modulefinder.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>modulefinder&#8212;Find modules used by a script</h1>
+
+<p>This module provides a <a class="link" href="#ModuleFinder"><code>
+ModuleFinder</code></a> class that can be used to determine the set of
+modules imported by a script. <code>modulefinder.py</code> can also
+be run as a script, giving the filename of a Python script as its
+argument, after which a report of the imported modules will be
+printed.</p>
+</div>
+<dl><dt class="function" id="AddPackagePath"><b>AddPackagePath(pkg_name, path)</b> <tt class="nav"><a class="nav" href="modulefinder.AddPackagePath" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Record that the package named <var>pkg_name</var> can be found
+in the specified <var>path</var>.</p>
+</dd>
+<dt class="function" id="ReplacePackage"><b>ReplacePackage(oldname, newname)</b> <tt class="nav"><a class="nav" href="modulefinder.ReplacePackage" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Allows specifying that the module named <var>oldname</var> is in
+fact the package named <var>newname</var>. The most common usage
+would be to handle how the <code>
+_xmlplus</code> package replaces the <code>
+xml</code> package.</p>
+</dd>
+<dt class="class" id="ModuleFinder"><b>class ModuleFinder([path=None, debug=0, excludes=[],
+replace_paths=[]])</b> <tt class="nav"><a class="nav" href="modulefinder.ModuleFinder" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>This class provides <code>
+run_script</code> and <code>report</code>
+methods to determine the set of modules imported by a script. <var>
+path</var> can be a list of directories to search for modules; if
+not specified, <code>sys.path</code> is used. <var>debug</var> sets
+the debugging level; higher values make the class print debugging
+messages about what it's doing. <var>excludes</var> is a list of
+module names to exclude from the analysis. <var>replace_paths</var>
+is a list of <code>(</code><var>oldpath</var>, <var>newpath</var>)
+tuples that will be replaced in module paths.</p>
+</dd>
+<dt class="method" id="ModuleFinder.report"><b>report()</b> <tt class="nav"><a class="nav" href="modulefinder.ModuleFinder.report" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Print a report to standard output that lists the modules
+imported by the script and their paths, as well as modules that are
+missing or seem to be missing.</p>
+</dd>
+<dt class="method" id="ModuleFinder.run_script"><b>run_script(pathname)</b> <tt class="nav"><a class="nav" href="modulefinder.ModuleFinder.run_script" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Analyze the contents of the <var>pathname</var> file, which must
+contain Python code.</p>
+</dd>
+</dl></div></body></html>

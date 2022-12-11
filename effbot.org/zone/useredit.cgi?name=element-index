@@ -1,0 +1,598 @@
+<html>
+<head>
+<title>element-index ::: www.effbot.org</title>
+<link rel='stylesheet' href='/effbot.css' type='text/css' media='screen' />
+</head>
+<body bgcolor='#ccffcc'>
+<div>[<a href='element-index.htm'>back</a>]</div>
+<h3>Welcome to the effbot.org user editor!</h3>
+
+
+<p><b>Note: This is not a contact form!  Support questions, spam, and
+other off-topic stuff will be ignored.</b></p>
+
+<p>To suggest changes, edit the HTML fragment in the text box below.
+You can use the 'update preview' button to check your changes (the
+preview is displayed beneath the text box).  When done, fill in the
+name and address fields (optional) and click 'submit patch' to mail
+the patch to me.  (I reserve the right to decide which patches to
+include, of course.)  Thanks! /F</p>
+
+<form method='post' id='useredit'>
+<input type='hidden' name='name' value='element-index'/>
+<p>
+<input type='submit' name='preview' value='update preview' style='background:#084; color:white; width:200px; font-weight:bold;' >
+&nbsp;&nbsp;&nbsp;
+<input type='submit' name='submit' value='submit patch'  style='background:#084; color:white; width:200px; font-weight:bold;' >
+</p>
+<textarea name='text' rows='30' cols='80'>ElementTree Overview
+
+&lt;!-- ADSENSE --&gt;
+
+&lt;blockquote&gt;
+&lt;p align="right"&gt;
+&lt;!-- "&lt;i&gt;But can we _please_ do without the clueless muppet teenage genius code-jockeys who don't have the first bloody clue about what's a good design and what's blecherous.&lt;/i&gt;" &amp;mdash; a self-proclaimed XML/RDF/J2EE expert --&gt;
+"&lt;i&gt;But I have found that sitting under the ElementTree, one can feel the Zen of XML.&lt;/i&gt;"&lt;br /&gt; &amp;mdash; Essien Ita Essien
+&lt;!-- "&lt;i&gt;It's not Java.&lt;/i&gt;"&lt;br /&gt; &amp;mdash; Fred Drake at PyCon2005 --&gt;
+&lt;!-- "&lt;i&gt;XML with elementtree is what makes me never have [to] think about XML again.&lt;/i&gt;"&lt;br /&gt; &amp;mdash; Istvan Albert --&gt;
+&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;
+[&lt;a href="/"&gt;home&lt;/a&gt;]
+[&lt;a href="/zone"&gt;zone&lt;/a&gt;]
+[&lt;a href="http://www.amazon.co.uk/gp/registry/2QZDLLDVBENMC"&gt;like the library? buy me a gift!&lt;/a&gt;]
+&lt;/p&gt;
+
+&lt;div id="download"&gt;
+
+&lt;div class="source"&gt;
+&lt;p&gt;&lt;b&gt;&lt;a href="/downloads#elementtree"&gt;Download Source Code&lt;/a&gt;&lt;/b&gt;&lt;/p&gt;
+
+&lt;p&gt;See &lt;a href="#installation"&gt;below&lt;/a&gt; for additional instructions.&lt;/p&gt;
+
+&lt;/div&gt;
+
+&lt;div class="windows"&gt;
+
+&lt;p&gt;&lt;b&gt;&lt;a href="/downloads#elementtree"&gt;Download for Windows&lt;/a&gt;&lt;/b&gt;&lt;/p&gt;
+
+&lt;p&gt;If the installer cannot find your Python interpreter, see &lt;a href="python-register.htm"&gt;this page&lt;/a&gt;.&lt;/p&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;p&gt;The &lt;b&gt;Element&lt;/b&gt; type is a simple but flexible container object,
+designed to store hierarchical data structures, such as simplified XML
+infosets, in memory.  The element type can be described as a cross
+between a Python list and a Python dictionary.&lt;/p&gt;
+
+&lt;p&gt;The &lt;b&gt;ElementTree&lt;/b&gt; wrapper adds code to load XML files as trees
+of Element objects, and save them back again.
+
+&lt;!-- FIXME: add link to data binding overview here --&gt;
+
+&lt;p&gt;The &lt;b&gt;Element&lt;/b&gt; type is available as a pure-Python implementation
+for Python 1.5.2 and later.  A &lt;a href="celementtree.htm"&gt;C implementation&lt;/a&gt;
+is also available, for use with CPython 2.1 and later.  The core
+components of both libraries are also shipped with Python 2.5 and
+later.&lt;/p&gt;
+
+&lt;p&gt;There's also an independent implementation, &lt;a href="http://codespeak.net/lxml/"&gt;lxml.etree&lt;/a&gt;, based on the well-known libxml2/libxslt libraries.  This adds full support for XSLT, XPath, and
+more.&lt;/p&gt;
+
+&lt;p&gt;For more implementations and add-ons, see the &lt;a href="#interesting-stuff"&lt;cite&gt;Interesting Stuff&lt;/cite&gt;&lt;/a&gt;
+section below.&lt;/p&gt;
+
+&lt;p&gt;
+[&lt;a href="#usage"&gt;usage&lt;/a&gt;]
+[&lt;a href="#documentation"&gt;documentation&lt;/a&gt;]
+[&lt;a href="pythondoc-elementtree-ElementTree.htm"&gt;api reference&lt;/a&gt;]
+&lt;/p&gt;
+
+&lt;h2 id='installation'&gt;Installation&lt;/h2&gt;
+
+&lt;p&gt;To install from sources, simply unpack the distribution archive,
+change to the distribution directory, and run the &lt;b&gt;setup.py&lt;/b&gt; script
+as follows:&lt;/p&gt;
+
+&lt;pre&gt;
+$ python setup.py install
+&lt;/pre&gt;
+
+&lt;p&gt;The toolkit is usually installed as a &lt;b&gt;elementtree&lt;/b&gt; package, but
+if you only need the core functionality, you can include the
+&lt;b&gt;ElementTree.py&lt;/b&gt; file in your own project.  To get &lt;a href="element-xpath.htm"&gt;path&lt;/a&gt; support, you also need &lt;b&gt;ElementPath.py&lt;/b&gt;.  All
+other modules are optional.&lt;/p&gt;
+
+&lt;p&gt;Other implementations uses different package names.  You can use
+&lt;b&gt;from-import&lt;/b&gt; or &lt;b&gt;import-as&lt;/b&gt; to make it easy to switch between
+implementations:&lt;/p&gt;
+
+&lt;pre&gt;
+# &lt;i&gt;import individual components&lt;/i&gt;
+from elementtree.ElementTree import Element, ElementTree
+from cElementTree import Element, ElementTree
+from lxml.etree import Element, ElementTree
+from xml.etree.ElementTree import Element, ElementTree # python 2.5
+
+# &lt;i&gt;import main module under an alias&lt;/i&gt;
+import elementtree.ElementTree as ET
+import cElementTree as ET
+import lxml.etree as ET
+import xml.etree.ElementTree as ET # python 2.5
+&lt;/pre&gt;
+
+&lt;h2 id="usage"&gt;Usage&lt;/h2&gt;
+
+&lt;p&gt;Each &lt;b&gt;Element&lt;/b&gt; instance can have an identifying tag, any number
+of attributes, any number of child element instances, and an associated
+object (usually a string).  To create elements, you can use the
+&lt;b&gt;Element&lt;/b&gt; or &lt;b&gt;Subelement&lt;/b&gt; factories:&lt;/p&gt;
+
+&lt;pre&gt;
+import elementtree.ElementTree as ET
+
+# &lt;i&gt;build a tree structure&lt;/i&gt;
+root = ET.Element("html")
+
+head = ET.SubElement(root, "head")
+
+title = ET.SubElement(head, "title")
+title.text = "Page Title"
+
+body = ET.SubElement(root, "body")
+body.set("bgcolor", "#ffffff")
+
+body.text = "Hello, World!"
+
+# &lt;i&gt;wrap it in an ElementTree instance, and save as XML&lt;/i&gt;
+tree = ET.ElementTree(root)
+tree.write("page.xhtml")
+&lt;/pre&gt;
+
+&lt;p&gt;The &lt;b&gt;ElementTree&lt;/b&gt; wrapper adds code to load XML files as trees
+of Element objects, and save them back again.  You can use the &lt;b&gt;parse&lt;/b&gt;
+function to quickly load an entire XML document into an ElementTree
+instance:&lt;/p&gt;
+
+&lt;pre&gt;
+import elementtree.ElementTree as ET
+
+tree = ET.parse("page.xhtml")
+
+# &lt;i&gt;the tree root is the toplevel html element&lt;/i&gt;
+print tree.findtext("head/title")
+
+# &lt;i&gt;if you need the root element, use getroot&lt;/i&gt;
+root = tree.getroot()
+
+# ...manipulate tree...
+
+tree.write("out.xml")
+&lt;/pre&gt;
+
+&lt;h2 id="documentation"&gt;Documentation&lt;/h2&gt;
+
+&lt;p id='articles'&gt;Zone articles:&lt;/p&gt;
+
+&lt;blockquote&gt;&lt;dl&gt;
+&lt;dt&gt;&lt;a href='element.htm'&gt;Elements and Element Trees&lt;/a&gt; (brief tutorial)&lt;/dt&gt;
+&lt;dt&gt;&lt;a href='pythondoc-elementtree-ElementTree.htm'&gt;The ElementTree Module&lt;/a&gt; (reference page)&lt;/dt&gt;
+&lt;dt&gt;&lt;a href='element-infoset.htm'&gt;Element Tree Infosets&lt;/a&gt;&lt;/dt&gt;
+&lt;dt&gt;&lt;a href='element-iterparse.htm'&gt;The ElementTree iterparse Function&lt;/a&gt;&lt;/dt&gt;
+&lt;dt&gt;&lt;a href='element-consumer.htm'&gt;Incremental Parsing Using the Consumer
+API&lt;/a&gt;)&lt;/dt&gt;
+&lt;dt&gt;&lt;a href='xml-writer.htm'&gt;Simple XML Writer&lt;/a&gt;&lt;/dt&gt;
+&lt;/dl&gt;&lt;/blockquote&gt;
+
+&lt;blockquote&gt;&lt;dl&gt;
+&lt;dt&gt;&lt;a href='celementtree.htm'&gt;The cElementTree Module&lt;/a&gt;&lt;/dt&gt;
+&lt;/dl&gt;&lt;/blockquote&gt;
+
+&lt;blockquote&gt;&lt;dl&gt;
+&lt;dt&gt;&lt;a href='element-xpath.htm'&gt;XPath support in ElementTree 1.2&lt;/a&gt;&lt;/dt&gt;
+&lt;dt&gt;&lt;a href='element-xinclude.htm'&gt;XInclude support in ElementTree 1.2&lt;/a&gt;&lt;/dt&gt;
+&lt;/dl&gt;&lt;/blockquote&gt;
+
+&lt;blockquote&gt;&lt;dl&gt;
+&lt;dt&gt;&lt;a href='element-tidylib.htm'&gt;ElementTree Tidy HTML Tree Builder&lt;/a&gt;&lt;/dt&gt;
+&lt;/dl&gt;&lt;/blockquote&gt;
+
+&lt;blockquote&gt;&lt;dl&gt;
+&lt;dt&gt;&lt;a href='element-soap.htm'&gt;Using the ElementTree Module to Generate SOAP Messages&lt;/a&gt;&lt;/dt&gt;
+&lt;/dl&gt;&lt;/blockquote&gt;
+
+&lt;p&gt;Elsewhere:&lt;/p&gt;
+
+&lt;blockquote&gt;
+
+&lt;p&gt;Andrew Dalke:
+&lt;a href="http://www.dalkescientific.com/writings/diary/archive/2006/08/22/pyprotocols_for_output_generation.html"&gt;&lt;cite&gt;PyProtocols for output generation&lt;/cite&gt;&lt;/a&gt;
+
+&lt;p&gt;Martijn Faassen:
+&lt;a href="http://faassen.n--tree.net/blog/view/weblog/2006/02/24/0"&gt;&lt;cite&gt;lxml and (c)ElementTree&lt;/cite&gt;&lt;/a&gt;
+
+&lt;p&gt;Andrew Kuchling:
+&lt;a href="http://www.amk.ca/diary/2006/02/zpug_elementtree_talk"&gt;&lt;cite&gt;Processing XML with ElementTree&lt;/cite&gt;&lt;/a&gt; [slides from a talk]
+
+&lt;p&gt;Danny Yoo: &lt;a href="http://article.gmane.org/gmane.comp.python.tutor/24986"&gt;ElementTree mini-tutorial&lt;/a&gt; ["&lt;i&gt;Let's work through a small example with it; that may help to clear some confusion.&lt;/i&gt;"]&lt;/p&gt;
+
+&lt;p&gt;Joseph Reagle: &lt;a href="http://reagle.org/joseph/blog/technology/python/elementtree-model"&gt;&lt;cite&gt;XML ElementTree Data Model&lt;/cite&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Uche Ogbuji: &lt;a href="http://www.xml.com/pub/a/2003/02/12/py-xml.html"&gt;&lt;cite&gt;Simple XML Processing With elementtree&lt;/cite&gt;&lt;/a&gt; [xml.com]&lt;/p&gt;
+
+&lt;p&gt;David Mertz: &lt;a href="http://www-106.ibm.com/developerworks/library/x-matters28/"&gt;&lt;cite&gt;Process XML in Python with ElementTree: How does the API stack up against similar libraries?&lt;/cite&gt;&lt;/a&gt; [ibm developerworks]&lt;/p&gt;
+
+&lt;p&gt;Uche Ogbuji: &lt;a href="http://www.idealliance.org/papers/dx_xml03/papers/06-02-03/06-02-03.html"&gt;&lt;cite&gt;Python Paradigms for XML&lt;/cite&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Uche Ogbuji: &lt;a href="http://www.xml.com/pub/a/2004/06/30/py-xml.html"&gt;&lt;cite&gt;XML Namespaces Support in Python Tools, Part Three&lt;/cite&gt;&lt;/a&gt; [xml.com]&lt;/p&gt;
+
+&lt;p&gt;Uche Ogbuji: &lt;a href="http://www.xml.com/pub/a/2004/08/11/py-xml.html"&gt;&lt;cite&gt;Practical SAX Notes: ElementTree, Namespaces and Techniques for Large Documents&lt;/cite&gt;&lt;/a&gt; [xml.com]&lt;/p&gt;
+
+&lt;/blockquote&gt;
+
+&lt;p id='interesting-stuff'&gt;Interesting stuff built with (or for) ElementTree (selection):&lt;/p&gt;
+
+&lt;blockquote&gt;
+
+&lt;p&gt;L. C. Rees:
+&lt;a href="http://article.gmane.org/gmane.comp.python.announce/5996"&gt;webstring&lt;/a&gt;
+(webstring is a web templating engine that allows programs to manipulate
+XML and HTML documents with standard Python sequence and string
+operators. It is designed for those whose preferred web template
+languages are Python and HTML (and XML for people who swing that way).&lt;/p&gt;
+
+&lt;p&gt;Chris McDonough:
+&lt;a href="http://www.plope.com/software/meld3"&gt;meld3&lt;/a&gt; (an XML templating system for Python 2.3+ which keeps template markup and dynamic rendering logic separate from one another, based on PyMeld)
+
+&lt;p&gt;Peter Hunt:
+&lt;a href="http://www.aminus.org/blogs/index.php/phunt/2006/01/27/templating_languages_and_yaptl"&gt;pymeld4&lt;/a&gt; (another ET-based implementation of the PyMeld templating language)
+
+&lt;p&gt;Seo Sanghyeon:
+&lt;a href="http://article.gmane.org/gmane.comp.python.ironpython.user/1221"&gt;pyexpat/ElementTree for IronPython&lt;/a&gt; (a pyexpat emulation for IronPython which lets you use the standard ElementTree module on that platform)&lt;/p&gt;
+
+&lt;p&gt;Oren Tirosh: &lt;a href="http://www.tothink.com/python/ElementBuilder/"&gt;ElementBuilder&lt;/a&gt;
+(friendly syntax for constructing ElementTree:s)&lt;/p&gt;
+
+&lt;p&gt;Staffan Malmgren: &lt;a href="http://lagen.nu/"&gt;lagen.nu&lt;/a&gt; (a
+nicely formatted, hyperlinked, linkable, and taggable version of
+the entire body of swedish law) (&lt;a href="http://blog.tomtebo.org/misc/lagen_nu_is_now_public.html"&gt;more
+information&lt;/a&gt;)&lt;/p&gt;
+
+&lt;p&gt;Ralf Schlatterbeck: &lt;a href="http://ooopy.sourceforge.net/"&gt;OOoPy&lt;/a&gt; (a tool to inspect, create, and modify OpenOffice.org documents in Python)&lt;/p&gt;
+
+&lt;p&gt;Martijn Faassen: &lt;a href="http://codespeak.net/lxml/"&gt;lxml&lt;/a&gt;
+(ElementTree-compatible bindings for &lt;a href="http://xmlsoft.org"&gt;libxml2&lt;/a&gt;
+and &lt;a href="http://xmlsoft.org/XSLT/"&gt;libxslt&lt;/a&gt;).&lt;/p&gt;
+
+&lt;p&gt;Martin Pool, et al: &lt;a href="http://bazaar-ng.org/index.html"&gt;Bazaar-NG&lt;/a&gt; (version management system)&lt;/p&gt;
+
+&lt;p&gt;Seth Vidal, Konstantin Ryabitsev, et al: &lt;a href="http://linux.duke.edu/projects/yum/"&gt;Yellow dog Updater, Modified&lt;/a&gt; (an automatic updater and package installer/remover for rpm systems)&lt;/p&gt;
+
+&lt;p&gt;Michael Droettboom: &lt;a href="http://pyscore.sf.net/"&gt;pyScore&lt;/a&gt; (a set of Python-based tools for working with symbolic music notation)&lt;/p&gt;
+
+&lt;p&gt;Ryan Tomayko: &lt;a href="http://splice.sourceforge.net/kid/index.html"&gt;Kid&lt;/a&gt; (a template language)&lt;/p&gt;
+
+&lt;p&gt;Ken Rimey: &lt;a href="http://pdis.hiit.fi/pdis/download/"&gt;PDIS XPath&lt;/a&gt; (a more complete XPath implementation)&lt;/p&gt;
+
+&lt;p&gt;Roland Leuthe: &lt;a href="http://www.leuthe.homepage.t-online.de/minixsv/minixsv_overview.html"&gt;minixsv&lt;/a&gt; (a lightweight XML schema validator written in pure Python)&lt;/p&gt;
+
+&lt;p&gt;Bruno da Silva de Oliveira, Joel de Guzman: &lt;a href="http://www.boost.org/libs/python/pyste/doc/introduction.html"&gt;Pyste&lt;/a&gt; (a Python binding generator for C++)&lt;/p&gt;
+
+&lt;/blockquote&gt;
+
+&lt;p id='works-in-progress'&gt;Works in progress:&lt;/p&gt;
+
+&lt;blockquote&gt;&lt;dl&gt;
+&lt;dt&gt;&lt;a href='element-qnames.htm'&gt;Working with Qualified Names&lt;/a&gt;&lt;/dt&gt;
+&lt;dt&gt;&lt;a href='element-google.htm'&gt;Elements and Google&lt;/a&gt;&lt;/dt&gt;
+&lt;dt&gt;&lt;a href='element-technorati.htm'&gt;Elements and Technorati&lt;/a&gt;&lt;/dt&gt;
+&lt;dt&gt;&lt;a href='element-wsdl.htm'&gt;Elements and WSDL&lt;/a&gt;&lt;/dt&gt;
+&lt;dt&gt;&lt;a href='element-xbel.htm'&gt;Elements and XBEL&lt;/a&gt;&lt;/dt&gt;
+&lt;dt&gt;&lt;a href='element-xmlrpc.htm'&gt;Elements and XML-RPC&lt;/a&gt;&lt;/dt&gt;
+&lt;dt&gt;&lt;a href='element-tkinter.htm'&gt;Elements and Tkinter&lt;/a&gt;&lt;/dt&gt;
+&lt;dt&gt;&lt;a href='http-xml.htm'&gt;A Simple XML-Over-HTTP Framework&lt;/a&gt;&lt;/dt&gt;
+&lt;dt&gt;&lt;a href='http-xml-stockticker.htm'&gt;Yet Another Stockticker&lt;/a&gt;&lt;/dt&gt;
+&lt;/dl&gt;&lt;/blockquote&gt;
+
+&lt;script type="text/javascript" src="/effbot.js" /&gt;
+&lt;script&gt;effbot_download();&lt;/script&gt;</textarea>
+<table>
+<tr><td><label for='author'>Name:</label></td><td>
+<div><input name='author' value="" size=40></div>
+</td><td>(Optional)</td></tr>
+<tr><td><label for='email'>Mail:</label></td><td>
+<div><input name='email' value="" size=40></div>
+</td><td>(Optional)</td></tr>
+<tr><td><label for='note'>Comment:</label></td><td>
+<div><input name='note' value="" size=40></div>
+</td><td>(Optional)</td></tr>
+<tr><td><label for='password'>Password:</label></td><td>
+<div><input name='password' value="(replace with the sum of 7+4)" size=40></div>
+</td><td>(Required)</td></tr>
+</table>
+<p>
+<input type='submit' name='preview' value='update preview' style='background:#084; color:white; width:200px; font-weight:bold;' >
+&nbsp;&nbsp;&nbsp;
+<input type='submit' name='submit' value='submit patch'  style='background:#084; color:white; width:200px; font-weight:bold;' >
+</p>
+<p>&nbsp;</p>
+</form>
+<div style='background: white; border: 2px solid #084; padding: 0px 20px;'>
+<h2>ElementTree Overview</h2>
+
+<!-- ADSENSE -->
+
+<blockquote>
+<p align="right">
+<!-- "<i>But can we _please_ do without the clueless muppet teenage genius code-jockeys who don't have the first bloody clue about what's a good design and what's blecherous.</i>" &mdash; a self-proclaimed XML/RDF/J2EE expert -->
+"<i>But I have found that sitting under the ElementTree, one can feel the Zen of XML.</i>"<br /> &mdash; Essien Ita Essien
+<!-- "<i>It's not Java.</i>"<br /> &mdash; Fred Drake at PyCon2005 -->
+<!-- "<i>XML with elementtree is what makes me never have [to] think about XML again.</i>"<br /> &mdash; Istvan Albert -->
+</p>
+</blockquote>
+
+<p>
+[<a href="/">home</a>]
+[<a href="/zone">zone</a>]
+[<a href="http://www.amazon.co.uk/gp/registry/2QZDLLDVBENMC">like the library? buy me a gift!</a>]
+</p>
+
+<div id="download">
+
+<div class="source">
+<p><b><a href="/downloads#elementtree">Download Source Code</a></b></p>
+
+<p>See <a href="#installation">below</a> for additional instructions.</p>
+
+</div>
+
+<div class="windows">
+
+<p><b><a href="/downloads#elementtree">Download for Windows</a></b></p>
+
+<p>If the installer cannot find your Python interpreter, see <a href="python-register.htm">this page</a>.</p>
+
+</div>
+</div>
+
+<p>The <b>Element</b> type is a simple but flexible container object,
+designed to store hierarchical data structures, such as simplified XML
+infosets, in memory.  The element type can be described as a cross
+between a Python list and a Python dictionary.</p>
+
+<p>The <b>ElementTree</b> wrapper adds code to load XML files as trees
+of Element objects, and save them back again.
+
+<!-- FIXME: add link to data binding overview here -->
+
+<p>The <b>Element</b> type is available as a pure-Python implementation
+for Python 1.5.2 and later.  A <a href="celementtree.htm">C implementation</a>
+is also available, for use with CPython 2.1 and later.  The core
+components of both libraries are also shipped with Python 2.5 and
+later.</p>
+
+<p>There's also an independent implementation, <a href="http://codespeak.net/lxml/">lxml.etree</a>, based on the well-known libxml2/libxslt libraries.  This adds full support for XSLT, XPath, and
+more.</p>
+
+<p>For more implementations and add-ons, see the <a href="#interesting-stuff"<cite>Interesting Stuff</cite></a>
+section below.</p>
+
+<p>
+[<a href="#usage">usage</a>]
+[<a href="#documentation">documentation</a>]
+[<a href="pythondoc-elementtree-ElementTree.htm">api reference</a>]
+</p>
+
+<h2 id='installation'>Installation</h2>
+
+<p>To install from sources, simply unpack the distribution archive,
+change to the distribution directory, and run the <b>setup.py</b> script
+as follows:</p>
+
+<pre>
+$ python setup.py install
+</pre>
+
+<p>The toolkit is usually installed as a <b>elementtree</b> package, but
+if you only need the core functionality, you can include the
+<b>ElementTree.py</b> file in your own project.  To get <a href="element-xpath.htm">path</a> support, you also need <b>ElementPath.py</b>.  All
+other modules are optional.</p>
+
+<p>Other implementations uses different package names.  You can use
+<b>from-import</b> or <b>import-as</b> to make it easy to switch between
+implementations:</p>
+
+<pre>
+# <i>import individual components</i>
+from elementtree.ElementTree import Element, ElementTree
+from cElementTree import Element, ElementTree
+from lxml.etree import Element, ElementTree
+from xml.etree.ElementTree import Element, ElementTree # python 2.5
+
+# <i>import main module under an alias</i>
+import elementtree.ElementTree as ET
+import cElementTree as ET
+import lxml.etree as ET
+import xml.etree.ElementTree as ET # python 2.5
+</pre>
+
+<h2 id="usage">Usage</h2>
+
+<p>Each <b>Element</b> instance can have an identifying tag, any number
+of attributes, any number of child element instances, and an associated
+object (usually a string).  To create elements, you can use the
+<b>Element</b> or <b>Subelement</b> factories:</p>
+
+<pre>
+import elementtree.ElementTree as ET
+
+# <i>build a tree structure</i>
+root = ET.Element("html")
+
+head = ET.SubElement(root, "head")
+
+title = ET.SubElement(head, "title")
+title.text = "Page Title"
+
+body = ET.SubElement(root, "body")
+body.set("bgcolor", "#ffffff")
+
+body.text = "Hello, World!"
+
+# <i>wrap it in an ElementTree instance, and save as XML</i>
+tree = ET.ElementTree(root)
+tree.write("page.xhtml")
+</pre>
+
+<p>The <b>ElementTree</b> wrapper adds code to load XML files as trees
+of Element objects, and save them back again.  You can use the <b>parse</b>
+function to quickly load an entire XML document into an ElementTree
+instance:</p>
+
+<pre>
+import elementtree.ElementTree as ET
+
+tree = ET.parse("page.xhtml")
+
+# <i>the tree root is the toplevel html element</i>
+print tree.findtext("head/title")
+
+# <i>if you need the root element, use getroot</i>
+root = tree.getroot()
+
+# ...manipulate tree...
+
+tree.write("out.xml")
+</pre>
+
+<h2 id="documentation">Documentation</h2>
+
+<p id='articles'>Zone articles:</p>
+
+<blockquote><dl>
+<dt><a href='element.htm'>Elements and Element Trees</a> (brief tutorial)</dt>
+<dt><a href='pythondoc-elementtree-ElementTree.htm'>The ElementTree Module</a> (reference page)</dt>
+<dt><a href='element-infoset.htm'>Element Tree Infosets</a></dt>
+<dt><a href='element-iterparse.htm'>The ElementTree iterparse Function</a></dt>
+<dt><a href='element-consumer.htm'>Incremental Parsing Using the Consumer
+API</a>)</dt>
+<dt><a href='xml-writer.htm'>Simple XML Writer</a></dt>
+</dl></blockquote>
+
+<blockquote><dl>
+<dt><a href='celementtree.htm'>The cElementTree Module</a></dt>
+</dl></blockquote>
+
+<blockquote><dl>
+<dt><a href='element-xpath.htm'>XPath support in ElementTree 1.2</a></dt>
+<dt><a href='element-xinclude.htm'>XInclude support in ElementTree 1.2</a></dt>
+</dl></blockquote>
+
+<blockquote><dl>
+<dt><a href='element-tidylib.htm'>ElementTree Tidy HTML Tree Builder</a></dt>
+</dl></blockquote>
+
+<blockquote><dl>
+<dt><a href='element-soap.htm'>Using the ElementTree Module to Generate SOAP Messages</a></dt>
+</dl></blockquote>
+
+<p>Elsewhere:</p>
+
+<blockquote>
+
+<p>Andrew Dalke:
+<a href="http://www.dalkescientific.com/writings/diary/archive/2006/08/22/pyprotocols_for_output_generation.html"><cite>PyProtocols for output generation</cite></a>
+
+<p>Martijn Faassen:
+<a href="http://faassen.n--tree.net/blog/view/weblog/2006/02/24/0"><cite>lxml and (c)ElementTree</cite></a>
+
+<p>Andrew Kuchling:
+<a href="http://www.amk.ca/diary/2006/02/zpug_elementtree_talk"><cite>Processing XML with ElementTree</cite></a> [slides from a talk]
+
+<p>Danny Yoo: <a href="http://article.gmane.org/gmane.comp.python.tutor/24986">ElementTree mini-tutorial</a> ["<i>Let's work through a small example with it; that may help to clear some confusion.</i>"]</p>
+
+<p>Joseph Reagle: <a href="http://reagle.org/joseph/blog/technology/python/elementtree-model"><cite>XML ElementTree Data Model</cite></a></p>
+
+<p>Uche Ogbuji: <a href="http://www.xml.com/pub/a/2003/02/12/py-xml.html"><cite>Simple XML Processing With elementtree</cite></a> [xml.com]</p>
+
+<p>David Mertz: <a href="http://www-106.ibm.com/developerworks/library/x-matters28/"><cite>Process XML in Python with ElementTree: How does the API stack up against similar libraries?</cite></a> [ibm developerworks]</p>
+
+<p>Uche Ogbuji: <a href="http://www.idealliance.org/papers/dx_xml03/papers/06-02-03/06-02-03.html"><cite>Python Paradigms for XML</cite></a></p>
+
+<p>Uche Ogbuji: <a href="http://www.xml.com/pub/a/2004/06/30/py-xml.html"><cite>XML Namespaces Support in Python Tools, Part Three</cite></a> [xml.com]</p>
+
+<p>Uche Ogbuji: <a href="http://www.xml.com/pub/a/2004/08/11/py-xml.html"><cite>Practical SAX Notes: ElementTree, Namespaces and Techniques for Large Documents</cite></a> [xml.com]</p>
+
+</blockquote>
+
+<p id='interesting-stuff'>Interesting stuff built with (or for) ElementTree (selection):</p>
+
+<blockquote>
+
+<p>L. C. Rees:
+<a href="http://article.gmane.org/gmane.comp.python.announce/5996">webstring</a>
+(webstring is a web templating engine that allows programs to manipulate
+XML and HTML documents with standard Python sequence and string
+operators. It is designed for those whose preferred web template
+languages are Python and HTML (and XML for people who swing that way).</p>
+
+<p>Chris McDonough:
+<a href="http://www.plope.com/software/meld3">meld3</a> (an XML templating system for Python 2.3+ which keeps template markup and dynamic rendering logic separate from one another, based on PyMeld)
+
+<p>Peter Hunt:
+<a href="http://www.aminus.org/blogs/index.php/phunt/2006/01/27/templating_languages_and_yaptl">pymeld4</a> (another ET-based implementation of the PyMeld templating language)
+
+<p>Seo Sanghyeon:
+<a href="http://article.gmane.org/gmane.comp.python.ironpython.user/1221">pyexpat/ElementTree for IronPython</a> (a pyexpat emulation for IronPython which lets you use the standard ElementTree module on that platform)</p>
+
+<p>Oren Tirosh: <a href="http://www.tothink.com/python/ElementBuilder/">ElementBuilder</a>
+(friendly syntax for constructing ElementTree:s)</p>
+
+<p>Staffan Malmgren: <a href="http://lagen.nu/">lagen.nu</a> (a
+nicely formatted, hyperlinked, linkable, and taggable version of
+the entire body of swedish law) (<a href="http://blog.tomtebo.org/misc/lagen_nu_is_now_public.html">more
+information</a>)</p>
+
+<p>Ralf Schlatterbeck: <a href="http://ooopy.sourceforge.net/">OOoPy</a> (a tool to inspect, create, and modify OpenOffice.org documents in Python)</p>
+
+<p>Martijn Faassen: <a href="http://codespeak.net/lxml/">lxml</a>
+(ElementTree-compatible bindings for <a href="http://xmlsoft.org">libxml2</a>
+and <a href="http://xmlsoft.org/XSLT/">libxslt</a>).</p>
+
+<p>Martin Pool, et al: <a href="http://bazaar-ng.org/index.html">Bazaar-NG</a> (version management system)</p>
+
+<p>Seth Vidal, Konstantin Ryabitsev, et al: <a href="http://linux.duke.edu/projects/yum/">Yellow dog Updater, Modified</a> (an automatic updater and package installer/remover for rpm systems)</p>
+
+<p>Michael Droettboom: <a href="http://pyscore.sf.net/">pyScore</a> (a set of Python-based tools for working with symbolic music notation)</p>
+
+<p>Ryan Tomayko: <a href="http://splice.sourceforge.net/kid/index.html">Kid</a> (a template language)</p>
+
+<p>Ken Rimey: <a href="http://pdis.hiit.fi/pdis/download/">PDIS XPath</a> (a more complete XPath implementation)</p>
+
+<p>Roland Leuthe: <a href="http://www.leuthe.homepage.t-online.de/minixsv/minixsv_overview.html">minixsv</a> (a lightweight XML schema validator written in pure Python)</p>
+
+<p>Bruno da Silva de Oliveira, Joel de Guzman: <a href="http://www.boost.org/libs/python/pyste/doc/introduction.html">Pyste</a> (a Python binding generator for C++)</p>
+
+</blockquote>
+
+<p id='works-in-progress'>Works in progress:</p>
+
+<blockquote><dl>
+<dt><a href='element-qnames.htm'>Working with Qualified Names</a></dt>
+<dt><a href='element-google.htm'>Elements and Google</a></dt>
+<dt><a href='element-technorati.htm'>Elements and Technorati</a></dt>
+<dt><a href='element-wsdl.htm'>Elements and WSDL</a></dt>
+<dt><a href='element-xbel.htm'>Elements and XBEL</a></dt>
+<dt><a href='element-xmlrpc.htm'>Elements and XML-RPC</a></dt>
+<dt><a href='element-tkinter.htm'>Elements and Tkinter</a></dt>
+<dt><a href='http-xml.htm'>A Simple XML-Over-HTTP Framework</a></dt>
+<dt><a href='http-xml-stockticker.htm'>Yet Another Stockticker</a></dt>
+</dl></blockquote>
+
+<script type="text/javascript" src="/effbot.js" />
+<script>effbot_download();</script>
+</div>
+</body>
+</html>

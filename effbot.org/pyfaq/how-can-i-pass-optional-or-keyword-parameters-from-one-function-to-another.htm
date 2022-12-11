@@ -1,0 +1,14 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>How can I pass optional or keyword parameters from one function to&nbsp;another?</title></head><body data-page-id="768"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><p class="note" style="text-align: center"><strong>
+This is an old copy of the Python FAQ.  The information here may be
+outdated.
+</strong></p><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">How can I pass optional or keyword parameters from one function to&nbsp;another?</h1></div><div class="yui-ge"><div class="yui-u first"><p>Collect the arguments using the * and ** specifiers in the function&#8217;s parameter list; this gives you the positional arguments as a tuple and the keyword arguments as a dictionary. You can then pass these arguments when calling another function by using * and **:</p><pre class="python"><span class="pykeyword">def</span> <span class="pyfunction">f</span>(x, *args, **kwargs):
+        ...
+        kwargs[<span class="pystring">'width'</span>]=<span class="pystring">'14.3c'</span>
+        ...
+        g(x, *args, **kwargs)</pre><p>If you have to support Python versions older than 2.0, use <a href="/pyref/apply.htm"><strong>apply</strong></a>:</p><pre class="python"><span class="pykeyword">def</span> <span class="pyfunction">f</span>(x, *args, **kwargs):
+        ...
+        kwargs[<span class="pystring">'width'</span>]=<span class="pystring">'14.3c'</span>
+        ...
+        apply(g, (x,) + args, kwargs)</pre><p>CATEGORY: programming</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to pyfaq index page.">::: pyfaq :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

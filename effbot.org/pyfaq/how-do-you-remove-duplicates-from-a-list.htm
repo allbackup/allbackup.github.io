@@ -1,0 +1,17 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>How do you remove duplicates from a&nbsp;list?</title></head><body data-page-id="832"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><p class="note" style="text-align: center"><strong>
+This is an old copy of the Python FAQ.  The information here may be
+outdated.
+</strong></p><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">How do you remove duplicates from a&nbsp;list?</h1></div><div class="yui-ge"><div class="yui-u first"><p>See the Python Cookbook for a long discussion of many ways to do this:</p><blockquote><p><a href="http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/52560">http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/52560</a></p></blockquote><p>If you don&#8217;t mind reordering the list, and all items can be used as
+dictionary keys (i.e. they are all hashable), you can simply do:</p><pre class="python">L = list(set(L))</pre><p>or, for early Python versions:</p><pre class="python">d = {}
+<span class="pykeyword">for</span> x <span class="pykeyword">in</span> L:
+    d[x] = None
+L = d.keys()</pre><p>For unhashable objects, you can sort the sequence and then scan from the end of the list, deleting duplicates as you go:</p><pre class="python"><span class="pykeyword">if</span> L:
+   L.sort()
+   last = L[-1]
+   <span class="pykeyword">for</span> i <span class="pykeyword">in</span> range(len(L)-2, -1, -1):
+       <span class="pykeyword">if</span> last == L[i]:
+           <span class="pykeyword">del</span> L[i]
+       <span class="pykeyword">else</span>:
+           last = L[i]</pre><p>CATEGORY: programming</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to pyfaq index page.">::: pyfaq :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

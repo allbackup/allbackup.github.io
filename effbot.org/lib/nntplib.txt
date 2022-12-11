@@ -1,0 +1,347 @@
+
+@@module nntplib
+
+<h1>nntplib&#8212;NNTP protocol client</h1>
+
+<p>This module defines the class {@link NNTP} which implements the
+client side of the NNTP protocol. It can be used to implement a news
+reader or poster, or automated news processors. For more information on
+NNTP (Network News Transfer Protocol), see Internet {@link
+http://www.faqs.org/rfcs/rfc977.html RFC 977}.
+
+<p>Here are two small examples of how it can be used. To list some
+statistics about a newsgroup and print the subjects of the last 10
+articles:
+
+<pre>
+&gt;&gt;&gt; s = NNTP('news.cwi.nl')
+&gt;&gt;&gt; resp, count, first, last, name = s.group('comp.lang.python')
+&gt;&gt;&gt; print 'Group', name, 'has', count, 'articles, range', first, 'to', last
+Group comp.lang.python has 59 articles, range 3742 to 3803
+&gt;&gt;&gt; resp, subs = s.xhdr('subject', first + '-' + last)
+&gt;&gt;&gt; for id, sub in subs[-10:]: print id, sub
+... 
+3792 Re: Removing elements from a list while iterating...
+3793 Re: Who likes Info files?
+3794 Emacs and doc strings
+3795 a few questions about the Mac implementation
+3796 Re: executable python scripts
+3797 Re: executable python scripts
+3798 Re: a few questions about the Mac implementation 
+3799 Re: PROPOSAL: A Generic Python Object Interface for Python C Modules
+3802 Re: executable python scripts 
+3803 Re: \POSIX{} wait and SIGCHLD
+&gt;&gt;&gt; s.quit()
+'205 news.cwi.nl closing connection.  Goodbye.'
+</pre>
+
+
+<p>To post an article from a file (this assumes that the article has
+valid headers):
+
+<pre>
+&gt;&gt;&gt; s = NNTP('news.cwi.nl')
+&gt;&gt;&gt; f = open('/tmp/article')
+&gt;&gt;&gt; s.post(f)
+'240 Article posted successfully.'
+&gt;&gt;&gt; s.quit()
+'205 news.cwi.nl closing connection.  Goodbye.'
+</pre>
+
+
+<p>The module itself defines the following items:
+
+@@class NNTP(host[, port [, user[, password [, readermode] [, usenetrc]]]])
+
+<p>Return a new instance of the {@link NNTP} class, representing a
+connection to the NNTP server running on host {@var host}, listening at
+port {@var port}. The default {@var port} is 119. If the optional {@var
+user} and {@var password} are provided, or if suitable credentials are
+present in /.netrc and the optional flag {@var usenetrc} is true (the
+default), the "{@code AUTHINFO USER}" and "{@code AUTHINFO PASS}"
+commands are used to identify and authenticate the user to the server.
+If the optional flag {@var readermode} is true, then a "{@code mode
+reader}" command is sent before authentication is performed. Reader mode
+is sometimes necessary if you are connecting to an NNTP server on the
+local machine and intend to call reader-specific commands, such as
+"{@code group}". If you get unexpected {@code NNTPPermanentError}s, you
+might need to set {@var readermode}. {@var readermode} defaults to
+{@code None}. {@var usenetrc} defaults to {@link True}.
+<blockquote>
+@since Changed in version 2.4: usenetrc argument added. <br />
+</blockquote>
+
+@@class NNTPError()
+
+<p>Derived from the standard exception {@code Exception}, this is the
+base class for all exceptions raised by the {@code nntplib} module.
+
+@@class NNTPReplyError()
+
+<p>Exception raised when an unexpected reply is received from the
+server. For backwards compatibility, the exception {@code error_reply}
+is equivalent to this class.
+
+@@class NNTPTemporaryError()
+
+<p>Exception raised when an error code in the range 400-499 is received.
+For backwards compatibility, the exception {@code error_temp} is
+equivalent to this class.
+
+@@class NNTPPermanentError()
+
+<p>Exception raised when an error code in the range 500-599 is received.
+For backwards compatibility, the exception {@code error_perm} is
+equivalent to this class.
+
+@@class NNTPProtocolError()
+
+<p>Exception raised when a reply is received from the server that does
+not begin with a digit in the range 1-5. For backwards compatibility,
+the exception {@code error_proto} is equivalent to this class.
+
+@@class NNTPDataError()
+
+<p>Exception raised when there is some error in the response data. For
+backwards compatibility, the exception {@code error_data} is equivalent
+to this class.
+
+@@text 
+
+<h2>NNTP Objects</h2>
+
+<p>NNTP instances have the following methods. The {@var response} that
+is returned as the first item in the return tuple of almost all methods
+is the server's response: a string beginning with a three-digit code. If
+the server's response indicates an error, the method raises one of the
+above exceptions.
+
+@@method NNTP.getwelcome()
+
+<p>Return the welcome message sent by the server in reply to the initial
+connection. (This message sometimes contains disclaimers or help
+information that may be relevant to the user.)
+
+@@method NNTP.set_debuglevel(level)
+
+<p>Set the instance's debugging level. This controls the amount of
+debugging output printed. The default, {@code 0}, produces no debugging
+output. A value of {@code 1} produces a moderate amount of debugging
+output, generally a single line per request or response. A value of
+{@code 2} or higher produces the maximum amount of debugging output,
+logging each line sent and received on the connection (including message
+text).
+
+@@method NNTP.newgroups(date, time, [file])
+
+<p>Send a "{@code NEWGROUPS}" command. The {@var date} argument should
+be a string of the form {@code '}{@var yy}{@var mm}{@var dd}' indicating
+the date, and {@var time} should be a string of the form {@code '}{@var
+hh}{@var mm}{@var ss}' indicating the time. Return a pair {@code (}{@var
+response}, {@var groups}) where {@var groups} is a list of group names
+that are new since the given date and time. If the {@var file} parameter
+is supplied, then the output of the "{@code NEWGROUPS}" command is
+stored in a file. If {@var file} is a string, then the method will open
+a file object with that name, write to it then close it. If {@var file}
+is a file object, then it will start calling {@link write} on it to
+store the lines of the command output. If {@var file} is supplied, then
+the returned {@var list} is an empty list.
+
+@@method NNTP.newnews(group, date, time, [file])
+
+<p>Send a "{@code NEWNEWS}" command. Here, {@var group} is a group name
+or {@code '*'}, and {@var date} and {@var time} have the same meaning as
+for {@link newgroups}. Return a pair {@code (}{@var response}, {@var
+articles}) where {@var articles} is a list of message ids. If the {@var
+file} parameter is supplied, then the output of the "{@code NEWNEWS}"
+command is stored in a file. If {@var file} is a string, then the method
+will open a file object with that name, write to it then close it. If
+{@var file} is a file object, then it will start calling {@link write}
+on it to store the lines of the command output. If {@var file} is
+supplied, then the returned {@var list} is an empty list.
+
+@@method NNTP.list([file])
+
+<p>Send a "{@code LIST}" command. Return a pair {@code (}{@var
+response}, {@var list}) where {@var list} is a list of tuples. Each
+tuple has the form {@code (}{@var group}, {@var last}, {@var first},
+{@var flag}), where {@var group} is a group name, {@var last} and {@var
+first} are the last and first article numbers (as strings), and {@var
+flag} is {@code 'y'} if posting is allowed, {@code 'n'} if not, and
+{@code 'm'} if the newsgroup is moderated. (Note the ordering: {@var
+last}, {@var first}.) If the {@var file} parameter is supplied, then the
+output of the "{@code LIST}" command is stored in a file. If {@var file}
+is a string, then the method will open a file object with that name,
+write to it then close it. If {@var file} is a file object, then it will
+start calling {@link write} on it to store the lines of the command
+output. If {@var file} is supplied, then the returned {@var list} is an
+empty list.
+
+@@method NNTP.descriptions(grouppattern)
+
+<p>Send a "{@code LIST NEWSGROUPS}" command, where {@var grouppattern}
+is a wildmat string as specified in RFC2980 (it's essentially the same
+as DOS or UNIX shell wildcard strings). Return a pair {@code (}{@var
+response}, {@var list}), where {@var list} is a list of tuples
+containing {@code (}{@var name}, {@var title}).
+<blockquote>
+@since New in version 2.4. <br />
+</blockquote>
+
+@@method NNTP.description(group)
+
+<p>Get a description for a single group {@var group}. If more than one
+group matches (if 'group' is a real wildmat string), return the first
+match. If no group matches, return an empty string.
+
+<p>This elides the response code from the server. If the response code
+is needed, use {@link descriptions}.
+<blockquote>
+@since New in version 2.4. <br />
+</blockquote>
+
+@@method NNTP.group(name)
+
+<p>Send a "{@code GROUP}" command, where {@var name} is the group name.
+Return a tuple {@code (}{@var response}, {@var count}, {@var first},
+{@var last}, {@var name}) where {@var count} is the (estimated) number
+of articles in the group, {@var first} is the first article number in
+the group, {@var last} is the last article number in the group, and
+{@var name} is the group name. The numbers are returned as strings.
+
+@@method NNTP.help([file])
+
+<p>Send a "{@code HELP}" command. Return a pair {@code (}{@var
+response}, {@var list}) where {@var list} is a list of help strings. If
+the {@var file} parameter is supplied, then the output of the "{@code
+HELP}" command is stored in a file. If {@var file} is a string, then the
+method will open a file object with that name, write to it then close
+it. If {@var file} is a file object, then it will start calling {@link
+write} on it to store the lines of the command output. If {@var file} is
+supplied, then the returned {@var list} is an empty list.
+
+@@method NNTP.stat(id)
+
+<p>Send a "{@code STAT}" command, where {@var id} is the message id
+(enclosed in "{@code &lt}" and "{@code >}") or an article number (as a
+string). Return a triple {@code (}{@var response}, {@var number}, {@var
+id}) where {@var number} is the article number (as a string) and {@var
+id} is the message id (enclosed in "{@code &lt}" and "{@code >}").
+
+@@method NNTP.next()
+
+<p>Send a "{@code NEXT}" command. Return as for {@link stat}.
+
+@@method NNTP.last()
+
+<p>Send a "{@code LAST}" command. Return as for {@link stat}.
+
+@@method NNTP.head(id)
+
+<p>Send a "{@code HEAD}" command, where {@var id} has the same meaning
+as for {@link stat}. Return a tuple {@code (}{@var response}, {@var
+number}, {@var id}, {@var list}) where the first three are the same as
+for {@link stat}, and {@var list} is a list of the article's headers (an
+uninterpreted list of lines, without trailing newlines).
+
+@@method NNTP.body(id,[file])
+
+<p>Send a "{@code BODY}" command, where {@var id} has the same meaning
+as for {@link stat}. If the {@var file} parameter is supplied, then the
+body is stored in a file. If {@var file} is a string, then the method
+will open a file object with that name, write to it then close it. If
+{@var file} is a file object, then it will start calling {@link write}
+on it to store the lines of the body. Return as for {@link head}. If
+{@var file} is supplied, then the returned {@var list} is an empty list.
+
+@@method NNTP.article(id)
+
+<p>Send an "{@code ARTICLE}" command, where {@var id} has the same
+meaning as for {@link stat}. Return as for {@link head}.
+
+@@method NNTP.slave()
+
+<p>Send a "{@code SLAVE}" command. Return the server's {@var response}.
+
+@@method NNTP.xhdr(header, string, [file])
+
+<p>Send an "{@code XHDR}" command. This command is not defined in the
+RFC but is a common extension. The {@var header} argument is a header
+keyword, e.g. {@code 'subject'}. The {@var string} argument should have
+the form {@code '}{@var first}-{@var last}' where {@var first} and {@var
+last} are the first and last article numbers to search. Return a pair
+{@code (}{@var response}, {@var list}), where {@var list} is a list of
+pairs {@code (}{@var id}, {@var text}), where {@var id} is an article
+number (as a string) and {@var text} is the text of the requested header
+for that article. If the {@var file} parameter is supplied, then the
+output of the "{@code XHDR}" command is stored in a file. If {@var file}
+is a string, then the method will open a file object with that name,
+write to it then close it. If {@var file} is a file object, then it will
+start calling {@link write} on it to store the lines of the command
+output. If {@var file} is supplied, then the returned {@var list} is an
+empty list.
+
+@@method NNTP.post(file)
+
+<p>Post an article using the "{@code POST}" command. The {@var file}
+argument is an open file object which is read until EOF using its {@link
+readline} method. It should be a well-formed news article, including the
+required headers. The {@link post} method automatically escapes lines
+beginning with "{@code .}".
+
+@@method NNTP.ihave(id, file)
+
+<p>Send an "{@code IHAVE}" command. {@var id} is a message id (enclosed
+in "{@code &lt}" and "{@code >}"). If the response is not an error,
+treat {@var file} exactly as for the {@link post} method.
+
+@@method NNTP.date()
+
+<p>Return a triple {@code (}{@var response}, {@var date}, {@var time}),
+containing the current date and time in a form suitable for the {@link
+newnews} and {@link newgroups} methods. This is an optional NNTP
+extension, and may not be supported by all servers.
+
+@@method NNTP.xgtitle(name, [file])
+
+<p>Process an "{@code XGTITLE}" command, returning a pair {@code (}{@var
+response}, {@var list}), where {@var list} is a list of tuples
+containing {@code (}{@var name}, {@var title}). If the {@var file}
+parameter is supplied, then the output of the "{@code XGTITLE}" command
+is stored in a file. If {@var file} is a string, then the method will
+open a file object with that name, write to it then close it. If {@var
+file} is a file object, then it will start calling {@link write} on it
+to store the lines of the command output. If {@var file} is supplied,
+then the returned {@var list} is an empty list. This is an optional NNTP
+extension, and may not be supported by all servers.
+
+<p>RFC2980 says &#8220;It is suggested that this extension be
+deprecated&#8221;. Use {@link descriptions} or {@link description}
+instead.
+
+@@method NNTP.xover(start, end, [file])
+
+<p>Return a pair {@code (}{@var resp}, {@var list}). {@var list} is a
+list of tuples, one for each article in the range delimited by the {@var
+start} and {@var end} article numbers. Each tuple is of the form {@code
+(}{@var article number}, {@var subject}, {@var poster}, {@var date},
+{@var id}, {@var references}, {@var size}, {@var lines}). If the {@var
+file} parameter is supplied, then the output of the "{@code XOVER}"
+command is stored in a file. If {@var file} is a string, then the method
+will open a file object with that name, write to it then close it. If
+{@var file} is a file object, then it will start calling {@link write}
+on it to store the lines of the command output. If {@var file} is
+supplied, then the returned {@var list} is an empty list. This is an
+optional NNTP extension, and may not be supported by all servers.
+
+@@method NNTP.xpath(id)
+
+<p>Return a pair {@code (}{@var resp}, {@var path}), where {@var path}
+is the directory path to the article with message ID {@var id}. This is
+an optional NNTP extension, and may not be supported by all servers.
+
+@@method NNTP.quit()
+
+<p>Send a "{@code QUIT}" command and close the connection. Once this
+method has been called, no other methods of the NNTP object should be
+called.

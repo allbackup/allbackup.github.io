@@ -1,0 +1,69 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>Syntax:&nbsp;atoms</title><script type="text/javascript">effbot_page_id=1629;</script></head><body><div id="doc2" class="yui-t2"><div id="hd"><!-- header --></div><!-- hd --><div id="bd"><!-- body --><p class="note" style="text-align: center"><strong>
+
+We're back after a server migration that caused effbot.org to fall
+over a bit harder than expected.  Expect some glitches.
+
+</strong></p><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">Syntax:&nbsp;atoms</h1></div><!-- yui-g --><body><p>Atoms are the most basic elements of expressions.  The simplest atoms
+are <a href="identifiers.htm"><strong>identifiers</strong></a> or <a href="literals.htm"><strong>literals</strong></a>.  Subexpressions enclosed in reverse
+quotes or in parentheses, brackets or braces are also categorized
+syntactically as atoms.</p>
+
+<ul>
+<li>Identifiers (see below)</li>
+<li>Literals (see below)</li>
+<li><a href="parenthesized-forms.htm"><strong>parenthesized-forms</strong></a></li>
+<li><a href="list-displays.htm"><strong>list-displays</strong></a></li>
+<li><a href="generator-expressions.htm"><strong>generator-expressions</strong></a></li>
+<li><a href="dictionary-displays.htm"><strong>dictionary-displays</strong></a></li>
+<li><a href="string-conversions.htm"><strong>string-conversions</strong></a></li>
+</ul>
+
+<h3 id="identifiers-names">Identifiers (Names)</h3>
+
+<p>An identifier occurring as an atom is a name.  See
+<a href="naming-and-binding.htm"><strong>naming-and-binding</strong></a> for documentation of naming and binding.</p>
+
+<p>When the name is bound to an object, evaluation of the atom yields that
+object. When a name is not bound, an attempt to evaluate it raises a
+<a href="NameError.htm"><strong>NameError</strong></a> exception.</p>
+
+<p><strong>Private name mangling:</strong> When an identifier that textually occurs in
+a class definition begins with two or more underscore characters and
+does not end in two or more underscores, it is considered a <em>private
+name</em> of that class. Private names are transformed to a longer form
+before code is generated for them. The transformation inserts the
+class name in front of the name, with leading underscores removed, and
+a single underscore inserted in front of the class name. For example,
+the identifier <code>\_\_spam</code> occurring in a class named <code>Ham</code> will be
+transformed to <code>\_Ham\_\_spam</code>. This transformation is independent of
+the syntactical context in which the identifier is used. If the
+transformed name is extremely long (longer than 255 characters),
+implementation defined truncation may happen. If the class name
+consists only of underscores, no transformation is done.</p>
+
+<h3 id="literals">Literals</h3>
+
+<p>Python supports string literals and various numeric literals:</p>
+
+<ul>
+<li><a href="string-literals.htm"><strong>string-literals</strong></a></li>
+<li><a href="integer-literals.htm"><strong>integer-literals</strong></a></li>
+<li><a href="floating-point-literals.htm"><strong>floating-point-literals</strong></a></li>
+<li><a href="imaginary-literals.htm"><strong>imaginary-literals</strong></a></li>
+</ul>
+
+<p>literal ::= [ stringliteral][1] | [integer][2] | [ longinteger][3]
+<code>| [floatnumber][4] | [ imagnumber][5]</code></p>
+
+<p>Evaluation of a literal yields an object of the given type (string,
+integer, long integer, floating point number, complex number) with the
+given value. The value may be approximated in the case of floating
+point and imaginary (complex) literals. See <a href="literals.htm"><strong>literals</strong></a> for details.</p>
+
+<p>All literals correspond to immutable data types, and hence the
+object&#8217;s identity is less important than its value. Multiple
+evaluations of literals with the same value (either the same
+occurrence in the program text or a different occurrence) may obtain
+the same object or a different object with the same value.</p></body><div class="yui-g"></div><!-- yui-g --></div><!-- content --></div><!-- yui-b --></div><!-- yui-main --><div class="yui-b"><div id='menu'></div><!-- menu --></div><!-- yui-b --></div><!-- bd --><div id="ft"><!-- footer --></div><!-- ft --></div><!-- doc --><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

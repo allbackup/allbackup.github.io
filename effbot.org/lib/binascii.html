@@ -1,0 +1,174 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>binascii</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-binascii.html'>original</a> :::
+<a href='binascii.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>binascii&#8212;Convert between binary and ASCII</h1>
+
+<p>The <code>binascii</code> module
+contains a number of methods to convert between binary and various
+ASCII-encoded binary representations. Normally, you will not use
+these functions directly but use wrapper modules like <code>uu</code> or <code>binhex</code> instead, this module solely exists
+because bit-manipulation of large amounts of data is slow in
+Python.</p>
+
+<p>The <code>binascii</code> module
+defines the following functions:</p>
+</div>
+<dl><dt class="function" id="a2b_uu"><b>a2b_uu(string)</b> <tt class="nav"><a class="nav" href="binascii.a2b_uu" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Convert a single line of uuencoded data back to binary and
+return the binary data. Lines normally contain 45 (binary) bytes,
+except for the last line. Line data may be followed by
+whitespace.</p>
+</dd>
+<dt class="function" id="b2a_uu"><b>b2a_uu(data)</b> <tt class="nav"><a class="nav" href="binascii.b2a_uu" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Convert binary data to a line of ASCII characters, the return
+value is the converted line, including a newline char. The length
+of <var>data</var> should be at most 45.</p>
+</dd>
+<dt class="function" id="a2b_base64"><b>a2b_base64(string)</b> <tt class="nav"><a class="nav" href="binascii.a2b_base64" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Convert a block of base64 data back to binary and return the
+binary data. More than one line may be passed at a time.</p>
+</dd>
+<dt class="function" id="b2a_base64"><b>b2a_base64(data)</b> <tt class="nav"><a class="nav" href="binascii.b2a_base64" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Convert binary data to a line of ASCII characters in base64
+coding. The return value is the converted line, including a newline
+char. The length of <var>data</var> should be at most 57 to adhere
+to the base64 standard.</p>
+</dd>
+<dt class="function" id="a2b_qp"><b>a2b_qp(string[, header])</b> <tt class="nav"><a class="nav" href="binascii.a2b_qp" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Convert a block of quoted-printable data back to binary and
+return the binary data. More than one line may be passed at a time.
+If the optional argument <var>header</var> is present and true,
+underscores will be decoded as spaces.</p>
+</dd>
+<dt class="function" id="b2a_qp"><b>b2a_qp(data[, quotetabs, istext, header])</b> <tt class="nav"><a class="nav" href="binascii.b2a_qp" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Convert binary data to a line(s) of ASCII characters in
+quoted-printable encoding. The return value is the converted
+line(s). If the optional argument <var>quotetabs</var> is present
+and true, all tabs and spaces will be encoded. If the optional
+argument <var>istext</var> is present and true, newlines are not
+encoded but trailing whitespace will be encoded. If the optional
+argument <var>header</var> is present and true, spaces will be
+encoded as underscores per RFC1522. If the optional argument <var>
+header</var> is present and false, newline characters will be
+encoded as well; otherwise linefeed conversion might corrupt the
+binary data stream.</p>
+</dd>
+<dt class="function" id="a2b_hqx"><b>a2b_hqx(string)</b> <tt class="nav"><a class="nav" href="binascii.a2b_hqx" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Convert binhex4 formatted ASCII data to binary, without doing
+RLE-decompression. The string should contain a complete number of
+binary bytes, or (in case of the last portion of the binhex4 data)
+have the remaining bits zero.</p>
+</dd>
+<dt class="function" id="rledecode_hqx"><b>rledecode_hqx(data)</b> <tt class="nav"><a class="nav" href="binascii.rledecode_hqx" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Perform RLE-decompression on the data, as per the binhex4
+standard. The algorithm uses <code>0x90</code> after a byte as a
+repeat indicator, followed by a count. A count of <code>0</code>
+specifies a byte value of <code>0x90</code>. The routine returns
+the decompressed data, unless data input data ends in an orphaned
+repeat indicator, in which case the <a class="link" href="#Incomplete"><code>Incomplete</code></a> exception is raised.</p>
+</dd>
+<dt class="function" id="rlecode_hqx"><b>rlecode_hqx(data)</b> <tt class="nav"><a class="nav" href="binascii.rlecode_hqx" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Perform binhex4 style RLE-compression on <var>data</var> and
+return the result.</p>
+</dd>
+<dt class="function" id="b2a_hqx"><b>b2a_hqx(data)</b> <tt class="nav"><a class="nav" href="binascii.b2a_hqx" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Perform hexbin4 binary-to-ASCII translation and return the
+resulting string. The argument should already be RLE-coded, and
+have a length divisible by 3 (except possibly the last
+fragment).</p>
+</dd>
+<dt class="function" id="crc_hqx"><b>crc_hqx(data, crc)</b> <tt class="nav"><a class="nav" href="binascii.crc_hqx" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Compute the binhex4 crc value of <var>data</var>, starting with
+an initial <var>crc</var> and returning the result.</p>
+</dd>
+<dt class="function" id="crc32"><b>crc32(data[, crc])</b> <tt class="nav"><a class="nav" href="binascii.crc32" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Compute CRC-32, the 32-bit checksum of data, starting with an
+initial crc. This is consistent with the ZIP file checksum. Since
+the algorithm is designed for use as a checksum algorithm, it is
+not suitable for use as a general hash algorithm. Use as
+follows:</p>
+
+<pre>
+    print binascii.crc32("hello world")
+    # Or, in two pieces:
+    crc = binascii.crc32("hello")
+    crc = binascii.crc32(" world", crc)
+    print crc
+</pre>
+</dd>
+<dt class="function" id="hexlify"><b>hexlify(data)</b> <tt class="nav"><a class="nav" href="binascii.hexlify" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return the hexadecimal representation of the binary <var>
+data</var>. Every byte of <var>data</var> is converted into the
+corresponding 2-digit hex representation. The resulting string is
+therefore twice as long as the length of <var>data</var>.</p>
+</dd>
+<dt class="function" id="unhexlify"><b>unhexlify(hexstr)</b> <tt class="nav"><a class="nav" href="binascii.unhexlify" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Return the binary data represented by the hexadecimal string
+<var>hexstr</var>. This function is the inverse of <code>b2a_hex</code>. <var>hexstr</var> must contain an
+even number of hexadecimal digits (which can be upper or lower
+case), otherwise a <code>exceptions.TypeError</code> is
+raised.</p>
+</dd>
+<dt class="exception" id="Error"><b>exception Error</b> <tt class="nav"><a class="nav" href="binascii.Error" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="exception">
+<p>Exception raised on errors. These are usually programming
+errors.</p>
+</dd>
+<dt class="exception" id="Incomplete"><b>exception Incomplete</b> <tt class="nav"><a class="nav" href="binascii.Incomplete" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="exception">
+<p>Exception raised on incomplete data. These are usually not
+programming errors, but may be handled by reading a little more
+data and trying again.</p>
+</dd>
+</dl><div class="text"><span class="mark">@see</span> <code>Module base64</code> Support for base64 encoding
+used in MIME email messages. <span class="mark">@see</span> <code>Module binhex</code> Support for the
+binhex format used on the Macintosh. <span class="mark">@see</span>
+<code>Module uu</code> Support for UU
+encoding used on Unix. <span class="mark">@see</span> <code>Module quopri</code> Support for
+quoted-printable encoding used in MIME email messages. .</div>
+</div></body></html>

@@ -1,0 +1,104 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>The xml.parsers.expat&nbsp;module</title></head><body data-page-id="723"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">The xml.parsers.expat&nbsp;module</h1></div><div class="yui-ge"><div class="yui-u first"><p>(Optional). This is an interface to James Clark&#8217;s Expat XML
+parser. This is a full-featured and fast XML parser, and an excellent
+choice for production use.</p><p>The parser uses registered handlers to handle different parts of
+the XML document.</p><div class="example">
+<b style="example">Example: Using the xml.parsers.expat module</b>
+<pre>
+# File: <a href="xml-parsers-expat/xml-parsers-expat-example-1.py">xml-parsers-expat-example-1.py</a>
+
+from xml.parsers import expat
+
+class Parser:
+
+    def __init__(self):
+        self._parser = expat.ParserCreate()
+        self._parser.StartElementHandler = self.start
+        self._parser.EndElementHandler = self.end
+        self._parser.CharacterDataHandler = self.data
+
+    def feed(self, data):
+        self._parser.Parse(data, 0)
+
+    def close(self):
+        self._parser.Parse("", 1) # end of data
+        del self._parser # get rid of circular references
+
+    def start(self, tag, attrs):
+        print "START", repr(tag), attrs
+
+    def end(self, tag):
+        print "END", repr(tag)
+
+    def data(self, data):
+        print "DATA", repr(data)
+
+p = Parser()
+p.feed("&lt;tag&gt;data&lt;/tag&gt;")
+p.close()
+
+</pre><pre class="computeroutput" moreinfo="NONE">
+$ python xml-parsers-expat-example-1.py
+START u'tag' {}
+DATA u'data'
+END u'tag'
+</pre></div><p>Note that the parser returns Unicode strings, even if you pass
+it ordinary text. By default, the parser interprets the source text
+as UTF-8 (as per the XML standard). To use other encodings, make
+sure the XML file contains an <i>encoding</i> directive.</p><div class="example">
+<b style="example">Example: Using the xml.parsers.expat module to read ISO Latin-1 text</b>
+<pre>
+# File: <a href="xml-parsers-expat/xml-parsers-expat-example-2.py">xml-parsers-expat-example-2.py</a>
+
+from xml.parsers import expat
+
+class Parser:
+
+    def __init__(self):
+        self._parser = expat.ParserCreate()
+        self._parser.StartElementHandler = self.start
+        self._parser.EndElementHandler = self.end
+        self._parser.CharacterDataHandler = self.data
+
+    def feed(self, data):
+        self._parser.Parse(data, 0)
+
+    def close(self):
+        self._parser.Parse("", 1) # end of data
+        del self._parser # get rid of circular references
+
+    def start(self, tag, attrs):
+        print "START", repr(tag), attrs
+
+    def end(self, tag):
+        print "END", repr(tag)
+
+    def data(self, data):
+        print "DATA", repr(data)
+
+p = Parser()
+p.feed("""\
+&lt;?xml version='1.0' encoding='iso-8859-1'?&gt;
+&lt;author&gt;
+&lt;name&gt;fredrik lundh&lt;/name&gt;
+&lt;city&gt;link&#246;ping&lt;/city&gt;
+&lt;/author&gt;
+"""
+)
+p.close()
+
+</pre><pre class="computeroutput" moreinfo="NONE">
+$ python xml-parsers-expat-example-2.py
+START u'author' {}
+DATA u'\012'
+START u'name' {}
+DATA u'fredrik lundh'
+END u'name'
+DATA u'\012'
+START u'city' {}
+DATA u'link\366ping'
+END u'city'
+DATA u'\012'
+END u'author'
+</pre></div></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to librarybook index page.">::: librarybook :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

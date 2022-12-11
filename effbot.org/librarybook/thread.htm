@@ -1,0 +1,44 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>The thread&nbsp;module</title></head><body data-page-id="686"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">The thread&nbsp;module</h1></div><div class="yui-ge"><div class="yui-u first"><p>(Optional). This module provides a low-level interface for
+threading. It&#8217;s only available if your interpreter is built with
+thread support. New code should use the higher-level interface in
+the <b><a href="threading.htm">threading</a></b>
+module instead.</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><div class="example wide">
+<b style="example">Example: Using the thread
+module</b>
+<pre class="wide">
+# File: <a href="thread/thread-example-1.py">thread-example-1.py</a>
+
+import thread
+import time, random
+
+def worker():
+    for i in range(50):
+        # pretend we're doing something that takes 10-100 ms
+        time.sleep(random.randint(10, 100) / 1000.0)
+        print thread.get_ident(), "-- task", i, "finished"
+
+#
+# try it out!
+
+for i in range(2):
+    thread.start_new_thread(worker, ())
+
+time.sleep(1)
+
+print "goodbye!"
+
+</pre><pre class="computeroutput wide" moreinfo="NONE">
+311 -- task 0 finished
+265 -- task 0 finished
+265 -- task 1 finished
+311 -- task 1 finished
+...
+265 -- task 17 finished
+311 -- task 13 finished
+265 -- task 18 finished
+goodbye!
+</pre></div></div><div class="yui-ge"><div class="yui-u first"><p>Note that when the main program exits, all threads are killed.
+The <b><a href="threading.htm">threading</a></b>
+module doesn&#8217;t have that problem.</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to librarybook index page.">::: librarybook :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

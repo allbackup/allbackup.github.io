@@ -1,0 +1,198 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>chunk</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-chunk.html'>original</a> :::
+<a href='chunk.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>chunk&#8212;Read IFF chunked data</h1>
+
+<p>This module provides an interface for reading files that use EA
+IFF 85 chunks.<code>footnote:67687</code> This format is used
+in at least the Audio Interchange File Format (AIFF/AIFF-C) and the
+Real Media File Format (RMFF). The WAVE audio file format is
+closely related and can also be read using this module.</p>
+
+<p>A chunk has the following structure:</p>
+
+<table border="1">
+<tr>
+<th>
+<p>Offset</p>
+</th>
+<th>
+<p>Length</p>
+</th>
+<th>
+<p>Contents</p>
+</th>
+</tr>
+
+<tr>
+<td>
+<p>0</p>
+</td>
+<td>
+<p>4</p>
+</td>
+<td>
+<p>Chunk ID</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>4</p>
+</td>
+<td>
+<p>4</p>
+</td>
+<td>
+<p>Size of chunk in big-endian byte order, not including the
+header</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>8</p>
+</td>
+<td>
+<p><var>n</var></p>
+</td>
+<td>
+<p>Data bytes, where <var>n</var> is the size given in the
+preceding field</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>8 + <var>n</var></p>
+</td>
+<td>
+<p>0 or 1</p>
+</td>
+<td>
+<p>Pad byte needed if <var>n</var> is odd and chunk alignment is
+used</p>
+</td>
+</tr>
+</table>
+
+<br />
+<br />
+ 
+
+<p>The ID is a 4-byte string which identifies the type of
+chunk.</p>
+
+<p>The size field (a 32-bit value, encoded using big-endian byte
+order) gives the size of the chunk data, not including the 8-byte
+header.</p>
+
+<p>Usually an IFF-type file consists of one or more chunks. The
+proposed usage of the <a class="link" href="#Chunk"><code>Chunk</code></a>
+class defined here is to instantiate an instance at the start of
+each chunk and read from the instance until it reaches the end,
+after which a new instance can be instantiated. At the end of the
+file, creating a new instance will fail with a <code>exceptions.EOFError</code>
+exception.</p>
+</div>
+<dl><dt class="class" id="Chunk"><b>class Chunk(file[, align, bigendian, inclheader])</b> <tt class="nav"><a class="nav" href="chunk.Chunk" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>Class which represents a chunk. The <var>file</var> argument is
+expected to be a file-like object. An instance of this class is
+specifically allowed. The only method that is needed is <code>read</code>. If the methods <code>seek</code> and <code>tell</code> are present and don't raise an exception,
+they are also used. If these methods are present and raise an
+exception, they are expected to not have altered the object. If the
+optional argument <var>align</var> is true, chunks are assumed to
+be aligned on 2-byte boundaries. If <var>align</var> is false, no
+alignment is assumed. The default value is true. If the optional
+argument <var>bigendian</var> is false, the chunk size is assumed
+to be in little-endian order. This is needed for WAVE audio files.
+The default value is true. If the optional argument <var>
+inclheader</var> is true, the size given in the chunk header
+includes the size of the header. The default value is false.</p>
+</dd>
+</dl><div class="text">
+<p>A <a class="link" href="#Chunk"><code>Chunk</code></a> object supports
+the following methods:</p>
+</div>
+<dl><dt class="method" id="Chunk.getname"><b>getname()</b> <tt class="nav"><a class="nav" href="chunk.Chunk.getname" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Returns the name (ID) of the chunk. This is the first 4 bytes of
+the chunk.</p>
+</dd>
+<dt class="method" id="Chunk.getsize"><b>getsize()</b> <tt class="nav"><a class="nav" href="chunk.Chunk.getsize" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Returns the size of the chunk.</p>
+</dd>
+<dt class="method" id="Chunk.close"><b>close()</b> <tt class="nav"><a class="nav" href="chunk.Chunk.close" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Close and skip to the end of the chunk. This does not close the
+underlying file.</p>
+</dd>
+</dl><div class="text">
+<p>The remaining methods will raise <code>exceptions.IOError</code> if called
+after the <code>close</code> method has
+been called.</p>
+</div>
+<dl><dt class="method" id="Chunk.isatty"><b>isatty()</b> <tt class="nav"><a class="nav" href="chunk.Chunk.isatty" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Returns <code>False</code>.</p>
+</dd>
+<dt class="method" id="Chunk.seek"><b>seek(pos[, whence])</b> <tt class="nav"><a class="nav" href="chunk.Chunk.seek" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Set the chunk's current position. The <var>whence</var> argument
+is optional and defaults to <code>0</code> (absolute file
+positioning); other values are <code>1</code> (seek relative to the
+current position) and <code>2</code> (seek relative to the file's
+end). There is no return value. If the underlying file does not
+allow seek, only forward seeks are allowed.</p>
+</dd>
+<dt class="method" id="Chunk.tell"><b>tell()</b> <tt class="nav"><a class="nav" href="chunk.Chunk.tell" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return the current position into the chunk.</p>
+</dd>
+<dt class="method" id="Chunk.read"><b>read([size])</b> <tt class="nav"><a class="nav" href="chunk.Chunk.read" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Read at most <var>size</var> bytes from the chunk (less if the
+read hits the end of the chunk before obtaining <var>size</var>
+bytes). If the <var>size</var> argument is negative or omitted,
+read all data until the end of the chunk. The bytes are returned as
+a string object. An empty string is returned when the end of the
+chunk is encountered immediately.</p>
+</dd>
+<dt class="method" id="Chunk.skip"><b>skip()</b> <tt class="nav"><a class="nav" href="chunk.Chunk.skip" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Skip to the end of the chunk. All further calls to <code>read</code> for the chunk will return
+<code>&#8221;</code>. If you are not interested in the contents of
+the chunk, this method should be called so that the file points to
+the start of the next chunk.</p>
+</dd>
+</dl><div class="footnote">
+<p>&#8220;EA IFF 85&#8221; Standard for Interchange Format Files,
+Jerry Morrison, Electronic Arts, January 1985.</p>
+</div>
+</div></body></html>

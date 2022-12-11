@@ -1,0 +1,301 @@
+
+@@module resource
+
+<h1>resource&#8212;Resource usage information</h1>
+
+<p>Availability: Unix.
+
+<p>This module provides basic mechanisms for measuring and controlling
+system resources utilized by a program.
+
+<p>Symbolic constants are used to specify particular system resources
+and to request usage information about either the current process or its
+children.
+
+<p>A single exception is defined for errors:
+
+@@exception error
+
+<p>The functions described below may raise this error if the underlying
+system call failures unexpectedly.
+
+@@text 
+
+<h2>Resource Limits</h2>
+
+<p>Resources usage can be limited using the {@link setrlimit} function
+described below. Each resource is controlled by a pair of limits: a soft
+limit and a hard limit. The soft limit is the current limit, and may be
+lowered or raised by a process over time. The soft limit can never
+exceed the hard limit. The hard limit can be lowered to any value
+greater than the soft limit, but not raised. (Only processes with the
+effective UID of the super-user can raise a hard limit.)
+
+<p>The specific resources that can be limited are system dependent. They
+are described in the getrlimit(2) man page. The resources listed below
+are supported when the underlying operating system supports them;
+resources which cannot be checked or controlled by the operating system
+are not defined in this module for those platforms.
+
+@@function getrlimit(resource)
+
+<p>Returns a tuple {@code (}{@var soft}, {@var hard}) with the current
+soft and hard limits of {@var resource}. Raises {@link
+exceptions.ValueError} if an invalid resource is specified, or {@link
+error} if the underlying system call fails unexpectedly.
+
+@@function setrlimit(resource, limits)
+
+<p>Sets new limits of consumption of {@var resource}. The {@var limits}
+argument must be a tuple {@code (}{@var soft}, {@var hard}) of two
+integers describing the new limits. A value of {@code -1} can be used to
+specify the maximum possible upper limit.
+
+<p>Raises {@link exceptions.ValueError} if an invalid resource is
+specified, if the new soft limit exceeds the hard limit, or if a process
+tries to raise its hard limit (unless the process has an effective UID
+of super-user). Can also raise {@link error} if the underlying system
+call fails.
+
+@@text 
+
+<p>These symbols define resources whose consumption can be controlled
+using the {@link setrlimit} and {@link getrlimit} functions described
+below. The values of these symbols are exactly the constants used by C
+programs.
+
+<p>The Unix man page for getrlimit(2) lists the available resources.
+Note that not all systems use the same symbol or same value to denote
+the same resource. This module does not attempt to mask platform
+differences -- symbols not defined for a platform will not be available
+from this module on that platform.
+
+@@variable RLIMIT_CORE
+
+<p>The maximum size (in bytes) of a core file that the current process
+can create. This may result in the creation of a partial core file if a
+larger core would be required to contain the entire process image.
+
+@@variable RLIMIT_CPU
+
+<p>The maximum amount of processor time (in seconds) that a process can
+use. If this limit is exceeded, a {@code SIGXCPU} signal is sent to the
+process. (See the {@link signal} module documentation for information
+about how to catch this signal and do something useful, e.g. flush open
+files to disk.)
+
+@@variable RLIMIT_FSIZE
+
+<p>The maximum size of a file which the process may create. This only
+affects the stack of the main thread in a multi-threaded process.
+
+@@variable RLIMIT_DATA
+
+<p>The maximum size (in bytes) of the process's heap.
+
+@@variable RLIMIT_STACK
+
+<p>The maximum size (in bytes) of the call stack for the current
+process.
+
+@@variable RLIMIT_RSS
+
+<p>The maximum resident set size that should be made available to the
+process.
+
+@@variable RLIMIT_NPROC
+
+<p>The maximum number of processes the current process may create.
+
+@@variable RLIMIT_NOFILE
+
+<p>The maximum number of open file descriptors for the current process.
+
+@@variable RLIMIT_OFILE
+
+<p>The BSD name for {@code RLIMIT_NOFILE}.
+
+@@variable RLIMIT_MEMLOCK
+
+<p>The maximum address space which may be locked in memory.
+
+@@variable RLIMIT_VMEM
+
+<p>The largest area of mapped memory which the process may occupy.
+
+@@variable RLIMIT_AS
+
+<p>The maximum area (in bytes) of address space which may be taken by
+the process.
+
+@@text 
+
+<h2>Resource Usage</h2>
+
+<p>These functions are used to retrieve resource usage information:
+
+@@function getrusage(who)
+
+<p>This function returns an object that describes the resources consumed
+by either the current process or its children, as specified by the {@var
+who} parameter. The {@var who} parameter should be specified using one
+of the {@code RUSAGE_*} constants described below.
+
+<p>The fields of the return value each describe how a particular system
+resource has been used, e.g. amount of time spent running is user mode
+or number of times the process was swapped out of main memory. Some
+values are dependent on the clock tick internal, e.g. the amount of
+memory the process is using.
+
+<p>For backward compatibility, the return value is also accessible as a
+tuple of 16 elements.
+
+<p>The fields {@link ru_utime} and {@link ru_stime} of the return value
+are floating point values representing the amount of time spent
+executing in user mode and the amount of time spent executing in system
+mode, respectively. The remaining values are integers. Consult the
+getrusage(2) man page for detailed information about these values. A
+brief summary is presented here:
+
+<p><table border=1>
+<tr> <th>
+<p>Index
+<th>
+<p>Field
+<th>
+<p>Resource
+<tr> <td>
+<p>{@code 0}
+<td>
+<p>{@link ru_utime}
+<td>
+<p>time in user mode (float)
+<tr> <td>
+<p>{@code 1}
+<td>
+<p>{@link ru_stime}
+<td>
+<p>time in system mode (float)
+<tr> <td>
+<p>{@code 2}
+<td>
+<p>{@link ru_maxrss}
+<td>
+<p>maximum resident set size
+<tr> <td>
+<p>{@code 3}
+<td>
+<p>{@link ru_ixrss}
+<td>
+<p>shared memory size
+<tr> <td>
+<p>{@code 4}
+<td>
+<p>{@link ru_idrss}
+<td>
+<p>unshared memory size
+<tr> <td>
+<p>{@code 5}
+<td>
+<p>{@link ru_isrss}
+<td>
+<p>unshared stack size
+<tr> <td>
+<p>{@code 6}
+<td>
+<p>{@link ru_minflt}
+<td>
+<p>page faults not requiring I/O
+<tr> <td>
+<p>{@code 7}
+<td>
+<p>{@link ru_majflt}
+<td>
+<p>page faults requiring I/O
+<tr> <td>
+<p>{@code 8}
+<td>
+<p>{@link ru_nswap}
+<td>
+<p>number of swap outs
+<tr> <td>
+<p>{@code 9}
+<td>
+<p>{@link ru_inblock}
+<td>
+<p>block input operations
+<tr> <td>
+<p>{@code 10}
+<td>
+<p>{@link ru_oublock}
+<td>
+<p>block output operations
+<tr> <td>
+<p>{@code 11}
+<td>
+<p>{@link ru_msgsnd}
+<td>
+<p>messages sent
+<tr> <td>
+<p>{@code 12}
+<td>
+<p>{@link ru_msgrcv}
+<td>
+<p>messages received
+<tr> <td>
+<p>{@code 13}
+<td>
+<p>{@link ru_nsignals}
+<td>
+<p>signals received
+<tr> <td>
+<p>{@code 14}
+<td>
+<p>{@link ru_nvcsw}
+<td>
+<p>voluntary context switches
+<tr> <td>
+<p>{@code 15}
+<td>
+<p>{@link ru_nivcsw}
+<td>
+<p>involuntary context switches
+</table></p>
+
+<p>This function will raise a {@link exceptions.ValueError} if an
+invalid {@var who} parameter is specified. It may also raise {@link
+error} exception in unusual circumstances.
+<blockquote>
+@since Changed in version 2.3: Added access
+to values as attributes of the returned object. <br />
+</blockquote>
+
+@@function getpagesize()
+
+<p>Returns the number of bytes in a system page. (This need not be the
+same as the hardware page size.) This function is useful for determining
+the number of bytes of memory a process is using. The third element of
+the tuple returned by {@link getrusage} describes memory usage in pages;
+multiplying by page size produces number of bytes.
+
+@@text 
+
+<p>The following {@code RUSAGE_*} symbols are passed to the {@link
+getrusage} function to specify which processes information should be
+provided for.
+
+@@variable RUSAGE_SELF
+
+<p>{@code RUSAGE_SELF} should be used to request information pertaining
+only to the process itself.
+
+@@variable RUSAGE_CHILDREN
+
+<p>Pass to {@link getrusage} to request resource information for child
+processes of the calling process.
+
+@@variable RUSAGE_BOTH
+
+<p>Pass to {@link getrusage} to request resources consumed by both the
+current process and child processes. May not be available on all
+systems.

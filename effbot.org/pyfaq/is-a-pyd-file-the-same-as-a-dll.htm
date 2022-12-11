@@ -1,0 +1,16 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>Is a PYD file the same as a&nbsp;DLL?</title></head><body data-page-id="856"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><p class="note" style="text-align: center"><strong>
+This is an old copy of the Python FAQ.  The information here may be
+outdated.
+</strong></p><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">Is a PYD file the same as a&nbsp;DLL?</h1></div><div class="yui-ge"><div class="yui-u first"><p>Yes, .pyd files are dll&#8217;s, but there are a few differences.  If you
+have a DLL named spam.pyd, then it must have a function initspam().
+You can then write Python &#8220;import spam&#8221;, and Python will search for
+spam.pyd (as well as spam.py, spam.pyc) and if it finds it, will
+attempt to call initspam() to initialize it.</p><p>Note that the search path for spam.pyd is PYTHONPATH, not the same as
+the path that Windows uses to search for spam.dll.  Also, spam.pyd
+need not be present to run your program, whereas if you linked your
+program with a dll, the dll is required.  Of course, spam.pyd is
+required if you want to say &#8220;import spam&#8221;.  In a DLL, linkage is
+declared in the source code with __declspec(dllexport).  In a .pyd,
+linkage is defined in a list of available functions.</p><p>CATEGORY: windows</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to pyfaq index page.">::: pyfaq :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

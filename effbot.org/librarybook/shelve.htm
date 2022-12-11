@@ -1,0 +1,43 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>The shelve&nbsp;module</title></head><body data-page-id="650"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">The shelve&nbsp;module</h1></div><div class="yui-ge"><div class="yui-u first"><p>This module uses the database handlers to implement persistent
+dictionaries. A shelve object uses string keys, but the value can
+be of any data type, as long as it can be handled by the
+<b><a href="pickle.htm">pickle</a></b>
+module.</p><div class="example">
+<b style="example">Example: Using the shelve
+module</b>
+<pre>
+# File: <a href="shelve/shelve-example-1.py">shelve-example-1.py</a>
+
+import shelve
+
+db = shelve.open("database", "c")
+db["one"] = 1
+db["two"] = 2
+db["three"] = 3
+db.close()
+
+db = shelve.open("database", "r")
+for key in db.keys():
+    print repr(key), repr(db[key])
+
+</pre><pre class="computeroutput" moreinfo="NONE">
+'one' 1
+'three' 3
+'two' 2
+</pre></div><p>The following example shows how to use the <b>shelve</b>
+module with a given database driver.</p><div class="example">
+<b style="example">Example: Using the shelve
+module with a given database</b>
+<pre>
+# File: <a href="shelve/shelve-example-3.py">shelve-example-3.py</a>
+
+import shelve
+import gdbm
+
+def gdbm_shelve(filename, flag="c"):
+    return shelve.Shelf(gdbm.open(filename, flag))
+
+db = gdbm_shelve("dbfile")
+</pre></div></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to librarybook index page.">::: librarybook :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

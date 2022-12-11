@@ -1,0 +1,26 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>Invoking&nbsp;Descriptors</title> <script type="text/javascript">effbot_page_id=1346;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> <!--
+<p style='color: #8f8f8f; background: #fff5bf; padding: 5px 10px;'> <b>2008-07-15:</b> Selected articles
+
+now have experimental "comment" links in the left column and at the bottom.
+You're welcome to use them for commenting and voting on articles.
+For a bit more on this, see <a
+href="http://effbot.slinkset.com/links/Welcome_to_discuss_effbot_org">this
+page</a>. /F
+</p>
+--> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <h1 class="maintitle">Invoking&nbsp;Descriptors</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p>In general, a descriptor is an object attribute with <q>binding
+behavior</q>, one whose attribute access has been overridden by
+methods in the descriptor protocol: <a href="method-get">__get__</a>,
+<a href="method-set">__set__</a>, and <a href="method-delete">__delete__</a>. If any
+of those methods are defined for an object, it is said to be a
+<em>descriptor</em>.</p><p>The default behavior for attribute access is to get, set, or delete
+the attribute from an object&#8217;s dictionary.  For instance, <code>a.x</code> has a
+lookup chain starting with <code>a.__dict__['x']</code>, then
+<code>type(a).__dict__['x']</code>, and continuing through the base classes of
+<code>type(a)</code> excluding metaclasses.</p><p>However, if the looked-up value is an object defining one of the
+descriptor methods, then Python may override the default behavior and
+invoke the descriptor method instead.  Where this occurs in the
+precedence chain depends on which descriptor methods were defined and
+how they were called.  Note that descriptors are only invoked for new
+style objects or classes (ones t

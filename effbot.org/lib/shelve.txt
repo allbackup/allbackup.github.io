@@ -1,0 +1,194 @@
+
+@@module shelve
+
+<h1>shelve&#8212;Python object persistence</h1>
+
+<p>A &#8220;shelf&#8221; is a persistent, dictionary-like object. The
+difference with &#8220;dbm&#8221; databases is that the values (not the
+keys!) in a shelf can be essentially arbitrary Python objects --
+anything that the {@link pickle} module can handle. This includes most
+class instances, recursive data types, and objects containing lots of
+shared sub-objects. The keys are ordinary strings.
+
+@@function open(filename[,flag='c'[,protocol=None[,writeback=False[,binary=None]]]])
+
+<p>Open a persistent dictionary. The filename specified is the base
+filename for the underlying database. As a side-effect, an extension may
+be added to the filename and more than one file may be created. By
+default, the underlying database file is opened for reading and writing.
+The optional {@var flag} parameter has the same interpretation as the
+{@var flag} parameter of {@link anydbm.open}.
+
+<p>By default, version 0 pickles are used to serialize values. The
+version of the pickle protocol can be specified with the {@var protocol}
+parameter.
+
+<p>By default, mutations to persistent-dictionary mutable entries are
+not automatically written back. If the optional {@var writeback}
+parameter is set to {@link True}, all entries accessed are cached in
+memory, and written back at close time; this can make it handier to
+mutate mutable entries in the persistent dictionary, but, if many
+entries are accessed, it can consume vast amounts of memory for the
+cache, and it can make the close operation very slow since all accessed
+entries are written back (there is no way to determine which accessed
+entries are mutable, nor which ones were actually mutated).
+<blockquote>
+@since Changed in
+version 2.3: The protocol parameter was added. The binary parameter is deprecated and provided for backwards
+compatibility only. <br />
+</blockquote>
+
+@@text 
+
+<p>Shelve objects support all methods supported by dictionaries. This
+eases the transition from dictionary based scripts to those requiring
+persistent storage.
+
+<p>One additional method is supported:
+
+@@method sync()
+
+<p>Write back all entries in the cache if the shelf was opened with
+{@var writeback} set to {@link True}. Also empty the cache and
+synchronize the persistent dictionary on disk, if feasible. This is
+called automatically when the shelf is closed with {@link close}.
+
+@@text 
+
+<h2>Restrictions</h2>
+<ul>
+<li>
+<p>The choice of which database package will be used (such as {@link
+dbm}, {@link gdbm} or {@link bsddb}) depends on which interface is
+available. Therefore it is not safe to open the database directly using
+{@link dbm}. The database is also (unfortunately) subject to the
+limitations of {@link dbm}, if it is used -- this means that (the
+pickled representation of) the objects stored in the database should be
+fairly small, and in rare cases key collisions may cause the database to
+refuse updates.
+<li>
+<p>Depending on the implementation, closing a persistent dictionary may
+or may not be necessary to flush changes to disk. The {@link __del__}
+method of the {@link Shelf} class calls the {@link close} method, so the
+programmer generally need not do this explicitly.
+<li>
+<p>The {@link shelve} module does not support {@em concurrent}
+read/write access to shelved objects. (Multiple simultaneous read
+accesses are safe.) When a program has a shelf open for writing, no
+other program should have it open for reading or writing. Unix file
+locking can be used to solve this, but this differs across Unix versions
+and requires knowledge about the database implementation used.
+</ul>
+
+@@class Shelf(dict[, protocol=None[, writeback=False[, binary=None]]])
+
+<p>A subclass of {@link UserDict.DictMixin} which stores pickled values
+in the {@var dict} object.
+
+<p>By default, version 0 pickles are used to serialize values. The
+version of the pickle protocol can be specified with the {@var protocol}
+parameter. See the {@link pickle} documentation for a discussion of the
+pickle protocols.
+
+<p>If the {@var writeback} parameter is {@link True}, the object will
+hold a cache of all entries accessed and write them back to the {@var
+dict} at sync and close times. This allows natural operations on mutable
+entries, but can consume much more memory and make sync and close take a
+long time.
+<blockquote>
+@since Changed in version 2.3: The protocol
+parameter was added. The binary parameter is deprecated
+and provided for backwards compatibility only. <br />
+</blockquote>
+
+@@class BsdDbShelf(dict[, protocol=None[, writeback=False[, binary=None]]])
+
+<p>A subclass of {@link Shelf} which exposes {@link first}, {@link
+next}, {@link previous}, {@link last} and {@link set_location} which are
+available in the {@link bsddb} module but not in other database modules.
+The {@var dict} object passed to the constructor must support those
+methods. This is generally accomplished by calling one of {@link
+bsddb.hashopen}, {@link bsddb.btopen} or {@link bsddb.rnopen}. The
+optional {@var protocol}, {@var writeback}, and {@var binary} parameters
+have the same interpretation as for the {@link Shelf} class.
+
+@@class DbfilenameShelf(filename[, flag='c'[, protocol=None[, writeback=False[, binary=None]]]])
+
+<p>A subclass of {@link Shelf} which accepts a {@var filename} instead
+of a dict-like object. The underlying file will be opened using {@link
+anydbm.open}. By default, the file will be created and opened for both
+read and write. The optional {@var flag} parameter has the same
+interpretation as for the {@link open} function. The optional {@var
+protocol}, {@var writeback}, and {@var binary} parameters have the same
+interpretation as for the {@link Shelf} class.
+
+@@text 
+
+<h2>Example</h2>
+
+<p>To summarize the interface ({@code key} is a string, {@code data} is
+an arbitrary object):
+
+<pre>
+import shelve
+
+d = shelve.open(filename) # open -- file may get suffix added by low-level
+                          # library
+
+d[key] = data   # store data at key (overwrites old data if
+                # using an existing key)
+data = d[key]   # retrieve a COPY of data at key (raise KeyError if no
+                # such key)
+del d[key]      # delete data stored at key (raises KeyError
+                # if no such key)
+flag = d.has_key(key)   # true if the key exists
+list = d.keys() # a list of all existing keys (slow!)
+
+# as d was opened WITHOUT writeback=True, beware:
+d['xx'] = range(4)  # this works as expected, but...
+d['xx'].append(5)   # *this doesn't!* -- d['xx'] is STILL range(4)!!!
+# having opened d without writeback=True, you need to code carefully:
+temp = d['xx']      # extracts the copy
+temp.append(5)      # mutates the copy
+d['xx'] = temp      # stores the copy right back, to persist it
+# or, d=shelve.open(filename,writeback=True) would let you just code
+# d['xx'].append(5) and have it work as expected, BUT it would also
+# consume more memory and make the d.close() operation slower.
+
+d.close()       # close it
+</pre>
+
+
+@see 
+{@link anydbm Module anydbm}
+
+Generic interface to dbm-style databases.
+@see 
+{@link bsddb Module bsddb}
+
+BSD db database interface.
+@see 
+{@link dbhash Module dbhash}
+
+Thin layer around the bsddb which provides an open function like the
+other database modules.
+@see 
+{@link dbm Module dbm}
+
+Standard Unix database interface.
+@see 
+{@link dumbdbm Module dumbdbm}
+
+Portable implementation of the dbm interface.
+@see 
+{@link gdbm Module gdbm}
+
+GNU database interface, based on the dbm interface.
+@see 
+{@link pickle Module pickle}
+
+Object serialization used by shelve.
+@see 
+{@link cPickle Module cPickle}
+
+High-performance version of pickle.

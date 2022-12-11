@@ -1,0 +1,29 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>compile</title> <script type="text/javascript">effbot_page_id=1235;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <h1 class="maintitle">compile</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p><strong>compile</strong>(string, filename, kind[, flags[, dont_inherit]])</p><p>Compiles the <em>string</em> into a code object. Code objects can be executed by
+an <a href="exec.htm"><strong>exec</strong></a> statement or evaluated by a call to <a href="eval.htm"><strong>eval</strong></a>. The <em>filename</em>
+argument should give the file from which the code was read; pass some
+recognizable value if it wasn&#8217;t read from a file (<code>'&lt;string&gt;'</code>
+is commonly used). The <em>kind</em> argument specifies what kind of code must
+be compiled; it can be <code>'exec'</code> if string consists of a sequence of
+statements, <code>'eval'</code> if it consists of a single expression, or
+<code>'single'</code> if it consists of a single interactive statement (in the
+latter case, expression statements that evaluate to something else
+than <a href="None.htm"><strong>None</strong></a> will be printed).</p><p>When compiling multi-line statements, two caveats apply: line endings
+must be represented by a single newline character (<code>'\n'</code>), and the
+input must be terminated by at least one newline character. If line
+endings are represented by <code>'\r\n'</code>, use the string replace() method
+to change them into <code>'\n'</code>.</p><p>The optional arguments <em>flags</em> and <em>dont_inherit</em> (which are new in
+Python 2.2) control which future statements (see <a href="PEP_236.htm"><strong>PEP 236</strong></a>) affect
+the compilation of string. If neither is present (or both are zero)
+the code is compiled with those future statements that are in effect
+in the code that is calling <strong>compile</strong>. If the <em>flags</em> argument is given
+and <em>dont_inherit</em> is not (or is zero) then the future statements
+specified by the <em>flags</em> argument are used in addition to those that
+would be used anyway. If <em>dont_inherit</em> is a non-zero integer then the
+<em>flags</em> argument is it &#8212; the future statements in effect around the call
+to compile are ignored.</p><p>Future statements are specified by bits which can be bitwise or-ed
+together to specify multiple statements. The bitfield required to
+specify a given feature can be found as the &#8216;compiler<em>flag&#8217; attribute
+on the &#8216;</em>Feature&#8217; instance in the <a href="__future__.htm"><strong>__future__</strong></a> module.</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div> <!-- yui-g --></div> <!-- content --> </div> <!-- yui-b --> </div> <!-- yui-main --> <div class="yui-b"> <div id='menu'> <ul> <li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li> <li><b><a href="." title="Go to pyref index page.">::: pyref :::</a></b></li> </ul> </div> <!-- menu --> </div> <!-- yui-b --> </div> <!-- bd --> <div id="ft"> <!-- footer --> <p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;"></a>
+this page was rendered by a <a href="http://www.djangoproject.com/">django</a> application in 0.01s 2012-08-18 15:04:15.225106.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p> </div> <!-- ft --> </div> <!-- doc --> <script src="/media/js/effbot-min.js" type="text/javascript"> </script> </body> </html>

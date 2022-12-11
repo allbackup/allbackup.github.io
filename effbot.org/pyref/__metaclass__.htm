@@ -1,0 +1,41 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>The __metaclass__&nbsp;attribute</title><script type="text/javascript">effbot_page_id=1855;</script></head><body><div id="doc2" class="yui-t2"><div id="hd"><!-- header --></div><!-- hd --><div id="bd"><!-- body --><p class="note" style="text-align: center"><strong>
+
+We're back after a server migration that caused effbot.org to fall
+over a bit harder than expected.  Expect some glitches.
+
+</strong></p><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">The __metaclass__&nbsp;attribute</h1></div><!-- yui-g --><body><h2 id="customizing-class-creation">Customizing class creation</h2>
+
+<p>By default, new-style classes are constructed using <a href="type.htm"><strong>type</strong></a>. A class
+definition is read into a separate namespace and the value of class
+name is bound to the result of <code>type(name, bases, dict)</code>, where <em>name</em>
+is the name of the class, <em>bases</em> is a list of base classes, and
+<em>dict</em> is a namespace populated by the <a href="class.htm"><strong>class</strong></a> statement.</p>
+
+<p>When the class definition is read, if <a href="__metaclass__.htm"><strong>__metaclass__</strong></a> is defined.
+it is used instead of <a href="type.htm"><strong>type</strong></a>.  The allows classes or functions to
+be written which monitor or alter the class creation process:</p>
+
+<ul>
+<li>Modifying the class dictionary prior to the class being created.</li>
+<li>Returning an instance of another class &#8212; essentially performing
+the role of a factory function.</li>
+</ul>
+
+<p><strong>__metaclass__</strong></p>
+
+<p>This variable can be any callable accepting arguments for <em>name</em>,
+<em>bases</em>, and <em>dict</em>. Upon class creation, the callable is used instead
+of the built-in <a href="type.htm"><strong>type</strong></a>. New in version 2.2.</p>
+
+<p>The appropriate metaclass is determined by the following precedence rules:</p>
+
+<ul>
+<li>If <code>dict['__metaclass__']</code> exists, it is used.</li>
+<li>Otherwise, if there is at least one base class, its metaclass is used (this looks for a __class__ attribute first and if not found, uses its type).  Note that this rule kicks in if you&#8217;re inheriting from <a href="object.htm"><strong>object</strong></a>.</li>
+<li>Otherwise, if a global variable named <a href="__metaclass__.htm"><strong>__metaclass__</strong></a> exists, it is used.</li>
+<li>Otherwise, the old-style, classic metaclass (types.ClassType) is used.</li>
+</ul>
+
+<p>The potential uses for metaclasses are boundless. Some ideas that have been explored including logging, interface checking, automatic delegation, automatic property creation, proxies, frameworks, and automatic resource locking/synchronization.</p></body><div class="yui-g"></div><!-- yui-g --></div><!-- content --></div><!-- yui-b --></div><!-- yui-main --><div class="yui-b"><div id='menu'></div><!-- menu --></div><!-- yui-b --></div><!-- bd --><div id="ft"><!-- footer --></div><!-- ft --></div><!-- doc --><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

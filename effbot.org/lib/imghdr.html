@@ -1,0 +1,180 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>imghdr</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-imghdr.html'>original</a> :::
+<a href='imghdr.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>imghdr&#8212;Determine the type of an image</h1>
+
+<p>The <code>imghdr</code> module
+determines the type of image contained in a file or byte
+stream.</p>
+
+<p>The <code>imghdr</code> module defines
+the following function:</p>
+</div>
+<dl><dt class="function" id="what"><b>what(filename[, h])</b> <tt class="nav"><a class="nav" href="imghdr.what" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Tests the image data contained in the file named by <var>
+filename</var>, and returns a string describing the image type. If
+optional <var>h</var> is provided, the <var>filename</var> is
+ignored and <var>h</var> is assumed to contain the byte stream to
+test.</p>
+</dd>
+</dl><div class="text">
+<p>The following image types are recognized, as listed below with
+the return value from <a class="link" href="#what"><code>
+what</code></a>:</p>
+
+<table border="1">
+<tr>
+<th>
+<p>Value</p>
+</th>
+<th>
+<p>Image format</p>
+</th>
+</tr>
+
+<tr>
+<td>
+<p><code>'rgb'</code></p>
+</td>
+<td>
+<p>SGI ImgLib Files</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>'gif'</code></p>
+</td>
+<td>
+<p>GIF 87a and 89a Files</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>'pbm'</code></p>
+</td>
+<td>
+<p>Portable Bitmap Files</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>'pgm'</code></p>
+</td>
+<td>
+<p>Portable Graymap Files</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>'ppm'</code></p>
+</td>
+<td>
+<p>Portable Pixmap Files</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>'tiff'</code></p>
+</td>
+<td>
+<p>TIFF Files</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>'rast'</code></p>
+</td>
+<td>
+<p>Sun Raster Files</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>'xbm'</code></p>
+</td>
+<td>
+<p>X Bitmap Files</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>'jpeg'</code></p>
+</td>
+<td>
+<p>JPEG data in JFIF format</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>'bmp'</code></p>
+</td>
+<td>
+<p>BMP files</p>
+</td>
+</tr>
+
+<tr>
+<td>
+<p><code>'png'</code></p>
+</td>
+<td>
+<p>Portable Network Graphics</p>
+</td>
+</tr>
+</table>
+
+<br />
+<br />
+ 
+
+<p>You can extend the list of file types <code>imghdr</code> can recognize by appending to this
+variable:</p>
+</div>
+<dl><dt class="variable" id="tests"><b>tests</b> <tt class="nav"><a class="nav" href="imghdr.tests" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="variable">
+<p>A list of functions performing the individual tests. Each
+function takes two arguments: the byte-stream and an open file-like
+object. When <a class="link" href="#what"><code>what</code></a> is called
+with a byte-stream, the file-like object will be <code>None</code>.</p>
+
+<p>The test function should return a string describing the image
+type if the test succeeded, or <code>
+None</code> if it failed.</p>
+</dd>
+</dl><div class="text">
+<p>Example:</p>
+
+<pre>
+&gt;&gt;&gt; import imghdr
+&gt;&gt;&gt; imghdr.what('/tmp/bass.gif')
+'gif'
+</pre>
+</div>
+</div></body></html>

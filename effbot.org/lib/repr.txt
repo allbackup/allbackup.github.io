@@ -1,0 +1,127 @@
+
+@@module repr
+
+<h1>repr&#8212;Alternate repr() implementation</h1>
+
+<p>The {@link repr} module provides a means for producing object
+representations with limits on the size of the resulting strings. This
+is used in the Python debugger and may be useful in other contexts as
+well.
+
+<p>This module provides a class, an instance, and a function:
+
+@@class Repr()
+
+<p>Class which provides formatting services useful in implementing
+functions similar to the built-in {@link repr}; size limits for
+different object types are added to avoid the generation of
+representations which are excessively long.
+
+@@variable aRepr
+
+<p>This is an instance of {@link Repr} which is used to provide the
+{@link repr} function described below. Changing the attributes of this
+object will affect the size limits used by {@link repr} and the Python
+debugger.
+
+@@function repr(obj)
+
+<p>This is the {@link repr} method of {@code aRepr}. It returns a string
+similar to that returned by the built-in function of the same name, but
+with limits on most sizes.
+
+@@text 
+
+<h2>Repr Objects</h2>
+
+<p>{@link Repr} instances provide several members which can be used to
+provide size limits for the representations of different object types,
+and methods which format specific object types.
+
+@@attribute Repr.maxlevel
+
+<p>Depth limit on the creation of recursive representations. The default
+is {@code 6}.
+
+@@attribute Repr.maxdict
+@@attribute Repr.maxlist
+@@attribute Repr.maxtuple
+@@attribute Repr.maxset
+@@attribute Repr.maxfrozenset
+@@attribute Repr.maxdeque
+@@attribute Repr.maxarray
+
+<p>Limits on the number of entries represented for the named object
+type. The default is {@code 4} for {@link maxdict}, {@code 5} for {@link
+maxarray}, and {@code 6} for the others.
+<blockquote>
+@since New in
+version 2.4: maxset, maxfrozenset, and set. <br />
+</blockquote>
+
+@@attribute Repr.maxlong
+
+<p>Maximum number of characters in the representation for a long
+integer. Digits are dropped from the middle. The default is {@code 40}.
+
+@@attribute Repr.maxstring
+
+<p>Limit on the number of characters in the representation of the
+string. Note that the &#8220;normal&#8221; representation of the string
+is used as the character source: if escape sequences are needed in the
+representation, these may be mangled when the representation is
+shortened. The default is {@code 30}.
+
+@@attribute Repr.maxother
+
+<p>This limit is used to control the size of object types for which no
+specific formatting method is available on the {@link Repr} object. It
+is applied in a similar manner as {@link maxstring}. The default is
+{@code 20}.
+
+@@method Repr.repr(obj)
+
+<p>The equivalent to the built-in {@link repr} that uses the formatting
+imposed by the instance.
+
+@@method Repr.repr1(obj, level)
+
+<p>Recursive implementation used by {@link repr}. This uses the type of
+{@var obj} to determine which formatting method to call, passing it
+{@var obj} and {@var level}. The type-specific methods should call
+{@link repr1} to perform recursive formatting, with {@var level} - 1 for
+the value of {@var level} in the recursive call.
+
+@@unknown repr_type(obj, level)
+
+<p>Formatting methods for specific types are implemented as methods with
+a name based on the type name. In the method name, {@var type} is
+replaced by {@code string.join(string.split(type(}{@var obj}).__name__,
+'_')). Dispatch to these methods is handled by {@link repr1}.
+Type-specific methods which need to recursively format a value should
+call "{@code self.repr1(}{@var subobj}, {@var level} - 1)".
+
+@@text 
+
+<h2>Subclassing Repr Objects</h2>
+
+<p>The use of dynamic dispatching by {@link Repr.repr1} allows
+subclasses of {@link Repr} to add support for additional built-in object
+types or to modify the handling of types already supported. This example
+shows how special support for file objects could be added:
+
+<pre>
+import repr
+import sys
+
+class MyRepr(repr.Repr):
+    def repr_file(self, obj, level):
+        if obj.name in ['&lt;stdin&gt;', '&lt;stdout&gt;', '&lt;stderr&gt;']:
+            return obj.name
+        else:
+            return `obj`
+
+aRepr = MyRepr()
+print aRepr.repr(sys.stdin)          # prints '&lt;stdin&gt;'
+</pre>
+

@@ -1,0 +1,91 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>filecmp -- File and Directory&nbsp;Comparisons</title> <script type="text/javascript">effbot_page_id=1023;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <h1 class="maintitle">filecmp -- File and Directory&nbsp;Comparisons</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><div class="module"><p>The <a class="link" href="filecmp.htm#filecmp">filecmp</a> module
+defines functions to compare files and directories, with various
+optional time/correctness trade-offs.</p><p>The <a class="link" href="filecmp.htm#filecmp">filecmp</a> module
+defines the following functions:</p></div><dl><dt class="function" id="filecmp.cmp"><b>cmp(f1, f2[, shallow[, use_statcache]])</b> <tt class="mark"><a href="#filecmp.cmp" title="bookmark">#</a>|<a href="/comment/pylib/filecmp.htm%23filecmp.cmp" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="function">
+<p>Compare the files named <var>f1</var> and <var>f2</var>,
+returning <a class="link" href="/pyref/True">True</a> if they seem
+equal, <a class="link" href="/pyref/False">False</a> otherwise.</p><p>Unless <var>shallow</var> is given and is false, files with
+identical <a class="link" href="os.htm#os.stat">os.stat</a>
+signatures are taken to be equal.</p><p>Files that were compared using this function will not be
+compared again unless their <a class="link" href="os.htm#os.stat">
+os.stat</a> signature changes.</p><p>Note that no external programs are called from this function,
+giving it portability and efficiency.</p><blockquote><span class="mark">@since</span> Changed in version
+2.3: use_statcache is obsolete and ignored..<br />
+</blockquote></dd>
+<dt class="function" id="filecmp.cmpfiles"><b>cmpfiles(dir1, dir2, common[, shallow[,
+use_statcache]])</b> <tt class="mark"><a href="#filecmp.cmpfiles" title="bookmark">#</a>|<a href="/comment/pylib/filecmp.htm%23filecmp.cmpfiles" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="function">
+<p>Returns three lists of file names: <var>match</var>, <var>
+mismatch</var>, <var>errors</var>. <var>match</var> contains the
+list of files match in both directories, <var>mismatch</var>
+includes the names of those that don&#8217;t, and <var>errros</var> lists
+the names of files which could not be compared. Files may be listed
+in <var>errors</var> because the user may lack permission to read
+them or many other reasons, but always that the comparison could
+not be done for some reason.</p><p>The <var>common</var> parameter is a list of file names found in
+both directories. The <var>shallow</var> and <var>
+use_statcache</var> parameters have the same meanings and default
+values as for <a class="link" href="filecmp.htm#filecmp.cmp">
+filecmp.cmp</a>.</p></dd>
+</dl><div class="text"><p>Example:</p><pre>
+&gt;&gt;&gt; import filecmp
+&gt;&gt;&gt; filecmp.cmp('libundoc.tex', 'libundoc.tex')
+True
+&gt;&gt;&gt; filecmp.cmp('libundoc.tex', 'lib.tex')
+False
+</pre><h2 id="the-dircmp-class">The dircmp class&#160;<a class="nav" href="#the-dircmp-class" title="bookmark!">#</a></h2><p><a class="link" href="filecmp.htm#filecmp.dircmp">dircmp</a> instances are
+built using this constructor:</p></div><dl><dt class="class" id="filecmp.dircmp"><b>class dircmp(a, b[, ignore[, hide]])</b> <tt class="mark"><a href="#filecmp.dircmp" title="bookmark">#</a>|<a href="/comment/pylib/filecmp.htm%23filecmp.dircmp" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="class">
+<p>Construct a new directory comparison object, to compare the
+directories <var>a</var> and <var>b</var>. <var>ignore</var> is a
+list of names to ignore, and defaults to <code>['RCS', 'CVS',
+'tags']</code>. <var>hide</var> is a list of names to hide, and
+defaults to <code>[os.curdir, os.pardir]</code>.</p></dd>
+</dl><div class="text"><p>The <a class="link" href="filecmp.htm#filecmp.dircmp">dircmp</a> class provides
+the following methods:</p></div><dl><dt class="method" id="filecmp.dircmp.report"><b>report()</b> <tt class="mark"><a href="#filecmp.dircmp.report" title="bookmark">#</a>|<a href="/comment/pylib/filecmp.htm%23filecmp.dircmp.report" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="method">
+<p>Print (to <code>sys.stdout</code>) a comparison between <var>
+a</var> and <var>b</var>.</p></dd>
+<dt class="method" id="filecmp.dircmp.report_partial_closure"><b>report_partial_closure()</b> <tt class="mark"><a href="#filecmp.dircmp.report_partial_closure" title="bookmark">#</a>|<a href="/comment/pylib/filecmp.htm%23filecmp.dircmp.report_partial_closure" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="method">
+<p>Print a comparison between <var>a</var> and <var>b</var> and
+common immediate subdirectories.</p></dd>
+<dt class="method" id="filecmp.dircmp.report_full_closure"><b>report_full_closure()</b> <tt class="mark"><a href="#filecmp.dircmp.report_full_closure" title="bookmark">#</a>|<a href="/comment/pylib/filecmp.htm%23filecmp.dircmp.report_full_closure" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="method">
+<p>Print a comparison between <var>a</var> and <var>b</var> and
+common subdirectories (recursively).</p></dd>
+</dl><div class="text"><p>The <a class="link" href="filecmp.htm#filecmp.dircmp">dircmp</a> offers a
+number of interesting attributes that may be used to get various
+bits of information about the directory trees being compared.</p><p>Note that via <a class="link" href="__getattr__.htm#__getattr__">
+__getattr__</a> hooks, all attributes are computed lazily, so there
+is no speed penalty if only those attributes which are lightweight
+to compute are used.</p></div><dl><dt class="attribute" id="filecmp.dircmp.left_list"><b>left_list</b> <tt class="mark"><a href="#filecmp.dircmp.left_list" title="bookmark">#</a>|<a href="/comment/pylib/filecmp.htm%23filecmp.dircmp.left_list" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="attribute">
+<p>Files and subdirectories in <var>a</var>, filtered by <var>
+hide</var> and <var>ignore</var>.</p></dd>
+<dt class="attribute" id="filecmp.dircmp.right_list"><b>right_list</b> <tt class="mark"><a href="#filecmp.dircmp.right_list" title="bookmark">#</a>|<a href="/comment/pylib/filecmp.htm%23filecmp.dircmp.right_list" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="attribute">
+<p>Files and subdirectories in <var>b</var>, filtered by <var>
+hide</var> and <var>ignore</var>.</p></dd>
+<dt class="attribute" id="filecmp.dircmp.common"><b>common</b> <tt class="mark"><a href="#filecmp.dircmp.common" title="bookmark">#</a>|<a href="/comment/pylib/filecmp.htm%23filecmp.dircmp.common" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="attribute">
+<p>Files and subdirectories in both <var>a</var> and <var>
+b</var>.</p></dd>
+<dt class="attribute" id="filecmp.dircmp.left_only"><b>left_only</b> <tt class="mark"><a href="#filecmp.dircmp.left_only" title="bookmark">#</a>|<a href="/comment/pylib/filecmp.htm%23filecmp.dircmp.left_only" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="attribute">
+<p>Files and subdirectories only in <var>a</var>.</p></dd>
+<dt class="attribute" id="filecmp.dircmp.right_only"><b>right_only</b> <tt class="mark"><a href="#filecmp.dircmp.right_only" title="bookmark">#</a>|<a href="/comment/pylib/filecmp.htm%23filecmp.dircmp.right_only" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="attribute">
+<p>Files and subdirectories only in <var>b</var>.</p></dd>
+<dt class="attribute" id="filecmp.dircmp.common_dirs"><b>common_dirs</b> <tt class="mark"><a href="#filecmp.dircmp.common_dirs" title="bookmark">#</a>|<a href="/comment/pylib/filecmp.htm%23filecmp.dircmp.common_dirs" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="attribute">
+<p>Subdirectories in both <var>a</var> and <var>b</var>.</p></dd>
+<dt class="attribute" id="filecmp.dircmp.common_files"><b>common_files</b> <tt class="mark"><a href="#filecmp.dircmp.common_files" title="bookmark">#</a>|<a href="/comment/pylib/filecmp.htm%23filecmp.dircmp.common_files" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="attribute">
+<p>Files in both <var>a</var> and <var>b</var></p></dd>
+<dt class="attribute" id="filecmp.dircmp.common_funny"><b>common_funny</b> <tt class="mark"><a href="#filecmp.dircmp.common_funny" title="bookmark">#</a>|<a href="/comment/pylib/filecmp.htm%23filecmp.dircmp.common_funny" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="attribute">
+<p>Names in both <var>a</var> and <var>b</var>, such that the type
+differs between the directories, or names for which <a class="link" href="os.htm#os.stat">os.stat</a> reports an error.</p></dd>
+<dt class="attribute" id="filecmp.dircmp.same_files"><b>same_files</b> <tt class="mark"><a href="#filecmp.dircmp.same_files" title="bookmark">#</a>|<a href="/comment/pylib/filecmp.htm%23filecmp.dircmp.same_files" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="attribute">
+<p>Files which are identical in both <var>a</var> and <var>
+b</var>.</p></dd>
+<dt class="attribute" id="filecmp.dircmp.diff_files"><b>diff_files</b> <tt class="mark"><a href="#filecmp.dircmp.diff_files" title="bookmark">#</a>|<a href="/comment/pylib/filecmp.htm%23filecmp.dircmp.diff_files" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="attribute">
+<p>Files which are in both <var>a</var> and <var>b</var>, whose
+contents differ.</p></dd>
+<dt class="attribute" id="filecmp.dircmp.funny_files"><b>funny_files</b> <tt class="mark"><a href="#filecmp.dircmp.funny_files" title="bookmark">#</a>|<a href="/comment/pylib/filecmp.htm%23filecmp.dircmp.funny_files" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="attribute">
+<p>Files which are in both <var>a</var> and <var>b</var>, but could
+not be compared.</p></dd>
+<dt class="attribute" id="filecmp.dircmp.subdirs"><b>subdirs</b> <tt class="mark"><a href="#filecmp.dircmp.subdirs" title="bookmark">#</a>|<a href="/comment/pylib/filecmp.htm%23filecmp.dircmp.subdirs" title="edit/suggest changes">!</a>|<a href="#" title="search for related examples">&amp;</a></tt></dt><dd class="attribute">
+<p>A dictionary mapping names in <a class="link" href="common_dirs.htm#common_dirs">common_dirs</a> to <a class="link" href="filecmp.htm#filecmp.dircmp">dircmp</a> objects.</p></dd>
+</dl></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div> <!-- yui-g --></div> <!-- content --> </div> <!-- yui-b --> </div> <!-- yui-main --> <div class="yui-b"> <div id='menu'> <ul> <li><b><a href="/">::: effbot.org</a></b></li> <li><b><a href=".">::: pylib :::</a></b></li> </ul> </div> <!-- menu --> </div> <!-- yui-b --> </div> <!-- bd --> <div id="ft"> <!-- footer --> <p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15_grey.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;"></a>
+this page was rendered by a <a href="http://www.djangoproject.com/">django</a> application in 0.41s 2008-01-25 06:42:31.247125.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p> </div> <!-- ft --> </div> <!-- doc --> <script src="/media/js/effbot-min.js" type="text/javascript"> </script> </body> </html>

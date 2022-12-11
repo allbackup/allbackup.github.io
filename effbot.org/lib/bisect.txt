@@ -1,0 +1,88 @@
+
+@@module bisect
+
+<h1>bisect&#8212;Array bisection algorithm</h1>
+
+<p>This module provides support for maintaining a list in sorted order
+without having to sort the list after each insertion. For long lists of
+items with expensive comparison operations, this can be an improvement
+over the more common approach. The module is called {@link bisect}
+because it uses a basic bisection algorithm to do its work. The source
+code may be most useful as a working example of the algorithm (the
+boundary conditions are already right!).
+
+<p>The following functions are provided:
+
+@@function bisect_left(list, item[, lo[, hi]])
+
+<p>Locate the proper insertion point for {@var item} in {@var list} to
+maintain sorted order. The parameters {@var lo} and {@var hi} may be
+used to specify a subset of the list which should be considered; by
+default the entire list is used. If {@var item} is already present in
+{@var list}, the insertion point will be before (to the left of) any
+existing entries. The return value is suitable for use as the first
+parameter to {@code }{@var list}.insert(). This assumes that {@var list}
+is already sorted.
+<blockquote>
+@since New in version
+2.1. <br />
+</blockquote>
+
+@@function bisect_right(list, item[, lo[, hi]])
+
+<p>Similar to {@link bisect_left}, but returns an insertion point which
+comes after (to the right of) any existing entries of {@var item} in
+{@var list}.
+<blockquote>
+@since New in version 2.1. <br />
+</blockquote>
+
+@@function bisect(...)
+
+<p>Alias for {@link bisect_right}.
+
+@@function insort_left(list, item[, lo[, hi]])
+
+<p>Insert {@var item} in {@var list} in sorted order. This is equivalent
+to {@var list}.insert(bisect.bisect_left({@var list}, {@var item}, {@var
+lo}, {@var hi}), {@var item}). This assumes that {@var list} is already
+sorted.
+<blockquote>
+@since New in version 2.1. <br />
+</blockquote>
+
+@@function insort_right(list, item[, lo[, hi]])
+
+<p>Similar to {@link insort_left}, but inserting {@var item} in {@var
+list} after any existing entries of {@var item}.
+<blockquote>
+@since New in
+version 2.1. <br />
+</blockquote>
+
+@@function insort(...)
+
+<p>Alias for {@link insort_right}.
+
+@@text 
+
+<h2>Examples</h2>
+
+<p>The {@link bisect} function is generally useful for categorizing
+numeric data. This example uses {@link bisect} to look up a letter grade
+for an exam total (say) based on a set of ordered numeric breakpoints:
+85 and up is an `A', 75..84 is a `B', etc.
+
+<pre>
+&gt;&gt;&gt; grades = "FEDCBA"
+&gt;&gt;&gt; breakpoints = [30, 44, 66, 75, 85]
+&gt;&gt;&gt; from bisect import bisect
+&gt;&gt;&gt; def grade(total):
+...           return grades[bisect(breakpoints, total)]
+...
+&gt;&gt;&gt; grade(66)
+'C'
+&gt;&gt;&gt; map(grade, [33, 99, 77, 44, 12, 88])
+['E', 'A', 'B', 'D', 'F', 'A']
+</pre>
+

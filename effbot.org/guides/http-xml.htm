@@ -1,0 +1,54 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>A Simple XML-Over-HTTP&nbsp;Class</title> <script type="text/javascript">effbot_page_id=120;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> <!--
+<p style='color: #8f8f8f; background: #fff5bf; padding: 5px 10px;'> <b>2008-07-15:</b> Selected articles
+
+now have experimental "comment" links in the left column and at the bottom.
+You're welcome to use them for commenting and voting on articles.
+For a bit more on this, see <a
+href="http://effbot.slinkset.com/links/Welcome_to_discuss_effbot_org">this
+page</a>. /F
+</p>
+--> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <h1 class="maintitle">A Simple XML-Over-HTTP&nbsp;Class</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p class="info">Updated May 13, 2003 | July 12, 2002 | Fredrik Lundh</p><p>This module implements a simple helper class, <b>HTTPClient</b>,
+which can send an XML document (represented either as <a href="element.htm">an
+element tree</a> or a string) to a remote server, and parse the result into an
+element tree.</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><div class="example wide">
+<b>A Simple XML-Over-HTTP Helper (File: HTTPClient.py)</b>
+<pre class="python wide">
+<span class="pykeyword">from</span> httplib <span class="pykeyword">import</span> HTTP
+<span class="pykeyword">from</span> StringIO <span class="pykeyword">import</span> StringIO
+<span class="pykeyword">import</span> urlparse
+
+<span class="pycomment"># elementtree (from effbot.org/downloads)</span>
+<span class="pykeyword">from</span> elementtree <span class="pykeyword">import</span> ElementTree
+
+<span class="pykeyword">class</span> <span class="pyclass">HTTPClient</span>:
+
+    user_agent = <span class="pystring">"HTTPClient (from effbot.org)"</span>
+
+    <span class="pykeyword">def</span> <span class="pyfunction">__init__</span>(self, uri):
+
+        scheme, host, path, params, query, fragment = urlparse.urlparse(uri)
+        <span class="pykeyword">if</span> scheme != <span class="pystring">"http"</span>:
+            <span class="pykeyword">raise</span> ValueError(<span class="pystring">"only supports HTTP requests"</span>)
+
+        <span class="pycomment"># put the path back together again</span>
+        <span class="pykeyword">if</span> <span class="pykeyword">not</span> path:
+            path = <span class="pystring">"/"</span>
+        <span class="pykeyword">if</span> params:
+            path = path + <span class="pystring">";"</span> + params
+        <span class="pykeyword">if</span> query:
+            path = path + <span class="pystring">"?"</span> + query
+
+        self.host = host
+        self.path = path
+
+    <span class="pykeyword">def</span> <span class="pyfunction">do_request</span>(self, body,
+        <span class="pycomment"># optional keyword arguments follow</span>
+        path=None, method=<span class="pystring">"POST"</span>, content_type=<span class="pystring">"text/xml"</span>,
+        extra_headers=(), parser=None):
+
+        <span class="pykeyword">if</span> <span class="pykeyword">not</span> path:
+            path = self.path
+
+        <span class="pykeyword">if</span> is

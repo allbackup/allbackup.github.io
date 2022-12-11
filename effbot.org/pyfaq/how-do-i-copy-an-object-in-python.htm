@@ -1,0 +1,15 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>How do I copy an object in&nbsp;Python?</title></head><body data-page-id="785"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><p class="note" style="text-align: center"><strong>
+This is an old copy of the Python FAQ.  The information here may be
+outdated.
+</strong></p><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">How do I copy an object in&nbsp;Python?</h1></div><div class="yui-ge"><div class="yui-u first"><p>Try <a href="/pyref/copy.copy.htm"><strong>copy.copy</strong></a> or <a href="/pyref/copy.deepcopy.htm"><strong>copy.deepcopy</strong></a> for the general case. Not all objects can be copied, but most can.</p><pre class="python"><span class="pykeyword">import</span> copy
+
+newobj = copy.copy(oldobj) <span class="pycomment"># shallow copy</span>
+newobj = copy.deepcopy(oldobj) <span class="pycomment"># deep (recursive) copy</span></pre><p>Some objects can be copied more easily. Dictionaries have a <a href="/pyref/dict.copy.htm"><strong>copy</strong></a> method:</p><pre class="python">newdict = olddict.copy()</pre><p>Sequences can be copied by slicing:</p><pre class="python">new_list = L[:]</pre><p>You can also use the <a href="/pyref/list.htm"><strong>list</strong></a>, <a href="/pyref/tuple.htm"><strong>tuple</strong></a>, <a href="/pyref/dict.htm"><strong>dict</strong></a>, and
+<a href="/pyref/set.htm"><strong>set</strong></a> functions to copy the corresponding objects, and to convert
+between different sequence types:</p><pre class="python">new_list = list(L) <span class="pycomment"># copy</span>
+new_dict = dict(olddict) <span class="pycomment"># copy</span>
+
+new_set = set(L) <span class="pycomment"># convert list to set</span>
+new_tuple = tuple(L) <span class="pycomment"># convert list to tuple</span></pre><p>CATEGORY: programming</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to pyfaq index page.">::: pyfaq :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

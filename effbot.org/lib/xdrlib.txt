@@ -1,0 +1,265 @@
+
+@@module xdrlib
+
+<h1>xdrlib&#8212;Encode and decode XDR data</h1>
+
+<p>The {@link xdrlib} module supports the External Data Representation
+Standard as described in {@link http://www.faqs.org/rfcs/rfc1014.html
+RFC 1014}, written by Sun Microsystems, Inc. June 1987. It supports most
+of the data types described in the RFC.
+
+<p>The {@link xdrlib} module defines two classes, one for packing
+variables into XDR representation, and another for unpacking from XDR
+representation. There are also two exception classes.
+
+@@class Packer()
+
+<p>{@link Packer} is the class for packing data into XDR representation.
+The {@link Packer} class is instantiated with no arguments.
+
+@@class Unpacker(data)
+
+<p>{@code Unpacker} is the complementary class which unpacks XDR data
+values from a string buffer. The input buffer is given as {@var data}.
+
+@@text 
+
+@see 
+{@link http://www.faqs.org/rfcs/rfc1014.html RFC 1014, XDR: External Data Representation Standard}
+
+This RFC defined the encoding of data which was XDR at the time this
+module was originally written. It has apparently been obsoleted by RFC
+1832.
+@see 
+{@link http://www.faqs.org/rfcs/rfc1832.html RFC 1832, XDR: External Data Representation Standard}
+
+Newer RFC that provides a revised definition of XDR.
+
+<h2>Packer Objects</h2>
+
+<p>{@link Packer} instances have the following methods:
+
+@@method Packer.get_buffer()
+
+<p>Returns the current pack buffer as a string.
+
+@@method Packer.reset()
+
+<p>Resets the pack buffer to the empty string.
+
+@@text 
+
+<p>In general, you can pack any of the most common XDR data types by
+calling the appropriate {@code pack_}{@var type}() method. Each method
+takes a single argument, the value to pack. The following simple data
+type packing methods are supported: {@link pack_uint}, {@link pack_int},
+{@link pack_enum}, {@link pack_bool}, {@link pack_uhyper}, and {@link
+pack_hyper}.
+
+@@method Packer.pack_float(value)
+
+<p>Packs the single-precision floating point number {@var value}.
+
+@@method Packer.pack_double(value)
+
+<p>Packs the double-precision floating point number {@var value}.
+
+@@text 
+
+<p>The following methods support packing strings, bytes, and opaque
+data:
+
+@@method Packer.pack_fstring(n, s)
+
+<p>Packs a fixed length string, {@var s}. {@var n} is the length of the
+string but it is {@em not} packed into the data buffer. The string is
+padded with null bytes if necessary to guaranteed 4 byte alignment.
+
+@@method Packer.pack_fopaque(n, data)
+
+<p>Packs a fixed length opaque data stream, similarly to {@link
+pack_fstring}.
+
+@@method Packer.pack_string(s)
+
+<p>Packs a variable length string, {@var s}. The length of the string is
+first packed as an unsigned integer, then the string data is packed with
+{@link pack_fstring}.
+
+@@method Packer.pack_opaque(data)
+
+<p>Packs a variable length opaque data string, similarly to {@link
+pack_string}.
+
+@@method Packer.pack_bytes(bytes)
+
+<p>Packs a variable length byte stream, similarly to {@link
+pack_string}.
+
+@@text 
+
+<p>The following methods support packing arrays and lists:
+
+@@method Packer.pack_list(list, pack_item)
+
+<p>Packs a {@var list} of homogeneous items. This method is useful for
+lists with an indeterminate size; i.e. the size is not available until
+the entire list has been walked. For each item in the list, an unsigned
+integer {@code 1} is packed first, followed by the data value from the
+list. {@var pack_item} is the function that is called to pack the
+individual item. At the end of the list, an unsigned integer {@code 0}
+is packed.
+
+<p>For example, to pack a list of integers, the code might appear like
+this:
+
+<pre>
+import xdrlib
+p = xdrlib.Packer()
+p.pack_list([1, 2, 3], p.pack_int)
+</pre>
+
+
+@@method Packer.pack_farray(n, array, pack_item)
+
+<p>Packs a fixed length list ({@var array}) of homogeneous items. {@var
+n} is the length of the list; it is {@em not} packed into the buffer,
+but a {@link exceptions.ValueError} exception is raised if {@code
+len(}{@var array}) is not equal to {@var n}. As above, {@var pack_item}
+is the function used to pack each element.
+
+@@method Packer.pack_array(list, pack_item)
+
+<p>Packs a variable length {@var list} of homogeneous items. First, the
+length of the list is packed as an unsigned integer, then each element
+is packed as in {@link pack_farray} above.
+
+@@text 
+
+<h2>Unpacker Objects</h2>
+
+<p>The {@link Unpacker} class offers the following methods:
+
+@@method Unpacker.reset(data)
+
+<p>Resets the string buffer with the given {@var data}.
+
+@@method Unpacker.get_position()
+
+<p>Returns the current unpack position in the data buffer.
+
+@@method Unpacker.set_position(position)
+
+<p>Sets the data buffer unpack position to {@var position}. You should
+be careful about using {@link get_position} and {@link set_position}.
+
+@@method Unpacker.get_buffer()
+
+<p>Returns the current unpack data buffer as a string.
+
+@@method Unpacker.done()
+
+<p>Indicates unpack completion. Raises an {@link Error} exception if all
+of the data has not been unpacked.
+
+@@text 
+
+<p>In addition, every data type that can be packed with a {@link
+Packer}, can be unpacked with an {@link Unpacker}. Unpacking methods are
+of the form {@code unpack_}{@var type}(), and take no arguments. They
+return the unpacked object.
+
+@@method Unpacker.unpack_float()
+
+<p>Unpacks a single-precision floating point number.
+
+@@method Unpacker.unpack_double()
+
+<p>Unpacks a double-precision floating point number, similarly to {@link
+unpack_float}.
+
+@@text 
+
+<p>In addition, the following methods unpack strings, bytes, and opaque
+data:
+
+@@method Unpacker.unpack_fstring(n)
+
+<p>Unpacks and returns a fixed length string. {@var n} is the number of
+characters expected. Padding with null bytes to guaranteed 4 byte
+alignment is assumed.
+
+@@method Unpacker.unpack_fopaque(n)
+
+<p>Unpacks and returns a fixed length opaque data stream, similarly to
+{@link unpack_fstring}.
+
+@@method Unpacker.unpack_string()
+
+<p>Unpacks and returns a variable length string. The length of the
+string is first unpacked as an unsigned integer, then the string data is
+unpacked with {@link unpack_fstring}.
+
+@@method Unpacker.unpack_opaque()
+
+<p>Unpacks and returns a variable length opaque data string, similarly
+to {@link unpack_string}.
+
+@@method Unpacker.unpack_bytes()
+
+<p>Unpacks and returns a variable length byte stream, similarly to
+{@link unpack_string}.
+
+@@text 
+
+<p>The following methods support unpacking arrays and lists:
+
+@@method Unpacker.unpack_list(unpack_item)
+
+<p>Unpacks and returns a list of homogeneous items. The list is unpacked
+one element at a time by first unpacking an unsigned integer flag. If
+the flag is {@code 1}, then the item is unpacked and appended to the
+list. A flag of {@code 0} indicates the end of the list. {@var
+unpack_item} is the function that is called to unpack the items.
+
+@@method Unpacker.unpack_farray(n, unpack_item)
+
+<p>Unpacks and returns (as a list) a fixed length array of homogeneous
+items. {@var n} is number of list elements to expect in the buffer. As
+above, {@var unpack_item} is the function used to unpack each element.
+
+@@method Unpacker.unpack_array(unpack_item)
+
+<p>Unpacks and returns a variable length {@var list} of homogeneous
+items. First, the length of the list is unpacked as an unsigned integer,
+then each element is unpacked as in {@link unpack_farray} above.
+
+@@text 
+
+<h2>Exceptions</h2>
+
+<p>Exceptions in this module are coded as class instances:
+
+@@exception Error
+
+<p>The base exception class. {@link Error} has a single public data
+member {@link msg} containing the description of the error.
+
+@@exception ConversionError
+
+<p>Class derived from {@link Error}. Contains no additional instance
+variables.
+
+@@text 
+
+<p>Here is an example of how you would catch one of these exceptions:
+
+<pre>
+import xdrlib
+p = xdrlib.Packer()
+try:
+    p.pack_double(8.01)
+except xdrlib.ConversionError, instance:
+    print 'packing the double failed:', instance.msg
+</pre>
+

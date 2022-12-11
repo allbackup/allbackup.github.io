@@ -1,0 +1,58 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>copy_reg</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-copy_reg.html'>original</a> :::
+<a href='copy_reg.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>copy_reg&#8212;Register pickle support functions</h1>
+
+<p>The <code>copy_reg</code> module
+provides support for the <a class="link" href="#pickle"><code>
+pickle</code></a> and <code>cPickle</code>
+modules. The <code>copy</code> module is
+likely to use this in the future as well. It provides configuration
+information about object constructors which are not classes. Such
+constructors may be factory functions or class instances.</p>
+</div>
+<dl><dt class="function" id="constructor"><b>constructor(object)</b> <tt class="nav"><a class="nav" href="copy_reg.constructor" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Declares <var>object</var> to be a valid constructor. If <var>
+object</var> is not callable (and hence not valid as a
+constructor), raises <code>exceptions.TypeError</code>.</p>
+</dd>
+<dt class="function" id="pickle"><b>pickle(type, function[, constructor])</b> <tt class="nav"><a class="nav" href="copy_reg.pickle" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Declares that <var>function</var> should be used as a
+&#8220;reduction&#8221; function for objects of type <var>
+type</var>; <var>type</var> must not be a &#8220;classic&#8221;
+class object. (Classic classes are handled differently; see the
+documentation for the <a class="link" href="#pickle"><code>pickle</code></a>
+module for details.) <var>function</var> should return either a
+string or a tuple containing two or three elements.</p>
+
+<p>The optional <var>constructor</var> parameter, if provided, is a
+callable object which can be used to reconstruct the object when
+called with the tuple of arguments returned by <var>function</var>
+at pickling time. <code>
+exceptions.TypeError</code> will be raised if <var>object</var> is a
+class or <var>constructor</var> is not callable.</p>
+
+<p>See the <a class="link" href="#pickle"><code>pickle</code></a> module for
+more details on the interface expected of <var>function</var> and
+<var>constructor</var>.</p>
+</dd>
+</dl></div></body></html>

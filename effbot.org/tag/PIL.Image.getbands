@@ -1,0 +1,124 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>The Image&nbsp;Module</title> <script type="text/javascript">effbot_page_id=432;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <p><a href="concepts.htm">back</a> <a href="imagechops.htm">next</a></p> <h1 class="maintitle">The Image&nbsp;Module</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p>The <b>Image</b> module provides a class with the same name which
+is used to represent a PIL image. The module also provides a number of
+factory functions, including functions to load images from files, and
+to create new images.</p><h2 id="examples">Examples&#160;<a class="nav" href="#examples" title="bookmark!">#</a></h2><p>The following script loads an image, rotates it 45 degrees, and
+displays it using an external viewer (usually <b>xv</b> on Unix, and
+the <b>paint</b> program on Windows).</p><div class="example">
+<b>Open, rotate, and display an image (using the default viewer)</b>
+<pre class="python">
+<span class="pykeyword">from</span> PIL <span class="pykeyword">import</span> Image
+im = Image.open(<span class="pystring">"bride.jpg"</span>)
+im.rotate(45).show()</pre></div><p>The following script creates nice 128x128 thumbnails of all JPEG
+images in the current directory.</p><div class="example">
+<b>Create thumbnails</b>
+<pre class="python">
+<span class="pykeyword">from</span> PIL <span class="pykeyword">import</span> Image
+<span class="pykeyword">import</span> glob, os
+
+size = 128, 128
+
+<span class="pykeyword">for</span> infile <span class="pykeyword">in</span> glob.glob(<span class="pystring">"*.jpg"</span>):
+    file, ext = os.path.splitext(infile)
+    im = Image.open(infile)
+    im.thumbnail(size, Image.ANTIALIAS)
+    im.save(file + <span class="pystring">".thumbnail"</span>, <span class="pystring">"JPEG"</span>)</pre></div><h2 id="functions">Functions&#160;<a class="nav" href="#functions" title="bookmark!">#</a></h2><h3 id="tag-Image.new">new&#160;<a class="nav" href="#tag-Image.new" title="bookmark!">#</a></h3><div class="function" id="image-new-function"><p><b>Image.new(mode, size)</b>
+<span>&#8658; image</span></p><p><b>Image.new(mode, size, color)</b>
+<span>&#8658; image</span></p><p>Creates a new image with the given mode and size. Size is given as
+a (width, height)-tuple, in pixels. The color is given as a single
+value for single-band images, and a tuple for multi-band images (with
+one value for each band).  In 1.1.4 and later, you can also use color
+names (see the <a href="imagecolor.htm"><b>ImageColor</b></a> module
+documentation for details) If the color argument is omitted, the image
+is filled with zero (this usually corresponds to black).  If the color
+is None, the image is not initialised.  This can be useful if you&#8217;re
+going to paste or draw things in the image.</p><div class="example"><pre class="python">
+<span class="pykeyword">from</span> PIL <span class="pykeyword">import</span> Image
+im = Image.new(<span class="pystring">"RGB"</span>, (512, 512), <span class="pystring">"white"</span>)</pre></div></div><h3 id="tag-Image.open">open&#160;<a class="nav" href="#tag-Image.open" title="bookmark!">#</a></h3><div class="function" id="image-open-function"><p><b>Image.open(file)</b>
+<span>&#8658; image</span></p><p><b>Image.open(file, mode)</b>
+<span>&#8658; image</span></p><p>Opens and identifies the given image file.  This is a lazy
+operation; the function reads the file header, but the actual image
+data is not read from the file until you try to process the data (call
+the <b>load</b> method to force loading).  If the mode argument is
+given, it must be &#8220;r&#8221;.</p><p>You can use either a string (representing the filename) or a file
+object as the file argument. In the latter case, the file object must
+implement <b>read</b>, <b>seek</b>, and <b>tell</b> methods, and be
+opened in binary mode.</p><div class="example"><pre class="python">
+<span class="pykeyword">from</span> PIL <span class="pykeyword">import</span> Image
+im = Image.open(<span class="pystring">"lenna.jpg"</span>)</pre></div><div class="example"><pre class="python">
+<span class="pykeyword">from</span> PIL <span class="pykeyword">import</span> image
+<span class="pykeyword">from</span> StringIO <span class="pykeyword">import</span> StringIO
+
+<span class="pycomment"># read data from string</span>
+im = Image.open(StringIO(data))</pre></div></div><h3 id="tag-Image.blend">blend&#160;<a class="nav" href="#tag-Image.blend" title="bookmark!">#</a></h3><div class="function" id="image-blend-function"><p><b>Image.blend(image1, image2, alpha)</b>
+<span>&#8658; image</span></p><p>Creates a new image by interpolating between the given images,
+using a constant alpha.  Both images must have the same size and
+mode.</p><pre>
+    out = image1 * (1.0 - alpha) + image2 * alpha
+</pre><p>If the alpha is 0.0, a copy of the first image is returned. If the
+alpha is 1.0, a copy of the second image is returned.  There are no
+restrictions on the alpha value.  If necessary, the result is clipped
+to fit into the allowed output range.</p></div><h3 id="tag-Image.composite">composite&#160;<a class="nav" href="#tag-Image.composite" title="bookmark!">#</a></h3><div class="function" id="image-composite-function"><p><b>Image.composite(image1, image2, mask)</b>
+<span>&#8658; image</span></p><p>Creates a new image by interpolating between the given images,
+using the corresponding pixels from a mask image as alpha.  The mask
+can have mode &#8220;1&#8221;, &#8220;L&#8221;, or &#8220;RGBA&#8221;.  All images must be the same
+size.</p></div><h3 id="tag-Image.eval">eval&#160;<a class="nav" href="#tag-Image.eval" title="bookmark!">#</a></h3><div class="function" id="image-eval-function"><p><b>Image.eval(image, function)</b>
+<span>&#8658; image</span></p><p>Applies the function (which should take one argument) to each
+pixel in the given image. If the image has more than one band, the
+same function is applied to each band. Note that the function is
+evaluated once for each possible pixel value, so you cannot use
+random components or other generators.</p></div><h3 id="tag-Image.frombuffer">frombuffer&#160;<a class="nav" href="#tag-Image.frombuffer" title="bookmark!">#</a></h3><div class="function" id="image-frombuffer-function"><p><b>Image.frombuffer(mode, size, data)</b>
+<span>&#8658; image</span></p><p>(New in PIL 1.1.4).  Creates an image memory from pixel data in a
+string or buffer object, using the standard &#8220;raw&#8221; decoder.  For some
+modes, the image memory will share memory with the original buffer
+(this means that changes to the original buffer object are reflected
+in the image).  Not all modes can share memory; supported modes
+include &#8220;L&#8221;, &#8220;RGBX&#8221;, &#8220;RGBA&#8221;, and &#8220;CMYK&#8221;.  For other modes, this
+function behaves like a corresponding call to the <b>fromstring</b>
+function.</p><p class="note"><b>Note:</b> In versions up to and including 1.1.6,
+the default orientation differs from that of <b>fromstring</b>.  This
+may be changed in future versions, so for maximum portability, it&#8217;s
+recommended that you spell out all arguments when using the &#8220;raw&#8221;
+decoder:</p><pre class="python">
+im = Image.frombuffer(mode, size, data, <span class="pystring">"raw"</span>, mode, 0, 1)</pre><p><b>Image.frombuffer(mode, size, data, decoder, parameters)</b>
+<span>&#8658; image</span></p><p>Same as the corresponding <b>fromstring</b> call.</p></div><h3 id="tag-Image.fromstring">fromstring&#160;<a class="nav" href="#tag-Image.fromstring" title="bookmark!">#</a></h3><div class="function" id="image-fromstring-function"><p><b>Image.fromstring(mode, size, data)</b>
+<span>&#8658; image</span></p><p>Creates an image memory from pixel data in a string, using the
+standard &#8220;raw&#8221; decoder.</p><p><b>Image.fromstring(mode, size, data, decoder, parameters)</b>
+<span>&#8658; image</span></p><p>Same, but allows you to use any pixel decoder supported by PIL.
+For more information on available decoders, see the section <a href="decoder.htm"><i>Writing Your Own File Decoder</i></a>.</p><p>Note that this function decodes pixel data only, not entire images.
+If you have an entire image file in a string, wrap it in a <b>StringIO</b>
+object, and use <a href="/tag/PIL.Image.open"><b>open</b></a>
+to load it.</p></div><h3 id="tag-Image.merge">merge&#160;<a class="nav" href="#tag-Image.merge" title="bookmark!">#</a></h3><div class="function" id="image-merge-function"><p><b>Image.merge(mode, bands)</b>
+<span>&#8658; image</span></p><p>Creates a new image from a number of single band images. The
+bands are given as a tuple or list of images, one for each band
+described by the mode. All bands must have the same size.</p></div><h2 id="methods">Methods&#160;<a class="nav" href="#methods" title="bookmark!">#</a></h2><p>An instance of the <b>Image</b> class has the following methods.
+Unless otherwise stated, all methods return a new instance of the
+<b>Image</b> class, holding the resulting image.</p><h3 id="tag-Image.Image.convert">convert&#160;<a class="nav" href="#tag-Image.Image.convert" title="bookmark!">#</a></h3><div class="method" id="image-convert-method"><p><b>im.convert(mode)</b>
+<span>&#8658; image</span></p><p>Converts an image to another mode, and returns the new image.</p><p>When converting from a palette image, this translates pixels through
+the palette. If mode is omitted, a mode is chosen so that all information
+in the image and the palette can be represented without a palette.</p><p>When converting from a colour image to black and white, the library
+uses the ITU-R 601-2 luma transform:</p><pre>
+    L = R * 299/1000 + G * 587/1000 + B * 114/1000
+</pre><p>When converting to a bilevel image (mode &#8220;1&#8221;), the source image is
+first converted to black and white.  Resulting values larger than 127
+are then set to white, and the image is dithered.  To use other
+thresholds, use the <b>point</b> method.  To disable dithering, use
+the <b>dither=</b> option (see below).</p><p><b>im.convert(&#8220;P&#8221;, **options)</b>
+<span>&#8658; image</span></p><p>Same, but provides better control when converting an &#8220;RGB&#8221; image to
+an 8-bit palette image.  Available options are:</p><p><b>dither=</b>. Controls dithering.  The default is
+<b>FLOYDSTEINBERG</b>, which distributes errors to neighboring pixels.
+To disable dithering, use <b>NONE</b>.</p><p><b>palette=</b>. Controls palette generation.  The default is
+<b>WEB</b>, which is the standard 216-color &#8220;web palette&#8221;.  To use an
+optimized palette, use <b>ADAPTIVE</b>.</p><p><b>colors=</b>. Controls the number of colors used for the palette
+when <b>palette</b> is <b>ADAPTIVE</b>.  Defaults to the maximum
+value, 256 colors.</p><p><b>im.convert(mode, matrix)</b>
+<span>&#8658; image</span></p><p>Converts an &#8220;RGB&#8221; image to &#8220;L&#8221; or &#8220;RGB&#8221; using a conversion
+matrix. The matrix is a 4- or 16-tuple.</p><p>The following example converts an RGB image (linearly calibrated
+according to ITU-R 709, using the D65 luminant) to the CIE XYZ
+colour space:</p><div class="example">
+<b>Convert RGB to XYZ</b>
+<pre class="python">
+rgb2xyz = (
+    0.412453, 0.357580, 0.180423, 0,
+    0.212671, 0.715160, 0

@@ -1,0 +1,606 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>imaplib</title>
+<style type='text/css'>body { font: 100% Georgia, Times, serif; } a.nav:link, a.nav:visited { color: #88f; } .nav { color: #88f; } a.nav:hover { color: blue; } .mark { color: #048444; }</style>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+</head><body>
+<table style='font-size: 8pt; background: #efe; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td align='left'>
+an alternative python reference (<a href='/zone/pythondoc-lib.htm'>in progress</a>)
+</td><td align='right'>
+<a href='http://docs.python.org/lib/module-imaplib.html'>original</a> :::
+<a href='imaplib.txt'>source</a> :::
+<a href='/lib/index.html'>index</a>
+</td></tr></table><table style='font-size: 8pt; background: white; padding: 5px; border: 1px solid #084; margin: 0px 0px 20px 0px;' border='0' cellspacing='0' cellpadding='0' width='100%%'><tr><td align='left'>
+<b>note:</b> this page has been automatically converted from python.org
+sources, and may contain errors and omissions introduced by the conversion
+process.
+</td></tr></table><div class="body"><div class="module">
+<h1>imaplib&#8212;IMAP4 protocol client</h1>
+
+<div class="toc"><dl><dt>On this page:</dt><dd><a href="#imap-objects">IMAP4 Objects</a></dd><dd><a href="#imap-example">IMAP4 Example</a></dd></dl></div><p>This module defines three classes, <a class="link" href="#IMAP4"><code>IMAP4</code></a>, <a class="link" href="#IMAP4_SSL"><code>
+IMAP4_SSL</code></a> and <a class="link" href="#IMAP4_stream"><code>
+IMAP4_stream</code></a>, which encapsulate a connection to an IMAP4 server
+and implement a large subset of the IMAP4rev1 client protocol as
+defined in <a class="link" href="http://www.faqs.org/rfcs/rfc2060.html">RFC 2060</a>. It is
+backward compatible with IMAP4 (<a class="link" href="http://www.faqs.org/rfcs/rfc1730.html">RFC 1730</a>) servers,
+but note that the "<code>STATUS</code>" command is not supported in
+IMAP4.</p>
+
+<p>Three classes are provided by the <code>imaplib</code> module, <a class="link" href="#IMAP4"><code>IMAP4</code></a> is the base class:</p>
+</div>
+<dl><dt class="class" id="IMAP4"><b>class IMAP4([host[, port]])</b> <tt class="nav"><a class="nav" href="imaplib.IMAP4" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>This class implements the actual IMAP4 protocol. The connection
+is created and protocol version (IMAP4 or IMAP4rev1) is determined
+when the instance is initialized. If <var>host</var> is not
+specified, <code>&#8221;</code> (the local host) is used. If <var>
+port</var> is omitted, the standard IMAP4 port (143) is used.</p>
+</dd>
+</dl><div class="text">
+<p>Three exceptions are defined as attributes of the <a class="link" href="#IMAP4"><code>IMAP4</code></a> class:</p>
+</div>
+<dl><dt class="exception" id="IMAP4.error"><b>exception IMAP4.error</b> <tt class="nav"><a class="nav" href="imaplib.IMAP4.error" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="exception">
+<p>Exception raised on any errors. The reason for the exception is
+passed to the constructor as a string.</p>
+</dd>
+<dt class="exception" id="IMAP4.abort"><b>exception IMAP4.abort</b> <tt class="nav"><a class="nav" href="imaplib.IMAP4.abort" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="exception">
+<p>IMAP4 server errors cause this exception to be raised. This is a
+sub-class of <a class="link" href="#IMAP4.error"><code>
+IMAP4.error</code></a>. Note that closing the instance and instantiating a
+new one will usually allow recovery from this exception.</p>
+</dd>
+<dt class="exception" id="IMAP4.readonly"><b>exception IMAP4.readonly</b> <tt class="nav"><a class="nav" href="imaplib.IMAP4.readonly" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="exception">
+<p>This exception is raised when a writable mailbox has its status
+changed by the server. This is a sub-class of <a class="link" href="#IMAP4.error"><code>IMAP4.error</code></a>. Some other client now has
+write permission, and the mailbox will need to be re-opened to
+re-obtain write permission.</p>
+</dd>
+</dl><div class="text">
+<p>There's also a subclass for secure connections:</p>
+</div>
+<dl><dt class="class" id="IMAP4_SSL"><b>class IMAP4_SSL([host[, port[, keyfile[,
+certfile]]]])</b> <tt class="nav"><a class="nav" href="imaplib.IMAP4_SSL" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>This is a subclass derived from <a class="link" href="#IMAP4"><code>IMAP4</code></a> that connects over an SSL encrypted
+socket (to use this class you need a socket module that was
+compiled with SSL support). If <var>host</var> is not specified,
+<code>&#8221;</code> (the local host) is used. If <var>port</var>
+is omitted, the standard IMAP4-over-SSL port (993) is used. <var>
+keyfile</var> and <var>certfile</var> are also optional - they can
+contain a PEM formatted private key and certificate chain file for
+the SSL connection.</p>
+</dd>
+</dl><div class="text">
+<p>The second subclass allows for connections created by a child
+process:</p>
+</div>
+<dl><dt class="class" id="IMAP4_stream"><b>class IMAP4_stream(command)</b> <tt class="nav"><a class="nav" href="imaplib.IMAP4_stream" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="class">
+<p>This is a subclass derived from <a class="link" href="#IMAP4"><code>IMAP4</code></a> that connects to the <code>
+stdin/stdout</code> file descriptors created by passing <var>
+command</var> to <code>os.popen2()</code>.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.3.<br />
+</blockquote>
+</dd>
+</dl><div class="text">
+<p>The following utility functions are defined:</p>
+</div>
+<dl><dt class="function" id="Internaldate2tuple"><b>Internaldate2tuple(datestr)</b> <tt class="nav"><a class="nav" href="imaplib.Internaldate2tuple" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Converts an IMAP4 INTERNALDATE string to Coordinated Universal
+Time. Returns a <code>time</code> module
+tuple.</p>
+</dd>
+<dt class="function" id="Int2AP"><b>Int2AP(num)</b> <tt class="nav"><a class="nav" href="imaplib.Int2AP" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Converts an integer into a string representation using
+characters from the set [<code>A</code> .. <code>P</code>].</p>
+</dd>
+<dt class="function" id="ParseFlags"><b>ParseFlags(flagstr)</b> <tt class="nav"><a class="nav" href="imaplib.ParseFlags" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Converts an IMAP4 "<code>FLAGS</code>" response to a tuple of
+individual flags.</p>
+</dd>
+<dt class="function" id="Time2Internaldate"><b>Time2Internaldate(date_time)</b> <tt class="nav"><a class="nav" href="imaplib.Time2Internaldate" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="function">
+<p>Converts a <code>time</code> module
+tuple to an IMAP4 "<code>INTERNALDATE</code>" representation.
+Returns a string in the form: <code>"DD-Mmm-YYYY HH:MM:SS
++HHMM"</code> (including double-quotes).</p>
+</dd>
+</dl><div class="text">
+<p>Note that IMAP4 message numbers change as the mailbox changes;
+in particular, after an "<code>EXPUNGE</code>" command performs
+deletions the remaining messages are renumbered. So it is highly
+advisable to use UIDs instead, with the UID command.</p>
+
+<p>At the end of the module, there is a test section that contains
+a more extensive example of usage.</p>
+
+<h2 id="imap-objects">IMAP4 Objects <a class="nav" href="#imap-objects">#</a></h2>
+
+<p>All IMAP4rev1 commands are represented by methods of the same
+name, either upper-case or lower-case.</p>
+
+<p>All arguments to commands are converted to strings, except for
+"<code>AUTHENTICATE</code>", and the last argument to
+"<code>APPEND</code>" which is passed as an IMAP4 literal. If
+necessary (the string contains IMAP4 protocol-sensitive characters
+and isn't enclosed with either parentheses or double quotes) each
+string is quoted. However, the <var>password</var> argument to the
+"<code>LOGIN</code>" command is always quoted. If you want to avoid
+having an argument string quoted (eg: the <var>flags</var> argument
+to "<code>STORE</code>") then enclose the string in parentheses
+(eg: <code>r'(\Deleted)'</code>).</p>
+
+<p>Each command returns a tuple: <code>(</code><var>type</var>,
+[<var>data</var>, ...]) where <var>type</var> is usually <code>
+'OK'</code> or <code>'NO'</code>, and <var>data</var> is either the
+text from the command response, or mandated results from the
+command. Each <var>data</var> is either a string, or a tuple. If a
+tuple, then the first part is the header of the response, and the
+second part contains the data (ie: 'literal' value).</p>
+
+<p>The <var>message_set</var> options to commands below is a string
+specifying one or more messages to be acted upon. It may be a
+simple message number (<code>'1'</code>), a range of message
+numbers (<code>'2:4'</code>), or a group of non-contiguous ranges
+separated by commas (<code>'1:3,6:9'</code>). A range can contain
+an asterisk to indicate an infinite upper bound
+(<code>'3:*'</code>).</p>
+
+<p>An <a class="link" href="#IMAP4"><code>IMAP4</code></a> instance has the
+following methods:</p>
+</div>
+<dl><dt class="method" id="IMAP4.append"><b>append(mailbox, flags, date_time,
+message)</b> <tt class="nav"><a class="nav" href="imaplib.IMAP4.append" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Append <var>message</var> to named mailbox.</p>
+</dd>
+<dt class="method" id="IMAP4.authenticate"><b>authenticate(mechanism, authobject)</b> <tt class="nav"><a class="nav" href="imaplib.IMAP4.authenticate" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Authenticate command -- requires response processing.</p>
+
+<p><var>mechanism</var> specifies which authentication mechanism is
+to be used - it should appear in the instance variable <code>
+capabilities</code> in the form <code>AUTH=mechanism</code>.</p>
+
+<p><var>authobject</var> must be a callable object:</p>
+
+<pre>
+data = authobject(response)
+</pre>
+
+<p>It will be called to process server continuation responses. It
+should return <code>data</code> that will be encoded and sent to
+server. It should return <code>None</code>
+if the client abort response "<code>*</code>" should be sent
+instead.</p>
+</dd>
+<dt class="method" id="IMAP4.check"><b>check()</b> <tt class="nav"><a class="nav" href="imaplib.IMAP4.check" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Checkpoint mailbox on server.</p>
+</dd>
+<dt class="method" id="IMAP4.close"><b>close()</b> <tt class="nav"><a class="nav" href="imaplib.IMAP4.close" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Close currently selected mailbox. Deleted messages are removed
+from writable mailbox. This is the recommended command before
+"<code>LOGOUT</code>".</p>
+</dd>
+<dt class="method" id="IMAP4.copy"><b>copy(message_set, new_mailbox)</b> <tt class="nav"><a class="nav" href="imaplib.IMAP4.copy" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Copy <var>message_set</var> messages onto end of <var>
+new_mailbox</var>.</p>
+</dd>
+<dt class="method" id="IMAP4.create"><b>create(mailbox)</b> <tt class="nav"><a class="nav" href="imaplib.IMAP4.create" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Create new mailbox named <var>mailbox</var>.</p>
+</dd>
+<dt class="method" id="IMAP4.delete"><b>delete(mailbox)</b> <tt class="nav"><a class="nav" href="imaplib.IMAP4.delete" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Delete old mailbox named <var>mailbox</var>.</p>
+</dd>
+<dt class="method" id="IMAP4.deleteacl"><b>deleteacl(mailbox, who)</b> <tt class="nav"><a class="nav" href="imaplib.IMAP4.deleteacl" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Delete the ACLs (remove any rights) set for who on mailbox.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.4.<br />
+</blockquote>
+</dd>
+<dt class="method" id="IMAP4.expunge"><b>expunge()</b> <tt class="nav"><a class="nav" href="imaplib.IMAP4.expunge" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Permanently remove deleted items from selected mailbox.
+Generates an "<code>EXPUNGE</code>" response for each deleted
+message. Returned data contains a list of "<code>EXPUNGE</code>"
+message numbers in order received.</p>
+</dd>
+<dt class="method" id="IMAP4.fetch"><b>fetch(message_set, message_parts)</b> <tt class="nav"><a class="nav" href="imaplib.IMAP4.fetch" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Fetch (parts of) messages. <var>message_parts</var> should be a
+string of message part names enclosed within parentheses, eg:
+"<code>"(UID BODY[TEXT])"</code>". Returned data are tuples of
+message part envelope and data.</p>
+</dd>
+<dt class="method" id="IMAP4.getacl"><b>getacl(mailbox)</b> <tt class="nav"><a class="nav" href="imaplib.IMAP4.getacl" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Get the "<code>ACL</code>"s for <var>mailbox</var>. The method
+is non-standard, but is supported by the "<code>Cyrus</code>"
+server.</p>
+</dd>
+<dt class="method" id="IMAP4.getquota"><b>getquota(root)</b> <tt class="nav"><a class="nav" href="imaplib.IMAP4.getquota" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Get the "<code>quota</code>" <var>root</var>'s resource usage
+and limits. This method is part of the IMAP4 QUOTA extension
+defined in rfc2087.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.3.<br />
+</blockquote>
+</dd>
+<dt class="method" id="IMAP4.getquotaroot"><b>getquotaroot(mailbox)</b> <tt class="nav"><a class="nav" href="imaplib.IMAP4.getquotaroot" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Get the list of "<code>quota</code>" "<code>roots</code>" for
+the named <var>mailbox</var>. This method is part of the IMAP4
+QUOTA extension defined in rfc2087.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.3.<br />
+</blockquote>
+</dd>
+<dt class="method" id="IMAP4.list"><b>list([directory[, pattern]])</b> <tt class="nav"><a class="nav" href="imaplib.IMAP4.list" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>List mailbox names in <var>directory</var> matching <var>
+pattern</var>. <var>directory</var> defaults to the top-level mail
+folder, and <var>pattern</var> defaults to match anything. Returned
+data contains a list of "<code>LIST</code>" responses.</p>
+</dd>
+<dt class="method" id="IMAP4.login"><b>login(user, password)</b> <tt class="nav"><a class="nav" href="imaplib.IMAP4.login" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Identify the client using a plaintext password. The <var>
+password</var> will be quoted.</p>
+</dd>
+<dt class="method" id="IMAP4.login_cram_md5"><b>login_cram_md5(user, password)</b> <tt class="nav"><a class="nav" href="imaplib.IMAP4.login_cram_md5" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Force use of "<code>CRAM-MD5</code>" authentication when
+identifying the client to protect the password. Will only work if
+the server "<code>CAPABILITY</code>" response includes the phrase
+"<code>AUTH=CRAM-MD5</code>".</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.3.<br />
+</blockquote>
+</dd>
+<dt class="method" id="IMAP4.logout"><b>logout()</b> <tt class="nav"><a class="nav" href="imaplib.IMAP4.logout" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Shutdown connection to server. Returns server "<code>BYE</code>"
+response.</p>
+</dd>
+<dt class="method" id="IMAP4.lsub"><b>lsub([directory[, pattern]])</b> <tt class="nav"><a class="nav" href="imaplib.IMAP4.lsub" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>List subscribed mailbox names in directory matching pattern.
+<var>directory</var> defaults to the top level directory and <var>
+pattern</var> defaults to match any mailbox. Returned data are
+tuples of message part envelope and data.</p>
+</dd>
+<dt class="method" id="IMAP4.myrights"><b>myrights(mailbox)</b> <tt class="nav"><a class="nav" href="imaplib.IMAP4.myrights" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Show my ACLs for a mailbox (i.e. the rights that I have on
+mailbox).</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.4.<br />
+</blockquote>
+</dd>
+<dt class="method" id="IMAP4.namespace"><b>namespace()</b> <tt class="nav"><a class="nav" href="imaplib.IMAP4.namespace" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Returns IMAP namespaces as defined in RFC2342.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.3.<br />
+</blockquote>
+</dd>
+<dt class="method" id="IMAP4.noop"><b>noop()</b> <tt class="nav"><a class="nav" href="imaplib.IMAP4.noop" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Send "<code>NOOP</code>" to server.</p>
+</dd>
+<dt class="method" id="IMAP4.open"><b>open(host, port)</b> <tt class="nav"><a class="nav" href="imaplib.IMAP4.open" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Opens socket to <var>port</var> at <var>host</var>. The
+connection objects established by this method will be used in the
+<code>read</code>, <code>readline</code>, <code>send</code>, and
+<code>shutdown</code> methods. You may override this method.</p>
+</dd>
+<dt class="method" id="IMAP4.partial"><b>partial(message_num, message_part, start,
+length)</b> <tt class="nav"><a class="nav" href="imaplib.IMAP4.partial" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Fetch truncated part of a message. Returned data is a tuple of
+message part envelope and data.</p>
+</dd>
+<dt class="method" id="IMAP4.proxyauth"><b>proxyauth(user)</b> <tt class="nav"><a class="nav" href="imaplib.IMAP4.proxyauth" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Assume authentication as <var>user</var>. Allows an authorised
+administrator to proxy into any user's mailbox.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.3.<br />
+</blockquote>
+</dd>
+<dt class="method" id="IMAP4.read"><b>read(size)</b> <tt class="nav"><a class="nav" href="imaplib.IMAP4.read" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Reads <var>size</var> bytes from the remote server. You may
+override this method.</p>
+</dd>
+<dt class="method" id="IMAP4.readline"><b>readline()</b> <tt class="nav"><a class="nav" href="imaplib.IMAP4.readline" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Reads one line from the remote server. You may override this
+method.</p>
+</dd>
+<dt class="method" id="IMAP4.recent"><b>recent()</b> <tt class="nav"><a class="nav" href="imaplib.IMAP4.recent" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Prompt server for an update. Returned data is <code>None</code> if no new messages, else value of
+"<code>RECENT</code>" response.</p>
+</dd>
+<dt class="method" id="IMAP4.rename"><b>rename(oldmailbox, newmailbox)</b> <tt class="nav"><a class="nav" href="imaplib.IMAP4.rename" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Rename mailbox named <var>oldmailbox</var> to <var>
+newmailbox</var>.</p>
+</dd>
+<dt class="method" id="IMAP4.response"><b>response(code)</b> <tt class="nav"><a class="nav" href="imaplib.IMAP4.response" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Return data for response <var>code</var> if received, or <code>
+None</code>. Returns the given code, instead of the usual type.</p>
+</dd>
+<dt class="method" id="IMAP4.search"><b>search(charset, criterion[, ...])</b> <tt class="nav"><a class="nav" href="imaplib.IMAP4.search" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Search mailbox for matching messages. <var>charset</var> may be
+<code>None</code>, in which case no
+"<code>CHARSET</code>" will be specified in the request to the
+server. The IMAP protocol requires that at least one criterion be
+specified; an exception will be raised when the server returns an
+error.</p>
+
+<p>Example:</p>
+
+<pre>
+# M is a connected IMAP4 instance...
+typ, msgnums = M.search(None, 'FROM', '"LDJ"')
+
+# or:
+typ, msgnums = M.search(None, '(FROM "LDJ")')
+</pre>
+</dd>
+<dt class="method" id="IMAP4.select"><b>select([mailbox[, readonly]])</b> <tt class="nav"><a class="nav" href="imaplib.IMAP4.select" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Select a mailbox. Returned data is the count of messages in
+<var>mailbox</var> ("<code>EXISTS</code>" response). The default
+<var>mailbox</var> is <code>'INBOX'</code>. If the <var>
+readonly</var> flag is set, modifications to the mailbox are not
+allowed.</p>
+</dd>
+<dt class="method" id="IMAP4.send"><b>send(data)</b> <tt class="nav"><a class="nav" href="imaplib.IMAP4.send" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Sends <code>data</code> to the remote server. You may override
+this method.</p>
+</dd>
+<dt class="method" id="IMAP4.setacl"><b>setacl(mailbox, who, what)</b> <tt class="nav"><a class="nav" href="imaplib.IMAP4.setacl" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Set an "<code>ACL</code>" for <var>mailbox</var>. The method is
+non-standard, but is supported by the "<code>Cyrus</code>"
+server.</p>
+</dd>
+<dt class="method" id="IMAP4.setquota"><b>setquota(root, limits)</b> <tt class="nav"><a class="nav" href="imaplib.IMAP4.setquota" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Set the "<code>quota</code>" <var>root</var>'s resource <var>
+limits</var>. This method is part of the IMAP4 QUOTA extension
+defined in rfc2087.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.3.<br />
+</blockquote>
+</dd>
+<dt class="method" id="IMAP4.shutdown"><b>shutdown()</b> <tt class="nav"><a class="nav" href="imaplib.IMAP4.shutdown" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Close connection established in <code>open</code>. You may
+override this method.</p>
+</dd>
+<dt class="method" id="IMAP4.socket"><b>socket()</b> <tt class="nav"><a class="nav" href="imaplib.IMAP4.socket" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Returns socket instance used to connect to server.</p>
+</dd>
+<dt class="method" id="IMAP4.sort"><b>sort(sort_criteria, charset,
+search_criterion[, ...])</b> <tt class="nav"><a class="nav" href="imaplib.IMAP4.sort" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>The <code>sort</code> command is a variant of <code>
+search</code> with sorting semantics for the results. Returned data
+contains a space separated list of matching message numbers.</p>
+
+<p>Sort has two arguments before the <var>search_criterion</var>
+argument(s); a parenthesized list of <var>sort_criteria</var>, and
+the searching <var>charset</var>. Note that unlike <code>
+search</code>, the searching <var>charset</var> argument is
+mandatory. There is also a <code>uid sort</code> command which
+corresponds to <code>sort</code> the way that <code>uid
+search</code> corresponds to <code>search</code>. The <code>
+sort</code> command first searches the mailbox for messages that
+match the given searching criteria using the charset argument for
+the interpretation of strings in the searching criteria. It then
+returns the numbers of matching messages.</p>
+
+<p>This is an "<code>IMAP4rev1</code>" extension command.</p>
+</dd>
+<dt class="method" id="IMAP4.status"><b>status(mailbox, names)</b> <tt class="nav"><a class="nav" href="imaplib.IMAP4.status" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Request named status conditions for <var>mailbox</var>.</p>
+</dd>
+<dt class="method" id="IMAP4.store"><b>store(message_set, command, flag_list)</b> <tt class="nav"><a class="nav" href="imaplib.IMAP4.store" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Alters flag dispositions for messages in mailbox. <var>
+command</var> is specified by section 6.4.6 of <a class="link" href="http://www.faqs.org/rfcs/rfc2060.html">RFC 2060</a> as being
+one of "FLAGS", "+FLAGS", or "-FLAGS", optionally with a suffix of
+".SILENT".</p>
+
+<p>For example, to set the delete flag on all messages:</p>
+
+<pre>
+typ, data = M.search(None, 'ALL')
+for num in data[0].split():
+   M.store(num, '+FLAGS', '\\Deleted')
+M.expunge()
+</pre>
+</dd>
+<dt class="method" id="IMAP4.subscribe"><b>subscribe(mailbox)</b> <tt class="nav"><a class="nav" href="imaplib.IMAP4.subscribe" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Subscribe to new mailbox.</p>
+</dd>
+<dt class="method" id="IMAP4.thread"><b>thread(threading_algorithm, charset,
+search_criterion[, ...])</b> <tt class="nav"><a class="nav" href="imaplib.IMAP4.thread" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>The <code>thread</code> command is a variant of <code>
+search</code> with threading semantics for the results. Returned
+data contains a space separated list of thread members.</p>
+
+<p>Thread members consist of zero or more messages numbers,
+delimited by spaces, indicating successive parent and child.</p>
+
+<p>Thread has two arguments before the <var>search_criterion</var>
+argument(s); a <var>threading_algorithm</var>, and the searching
+<var>charset</var>. Note that unlike <code>search</code>, the
+searching <var>charset</var> argument is mandatory. There is also a
+<code>uid thread</code> command which corresponds to <code>
+thread</code> the way that <code>uid search</code> corresponds to
+<code>search</code>. The <code>thread</code> command first searches
+the mailbox for messages that match the given searching criteria
+using the charset argument for the interpretation of strings in the
+searching criteria. It then returns the matching messages threaded
+according to the specified threading algorithm.</p>
+
+<p>This is an "<code>IMAP4rev1</code>" extension command.</p>
+
+<blockquote><span class="mark">@since</span> New in version
+2.4.<br />
+</blockquote>
+</dd>
+<dt class="method" id="IMAP4.uid"><b>uid(command, arg[, ...])</b> <tt class="nav"><a class="nav" href="imaplib.IMAP4.uid" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Execute command args with messages identified by UID, rather
+than message number. Returns response appropriate to command. At
+least one argument must be supplied; if none are provided, the
+server will return an error and an exception will be raised.</p>
+</dd>
+<dt class="method" id="IMAP4.unsubscribe"><b>unsubscribe(mailbox)</b> <tt class="nav"><a class="nav" href="imaplib.IMAP4.unsubscribe" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Unsubscribe from old mailbox.</p>
+</dd>
+<dt class="method" id="IMAP4.xatom"><b>xatom(name[, arg[, ...]])</b> <tt class="nav"><a class="nav" href="imaplib.IMAP4.xatom" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Allow simple extension commands notified by server in
+"<code>CAPABILITY</code>" response.</p>
+</dd>
+</dl><div class="text">
+<p>Instances of <a class="link" href="#IMAP4_SSL"><code>IMAP4_SSL</code></a>
+have just one additional method:</p>
+</div>
+<dl><dt class="method" id="IMAP4.ssl"><b>ssl()</b> <tt class="nav"><a class="nav" href="imaplib.IMAP4.ssl" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="method">
+<p>Returns SSLObject instance used for the secure connection with
+the server.</p>
+</dd>
+</dl><div class="text">
+<p>The following attributes are defined on instances of <a class="link" href="#IMAP4"><code>IMAP4</code></a>:</p>
+</div>
+<dl><dt class="attribute" id="IMAP4.PROTOCOL_VERSION"><b>PROTOCOL_VERSION</b> <tt class="nav"><a class="nav" href="imaplib.IMAP4.PROTOCOL_VERSION" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>The most recent supported protocol in the
+"<code>CAPABILITY</code>" response from the server.</p>
+</dd>
+<dt class="attribute" id="IMAP4.debug"><b>debug</b> <tt class="nav"><a class="nav" href="imaplib.IMAP4.debug" title="bookmark">#</a>|<a class="nav" href="#" title="edit/suggest changes">!</a>|<a class="nav" href="#" title="search for related examples">&amp;</a></tt></dt>
+
+<dd class="attribute">
+<p>Integer value to control debugging output. The initialize value
+is taken from the module variable <code>Debug</code>. Values
+greater than three trace each command.</p>
+</dd>
+</dl><div class="text">
+<h2 id="imap-example">IMAP4 Example <a class="nav" href="#imap-example">#</a></h2>
+
+<p>Here is a minimal example (without error checking) that opens a
+mailbox and retrieves and prints all messages:</p>
+
+<pre>
+import getpass, imaplib
+
+M = imaplib.IMAP4()
+M.login(getpass.getuser(), getpass.getpass())
+M.select()
+typ, data = M.search(None, 'ALL')
+for num in data[0].split():
+    typ, data = M.fetch(num, '(RFC822)')
+    print 'Message %s\n%s\n' % (num, data[0][1])
+M.close()
+M.logout()
+</pre>
+</div>
+</div></body></html>

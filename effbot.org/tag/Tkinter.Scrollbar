@@ -1,0 +1,53 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>The Tkinter Scrollbar&nbsp;Widget</title> <script type="text/javascript">effbot_page_id=1961;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> <!--
+<p style='color: #8f8f8f; background: #fff5bf; padding: 5px 10px;'> <b>2008-07-15:</b> Selected articles
+ (including this one) 
+now have experimental "comment" links in the left column and at the bottom.
+You're welcome to use them for commenting and voting on articles.
+For a bit more on this, see <a
+href="http://effbot.slinkset.com/links/Welcome_to_discuss_effbot_org">this
+page</a>. /F
+</p>
+--> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <p><a href="scale.htm">back</a> <a href="spinbox.htm">next</a></p> <h1 class="maintitle">The Tkinter Scrollbar&nbsp;Widget</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><h2>When to use the Scrollbar Widget</h2><p>This widget is used to implement scrolled listboxes, canvases,
+and text fields.</p><h2 id="patterns">Patterns&#160;<a class="nav" href="#patterns" title="bookmark!">#</a></h2><p>The <b>Scrollbar</b> widget is almost always used in conjunction
+with a <b>Listbox</b>, <b>Canvas</b>, or <b>Text</b> widget.
+Horizontal scrollbars can also be used with the <b>Entry</b>
+widget.</p><p>To connect a vertical scrollbar to such a widget, you have to do
+two things:</p><ol><li><p>Set the widget&#8217;s <b>yscrollcommand</b> callbacks to the
+<b>set</b> method of the scrollbar.</p></li><li><p>Set the scrollbar&#8217;s <b>command</b> to the <b>yview</b> method of
+the widget.</p></li></ol><pre class="python" src="scrollbar-example-1.py">
+<span class="pykeyword">from</span> Tkinter <span class="pykeyword">import</span> *
+
+master = Tk()
+
+scrollbar = Scrollbar(master)
+scrollbar.pack(side=RIGHT, fill=Y)
+
+listbox = Listbox(master, yscrollcommand=scrollbar.set)
+<span class="pykeyword">for</span> i <span class="pykeyword">in</span> range(1000):
+    listbox.insert(END, str(i))
+listbox.pack(side=LEFT, fill=BOTH)
+
+scrollbar.config(command=listbox.yview)
+
+mainloop()</pre><p>When the widget view is modified, the widget notifies the
+scrollbar by calling the <b>set</b> method. And when the user
+manipulates the scrollbar, the widget&#8217;s <b>yview</b> method is
+called with the appropriate arguments.</p><p>Adding a horizontal scrollbar is as simple. Just use the
+<b>xscrollcommand</b> option instead, and the <b>xview</b> method.</p><p>For more examples, see the <a href="/zone/tkinter-scrollbar-patterns.htm"><cite>Tkinter Scrollbar Patterns</cite></a> article.</p><p class="fixme">FIXME: Add <a href="/zone/tkinter-autoscrollbar.htm">AutoScrollbar</a> pattern.</p><h2 id="reference">Reference&#160;<a class="nav" href="#reference" title="bookmark!">#</a></h2><div class="zone:include"><dl><dt><b>Scrollbar(master=None, **options)</b> (class) [<a href="#Tkinter.Scrollbar-class">#</a>]</dt><dd>
+<p>A scrollbar.</p><dl><dt><i>master</i></dt><dd>
+Parent widget.</dd>
+<dt><i>**options</i></dt><dd>
+Widget options.  See the description of
+   the <a class="link" href="#scrollbar.Scrollbar.config-method"><b>config</b></a> method for a list of available
+   options.
+</dd>
+</dl><br />
+</dd>
+<dt><a id="Tkinter.Scrollbar.activate-method" name="Tkinter.Scrollbar.activate-method"><b>activate(element)</b></a> [<a href="#Tkinter.Scrollbar.activate-method">#</a>]</dt><dd>
+<p>Activates a scrollbar element.</p><dl><dt><i>element</i></dt><dd>
+The scrollbar element to activate.  Use one of
+   &#8220;arrow1&#8221;, &#8220;slider&#8221;, or &#8220;arrow2&#8221;.  If omitted, the method
+   returns the currently active element, or an empty string
+  

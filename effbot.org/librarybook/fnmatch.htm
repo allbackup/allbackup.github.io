@@ -1,0 +1,44 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"><link rel="shortcut icon" href="/media/img/effbot.ico"><link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"><link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"><title>The fnmatch&nbsp;module</title></head><body data-page-id="537"><div id="doc2" class="yui-t2"><div id="hd"></div><div id="bd"><div id="yui-main"><div class="yui-b"><div class="content"><div class="yui-g"><h1 class="maintitle">The fnmatch&nbsp;module</h1></div><div class="yui-ge"><div class="yui-u first"><p>This module allows you to match filenames against a pattern.</p><p>The pattern syntax is the same as that used in Unix shells. An
+asterisk (<b>*</b>) matches zero or more characters, and a
+question mark (<b>?</b>) exactly one character. You can also use
+brackets to indicate character ranges, such as <b>[0-9]</b> for a
+single digit. All other characters match themselves.</p><div class="example">
+<b style="example">Example: Using the fnmatch
+module to match files</b>
+<pre>
+# File: <a href="fnmatch/fnmatch-example-1.py">fnmatch-example-1.py</a>
+
+import fnmatch
+import os
+
+for file in os.listdir("samples"):
+    if fnmatch.fnmatch(file, "*.jpg"):
+        print file
+
+</pre><pre class="computeroutput" moreinfo="NONE">
+sample.jpg
+</pre></div><p>The <b>translate</b> function converts a file pattern to a
+regular expression:</p><div class="example">
+<b style="example">Example: Using the fnmatch
+module to convert a pattern to a regular expression</b>
+<pre>
+# File: <a href="fnmatch/fnmatch-example-2.py">fnmatch-example-2.py</a>
+
+import fnmatch
+import os, re
+
+pattern = fnmatch.translate("*.jpg")
+
+for file in os.listdir("samples"):
+    if re.match(pattern, file):
+        print file
+
+print "(pattern was %s)" % pattern
+
+</pre><pre class="computeroutput" moreinfo="NONE">
+sample.jpg
+(pattern was .*\.jpg$)
+</pre></div><p>This module is used by the <b><a href="glob.htm">glob</a></b> and
+<b><a href="find.htm">find</a></b> modules.</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div></div></div></div><div class="yui-b"><div id='menu'><ul><li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li><li><b><a href="." title="Go to librarybook index page.">::: librarybook :::</a></b></li></ul></div></div></div><div id="ft"><p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;" width="80" height="15" ></a>
+rendered by a <a href="http://www.djangoproject.com/">django</a> application.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p></div></div><script src="/media/js/effbot-min.js" type="text/javascript"></script></body></html>

@@ -1,0 +1,24 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>dir</title> <script type="text/javascript">effbot_page_id=1266;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <h1 class="maintitle">dir</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p><strong>dir</strong>([object])</p><p>Without arguments, returns the list of names in the current local
+symbol table. With an argument, attempts to return a list of valid
+attributes for that object. This information is gleaned from the
+object&#8217;s <a href="__dict__.htm"><strong>__dict__</strong></a> attribute, if defined, and
+from the class or type object. The list is not necessarily
+complete. If the object is a module object, the list contains the
+names of the module&#8217;s attributes. If the object is a type or class
+object, the list contains the names of its attributes, and recursively
+of the attributes of its bases. Otherwise, the list contains the
+object&#8217;s attribute names (including methods and properties), the
+names of its class&#8217;s attributes, and recursively of the attributes
+of its class&#8217;s base classes.
+The resulting list is sorted alphabetically. For example:</p><pre class="python">&gt;&gt;&gt; <span class="pykeyword">import</span> struct
+&gt;&gt;&gt; dir()
+[<span class="pystring">'__builtins__'</span>, <span class="pystring">'__doc__'</span>, <span class="pystring">'__name__'</span>, <span class="pystring">'struct'</span>]
+&gt;&gt;&gt; dir(struct)
+[<span class="pystring">'__doc__'</span>, <span class="pystring">'__name__'</span>, <span class="pystring">'calcsize'</span>, <span class="pystring">'error'</span>, <span class="pystring">'pack'</span>, <span class="pystring">'unpack'</span>]</pre><p><strong>Note:</strong> Because <strong>dir</strong> is supplied primarily as a convenience for use
+at an interactive prompt, it tries to return an interesting set of
+names more than it tries to supply a rigorously or consistently
+defined set of names, and its detailed behavior may change across
+releases.</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div> <!-- yui-g --></div> <!-- content --> </div> <!-- yui-b --> </div> <!-- yui-main --> <div class="yui-b"> <div id='menu'> <ul> <li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li> <li><b><a href="." title="Go to pyref index page.">::: pyref :::</a></b></li> </ul> </div> <!-- menu --> </div> <!-- yui-b --> </div> <!-- bd --> <div id="ft"> <!-- footer --> <p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;"></a>
+this page was rendered by a <a href="http://www.djangoproject.com/">django</a> application in 0.01s 2011-06-21 20:51:24.564661.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p> </div> <!-- ft --> </div> <!-- doc --> <script src="/media/js/effbot-min.js" type="text/javascript"> </script> </body> </html>

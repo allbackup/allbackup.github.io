@@ -1,0 +1,336 @@
+<html>
+<head>
+<title>element-lib ::: www.effbot.org</title>
+<link rel='stylesheet' href='/effbot.css' type='text/css' media='screen' />
+</head>
+<body bgcolor='#ccffcc'>
+<div>[<a href='element-lib.htm'>back</a>]</div>
+<h3>Welcome to the effbot.org user editor!</h3>
+
+
+<p><b>Note: This is not a contact form!  Support questions, spam, and
+other off-topic stuff will be ignored.</b></p>
+
+<p>To suggest changes, edit the HTML fragment in the text box below.
+You can use the 'update preview' button to check your changes (the
+preview is displayed beneath the text box).  When done, fill in the
+name and address fields (optional) and click 'submit patch' to mail
+the patch to me.  (I reserve the right to decide which patches to
+include, of course.)  Thanks! /F</p>
+
+<form method='post' id='useredit'>
+<input type='hidden' name='name' value='element-lib'/>
+<p>
+<input type='submit' name='preview' value='update preview' style='background:#084; color:white; width:200px; font-weight:bold;' >
+&nbsp;&nbsp;&nbsp;
+<input type='submit' name='submit' value='submit patch'  style='background:#084; color:white; width:200px; font-weight:bold;' >
+</p>
+<textarea name='text' rows='30' cols='80'>Element Library Functions
+
+&lt;p class='info'&gt;March 22, 2004 | Fredrik Lundh&lt;/p&gt;
+
+&lt;p&gt;ElementTree 1.3 may include a new module, &lt;b&gt;ElementLib&lt;/b&gt;, with
+a number of convenient helper functions.&lt;/p&gt;
+
+&lt;p&gt;The exact contents are yet to be determined; here are some of the
+current proposals (from various sources, in no specific order):&lt;/p&gt;
+
+&lt;p&gt;Helpers to add subelements, with a nicer syntax.&lt;/p&gt;
+
+&lt;p&gt;Wrappers to access elements via attributes (templating).&lt;/p&gt;
+
+&lt;h3 id='copy'&gt;copy&lt;/h3&gt;
+
+&lt;p&gt;&lt;b&gt;copy/deepcopy&lt;/b&gt;: Copy element structures. [&lt;i&gt;the copy module
+is supposed to work /F&lt;/i&gt;]&lt;/p&gt;
+
+&lt;h3 id='flatten'&gt;flatten&lt;/h3&gt;
+
+&lt;p&gt;&lt;b&gt;flatten&lt;/b&gt;: Recursively extract text content.&lt;/p&gt;
+
+&lt;pre class='python'&gt;
+def flatten(elem, include_tail=0):
+    text = elem.text or ""
+    for e in elem:
+        text += flatten(e, 1)
+    if include_tail and elem.tail: text += elem.tail
+    return text
+&lt;/pre&gt;
+
+&lt;p&gt;To get rid of all subelements to a given element, and keep just the
+text, you can do:
+
+&lt;pre class='python'&gt;
+elem.text = flatten(elem); del elem[:]
+&lt;/pre&gt;
+
+&lt;h3 id='append'&gt;append&lt;/h3&gt;
+
+&lt;p&gt;&lt;b&gt;append&lt;/b&gt;: Like elem.append, but accepts either an element or a string (which is added to the tail).&lt;/p&gt;
+
+&lt;pre class='python'&gt;
+def append(elem, item):
+    if isinstance(item, basestring):
+        if len(elem):
+            elem[-1].tail = (elem[-1].tail or "") + item
+        else:
+            elem.text = (elem.text or "") + item
+    else:
+        elem.append(item)
+&lt;/pre&gt;
+
+&lt;h3 id='walk'&gt;walk&lt;/h3&gt;
+
+&lt;p&gt;&lt;b&gt;walk&lt;/b&gt;: A generator that walks a tree in depth-first order. I think this
+is the same as "getiterator" but the docs are confusing. [&lt;i&gt;the docs say
+"document order", which is the order elements are stored in an XML
+document.  same as depth-first, in other words /F&lt;/i&gt;]&lt;/p&gt;
+
+&lt;p&gt;&lt;b&gt;reverse_walk&lt;/b&gt;: Like walk but in the reverse order.&lt;/p&gt;
+
+&lt;p&gt;&lt;b&gt;walkaround&lt;/b&gt;: Walks around the outside of a tree. Each non-terminal node
+is visited twice. Each node should have a attribute whose values can
+be NONE, DONE, FIRST, SECOND, and LEAF.&lt;/p&gt;
+
+&lt;h3 id='kill'&gt;kill&lt;/h3&gt;
+
+&lt;p&gt;&lt;b&gt;kill/hoist&lt;/b&gt;: Removes a node from a tree. It is replaced by its children.&lt;/p&gt;
+
+&lt;h3 id='prettyprint'&gt;prettyprint&lt;/h3&gt;
+
+&lt;p&gt;&lt;b&gt;prettyprint&lt;/b&gt;: Prints a tree with each node indented according to its
+depth.&lt;/p&gt;
+
+&lt;p&gt;&lt;b&gt;indent&lt;/b&gt;: Adds whitespace to the tree, so that saving it as usual 
+results in a prettyprinted tree.&lt;/p&gt;
+
+&lt;pre class='python'&gt;
+# &lt;i&gt;in-place prettyprint formatter&lt;/i&gt;
+
+def indent(elem, level=0):
+    i = "\n" + level*"  "
+    if len(elem):
+        if not elem.text or not elem.text.strip():
+            elem.text = i + "  "
+        for elem in elem:
+            indent(elem, level+1)
+        if not elem.tail or not elem.tail.strip():
+            elem.tail = i
+    else:
+        if level and (not elem.tail or not elem.tail.strip()):
+            elem.tail = i
+&lt;/pre&gt;
+
+&lt;h3 id='tostringlist'&gt;tostringlist, fromstringlist&lt;/h3&gt;
+
+&lt;p&gt;&lt;b&gt;tostringlist&lt;/b&gt; and &lt;b&gt;fromstringlist&lt;/b&gt; to serialize to and from
+lists of string fragments.  This can improve performance a lot when you're
+not really interested in the entire string:&lt;/p&gt;
+
+&lt;pre class='python'&gt;
+out.write(tostring(elem))
+
+out.writelines(tostringlist(elem))
+
+class XMLGenerator:
+    def __init__(self, elem):
+        self.iter = iter(tostringlist(elem))
+    def more(self):
+        try:
+            return self.iter.next()
+        except StopIteration:
+            return None
+&lt;/pre&gt;
+
+&lt;p&gt;Namespace helpers.&lt;/p&gt;
+
+&lt;pre class='python'&gt;
+class NS:
+    def __init__(self, uri):
+        self.uri = uri
+    def __getattr__(self, tag):
+        return self.uri + tag
+    def __call__(self, path):
+        return "/".join(getattr(self, tag) for tag in path.split("/"))
+
+XHTML = NS("{http://www.w3.org/1999/xhtml}")
+
+for elem in tree.findall(XHTML("ul/li")):
+    ...
+&lt;/pre&gt;
+
+&lt;h3&gt;See also&lt;/h3&gt;
+
+&lt;a href="element-bits-and-pieces.htm"&gt;&lt;cite&gt;Bits and Pieces&lt;/cite&gt;&lt;/a&gt;
+
+&lt;h3 id='notes'&gt;Notes&lt;/h3&gt;
+
+&lt;a href="http://article.gmane.org/gmane.comp.python.announce/4430"&gt;Suggestions&lt;/a&gt; (included above) from Ed Jones, and 
+&lt;a href="http://article.gmane.org/gmane.comp.python.general/351050"&gt;additional comments&lt;/a&gt; by Fran&amp;#231;ois Pinard.</textarea>
+<table>
+<tr><td><label for='author'>Name:</label></td><td>
+<div><input name='author' value="" size=40></div>
+</td><td>(Optional)</td></tr>
+<tr><td><label for='email'>Mail:</label></td><td>
+<div><input name='email' value="" size=40></div>
+</td><td>(Optional)</td></tr>
+<tr><td><label for='note'>Comment:</label></td><td>
+<div><input name='note' value="" size=40></div>
+</td><td>(Optional)</td></tr>
+<tr><td><label for='password'>Password:</label></td><td>
+<div><input name='password' value="(replace with the sum of 7+4)" size=40></div>
+</td><td>(Required)</td></tr>
+</table>
+<p>
+<input type='submit' name='preview' value='update preview' style='background:#084; color:white; width:200px; font-weight:bold;' >
+&nbsp;&nbsp;&nbsp;
+<input type='submit' name='submit' value='submit patch'  style='background:#084; color:white; width:200px; font-weight:bold;' >
+</p>
+<p>&nbsp;</p>
+</form>
+<div style='background: white; border: 2px solid #084; padding: 0px 20px;'>
+<h2>Element Library Functions</h2>
+
+<p class='info'>March 22, 2004 | Fredrik Lundh</p>
+
+<p>ElementTree 1.3 may include a new module, <b>ElementLib</b>, with
+a number of convenient helper functions.</p>
+
+<p>The exact contents are yet to be determined; here are some of the
+current proposals (from various sources, in no specific order):</p>
+
+<p>Helpers to add subelements, with a nicer syntax.</p>
+
+<p>Wrappers to access elements via attributes (templating).</p>
+
+<h3 id='copy'>copy</h3>
+
+<p><b>copy/deepcopy</b>: Copy element structures. [<i>the copy module
+is supposed to work /F</i>]</p>
+
+<h3 id='flatten'>flatten</h3>
+
+<p><b>flatten</b>: Recursively extract text content.</p>
+
+<pre class='python'>
+def flatten(elem, include_tail=0):
+    text = elem.text or ""
+    for e in elem:
+        text += flatten(e, 1)
+    if include_tail and elem.tail: text += elem.tail
+    return text
+</pre>
+
+<p>To get rid of all subelements to a given element, and keep just the
+text, you can do:
+
+<pre class='python'>
+elem.text = flatten(elem); del elem[:]
+</pre>
+
+<h3 id='append'>append</h3>
+
+<p><b>append</b>: Like elem.append, but accepts either an element or a string (which is added to the tail).</p>
+
+<pre class='python'>
+def append(elem, item):
+    if isinstance(item, basestring):
+        if len(elem):
+            elem[-1].tail = (elem[-1].tail or "") + item
+        else:
+            elem.text = (elem.text or "") + item
+    else:
+        elem.append(item)
+</pre>
+
+<h3 id='walk'>walk</h3>
+
+<p><b>walk</b>: A generator that walks a tree in depth-first order. I think this
+is the same as "getiterator" but the docs are confusing. [<i>the docs say
+"document order", which is the order elements are stored in an XML
+document.  same as depth-first, in other words /F</i>]</p>
+
+<p><b>reverse_walk</b>: Like walk but in the reverse order.</p>
+
+<p><b>walkaround</b>: Walks around the outside of a tree. Each non-terminal node
+is visited twice. Each node should have a attribute whose values can
+be NONE, DONE, FIRST, SECOND, and LEAF.</p>
+
+<h3 id='kill'>kill</h3>
+
+<p><b>kill/hoist</b>: Removes a node from a tree. It is replaced by its children.</p>
+
+<h3 id='prettyprint'>prettyprint</h3>
+
+<p><b>prettyprint</b>: Prints a tree with each node indented according to its
+depth.</p>
+
+<p><b>indent</b>: Adds whitespace to the tree, so that saving it as usual 
+results in a prettyprinted tree.</p>
+
+<pre class='python'>
+# <i>in-place prettyprint formatter</i>
+
+def indent(elem, level=0):
+    i = "\n" + level*"  "
+    if len(elem):
+        if not elem.text or not elem.text.strip():
+            elem.text = i + "  "
+        for elem in elem:
+            indent(elem, level+1)
+        if not elem.tail or not elem.tail.strip():
+            elem.tail = i
+    else:
+        if level and (not elem.tail or not elem.tail.strip()):
+            elem.tail = i
+</pre>
+
+<h3 id='tostringlist'>tostringlist, fromstringlist</h3>
+
+<p><b>tostringlist</b> and <b>fromstringlist</b> to serialize to and from
+lists of string fragments.  This can improve performance a lot when you're
+not really interested in the entire string:</p>
+
+<pre class='python'>
+out.write(tostring(elem))
+
+out.writelines(tostringlist(elem))
+
+class XMLGenerator:
+    def __init__(self, elem):
+        self.iter = iter(tostringlist(elem))
+    def more(self):
+        try:
+            return self.iter.next()
+        except StopIteration:
+            return None
+</pre>
+
+<p>Namespace helpers.</p>
+
+<pre class='python'>
+class NS:
+    def __init__(self, uri):
+        self.uri = uri
+    def __getattr__(self, tag):
+        return self.uri + tag
+    def __call__(self, path):
+        return "/".join(getattr(self, tag) for tag in path.split("/"))
+
+XHTML = NS("{http://www.w3.org/1999/xhtml}")
+
+for elem in tree.findall(XHTML("ul/li")):
+    ...
+</pre>
+
+<h3>See also</h3>
+
+<a href="element-bits-and-pieces.htm"><cite>Bits and Pieces</cite></a>
+
+<h3 id='notes'>Notes</h3>
+
+<a href="http://article.gmane.org/gmane.comp.python.announce/4430">Suggestions</a> (included above) from Ed Jones, and 
+<a href="http://article.gmane.org/gmane.comp.python.general/351050">additional comments</a> by Fran&#231;ois Pinard.
+</div>
+</body>
+</html>

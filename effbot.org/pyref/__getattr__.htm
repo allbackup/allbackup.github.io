@@ -1,0 +1,18 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>The __getattr__&nbsp;method</title> <script type="text/javascript">effbot_page_id=1824;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <h1 class="maintitle">The __getattr__&nbsp;method</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p><strong>__getattr__</strong>(self, name)</p><p>Called when an attribute lookup has not found the attribute in the
+usual places (i.e. it is not an instance attribute nor is it found in
+the class tree for <code>self</code>). <code>name</code> is the attribute name. This method
+should return the (computed) attribute value or raise an
+<a href="AttributeError.htm"><strong>AttributeError</strong></a> exception.</p><p>Note that if the attribute is found through the normal mechanism,
+<a href="__getattr__.htm"><strong>__getattr__</strong></a> is not called. (This is an
+intentional asymmetry between <a href="__getattr__.htm"><strong>__getattr__</strong></a> and
+__<a href="__setattr__">setattr__</a>.)  This is done both for efficiency
+reasons and because otherwise __<a href="__setattr__">setattr__</a> would
+have no way to access other attributes of the instance.
+Note that at least for instance variables, you can fake total control
+by not inserting any values in the instance attribute dictionary (but
+instead inserting them in another object).
+See the __<a href="__getattribute__">getattribute__</a> method for a way
+to actually get total control in new-style classes.</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div> <!-- yui-g --></div> <!-- content --> </div> <!-- yui-b --> </div> <!-- yui-main --> <div class="yui-b"> <div id='menu'> <ul> <li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li> <li><b><a href="." title="Go to pyref index page.">::: pyref :::</a></b></li> </ul> </div> <!-- menu --> </div> <!-- yui-b --> </div> <!-- bd --> <div id="ft"> <!-- footer --> <p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;"></a>
+this page was rendered by a <a href="http://www.djangoproject.com/">django</a> application in 0.01s 2011-06-21 22:55:33.420071.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p> </div> <!-- ft --> </div> <!-- doc --> <script src="/media/js/effbot-min.js" type="text/javascript"> </script> </body> </html>

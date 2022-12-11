@@ -1,0 +1,41 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>open</title> <script type="text/javascript">effbot_page_id=1489;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <h1 class="maintitle">open</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p><strong>open</strong>(filename[, mode[, bufsize]])</p><p>Returns a new file object (see <a href="type-file.htm"><strong>type-file</strong></a>).
+The first two arguments are the same as for
+<code>stdio</code>&#8216;s fopen(): filename is the file name to be opened, mode
+indicates how the file is to be opened: <code>'r'</code> for reading, <code>'w'</code> for
+writing (truncating an existing file), and <code>'a'</code> opens it for
+appending (which on <em>some</em> Unix systems means that <em>all</em> writes append
+to the end of the file, regardless of the current seek position).</p><p>Modes <code>'r+'</code>, <code>'w+'</code> and <code>'a+'</code> open the file for updating (note that
+<code>'w+'</code> truncates the file). Append <code>'b'</code> to the mode to open the file
+in binary mode, on systems that differentiate between binary and text
+files (else it is ignored). If the file cannot be opened, <a href="IOError.htm"><strong>IOError</strong></a> is
+raised.</p><p>In addition to the standard fopen() values mode may be <code>'U'</code> or
+<code>'rU'</code>. If Python is built with universal newline support (the
+default) the file is opened as a text file, but lines may be
+terminated by any of <code>'\n'</code>, the Unix end-of-line convention, <code>'\r'</code>,
+the Macintosh convention or <code>'\r\n'</code>, the Windows convention. All of
+these external representations are seen as <code>'\n'</code> by the Python
+program. If Python is built without universal newline support mode
+<code>'U'</code> is the same as normal text mode. Note that file objects so
+opened also have an attribute called newlines which has a value of
+<a href="None.htm"><strong>None</strong></a> (if no newlines have yet been seen), <code>'\n'</code>, <code>'\r'</code>, <code>'\r\n'</code>,
+or a tuple containing all the newline types seen.</p><p>If mode is omitted, it defaults to <code>'r'</code>. When opening a binary file,
+you should append <code>'b'</code> to the mode value for improved
+portability. (It&#8217;s useful even on systems which don&#8217;t treat binary and
+text files differently, where it serves as documentation.)  The
+optional bufsize argument specifies the file&#8217;s desired buffer size: 0
+means unbuffered, 1 means line buffered, any other positive value
+means use a buffer of (approximately) that size. A negative bufsize
+means to use the system default, which is usually line buffered for
+tty devices and fully buffered for other files. If omitted, the system
+default is used.</p><p><strong>Note:</strong> Specifying a buffer size currently has no effect on systems
+that don&#8217;t have setvbuf(). The interface to specify the buffer size is
+not done using a method that calls setvbuf(), because that may dump
+core when called after any I/O has been performed, and there&#8217;s no
+reliable way to determine whether this is the case.</p><p>The <a href="file.htm"><strong>file</strong></a> constructor is new in Python 2.2 and is an alias for
+<strong>open</strong>. Both spellings are equivalent. The intent is for <strong>open</strong> to
+continue to be preferred for use as a factory function which returns a
+new file object. The spelling, file is more suited to type testing
+(for example, writing &#8220;isinstance(f, file)&#8221;).</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"></div> <!-- yui-g --></div> <!-- content --> </div> <!-- yui-b --> </div> <!-- yui-main --> <div class="yui-b"> <div id='menu'> <ul> <li><b><a href="/" title="Go to effbot.org.">::: effbot.org</a></b></li> <li><b><a href="." title="Go to pyref index page.">::: pyref :::</a></b></li> </ul> </div> <!-- menu --> </div> <!-- yui-b --> </div> <!-- bd --> <div id="ft"> <!-- footer --> <p><a href="http://www.djangoproject.com/"><img src="/media/img/djangosite80x15.gif" border="0" alt="A Django site." title="A Django site." style="vertical-align: bottom;"></a>
+this page was rendered by a <a href="http://www.djangoproject.com/">django</a> application in 0.01s 2013-02-12 13:33:42.266542.  hosted by <a href="http://www.webfaction.com/shared_hosting?affiliate=slab">webfaction</a>.</p> </div> <!-- ft --> </div> <!-- doc --> <script src="/media/js/effbot-min.js" type="text/javascript"> </script> </body> </html>

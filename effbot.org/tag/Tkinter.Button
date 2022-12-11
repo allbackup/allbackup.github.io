@@ -1,0 +1,68 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml"> <link rel="shortcut icon" href="/media/img/effbot.ico"> <link rel="stylesheet" href="/media/css/effbot-min.css" type="text/css" media="screen"> <link rel="stylesheet" href="/media/css/effbotprint-min.css" type="text/css" media="print"> <title>The Tkinter Button&nbsp;Widget</title> <script type="text/javascript">effbot_page_id=1918;</script> </head> <body> <div id="doc2" class="yui-t2"> <div id="hd"> <!-- header --> <!--
+<p style='color: #8f8f8f; background: #fff5bf; padding: 5px 10px;'> <b>2008-07-15:</b> Selected articles
+ (including this one) 
+now have experimental "comment" links in the left column and at the bottom.
+You're welcome to use them for commenting and voting on articles.
+For a bit more on this, see <a
+href="http://effbot.slinkset.com/links/Welcome_to_discuss_effbot_org">this
+page</a>. /F
+</p>
+--> </div> <!-- hd --> <div id="bd"> <!-- body --> <div id="yui-main"> <div class="yui-b"> <div class="content"><div class="yui-g"> <p><a href="tkinter-index.htm">back</a> <a href="canvas.htm">next</a></p> <h1 class="maintitle">The Tkinter Button&nbsp;Widget</h1> </div> <!-- yui-g --><div class="yui-ge"><div class="yui-u first"><p>The <b>Button</b> widget is a standard Tkinter widget used to
+implement various kinds of buttons. Buttons can contain text or
+images, and you can associate a Python function or method with each
+button. When the button is pressed, Tkinter automatically calls
+that function or method.</p><p>The button can only display text in a single font, but the text
+may span more than one line. In addition, one of the characters can
+be underlined, for example to mark a keyboard shortcut. By default,
+the <b>Tab</b> key can be used to move to a button widget.</p><h2 id="when-to-use">When to use the Button Widget&#160;<a class="nav" href="#when-to-use" title="bookmark!">#</a></h2><p>Simply put, button widgets are used to let the user say &#8220;do this
+now!,&#8221; where <i>this</i> is either given by the text on the button,
+or implied by the icon displayed in the button. Buttons are
+typically used in toolbars, in application windows, and to accept
+or dismiss data entered into a dialog box.</p><p>For buttons suitable for data entry, see the <a href="checkbutton.htm"><b>Checkbutton</b></a> and <a href="radiobutton.htm"><b>Radiobutton</b></a> widgets.</p><h2 id="patterns">Patterns&#160;<a class="nav" href="#patterns" title="bookmark!">#</a></h2><p>Plain buttons are pretty straightforward to use. All you have to
+do is to specify the button contents (text, bitmap, or image) and
+what function or method to call when the button is pressed:</p><pre class="python">
+<span class="pykeyword">from</span> Tkinter <span class="pykeyword">import</span> *
+
+master = Tk()
+
+<span class="pykeyword">def</span> <span class="pyfunction">callback</span>():
+    <span class="pykeyword">print</span> <span class="pystring">"click!"</span>
+
+b = Button(master, text=<span class="pystring">"OK"</span>, command=callback)
+b.pack()
+
+mainloop()</pre><p>A button without a callback is pretty useless; it simply doesn&#8217;t
+do anything when you press the button. You might wish to use such
+buttons anyway when developing an application. In that case, it is
+probably a good idea to disable the button to avoid confusing your
+beta testers:</p><pre class="python">
+b = Button(master, text=<span class="pystring">"Help"</span>, state=DISABLED)</pre><p>If you don&#8217;t specify a size, the button is made just large
+enough to hold its contents. You can use the <b>padx</b> and
+<b>pady</b> option to add some extra space between the contents and
+the button border.</p><p>You can also use the <b>height</b> and <b>width</b> options to
+explicitly set the size. If you display text in the button, these
+options define the size of the button in text units. If you display
+bitmaps or images instead, they define the size in pixels (or other
+screen units). You can specify the size in pixels even for
+text buttons, but that requires some magic. Here&#8217;s one way to do it
+(there are others):</p><pre class="python">
+f = Frame(master, height=32, width=32)
+f.pack_propagate(0) <span class="pycomment"># don't shrink</span>
+f.pack()
+
+b = Button(f, text=<span class="pystring">"Sure!"</span>)
+b.pack(fill=BOTH, expand=1)</pre><p>Buttons can display multiple lines of text (but only in one
+font). You can use newlines, or use the <b>wraplength</b> option to
+make the button wrap text by itself. When wrapping text, use the
+<b>anchor</b>, <b>justify</b>, and possibly <b>padx</b> options to
+make things look exactly as you wish. An example:</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><pre class="python wide wide">
+b = Button(master, text=longtext, anchor=W, justify=LEFT, padx=2)</pre></div><div class="yui-ge"><div class="yui-u first"><p>To make an ordinary button look like it&#8217;s held down, for example
+if you wish to implement a toolbox of some kind, you can simply
+change the relief from RAISED to SUNKEN:</p><pre class="python">
+b.config(relief=SUNKEN)</pre><p>You might wish to change the background as well. Note that a
+possibly better solution is to use a <b>Checkbutton</b> or
+<b>Radiobutton</b> with the <b>indicatoron</b> option set to
+false:</p></div><div class="yui-u">&#160;</div></div><div class="yui-g"><pre class="python wide wide">
+b = Checkbutton(master, image=bold, variable=var, indicatoron=0)</pre></div><div class=
